@@ -1,0 +1,30 @@
+apply plugin: 'application'
+apply plugin: 'eclipse'
+
+repositories {
+    mavenCentral()
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src/main/java'
+        }
+        resources {
+            srcDir 'src/main/resources'
+        }
+    }
+}
+
+sourceCompatibility = 1.8
+version = '0.1'
+mainClassName = "utybo.branchingstorytree.swing.BranchingStoryPlayerSwing"
+
+dependencies {
+    compile 'com.miglayout:miglayout-swing:5.0'
+    compile project(':bst-java')
+}
+
+task stage {
+  dependsOn build
+}
