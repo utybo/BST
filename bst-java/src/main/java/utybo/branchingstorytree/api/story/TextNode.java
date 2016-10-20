@@ -3,7 +3,7 @@ package utybo.branchingstorytree.api.story;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TextNode extends StoryNode
+public class TextNode extends VirtualNode
 {
     public TextNode(int id)
     {
@@ -11,7 +11,6 @@ public class TextNode extends StoryNode
     }
 
     private List<NodeOption> options = new ArrayList<>();
-    private String text;
 
     public List<NodeOption> getOptions()
     {
@@ -28,18 +27,4 @@ public class TextNode extends StoryNode
         options.add(option);
     }
 
-    public String getText()
-    {
-        return text;
-    }
-
-    public void setText(String text)
-    {
-        this.text = text;
-    }
-
-    public void appendText(String toAppend)
-    {
-        this.text += toAppend;
-    }
 }

@@ -25,7 +25,6 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
-import javax.xml.soap.Node;
 
 import net.miginfocom.swing.MigLayout;
 import utybo.branchingstorytree.api.BSTException;
@@ -37,6 +36,7 @@ import utybo.branchingstorytree.api.story.LogicalNode;
 import utybo.branchingstorytree.api.story.NodeOption;
 import utybo.branchingstorytree.api.story.StoryNode;
 import utybo.branchingstorytree.api.story.TextNode;
+import utybo.branchingstorytree.api.story.VirtualNode;
 
 public class BranchingStoryPlayerSwing extends JFrame
 {
@@ -202,16 +202,25 @@ public class BranchingStoryPlayerSwing extends JFrame
             if(storyNode instanceof TextNode)
             {
                 TextNode textNode = (TextNode)storyNode;
-                String text = textNode.getText();
-                Pattern p = Pattern.compile("\\$\\{\\w+\\}");
-                Matcher m = p.matcher(text);
-                while(m.find())
+
+                System.out.println(textNode.getText());                String text = textNode.getText();
+                Pattern vp = Pattern.compile("\\$\\{((\\>\\d+)|(\\w+))\\}");
+                Matcher vn = vp.matcher(text);
+                while(vn.find())
                 {
-                    System.out.println(":");
-                    String toReplace = m.group();
+                    String toReplace = vn.group();
                     String varName = toReplace.substring(2, toReplace.length() - 1);
-                    text = m.replaceFirst(story.getRegistry().get(varName).toString());
-                    m.reset(text);
+                    if(varName.startsWith(">"))
+                    {
+                        String s = varName.substring(1);
+                        System.out.println(toReplace + "," + varName + "," + s);
+                        int i = Integer.parseInt(s);
+                        System.out.println(((VirtualNode)story.getNode(i)).getText());
+                        text = text.replace(toReplace, ((VirtualNode)story.getNode(i)).getText());
+                    }
+                    else
+                        text = vn.replaceFirst(story.getRegistry().get(varName).toString());
+                    vn.reset(text);
                 }
                 textLabel.setText(text);
                 if(textNode.hasTag("color"))
@@ -321,7 +330,9 @@ public class BranchingStoryPlayerSwing extends JFrame
                 }
             }
         }
-        catch(BSTException e)
+        catch(
+
+        BSTException e)
         {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Error on node " + storyNode.getId() + " :" + "\n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);

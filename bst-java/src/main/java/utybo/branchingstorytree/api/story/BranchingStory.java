@@ -13,6 +13,10 @@ public class BranchingStory extends TagHolder
 
     public StoryNode getInitialNode()
     {
+        if(getTag("initialnode") != null)
+        {
+            initialNode = Integer.parseInt(getTag("initialnode"));
+        }
         return nodes.get(initialNode);
     }
 

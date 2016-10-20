@@ -17,6 +17,7 @@ import utybo.branchingstorytree.api.story.NodeOption;
 import utybo.branchingstorytree.api.story.StoryNode;
 import utybo.branchingstorytree.api.story.TagHolder;
 import utybo.branchingstorytree.api.story.TextNode;
+import utybo.branchingstorytree.api.story.VirtualNode;
 
 public class BranchingStoryTreeParser
 {
@@ -37,6 +38,7 @@ public class BranchingStoryTreeParser
 
         Pattern beginningOfNodePattern = Pattern.compile("^\\d+:.+$");
         Pattern logicalNodePattern = Pattern.compile("^\\d+:&$");
+        Pattern virtualNodePattern = Pattern.compile("\\d+:>.+$");
         Pattern scriptPattern = Pattern.compile("(\\{(.+?):(.*?)})|(\\[(.+?):(.*?)])");
         Pattern ifNextNodeDefiner = Pattern.compile("(\\d+),(\\d+)\\[(.+:.+)]");
 
@@ -57,7 +59,7 @@ public class BranchingStoryTreeParser
                 // Handle empty lines
                 if(line.isEmpty())
                 {
-                    if(node != null && !optionsStarted)
+                    if(node != null && !optionsStarted && (nodeType == VIRTUAL || nodeType == NORMAL))
                     {
                         // We're in a node, before the reply : there is an empty line in the node
                         skipLinesOnNextAdd++;
@@ -83,6 +85,14 @@ public class BranchingStoryTreeParser
                         nodeType = LOGICAL;
                         story.addNode(node);
                     }
+                    else if(virtualNodePattern.matcher(line).matches())
+                    {
+                        node = new VirtualNode(id);
+                        nodeType = VIRTUAL;
+                        story.addNode(node);
+                        ((VirtualNode)node).setText(line.substring(line.indexOf(":") + 2));
+                        skipLinesOnNextAdd = 0;
+                    }
                     else
                     {
                         node = new TextNode(id);
@@ -100,87 +110,7 @@ public class BranchingStoryTreeParser
                     String tagName = line.split("\\=")[0];
                     story.putTag(tagName, line.substring(line.indexOf("=") + 1));
                 }
-                else if(Character.isAlphabetic(firstChar) && node != null && !optionsStarted)
-                {
-                    if(nodeType == NORMAL && !optionsStarted)
-                    {
-                        TextNode tn = (TextNode)node;
-                        // This is the continuation of a text node
-                        for(int i = 0; i < skipLinesOnNextAdd; i++)
-                            tn.appendText("\n");
-                        tn.appendText("\n");
-                        tn.appendText(line);
-                        skipLinesOnNextAdd = 0;
-                    }
-                    else if(nodeType == LOGICAL)
-                    {
-                        // This is a Logical Node for
-                        LogicalNode ln = (LogicalNode)node;
-                        Matcher m = lnLineSubscript.matcher(line);
-                        if(m.matches())
-                        {
-                            String name = m.group(1);
-                            String body = m.group(2);
-                            ln.addInstruction(new LogicalNode.LNExec(dictionnary.getAction(name, body, story.getRegistry())));
-                        }
-                        else
-                        {
-                            Matcher m2 = lnTernary.matcher(line);
-                            if(m2.matches())
-                            {
-                                String conditions = m2.group(1);
-                                String yes = m2.group(3);
-                                String no = m2.group(5);
 
-                                ArrayList<ScriptChecker> check = new ArrayList<>();
-                                ArrayList<ScriptAction> yeses = new ArrayList<>();
-                                ArrayList<ScriptAction> nos = new ArrayList<>();
-
-                                Matcher matcher = lnChecker.matcher(conditions);
-                                while(matcher.find())
-                                {
-                                    String command = matcher.group(1);
-                                    String desc = matcher.group(2);
-
-                                    ScriptChecker oc = dictionnary.getChecker(command, desc, story.getRegistry());
-                                    if(oc == null)
-                                        throw new IllegalArgumentException("Unknown checker : " + command);
-                                    else
-                                        check.add(oc);
-                                }
-
-                                matcher = lnScript.matcher(yes);
-                                while(matcher.find())
-                                {
-                                    String command = matcher.group(1);
-                                    String desc = matcher.group(2);
-
-                                    ScriptAction oc = dictionnary.getAction(command, desc, story.getRegistry());
-                                    if(oc == null)
-                                        throw new IllegalArgumentException("Unknown checker : " + command);
-                                    else
-                                        yeses.add(oc);
-                                }
-
-                                matcher = lnScript.matcher(no);
-                                while(matcher.find())
-                                {
-                                    String command = matcher.group(1);
-                                    String desc = matcher.group(2);
-
-                                    ScriptAction oc = dictionnary.getAction(command, desc, story.getRegistry());
-                                    if(oc == null)
-                                        throw new IllegalArgumentException("Unknown checker : " + command);
-                                    else
-                                        nos.add(oc);
-                                }
-
-                                ln.addInstruction(new LogicalNode.LNTern(check, yeses, nos));
-                            }
-
-                        }
-                    }
-                }
                 else if(firstChar == ':')
                 {
                     if(nodeType == NORMAL)
@@ -271,6 +201,87 @@ public class BranchingStoryTreeParser
                         else
                         {
                             ((LogicalNode)node).addInstruction(new LogicalNode.LNReturn(Integer.parseInt(nextNodeDefiner)));
+                        }
+                    }
+                }
+                else if(node != null && !optionsStarted)
+                {
+                    if((nodeType == NORMAL && !optionsStarted) || nodeType == VIRTUAL)
+                    {
+                        VirtualNode tn = (VirtualNode)node;
+                        // This is the continuation of a text node
+                        for(int i = 0; i < skipLinesOnNextAdd; i++)
+                            tn.appendText("\n");
+                        tn.appendText("\n");
+                        tn.appendText(line);
+                        skipLinesOnNextAdd = 0;
+                    }
+                    else if(nodeType == LOGICAL)
+                    {
+                        // This is a Logical Node for
+                        LogicalNode ln = (LogicalNode)node;
+                        Matcher m = lnLineSubscript.matcher(line);
+                        if(m.matches())
+                        {
+                            String name = m.group(1);
+                            String body = m.group(2);
+                            ln.addInstruction(new LogicalNode.LNExec(dictionnary.getAction(name, body, story.getRegistry())));
+                        }
+                        else
+                        {
+                            Matcher m2 = lnTernary.matcher(line);
+                            if(m2.matches())
+                            {
+                                String conditions = m2.group(1);
+                                String yes = m2.group(3);
+                                String no = m2.group(5);
+
+                                ArrayList<ScriptChecker> check = new ArrayList<>();
+                                ArrayList<ScriptAction> yeses = new ArrayList<>();
+                                ArrayList<ScriptAction> nos = new ArrayList<>();
+
+                                Matcher matcher = lnChecker.matcher(conditions);
+                                while(matcher.find())
+                                {
+                                    String command = matcher.group(1);
+                                    String desc = matcher.group(2);
+
+                                    ScriptChecker oc = dictionnary.getChecker(command, desc, story.getRegistry());
+                                    if(oc == null)
+                                        throw new IllegalArgumentException("Unknown checker : " + command);
+                                    else
+                                        check.add(oc);
+                                }
+
+                                matcher = lnScript.matcher(yes);
+                                while(matcher.find())
+                                {
+                                    String command = matcher.group(1);
+                                    String desc = matcher.group(2);
+
+                                    ScriptAction oc = dictionnary.getAction(command, desc, story.getRegistry());
+                                    if(oc == null)
+                                        throw new IllegalArgumentException("Unknown checker : " + command);
+                                    else
+                                        yeses.add(oc);
+                                }
+
+                                matcher = lnScript.matcher(no);
+                                while(matcher.find())
+                                {
+                                    String command = matcher.group(1);
+                                    String desc = matcher.group(2);
+
+                                    ScriptAction oc = dictionnary.getAction(command, desc, story.getRegistry());
+                                    if(oc == null)
+                                        throw new IllegalArgumentException("Unknown checker : " + command);
+                                    else
+                                        nos.add(oc);
+                                }
+
+                                ln.addInstruction(new LogicalNode.LNTern(check, yeses, nos));
+                            }
+
                         }
                     }
                 }
