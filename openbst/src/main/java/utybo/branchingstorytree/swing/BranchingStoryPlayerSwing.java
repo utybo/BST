@@ -131,6 +131,7 @@ public class BranchingStoryPlayerSwing extends JFrame
         textLabel.setBorder(new EmptyBorder(10, 10, 10, 10));
         scrollPane.setViewportView(textLabel);
         getContentPane().add(panel, "cell 0 1,growx,aligny top");
+        // TODO Add a reload button
 
         // Quick analysis of all the nodes to get the maximum amount of options
         int maxOptions = 0;
@@ -203,7 +204,8 @@ public class BranchingStoryPlayerSwing extends JFrame
             {
                 TextNode textNode = (TextNode)storyNode;
 
-                System.out.println(textNode.getText());                String text = textNode.getText();
+                System.out.println(textNode.getText());
+                String text = textNode.getText();
                 Pattern vp = Pattern.compile("\\$\\{((\\>\\d+)|(\\w+))\\}");
                 Matcher vn = vp.matcher(text);
                 while(vn.find())
