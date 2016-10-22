@@ -1,5 +1,8 @@
 package utybo.branchingstorytree.api.script;
 
+import javax.swing.JOptionPane;
+
+import utybo.branchingstorytree.api.BSTCentral;
 import utybo.branchingstorytree.api.BSTException;
 
 public class Dictionnary
@@ -37,6 +40,14 @@ public class Dictionnary
             };
         case "exit":
             return () -> System.exit(0);
+        case "input":
+            return () -> {
+                String varName = desc.split(",")[0];
+                String msg = desc.substring(desc.indexOf(',') + 1);
+                String input = null;
+                while(input == null || input.isEmpty())
+                    input = JOptionPane.showInputDialog(BSTCentral.getPlayerComponent(), msg);
+            };
         default:
             return null;
         }
