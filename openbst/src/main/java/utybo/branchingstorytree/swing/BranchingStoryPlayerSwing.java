@@ -29,6 +29,7 @@ import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 
 import net.miginfocom.swing.MigLayout;
+import utybo.branchingstorytree.api.BSTCentral;
 import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.api.BranchingStoryTreeParser;
 import utybo.branchingstorytree.api.script.Dictionnary;
@@ -83,7 +84,7 @@ public class BranchingStoryPlayerSwing extends JFrame
             try
             {
                 BranchingStoryPlayerSwing window = new BranchingStoryPlayerSwing(BranchingStoryTreeParser.parse(new BufferedReader(new InputStreamReader(new FileInputStream(new File(jfc.getDirectory() + jfc.getFile())), Charset.forName("UTF-8"))), new Dictionnary()));
-
+                BSTCentral.setPlayerComponent(window);
             }
             catch(Exception e)
             {
