@@ -8,8 +8,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -80,7 +82,7 @@ public class BranchingStoryPlayerSwing extends JFrame
         {
             try
             {
-                BranchingStoryPlayerSwing window = new BranchingStoryPlayerSwing(BranchingStoryTreeParser.parse(new BufferedReader(new FileReader(new File(jfc.getDirectory() + jfc.getFile()))), new Dictionnary()));
+                BranchingStoryPlayerSwing window = new BranchingStoryPlayerSwing(BranchingStoryTreeParser.parse(new BufferedReader(new InputStreamReader(new FileInputStream(new File(jfc.getDirectory() + jfc.getFile())), Charset.forName("UTF-8"))), new Dictionnary()));
 
             }
             catch(Exception e)
