@@ -47,6 +47,7 @@ public class Dictionnary
                 String input = null;
                 while(input == null || input.isEmpty())
                     input = JOptionPane.showInputDialog(BSTCentral.getPlayerComponent(), msg);
+                registry.put(varName, input);
             };
         default:
             return null;
