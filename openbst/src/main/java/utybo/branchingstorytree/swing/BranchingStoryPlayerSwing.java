@@ -6,9 +6,12 @@ import java.awt.FileDialog;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
@@ -19,10 +22,15 @@ import java.util.regex.Pattern;
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
@@ -44,6 +52,7 @@ import utybo.branchingstorytree.api.story.VirtualNode;
 public class BranchingStoryPlayerSwing extends JFrame
 {
     private final JPanel panel = new JPanel();
+    private static File file;
 
     public static void main(String[] args)
     {
@@ -83,14 +92,28 @@ public class BranchingStoryPlayerSwing extends JFrame
         {
             try
             {
-                BranchingStoryPlayerSwing window = new BranchingStoryPlayerSwing(BranchingStoryTreeParser.parse(new BufferedReader(new InputStreamReader(new FileInputStream(new File(jfc.getDirectory() + jfc.getFile())), Charset.forName("UTF-8"))), new Dictionnary()));
+                file = new File(jfc.getDirectory() + jfc.getFile());
+                BranchingStoryPlayerSwing window = new BranchingStoryPlayerSwing(BranchingStoryTreeParser.parse(new BufferedReader(new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8"))), new Dictionnary()));
+
                 BSTCentral.setPlayerComponent(window);
             }
-            catch(Exception e)
+            catch(IOException e)
             {
                 e.printStackTrace();
-                JOptionPane.showMessageDialog(null, "There was an error during file loading. Please try again and make sure your file is correct.");
+                JOptionPane.showMessageDialog(null, "<html>There was an error during file loading. Please try again and make sure your file is correct.<p>(" + e.getClass().getSimpleName() + ": " + e.getMessage() + ")", "Error", JOptionPane.ERROR_MESSAGE);
                 System.exit(0);
+            }
+            catch(BSTException e)
+            {
+                e.printStackTrace();
+                String s = "<html><b>-- BST Error --</b><p>";
+                s += "Your file seems to have an error here :<p>";
+                s += "Line : " + e.getWhere() + "<p>";
+                if(e.getCause() != null)
+                    s += "Cause : " + e.getCause().getClass().getSimpleName() + ": " + e.getCause().getMessage() + "<p>";
+                s += "Message : " + e.getMessage() + "<p>";
+                s += "<b>-- BST Error --</b>";
+                JOptionPane.showMessageDialog(null, s, "BST Error", JOptionPane.ERROR_MESSAGE);
             }
         }
         else
@@ -110,7 +133,7 @@ public class BranchingStoryPlayerSwing extends JFrame
     {
         this.story = story;
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        setTitle(story.getTagMap().getOrDefault("title", "<untitled>") + " by " + story.getTagMap().getOrDefault("author", "<unknown>") + " -- BST Player");
+        updateStory(story);
         try
         {
             setIconImage(ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icon/icon.png")));
@@ -132,9 +155,69 @@ public class BranchingStoryPlayerSwing extends JFrame
         textLabel.setBackground(Color.WHITE);
         textLabel.setForeground(Color.BLACK);
         textLabel.setBorder(new EmptyBorder(10, 10, 10, 10));
+        textLabel.addMouseListener(new MouseAdapter()
+        {
+
+            @Override
+            public void mouseClicked(MouseEvent ev)
+            {
+                if(SwingUtilities.isRightMouseButton(ev))
+                {
+                    JPopupMenu menu = new JPopupMenu();
+
+                    JMenuItem jmi = new JMenuItem("Node : " + currentNode.getId());
+                    jmi.setEnabled(false);
+                    menu.add(jmi);
+                    menu.add(new JSeparator());
+
+                    JMenuItem restart = new JMenuItem("Restart from the beginning (without resetting)");
+                    restart.addActionListener(ev2 -> showNode(story.getInitialNode()));
+                    menu.add(restart);
+
+                    JMenuItem reset = new JMenuItem("Reset and restart from the beginning");
+                    reset.addActionListener(ev2 ->
+                    {
+                        story.reset();
+                        showNode(story.getInitialNode());
+                    });
+                    menu.add(reset);
+
+                    JMenuItem reload = new JMenuItem("Reload the source file(s), reset and restart");
+                    reload.addActionListener(ev2 ->
+                    {
+                        try
+                        {
+                            dispose();
+                            BranchingStoryPlayerSwing window = new BranchingStoryPlayerSwing(BranchingStoryTreeParser.parse(new BufferedReader(new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8"))), new Dictionnary()));
+                            BSTCentral.setPlayerComponent(window);
+                        }
+                        catch(IOException e)
+                        {
+                            e.printStackTrace();
+                            JOptionPane.showMessageDialog(null, "<html>There was an error during file loading. Please try again and make sure your file is correct.<p>(" + e.getClass().getSimpleName() + ": " + e.getMessage() + ")", "Error", JOptionPane.ERROR_MESSAGE);
+                            System.exit(0);
+                        }
+                        catch(BSTException e)
+                        {
+                            e.printStackTrace();
+                            String s = "<html><b>-- BST Error --</b><p>";
+                            s += "Your file seems to have an error here :<p>";
+                            s += "Line : " + e.getWhere() + "<p>";
+                            if(e.getCause() != null)
+                                s += "Cause : " + e.getCause().getClass().getSimpleName() + ": " + e.getCause().getMessage() + "<p>";
+                            s += "Message : " + e.getMessage() + "<p>";
+                            s += "<b>-- BST Error --</b>";
+                            JOptionPane.showMessageDialog(null, s, "BST Error", JOptionPane.ERROR_MESSAGE);
+                        }
+                    }); 
+                    menu.add(reload);
+                    
+                    menu.show(textLabel, ev.getX(), ev.getY());
+                }
+            }
+        });
         scrollPane.setViewportView(textLabel);
         getContentPane().add(panel, "cell 0 1,growx,aligny top");
-        // TODO Add a reload button
 
         // Quick analysis of all the nodes to get the maximum amount of options
         int maxOptions = 0;
@@ -185,8 +268,20 @@ public class BranchingStoryPlayerSwing extends JFrame
 
         if(story.hasTag("nsfw"))
         {
-            JOptionPane.showConfirmDialog(this, "<html><b>WARNING</b><p>You are about to read a NSFW story. This story is not suitable for children.<p>Only click OK if you are OVER 18 YEARS OLD.", "NSFW WARNING", JOptionPane.WARNING_MESSAGE);
+            if(JOptionPane.showConfirmDialog(this, "<html><b>WARNING</b><p>You are about to read a NSFW story. This story is not suitable for children.<p>Only click OK if you are OVER 18 YEARS OLD.", "NSFW WARNING", JOptionPane.WARNING_MESSAGE) != JOptionPane.OK_OPTION)
+                System.exit(0);
         }
+    }
+
+    private void updateStory(BranchingStory story2)
+    {
+        setTitle(story.getTagMap().getOrDefault("title", "<untitled>") + " by " + story.getTagMap().getOrDefault("author", "<unknown>") + " -- BST Player");
+    }
+
+    private void reparseStory(File f) throws IOException, BSTException
+    {
+        story = BranchingStoryTreeParser.parse(new BufferedReader(new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8"))), new Dictionnary());
+
     }
 
     private void showNode(StoryNode storyNode)
@@ -218,10 +313,15 @@ public class BranchingStoryPlayerSwing extends JFrame
                     if(varName.startsWith(">"))
                     {
                         String s = varName.substring(1);
-                        System.out.println(toReplace + "," + varName + "," + s);
                         int i = Integer.parseInt(s);
-                        System.out.println(((VirtualNode)story.getNode(i)).getText());
                         text = text.replace(toReplace, ((VirtualNode)story.getNode(i)).getText());
+                    }
+                    else if(varName.startsWith("&"))
+                    {
+                        String s = varName.substring(1);
+                        int i = Integer.parseInt(s);
+                        LogicalNode ln = (LogicalNode)story.getNode(i);
+                        text = text.replace(toReplace, ((VirtualNode)story.getNode(ln.solve())).getText());
                     }
                     else
                         text = vn.replaceFirst(story.getRegistry().get(varName).toString());

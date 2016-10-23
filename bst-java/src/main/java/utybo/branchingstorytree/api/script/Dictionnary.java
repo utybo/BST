@@ -41,7 +41,8 @@ public class Dictionnary
         case "exit":
             return () -> System.exit(0);
         case "input":
-            return () -> {
+            return () ->
+            {
                 String varName = desc.split(",")[0];
                 String msg = desc.substring(desc.indexOf(',') + 1);
                 String input = null;
