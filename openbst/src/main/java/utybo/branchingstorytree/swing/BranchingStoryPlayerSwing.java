@@ -155,7 +155,6 @@ public class BranchingStoryPlayerSwing extends JFrame
         getContentPane().add(scrollPane, "cell 0 0,grow");
 
         textLabel = new JLabel("<html>Please wait...");
-        textLabel.setVerticalAlignment(SwingConstants.TOP);
         textLabel.setFont(new JTextArea().getFont());
         textLabel.setForeground(Color.BLACK);
         textLabel.setBorder(new EmptyBorder(10, 10, 10, 10));
@@ -375,10 +374,13 @@ public class BranchingStoryPlayerSwing extends JFrame
                 case 1:
                     text = "<html>" + Processor.process(text); // MD to HTML
                     // TODO Test to see if HTML characters are escaped
+                    break;
                 case 2:
                     text = "<html>" + text; // HTML to HTML
+                    break;
                 default:
                     text = "<html>" + StringEscapeUtils.escapeHtml(text).replace("\n", "<br>"); // Plain text to HTML
+                    break;
                 }
 
                 textLabel.setText(text);
