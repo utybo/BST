@@ -1,5 +1,6 @@
 package utybo.branchingstorytree.swing;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dialog;
 import java.awt.FileDialog;
@@ -11,7 +12,6 @@ import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JMenu;
+import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -30,11 +30,16 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextArea;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
+
+import org.apache.commons.lang.StringEscapeUtils;
+
+import com.github.rjeschke.txtmark.Processor;
 
 import net.miginfocom.swing.MigLayout;
 import utybo.branchingstorytree.api.BSTCentral;
@@ -48,6 +53,7 @@ import utybo.branchingstorytree.api.story.NodeOption;
 import utybo.branchingstorytree.api.story.StoryNode;
 import utybo.branchingstorytree.api.story.TextNode;
 import utybo.branchingstorytree.api.story.VirtualNode;
+import utybo.branchingstorytree.swing.JScrollablePanel.ScrollableSizeHint;
 
 public class BranchingStoryPlayerSwing extends JFrame
 {
@@ -126,7 +132,7 @@ public class BranchingStoryPlayerSwing extends JFrame
     private StoryNode currentNode;
     private NodeOption[] options;
     private JButton[] optionsButton;
-    private JTextArea textLabel;
+    private JLabel textLabel;
     private Color normalButtonFg;
 
     public BranchingStoryPlayerSwing(BranchingStory story)
@@ -148,11 +154,9 @@ public class BranchingStoryPlayerSwing extends JFrame
         scrollPane.setBackground(Color.WHITE);
         getContentPane().add(scrollPane, "cell 0 0,grow");
 
-        textLabel = new JTextArea("Please wait...");
-        textLabel.setLineWrap(true);
-        textLabel.setWrapStyleWord(true);
-        textLabel.setEditable(false);
-        textLabel.setBackground(Color.WHITE);
+        textLabel = new JLabel("<html>Please wait...");
+        textLabel.setVerticalAlignment(SwingConstants.TOP);
+        textLabel.setFont(new JTextArea().getFont());
         textLabel.setForeground(Color.BLACK);
         textLabel.setBorder(new EmptyBorder(10, 10, 10, 10));
         textLabel.addMouseListener(new MouseAdapter()
@@ -209,14 +213,18 @@ public class BranchingStoryPlayerSwing extends JFrame
                             s += "<b>-- BST Error --</b>";
                             JOptionPane.showMessageDialog(null, s, "BST Error", JOptionPane.ERROR_MESSAGE);
                         }
-                    }); 
+                    });
                     menu.add(reload);
-                    
+
                     menu.show(textLabel, ev.getX(), ev.getY());
                 }
             }
         });
-        scrollPane.setViewportView(textLabel);
+        JScrollablePanel jsp = new JScrollablePanel(new BorderLayout());
+        jsp.add(textLabel, BorderLayout.CENTER);
+        jsp.setScrollableWidth(ScrollableSizeHint.FIT);
+        jsp.setBackground(Color.WHITE);
+        scrollPane.setViewportView(jsp);
         getContentPane().add(panel, "cell 0 1,growx,aligny top");
 
         // Quick analysis of all the nodes to get the maximum amount of options
@@ -230,6 +238,7 @@ public class BranchingStoryPlayerSwing extends JFrame
         if(maxOptions < 4)
             maxOptions = 4;
         int rows = maxOptions / 2;
+        // Make sure the options are always a multiple of 2
         if(maxOptions % 2 == 1)
         {
             rows++;
@@ -327,6 +336,51 @@ public class BranchingStoryPlayerSwing extends JFrame
                         text = vn.replaceFirst(story.getRegistry().get(varName).toString());
                     vn.reset(text);
                 }
+
+                // Process the markup language
+                // 0 == none
+                // 1 == Markdown
+                // 2 == HTML
+                int markupLanguage = 0;
+                if(story.hasTag("markup") || textNode.hasTag("markup"))
+                {
+                    if(textNode.hasTag("markup"))
+                    {
+                        String s = textNode.getTag("markup");
+                        if(s.equalsIgnoreCase("md") || s.equalsIgnoreCase("markdown"))
+                        {
+                            markupLanguage = 1;
+                        }
+                        else if(s.equalsIgnoreCase("html"))
+                        {
+                            markupLanguage = 2;
+                        }
+                    }
+                    else if(story.hasTag("markup"))
+                    {
+                        String s = story.getTag("markup");
+                        if(s.equalsIgnoreCase("md") || s.equalsIgnoreCase("markdown"))
+                        {
+                            markupLanguage = 1;
+                        }
+                        else if(s.equalsIgnoreCase("html"))
+                        {
+                            markupLanguage = 2;
+                        }
+                    }
+                }
+
+                switch(markupLanguage)
+                {
+                case 1:
+                    text = "<html>" + Processor.process(text); // MD to HTML
+                    // TODO Test to see if HTML characters are escaped
+                case 2:
+                    text = "<html>" + text; // HTML to HTML
+                default:
+                    text = "<html>" + StringEscapeUtils.escapeHtml(text).replace("\n", "<br>"); // Plain text to HTML
+                }
+
                 textLabel.setText(text);
                 if(textNode.hasTag("color"))
                 {

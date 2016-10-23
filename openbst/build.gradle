@@ -23,6 +23,8 @@ mainClassName = "utybo.branchingstorytree.swing.BranchingStoryPlayerSwing"
 dependencies {
     compile 'com.miglayout:miglayout-swing:5.0'
     compile project(':bst-java')
+    compile 'commons-lang:commons-lang:2.6'
+    compile 'com.github.rjeschke:txtmark:0.13'
 }
 
 task stage {
