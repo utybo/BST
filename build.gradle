@@ -1,7 +1,14 @@
 subprojects {
-    apply plugin: 'java'
-    apply plugin: 'eclipse'
-    
+    plugins {
+        id "com.github.hierynomus.license" version "0.13.1"
+        id "eclipse"
+        id "java"
+    }
+
+    license { 
+        header = file('LGPL.txt') 
+    }
+
     repositories {
         mavenCentral()
     }
