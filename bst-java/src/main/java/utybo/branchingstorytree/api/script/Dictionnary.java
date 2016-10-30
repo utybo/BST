@@ -106,6 +106,42 @@ public class Dictionnary
                 {}
                 return !var.toString().equals(isEqualWith);
             };
+        case "more":
+            return () ->
+            {
+                String varName = desc.split(",")[0];
+                Integer var = (Integer)registry.get(varName);
+                Integer compareTo = Integer.parseInt(desc.split(",")[1]);
+
+                return var > compareTo;
+            };
+        case "less":
+            return () ->
+            {
+                String varName = desc.split(",")[0];
+                Integer var = (Integer)registry.get(varName);
+                Integer compareTo = Integer.parseInt(desc.split(",")[1]);
+
+                return var < compareTo;
+            };
+        case "moreequ":
+            return () ->
+            {
+                String varName = desc.split(",")[0];
+                Integer var = (Integer)registry.get(varName);
+                Integer compareTo = Integer.parseInt(desc.split(",")[1]);
+
+                return var >= compareTo;
+            };
+        case "lessequ":
+            return () ->
+            {
+                String varName = desc.split(",")[0];
+                Integer var = (Integer)registry.get(varName);
+                Integer compareTo = Integer.parseInt(desc.split(",")[1]);
+
+                return var <= compareTo;
+            };
         default:
             return null;
         }
