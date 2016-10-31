@@ -430,7 +430,7 @@ public class BranchingStoryPlayerSwing extends JFrame
             {
                 optionsButton[2].removeActionListener(al);
             }
-            ActionListener shutdownListener = e -> System.exit(0);;
+            ActionListener shutdownListener = e -> System.exit(0);
             optionsButton[2].addActionListener(new ActionListener()
             {
                 @Override
