@@ -63,7 +63,7 @@ import utybo.branchingstorytree.swing.JScrollablePanel.ScrollableSizeHint;
 public class BranchingStoryPlayerSwing extends JFrame
 {
     private static final long serialVersionUID = 1L;
-    
+
     private static File file;
     private static BranchingStoryTreeParser parser = new BranchingStoryTreeParser();
 
@@ -111,37 +111,50 @@ public class BranchingStoryPlayerSwing extends JFrame
         jfc.setVisible(true);
         if(jfc.getFile() != null)
         {
-            try
-            {
-                file = new File(jfc.getDirectory() + jfc.getFile());
-                final BranchingStoryPlayerSwing window = new BranchingStoryPlayerSwing(parser.parse(new BufferedReader(new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8"))), new Dictionnary()));
-
-                BSTCentral.setPlayerComponent(window);
-            }
-            catch(final IOException e)
-            {
-                e.printStackTrace();
-                JOptionPane.showMessageDialog(null, "<html>There was an error during file loading. Please try again and make sure your file is correct.<p>(" + e.getClass().getSimpleName() + ": " + e.getMessage() + ")", "Error", JOptionPane.ERROR_MESSAGE);
-                System.exit(0);
-            }
-            catch(final BSTException e)
-            {
-                e.printStackTrace();
-                String s = "<html><b>-- BST Error --</b><p>";
-                s += "Your file seems to have an error here :<p>";
-                s += "Line : " + e.getWhere() + "<p>";
-                if(e.getCause() != null)
-                {
-                    s += "Cause : " + e.getCause().getClass().getSimpleName() + ": " + e.getCause().getMessage() + "<p>";
-                }
-                s += "Message : " + e.getMessage() + "<p>";
-                s += "<b>-- BST Error --</b>";
-                JOptionPane.showMessageDialog(null, s, "BST Error", JOptionPane.ERROR_MESSAGE);
-            }
+            file = new File(jfc.getDirectory() + jfc.getFile());
+            loadFile();
         }
         else
         {
             System.exit(0);
+        }
+    }
+
+    private static void loadFile()
+    {
+        try
+        {
+            final BranchingStoryPlayerSwing window = new BranchingStoryPlayerSwing(parser.parse(new BufferedReader(new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8"))), new Dictionnary()));
+
+            BSTCentral.setPlayerComponent(window);
+        }
+        catch(final IOException e)
+        {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "<html>There was an error during file loading. Please try again and make sure your file is correct.<p>(" + e.getClass().getSimpleName() + ": " + e.getMessage() + ")", "Error", JOptionPane.ERROR_MESSAGE);
+            System.exit(0);
+        }
+        catch(final BSTException e)
+        {
+            e.printStackTrace();
+            String s = "<html><b>-- BST Error --</b><p>";
+            s += "Your file seems to have an error here :<p>";
+            s += "Line : " + e.getWhere() + "<p>";
+            if(e.getCause() != null)
+            {
+                s += "Cause : " + e.getCause().getClass().getSimpleName() + " : " + e.getCause().getMessage() + "<p>";
+            }
+            s += "Message : " + e.getMessage() + "<p>";
+            s += "<b>-- BST Error --</b>";
+            s += "<p><p>Do you wish to reload the file?";
+            if(JOptionPane.showConfirmDialog(null, s, "BST Error", JOptionPane.ERROR_MESSAGE, JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
+            {
+                loadFile();
+            }
+            else
+            {
+                System.exit(0);
+            }
         }
     }
 
