@@ -14,7 +14,7 @@ public class IfNextNodeDefiner implements NextNodeDefiner
 {
     private int one, two;
     private ScriptChecker checker;
-    
+
     public IfNextNodeDefiner(int one, int two, ScriptChecker checker)
     {
         this.one = one;

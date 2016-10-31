@@ -10,8 +10,10 @@ package utybo.branchingstorytree.api;
 
 public class BSTException extends Exception
 {
+    private static final long serialVersionUID = 1L;
+
     private int where;
-    
+
     public BSTException(int where)
     {
         super();
@@ -45,6 +47,5 @@ public class BSTException extends Exception
     {
         this.where = where;
     }
-    
-    
+
 }

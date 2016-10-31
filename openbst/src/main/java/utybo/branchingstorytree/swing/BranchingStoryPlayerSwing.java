@@ -38,7 +38,6 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextArea;
-import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -63,6 +62,7 @@ import utybo.branchingstorytree.api.story.TextNode;
 import utybo.branchingstorytree.api.story.VirtualNode;
 import utybo.branchingstorytree.swing.JScrollablePanel.ScrollableSizeHint;
 
+@SuppressWarnings("serial")
 public class BranchingStoryPlayerSwing extends JFrame
 {
     private final JPanel panel = new JPanel();
@@ -147,7 +147,7 @@ public class BranchingStoryPlayerSwing extends JFrame
     {
         this.story = story;
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        updateStory(story);
+        updateStory();
         try
         {
             setIconImage(ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icon/icon.png")));
@@ -289,15 +289,9 @@ public class BranchingStoryPlayerSwing extends JFrame
         }
     }
 
-    private void updateStory(BranchingStory story2)
+    private void updateStory()
     {
         setTitle(story.getTagMap().getOrDefault("title", "<untitled>") + " by " + story.getTagMap().getOrDefault("author", "<unknown>") + " -- BST Player");
-    }
-
-    private void reparseStory(File f) throws IOException, BSTException
-    {
-        story = BranchingStoryTreeParser.parse(new BufferedReader(new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8"))), new Dictionnary());
-
     }
 
     private void showNode(StoryNode storyNode)

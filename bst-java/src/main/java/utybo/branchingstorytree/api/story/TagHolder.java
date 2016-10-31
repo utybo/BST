@@ -28,7 +28,7 @@ public class TagHolder
     {
         return tags;
     }
-    
+
     public boolean hasTag(String tag)
     {
         return tags.containsKey(tag);

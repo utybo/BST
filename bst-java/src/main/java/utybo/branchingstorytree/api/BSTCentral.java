@@ -32,6 +32,5 @@ public class BSTCentral
     {
         BSTCentral.playerComponent = playerComponent;
     }
-    
-    
+
 }
