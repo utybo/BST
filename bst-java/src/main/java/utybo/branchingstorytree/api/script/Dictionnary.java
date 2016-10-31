@@ -68,11 +68,11 @@ public class Dictionnary
                 {
                     throw new BSTException(-1, "Invalid syntax : {add:a,b} for a + b with result in a or {add:a,b,c} for b + c with result in a");
                 }
-                    
+
                 int ia = registry.typeOf(a) == Integer.class ? (Integer)registry.get(a) : Integer.parseInt(a);
                 int ib = registry.typeOf(b) == Integer.class ? (Integer)registry.get(b) : Integer.parseInt(b);
-                registry.put(putIn, a + b);
-                
+                registry.put(putIn, ia + ib);
+
             };
         case "exit":
             return () -> System.exit(0);
