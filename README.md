@@ -28,6 +28,7 @@ Java implementation of the BST language. Very easy to use. Do note that it tends
 ## Building OpenBST
 
 To build OpenBST :
+- Download and install the Java JDK. Both the Oracle JDK and the OpenJDK will work. Once this is done :
 - Either clone the repository if Git is installed on your computer, or download and unzip this : https://github.com/utybo/BST/archive/master.zip
 - Open a command prompt inside the BST folder (you should see folders like "openbst", "bst", "bst-java"...)
 - If you **do not have** Gradle installed on your computer :
