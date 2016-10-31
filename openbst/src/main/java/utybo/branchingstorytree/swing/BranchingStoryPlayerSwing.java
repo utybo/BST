@@ -52,6 +52,7 @@ import net.miginfocom.swing.MigLayout;
 import utybo.branchingstorytree.api.BSTCentral;
 import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.api.BranchingStoryTreeParser;
+import utybo.branchingstorytree.api.StoryUtils;
 import utybo.branchingstorytree.api.script.Dictionnary;
 import utybo.branchingstorytree.api.script.ScriptAction;
 import utybo.branchingstorytree.api.story.BranchingStory;
@@ -313,64 +314,13 @@ public class BranchingStoryPlayerSwing extends JFrame
             {
                 TextNode textNode = (TextNode)storyNode;
 
-                System.out.println(textNode.getText());
-                String text = textNode.getText();
-                Pattern vp = Pattern.compile("\\$\\{((\\>\\d+)|(\\w+))\\}");
-                Matcher vn = vp.matcher(text);
-                while(vn.find())
-                {
-                    String toReplace = vn.group();
-                    String varName = toReplace.substring(2, toReplace.length() - 1);
-                    if(varName.startsWith(">"))
-                    {
-                        String s = varName.substring(1);
-                        int i = Integer.parseInt(s);
-                        text = text.replace(toReplace, ((VirtualNode)story.getNode(i)).getText());
-                    }
-                    else if(varName.startsWith("&"))
-                    {
-                        String s = varName.substring(1);
-                        int i = Integer.parseInt(s);
-                        LogicalNode ln = (LogicalNode)story.getNode(i);
-                        text = text.replace(toReplace, ((VirtualNode)story.getNode(ln.solve())).getText());
-                    }
-                    else
-                        text = vn.replaceFirst(story.getRegistry().get(varName).toString());
-                    vn.reset(text);
-                }
+                String text = StoryUtils.solveVariables(textNode, story);
 
                 // Process the markup language
                 // 0 == none
                 // 1 == Markdown
                 // 2 == HTML
-                int markupLanguage = 0;
-                if(story.hasTag("markup") || textNode.hasTag("markup"))
-                {
-                    if(textNode.hasTag("markup"))
-                    {
-                        String s = textNode.getTag("markup");
-                        if(s.equalsIgnoreCase("md") || s.equalsIgnoreCase("markdown"))
-                        {
-                            markupLanguage = 1;
-                        }
-                        else if(s.equalsIgnoreCase("html"))
-                        {
-                            markupLanguage = 2;
-                        }
-                    }
-                    else if(story.hasTag("markup"))
-                    {
-                        String s = story.getTag("markup");
-                        if(s.equalsIgnoreCase("md") || s.equalsIgnoreCase("markdown"))
-                        {
-                            markupLanguage = 1;
-                        }
-                        else if(s.equalsIgnoreCase("html"))
-                        {
-                            markupLanguage = 2;
-                        }
-                    }
-                }
+                int markupLanguage = solveMarkup(textNode);
 
                 switch(markupLanguage)
                 {
@@ -416,91 +366,127 @@ public class BranchingStoryPlayerSwing extends JFrame
                 {
                     textLabel.setForeground(Color.BLACK);
                 }
-                ArrayList<NodeOption> validOptions = new ArrayList<>();
-                for(NodeOption no : textNode.getOptions())
-                {
-                    if(no.getChecker().check())
-                    {
-                        validOptions.add(no);
-                    }
-                }
                 resetOptions();
-                boolean end = true;
-                for(int i = 0; i < validOptions.size(); i++)
-                {
-                    NodeOption option = validOptions.get(i);
-                    end = false;
-                    JButton button = optionsButton[i];
-                    options[i] = option;
-                    button.setEnabled(true);
-                    if(option.hasTag("color"))
-                    {
-                        String color = option.getTag("color");
-                        Color c = null;
-                        if(color.startsWith("#"))
-                            c = new Color(Integer.parseInt(color.substring(1), 16));
-                        else
-                            try
-                            {
-                                c = (Color)Color.class.getField(color).get(null);
-                            }
-                            catch(IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e)
-                            {
-                                System.err.println("COLOR DOES NOT EXIST : " + color);
-                                e.printStackTrace();
-                            }
-                        if(c != null)
-                        {
-                            button.setForeground(c);
-                        }
-                    }
-                    button.setText(option.getText());
-                }
-                if(end)
-                {
-                    optionsButton[0].setText("The End.");
-                    optionsButton[1].setText("Final node : " + textNode.getId());
-                    optionsButton[2].setText("Restart");
-                    optionsButton[2].setEnabled(true);
-                    ActionListener[] original = optionsButton[2].getActionListeners();
-                    ActionListener[] original2 = optionsButton[3].getActionListeners();
-                    for(ActionListener al : original)
-                    {
-                        optionsButton[2].removeActionListener(al);
-                    }
-                    ActionListener shutdownListener = e -> System.exit(0);;
-                    optionsButton[2].addActionListener(new ActionListener()
-                    {
-                        @Override
-                        public void actionPerformed(ActionEvent e)
-                        {
-                            for(ActionListener al : original)
-                                optionsButton[2].addActionListener(al);
-                            for(ActionListener al : original2)
-                                optionsButton[3].addActionListener(al);
-                            optionsButton[2].removeActionListener(this);
-                            optionsButton[3].removeActionListener(shutdownListener);
-                            story.reset();
-                            showNode(story.getInitialNode());
-                        }
-                    });
-                    optionsButton[3].setText("Quit");
-                    optionsButton[3].setEnabled(true);
-                    for(ActionListener al : original2)
-                    {
-                        optionsButton[3].removeActionListener(al);
-                    }
-                    optionsButton[3].addActionListener(shutdownListener);
-                }
+                showOptions(textNode);
             }
         }
-        catch(
-
-        BSTException e)
+        catch(BSTException e)
         {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Error on node " + storyNode.getId() + " :" + "\n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    private void showOptions(TextNode textNode) throws BSTException
+    {
+        ArrayList<NodeOption> validOptions = new ArrayList<>();
+        for(NodeOption no : textNode.getOptions())
+        {
+            if(no.getChecker().check())
+            {
+                validOptions.add(no);
+            }
+        }
+        boolean end = true;
+        for(int i = 0; i < validOptions.size(); i++)
+        {
+            NodeOption option = validOptions.get(i);
+            end = false;
+            JButton button = optionsButton[i];
+            options[i] = option;
+            button.setEnabled(true);
+            if(option.hasTag("color"))
+            {
+                String color = option.getTag("color");
+                Color c = null;
+                if(color.startsWith("#"))
+                    c = new Color(Integer.parseInt(color.substring(1), 16));
+                else
+                    try
+                    {
+                        c = (Color)Color.class.getField(color).get(null);
+                    }
+                    catch(IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e)
+                    {
+                        System.err.println("COLOR DOES NOT EXIST : " + color);
+                        e.printStackTrace();
+                    }
+                if(c != null)
+                {
+                    button.setForeground(c);
+                }
+            }
+            button.setText(option.getText());
+        }
+        if(end)
+        {
+            optionsButton[0].setText("The End.");
+            optionsButton[1].setText("Final node : " + textNode.getId());
+            optionsButton[2].setText("Restart");
+            optionsButton[2].setEnabled(true);
+            ActionListener[] original = optionsButton[2].getActionListeners();
+            ActionListener[] original2 = optionsButton[3].getActionListeners();
+            for(ActionListener al : original)
+            {
+                optionsButton[2].removeActionListener(al);
+            }
+            ActionListener shutdownListener = e -> System.exit(0);;
+            optionsButton[2].addActionListener(new ActionListener()
+            {
+                @Override
+                public void actionPerformed(ActionEvent e)
+                {
+                    for(ActionListener al : original)
+                        optionsButton[2].addActionListener(al);
+                    for(ActionListener al : original2)
+                        optionsButton[3].addActionListener(al);
+                    optionsButton[2].removeActionListener(this);
+                    optionsButton[3].removeActionListener(shutdownListener);
+                    story.reset();
+                    showNode(story.getInitialNode());
+                }
+            });
+            optionsButton[3].setText("Quit");
+            optionsButton[3].setEnabled(true);
+            for(ActionListener al : original2)
+            {
+                optionsButton[3].removeActionListener(al);
+            }
+            optionsButton[3].addActionListener(shutdownListener);
+        }
+
+    }
+
+    private int solveMarkup(TextNode textNode)
+    {
+        if(story.hasTag("markup") || textNode.hasTag("markup"))
+        {
+            if(textNode.hasTag("markup"))
+            {
+                String s = textNode.getTag("markup");
+                if(s.equalsIgnoreCase("md") || s.equalsIgnoreCase("markdown"))
+                {
+                    return 1;
+                }
+                else if(s.equalsIgnoreCase("html"))
+                {
+                    return 2;
+                }
+            }
+            else if(story.hasTag("markup"))
+            {
+                String s = story.getTag("markup");
+                if(s.equalsIgnoreCase("md") || s.equalsIgnoreCase("markdown"))
+                {
+                    return 1;
+                }
+                else if(s.equalsIgnoreCase("html"))
+                {
+                    return 2;
+                }
+            }
+        }
+        return 0;
     }
 
     private void resetOptions()
