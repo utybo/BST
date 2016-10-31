@@ -76,6 +76,90 @@ public class Dictionnary
                 registry.put(putIn, ia + ib);
 
             };
+        case "sub":
+            return () ->
+            {
+                final String[] pars = desc.split(",");
+                String putIn = null;
+                String a = null;
+                String b = null;
+                if(pars.length == 2)
+                {
+                    putIn = a = pars[0];
+                    b = pars[1];
+                }
+                else if(pars.length == 3)
+                {
+                    putIn = pars[0];
+                    a = pars[1];
+                    b = pars[2];
+                }
+                else
+                {
+                    throw new BSTException(-1, "Invalid syntax : {add:a,b} for a + b with result in a or {add:a,b,c} for b + c with result in a");
+                }
+
+                final int ia = registry.typeOf(a) == Integer.class ? (Integer)registry.get(a) : Integer.parseInt(a);
+                final int ib = registry.typeOf(b) == Integer.class ? (Integer)registry.get(b) : Integer.parseInt(b);
+                registry.put(putIn, ia - ib);
+
+            };
+        case "mul":
+            return () ->
+            {
+                final String[] pars = desc.split(",");
+                String putIn = null;
+                String a = null;
+                String b = null;
+                if(pars.length == 2)
+                {
+                    putIn = a = pars[0];
+                    b = pars[1];
+                }
+                else if(pars.length == 3)
+                {
+                    putIn = pars[0];
+                    a = pars[1];
+                    b = pars[2];
+                }
+                else
+                {
+                    throw new BSTException(-1, "Invalid syntax : {add:a,b} for a + b with result in a or {add:a,b,c} for b + c with result in a");
+                }
+
+                final int ia = registry.typeOf(a) == Integer.class ? (Integer)registry.get(a) : Integer.parseInt(a);
+                final int ib = registry.typeOf(b) == Integer.class ? (Integer)registry.get(b) : Integer.parseInt(b);
+                registry.put(putIn, ia * ib);
+
+            };
+        case "div":
+            return () ->
+            {
+                final String[] pars = desc.split(",");
+                String putIn = null;
+                String a = null;
+                String b = null;
+                if(pars.length == 2)
+                {
+                    putIn = a = pars[0];
+                    b = pars[1];
+                }
+                else if(pars.length == 3)
+                {
+                    putIn = pars[0];
+                    a = pars[1];
+                    b = pars[2];
+                }
+                else
+                {
+                    throw new BSTException(-1, "Invalid syntax : {add:a,b} for a + b with result in a or {add:a,b,c} for b + c with result in a");
+                }
+
+                final int ia = registry.typeOf(a) == Integer.class ? (Integer)registry.get(a) : Integer.parseInt(a);
+                final int ib = registry.typeOf(b) == Integer.class ? (Integer)registry.get(b) : Integer.parseInt(b);
+                registry.put(putIn, (int)ia / ib);
+
+            };
         case "exit":
             return () -> System.exit(0);
         case "input":
