@@ -67,6 +67,7 @@ public class BranchingStoryPlayerSwing extends JFrame
 {
     private final JPanel panel = new JPanel();
     private static File file;
+    private static BranchingStoryTreeParser parser = new BranchingStoryTreeParser();
 
     public static void main(String[] args)
     {
@@ -107,7 +108,7 @@ public class BranchingStoryPlayerSwing extends JFrame
             try
             {
                 file = new File(jfc.getDirectory() + jfc.getFile());
-                BranchingStoryPlayerSwing window = new BranchingStoryPlayerSwing(BranchingStoryTreeParser.parse(new BufferedReader(new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8"))), new Dictionnary()));
+                BranchingStoryPlayerSwing window = new BranchingStoryPlayerSwing(parser.parse(new BufferedReader(new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8"))), new Dictionnary()));
 
                 BSTCentral.setPlayerComponent(window);
             }
@@ -199,7 +200,7 @@ public class BranchingStoryPlayerSwing extends JFrame
                         try
                         {
                             dispose();
-                            BranchingStoryPlayerSwing window = new BranchingStoryPlayerSwing(BranchingStoryTreeParser.parse(new BufferedReader(new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8"))), new Dictionnary()));
+                            BranchingStoryPlayerSwing window = new BranchingStoryPlayerSwing(parser.parse(new BufferedReader(new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8"))), new Dictionnary()));
                             BSTCentral.setPlayerComponent(window);
                         }
                         catch(IOException e)

@@ -30,8 +30,19 @@ import utybo.branchingstorytree.api.story.VirtualNode;
 public class BranchingStoryTreeParser
 {
     private static final int NORMAL = 0, VIRTUAL = 1, LOGICAL = 2;
-
-    public static BranchingStory parse(BufferedReader br, Dictionnary dictionnary) throws IOException, BSTException
+    
+    private Pattern beginningOfNodePattern = Pattern.compile("^\\d+:.+$");
+    private Pattern logicalNodePattern = Pattern.compile("^\\d+:&$");
+    private Pattern virtualNodePattern = Pattern.compile("\\d+:>.+$");
+    private Pattern scriptPattern = Pattern.compile("(\\{(.+?):(.*?)})|(\\[(.+?):(.*?)])");
+    private Pattern ifNextNodeDefiner = Pattern.compile("(\\d+),(\\d+)\\[(.+:.+)]");
+    
+    private Pattern lnLineSubscript = Pattern.compile("(.+?):(.+)");
+    private Pattern lnTernary = Pattern.compile("((\\[.+?:.*?])+)\\?((\\{.+?:.*?})+):((\\{.+?:.*?})*)");
+    private Pattern lnChecker = Pattern.compile("\\[(.+?):(.*?)]");
+    private Pattern lnScript = Pattern.compile("\\{(.+?):(.*?)}");
+    
+    public BranchingStory parse(BufferedReader br, Dictionnary dictionnary) throws IOException, BSTException
     {
         BranchingStory story = new BranchingStory();
 
@@ -43,18 +54,6 @@ public class BranchingStoryTreeParser
         TagHolder latestHolder = null;
         boolean optionsStarted = false;
         int skipLinesOnNextAdd = 0;
-
-        Pattern beginningOfNodePattern = Pattern.compile("^\\d+:.+$");
-        Pattern logicalNodePattern = Pattern.compile("^\\d+:&$");
-        Pattern virtualNodePattern = Pattern.compile("\\d+:>.+$");
-        Pattern scriptPattern = Pattern.compile("(\\{(.+?):(.*?)})|(\\[(.+?):(.*?)])");
-        Pattern ifNextNodeDefiner = Pattern.compile("(\\d+),(\\d+)\\[(.+:.+)]");
-
-        // Patterns specific to Logical Nodes
-        Pattern lnLineSubscript = Pattern.compile("(.+?):(.+)");
-        Pattern lnTernary = Pattern.compile("((\\[.+?:.*?])+)\\?((\\{.+?:.*?})+):((\\{.+?:.*?})*)");
-        Pattern lnChecker = Pattern.compile("\\[(.+?):(.*?)]");
-        Pattern lnScript = Pattern.compile("\\{(.+?):(.*?)}");
 
         while((line = br.readLine()) != null)
         {
