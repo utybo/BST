@@ -10,30 +10,32 @@ import utybo.branchingstorytree.api.story.VirtualNode;
 
 public class StoryUtils
 {
-    public static String solveVariables(TextNode textNode, BranchingStory story) throws BSTException
+    public static String solveVariables(final TextNode textNode, final BranchingStory story) throws BSTException
     {
         String text = textNode.getText();
-        Pattern vp = Pattern.compile("\\$\\{((\\>\\d+)|(\\w+))\\}");
-        Matcher vn = vp.matcher(text);
+        final Pattern vp = Pattern.compile("\\$\\{((\\>\\d+)|(\\w+))\\}");
+        final Matcher vn = vp.matcher(text);
         while(vn.find())
         {
-            String toReplace = vn.group();
-            String varName = toReplace.substring(2, toReplace.length() - 1);
+            final String toReplace = vn.group();
+            final String varName = toReplace.substring(2, toReplace.length() - 1);
             if(varName.startsWith(">"))
             {
-                String s = varName.substring(1);
-                int i = Integer.parseInt(s);
+                final String s = varName.substring(1);
+                final int i = Integer.parseInt(s);
                 text = text.replace(toReplace, ((VirtualNode)story.getNode(i)).getText());
             }
             else if(varName.startsWith("&"))
             {
-                String s = varName.substring(1);
-                int i = Integer.parseInt(s);
-                LogicalNode ln = (LogicalNode)story.getNode(i);
+                final String s = varName.substring(1);
+                final int i = Integer.parseInt(s);
+                final LogicalNode ln = (LogicalNode)story.getNode(i);
                 text = text.replace(toReplace, ((VirtualNode)story.getNode(ln.solve())).getText());
             }
             else
+            {
                 text = vn.replaceFirst(story.getRegistry().get(varName).toString());
+            }
             vn.reset(text);
         }
 

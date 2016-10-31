@@ -16,8 +16,8 @@ import utybo.branchingstorytree.api.script.VariableRegistry;
 public class BranchingStory extends TagHolder
 {
     private int initialNode = 1;
-    private TreeMap<Integer, StoryNode> nodes = new TreeMap<>();
-    private VariableRegistry registry = new VariableRegistry();
+    private final TreeMap<Integer, StoryNode> nodes = new TreeMap<>();
+    private final VariableRegistry registry = new VariableRegistry();
 
     public StoryNode getInitialNode()
     {
@@ -28,20 +28,22 @@ public class BranchingStory extends TagHolder
         return nodes.get(initialNode);
     }
 
-    public void setInitialNode(int initialNode)
+    public void setInitialNode(final int initialNode)
     {
         this.initialNode = initialNode;
     }
 
-    public StoryNode getNode(int nodeId)
+    public StoryNode getNode(final int nodeId)
     {
         return nodes.get(nodeId);
     }
 
-    public void addNode(StoryNode node)
+    public void addNode(final StoryNode node)
     {
         if(nodes.put(node.getId(), node) != null)
+        {
             throw new IllegalArgumentException("A node already exists with this ID : " + node.getId());
+        }
     }
 
     public int nextAvailableId()

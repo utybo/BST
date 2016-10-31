@@ -5,9 +5,9 @@ import utybo.branchingstorytree.api.script.ScriptAction;
 
 public class LNExec extends LNInstruction
 {
-    private ScriptAction action;
+    private final ScriptAction action;
 
-    public LNExec(ScriptAction action)
+    public LNExec(final ScriptAction action)
     {
         this.action = action;
     }

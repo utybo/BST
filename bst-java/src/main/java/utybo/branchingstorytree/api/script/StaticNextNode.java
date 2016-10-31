@@ -10,9 +10,9 @@ package utybo.branchingstorytree.api.script;
 
 public class StaticNextNode implements NextNodeDefiner
 {
-    private int nextNode;
+    private final int nextNode;
 
-    public StaticNextNode(int nextNode)
+    public StaticNextNode(final int nextNode)
     {
         this.nextNode = nextNode;
     }

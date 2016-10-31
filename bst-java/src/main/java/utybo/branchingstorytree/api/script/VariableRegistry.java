@@ -12,29 +12,29 @@ import java.util.HashMap;
 
 public class VariableRegistry
 {
-    private HashMap<String, Integer> variables = new HashMap<>();
-    private HashMap<String, String> strVar = new HashMap<>();
+    private final HashMap<String, Integer> variables = new HashMap<>();
+    private final HashMap<String, String> strVar = new HashMap<>();
 
-    public void put(String name, int var)
+    public void put(final String name, final int var)
     {
         remove(name);
         variables.put(name, var);
     }
 
-    public void put(String name, String value)
+    public void put(final String name, final String value)
     {
         remove(name);
         strVar.put(name, value);
     }
 
-    public void remove(String name)
+    public void remove(final String name)
     {
         variables.remove(name);
         strVar.remove(name);
     }
 
     @Deprecated
-    public int getInt(String name)
+    public int getInt(final String name)
     {
         return variables.getOrDefault(name, 0);
     }
@@ -46,11 +46,13 @@ public class VariableRegistry
 
     public void reset()
     {
-        for(String s : variables.keySet())
+        for(final String s : variables.keySet())
+        {
             variables.remove(s);
+        }
     }
 
-    public Class<?> typeOf(String name)
+    public Class<?> typeOf(final String name)
     {
         if(variables.containsKey(name))
         {
@@ -60,7 +62,7 @@ public class VariableRegistry
         return null;
     }
 
-    public Object get(String varName)
+    public Object get(final String varName)
     {
         Object tryingToFindMe = null;
         if(variables.containsKey(varName))

@@ -12,14 +12,14 @@ import java.util.HashMap;
 
 public class TagHolder
 {
-    private HashMap<String, String> tags = new HashMap<>();
+    private final HashMap<String, String> tags = new HashMap<>();
 
-    public String getTag(String tag)
+    public String getTag(final String tag)
     {
         return tags.get(tag);
     }
 
-    public void putTag(String tag, String value)
+    public void putTag(final String tag, final String value)
     {
         tags.put(tag, value);
     }
@@ -29,7 +29,7 @@ public class TagHolder
         return tags;
     }
 
-    public boolean hasTag(String tag)
+    public boolean hasTag(final String tag)
     {
         return tags.containsKey(tag);
     }

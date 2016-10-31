@@ -22,9 +22,9 @@ public class NodeOption extends TagHolder
     private NextNodeDefiner nextNode;
     private String text;
     private ScriptChecker checker;
-    private List<ScriptAction> doOnClick = new ArrayList<ScriptAction>();
+    private final List<ScriptAction> doOnClick = new ArrayList<>();
 
-    public NodeOption(String text)
+    public NodeOption(final String text)
     {
         super();
         this.text = text;
@@ -35,7 +35,7 @@ public class NodeOption extends TagHolder
         return nextNode.getNextNode();
     }
 
-    public void setNextNode(NextNodeDefiner nextNode)
+    public void setNextNode(final NextNodeDefiner nextNode)
     {
         this.nextNode = nextNode;
     }
@@ -45,7 +45,7 @@ public class NodeOption extends TagHolder
         return text;
     }
 
-    public void setText(String text)
+    public void setText(final String text)
     {
         this.text = text;
     }
@@ -55,7 +55,7 @@ public class NodeOption extends TagHolder
         return checker == null ? new AlwaysTrueChecker() : checker;
     }
 
-    public void setChecker(ScriptChecker checker)
+    public void setChecker(final ScriptChecker checker)
     {
         this.checker = checker;
     }
@@ -65,7 +65,7 @@ public class NodeOption extends TagHolder
         return doOnClick;
     }
 
-    public void addDoOnClick(ScriptAction doOnClick)
+    public void addDoOnClick(final ScriptAction doOnClick)
     {
         this.doOnClick.add(doOnClick);
     }

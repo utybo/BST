@@ -15,7 +15,7 @@ import utybo.branchingstorytree.api.BSTException;
 
 public class Dictionnary
 {
-    public ScriptAction getAction(String action, String desc, VariableRegistry registry) throws BSTException
+    public ScriptAction getAction(final String action, final String desc, final VariableRegistry registry) throws BSTException
     {
         switch(action)
         {
@@ -24,7 +24,9 @@ public class Dictionnary
             return () ->
             {
                 if(registry.typeOf(desc) != Integer.class)
+                {
                     throw new BSTException(-1, "incr : The variable " + desc + " is not a number.");
+                }
                 registry.put(desc, (Integer)registry.get(desc) + 1);
 
             };
@@ -33,13 +35,13 @@ public class Dictionnary
         case "set":
             return () ->
             {
-                String varName = desc.split(",")[0];
-                String value = desc.substring(desc.indexOf(',') + 1);
+                final String varName = desc.split(",")[0];
+                final String value = desc.substring(desc.indexOf(',') + 1);
                 try
                 {
                     registry.put(varName, Integer.parseInt(value));
                 }
-                catch(NumberFormatException e)
+                catch(final NumberFormatException e)
                 {
                     // No printStackTrace because this exception is expected in many cases
                     registry.put(varName, value);
@@ -49,7 +51,7 @@ public class Dictionnary
         case "add":
             return () ->
             {
-                String[] pars = desc.split(",");
+                final String[] pars = desc.split(",");
                 String putIn = null;
                 String a = null;
                 String b = null;
@@ -69,8 +71,8 @@ public class Dictionnary
                     throw new BSTException(-1, "Invalid syntax : {add:a,b} for a + b with result in a or {add:a,b,c} for b + c with result in a");
                 }
 
-                int ia = registry.typeOf(a) == Integer.class ? (Integer)registry.get(a) : Integer.parseInt(a);
-                int ib = registry.typeOf(b) == Integer.class ? (Integer)registry.get(b) : Integer.parseInt(b);
+                final int ia = registry.typeOf(a) == Integer.class ? (Integer)registry.get(a) : Integer.parseInt(a);
+                final int ib = registry.typeOf(b) == Integer.class ? (Integer)registry.get(b) : Integer.parseInt(b);
                 registry.put(putIn, ia + ib);
 
             };
@@ -79,11 +81,13 @@ public class Dictionnary
         case "input":
             return () ->
             {
-                String varName = desc.split(",")[0];
-                String msg = desc.substring(desc.indexOf(',') + 1);
+                final String varName = desc.split(",")[0];
+                final String msg = desc.substring(desc.indexOf(',') + 1);
                 String input = null;
                 while(input == null || input.isEmpty())
+                {
                     input = JOptionPane.showInputDialog(BSTCentral.getPlayerComponent(), msg);
+                }
                 registry.put(varName, input);
             };
         default:
@@ -91,7 +95,7 @@ public class Dictionnary
         }
     }
 
-    public ScriptChecker getChecker(String action, String desc, VariableRegistry registry) throws BSTException
+    public ScriptChecker getChecker(final String action, final String desc, final VariableRegistry registry) throws BSTException
     {
         switch(action)
         {
@@ -99,74 +103,74 @@ public class Dictionnary
         case "equ":
             return () ->
             {
-                String varName = desc.split(",")[0];
-                Object var = registry.get(varName);
-                String isEqualWith = desc.split(",")[1];
+                final String varName = desc.split(",")[0];
+                final Object var = registry.get(varName);
+                final String isEqualWith = desc.split(",")[1];
 
                 try
                 {
-                    int i = Integer.valueOf(isEqualWith);
+                    final int i = Integer.valueOf(isEqualWith);
                     if(var.getClass() == Integer.class)
                     {
                         return ((Integer)var).intValue() == i;
                     }
                 }
-                catch(NumberFormatException e)
+                catch(final NumberFormatException e)
                 {}
                 return var.toString().equals(isEqualWith);
             };
         case "not":
             return () ->
             {
-                String varName = desc.split(",")[0];
-                Object var = registry.get(varName);
-                String isEqualWith = desc.split(",")[1];
+                final String varName = desc.split(",")[0];
+                final Object var = registry.get(varName);
+                final String isEqualWith = desc.split(",")[1];
 
                 try
                 {
-                    int i = Integer.valueOf(isEqualWith);
+                    final int i = Integer.valueOf(isEqualWith);
                     if(var.getClass() == Integer.class)
                     {
                         return ((Integer)var).intValue() != i;
                     }
                 }
-                catch(NumberFormatException e)
+                catch(final NumberFormatException e)
                 {}
                 return !var.toString().equals(isEqualWith);
             };
         case "more":
             return () ->
             {
-                String varName = desc.split(",")[0];
-                Integer var = (Integer)registry.get(varName);
-                Integer compareTo = Integer.parseInt(desc.split(",")[1]);
+                final String varName = desc.split(",")[0];
+                final Integer var = (Integer)registry.get(varName);
+                final Integer compareTo = Integer.parseInt(desc.split(",")[1]);
 
                 return var > compareTo;
             };
         case "less":
             return () ->
             {
-                String varName = desc.split(",")[0];
-                Integer var = (Integer)registry.get(varName);
-                Integer compareTo = Integer.parseInt(desc.split(",")[1]);
+                final String varName = desc.split(",")[0];
+                final Integer var = (Integer)registry.get(varName);
+                final Integer compareTo = Integer.parseInt(desc.split(",")[1]);
 
                 return var < compareTo;
             };
         case "moreequ":
             return () ->
             {
-                String varName = desc.split(",")[0];
-                Integer var = (Integer)registry.get(varName);
-                Integer compareTo = Integer.parseInt(desc.split(",")[1]);
+                final String varName = desc.split(",")[0];
+                final Integer var = (Integer)registry.get(varName);
+                final Integer compareTo = Integer.parseInt(desc.split(",")[1]);
 
                 return var >= compareTo;
             };
         case "lessequ":
             return () ->
             {
-                String varName = desc.split(",")[0];
-                Integer var = (Integer)registry.get(varName);
-                Integer compareTo = Integer.parseInt(desc.split(",")[1]);
+                final String varName = desc.split(",")[0];
+                final Integer var = (Integer)registry.get(varName);
+                final Integer compareTo = Integer.parseInt(desc.split(",")[1]);
 
                 return var <= compareTo;
             };

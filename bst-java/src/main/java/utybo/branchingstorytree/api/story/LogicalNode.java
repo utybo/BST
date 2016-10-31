@@ -15,7 +15,7 @@ import utybo.branchingstorytree.api.story.logicalnode.LNInstruction;
 
 public class LogicalNode extends StoryNode
 {
-    private ArrayList<LNInstruction> instructionStack = new ArrayList<>();
+    private final ArrayList<LNInstruction> instructionStack = new ArrayList<>();
 
     // Logical nodes are nodes which actually DO something, based on theBSTScript syntax
     // Every part of the logical node is stored in a list of LNInstruction.
@@ -28,12 +28,12 @@ public class LogicalNode extends StoryNode
     //
     // -- Logical Nodes are part of the Branching Story Tree Scripting interface
 
-    public LogicalNode(int id)
+    public LogicalNode(final int id)
     {
         super(id);
     }
 
-    public void addInstruction(LNInstruction instruction)
+    public void addInstruction(final LNInstruction instruction)
     {
         instructionStack.add(instruction);
     }
@@ -41,9 +41,9 @@ public class LogicalNode extends StoryNode
     public int solve() throws BSTException
     {
         int i = -1;
-        for(LNInstruction instruction : instructionStack)
+        for(final LNInstruction instruction : instructionStack)
         {
-            int j = instruction.execute();
+            final int j = instruction.execute();
             if(j > -1)
             {
                 i = j;

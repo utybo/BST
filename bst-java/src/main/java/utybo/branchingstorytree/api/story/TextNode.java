@@ -13,24 +13,24 @@ import java.util.List;
 
 public class TextNode extends VirtualNode
 {
-    public TextNode(int id)
+    private List<NodeOption> options = new ArrayList<>();
+
+    public TextNode(final int id)
     {
         super(id);
     }
-
-    private List<NodeOption> options = new ArrayList<>();
 
     public List<NodeOption> getOptions()
     {
         return options;
     }
 
-    public void setOptions(List<NodeOption> options)
+    public void setOptions(final List<NodeOption> options)
     {
         this.options = options;
     }
 
-    public void addOption(NodeOption option)
+    public void addOption(final NodeOption option)
     {
         options.add(option);
     }

@@ -5,9 +5,9 @@ import utybo.branchingstorytree.api.script.IfNextNodeDefiner;
 
 public class LNCondReturn extends LNInstruction
 {
-    private IfNextNodeDefiner innd;
+    private final IfNextNodeDefiner innd;
 
-    public LNCondReturn(IfNextNodeDefiner innd)
+    public LNCondReturn(final IfNextNodeDefiner innd)
     {
         this.innd = innd;
     }

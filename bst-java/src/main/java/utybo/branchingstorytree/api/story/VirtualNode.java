@@ -10,27 +10,26 @@ package utybo.branchingstorytree.api.story;
 
 public class VirtualNode extends StoryNode
 {
+    private String text;
 
-    public VirtualNode(int id)
+    public VirtualNode(final int id)
     {
         super(id);
     }
-
-    private String text;
 
     public String getText()
     {
         return text;
     }
 
-    public void setText(String text)
+    public void setText(final String text)
     {
         this.text = text;
     }
 
-    public void appendText(String toAppend)
+    public void appendText(final String toAppend)
     {
-        this.text += toAppend;
+        text += toAppend;
     }
 
 }

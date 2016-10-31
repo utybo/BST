@@ -15,7 +15,7 @@ import java.awt.Component;
  * between the Player and the BST API. Most options can return null if they are
  * unsupported. The BSTCentral is aimed at the AWT/Swing framework for all
  * UI-related tasks.
- * 
+ *
  * @author utybo
  *
  */
@@ -28,7 +28,7 @@ public class BSTCentral
         return playerComponent;
     }
 
-    public static void setPlayerComponent(Component playerComponent)
+    public static void setPlayerComponent(final Component playerComponent)
     {
         BSTCentral.playerComponent = playerComponent;
     }

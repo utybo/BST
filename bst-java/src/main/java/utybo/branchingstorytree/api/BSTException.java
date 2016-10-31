@@ -14,25 +14,25 @@ public class BSTException extends Exception
 
     private int where;
 
-    public BSTException(int where)
+    public BSTException(final int where)
     {
         super();
         this.where = where;
     }
 
-    public BSTException(int where, String message, Throwable cause)
+    public BSTException(final int where, final String message, final Throwable cause)
     {
         super(message, cause);
         this.where = where;
     }
 
-    public BSTException(int where, String message)
+    public BSTException(final int where, final String message)
     {
         super(message);
         this.where = where;
     }
 
-    public BSTException(int where, Throwable cause)
+    public BSTException(final int where, final Throwable cause)
     {
         super(cause);
         this.where = where;
@@ -43,7 +43,7 @@ public class BSTException extends Exception
         return where;
     }
 
-    public void setWhere(int where)
+    public void setWhere(final int where)
     {
         this.where = where;
     }

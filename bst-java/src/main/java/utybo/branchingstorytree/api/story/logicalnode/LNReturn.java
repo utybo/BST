@@ -2,9 +2,9 @@ package utybo.branchingstorytree.api.story.logicalnode;
 
 public class LNReturn extends LNInstruction
 {
-    private int next;
+    private final int next;
 
-    public LNReturn(int next)
+    public LNReturn(final int next)
     {
         this.next = next;
     }

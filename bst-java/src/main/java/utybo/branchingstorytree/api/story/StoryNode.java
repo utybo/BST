@@ -18,7 +18,7 @@ public class StoryNode extends TagHolder
         return id;
     }
 
-    public StoryNode(int id)
+    public StoryNode(final int id)
     {
         this.id = id;
     }

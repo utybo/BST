@@ -12,10 +12,10 @@ import utybo.branchingstorytree.api.BSTException;
 
 public class IfNextNodeDefiner implements NextNodeDefiner
 {
-    private int one, two;
-    private ScriptChecker checker;
+    private final int one, two;
+    private final ScriptChecker checker;
 
-    public IfNextNodeDefiner(int one, int two, ScriptChecker checker)
+    public IfNextNodeDefiner(final int one, final int two, final ScriptChecker checker)
     {
         this.one = one;
         this.two = two;

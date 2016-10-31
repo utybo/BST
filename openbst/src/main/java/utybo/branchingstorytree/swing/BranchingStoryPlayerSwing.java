@@ -63,49 +63,53 @@ import utybo.branchingstorytree.swing.JScrollablePanel.ScrollableSizeHint;
 @SuppressWarnings("serial")
 public class BranchingStoryPlayerSwing extends JFrame
 {
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
     private static File file;
     private static BranchingStoryTreeParser parser = new BranchingStoryTreeParser();
 
     private final JPanel panel = new JPanel();
-    private BranchingStory story;
+    private final BranchingStory story;
     private StoryNode currentNode;
-    private NodeOption[] options;
-    private JButton[] optionsButton;
-    private JLabel textLabel;
+    private final NodeOption[] options;
+    private final JButton[] optionsButton;
+    private final JLabel textLabel;
     private Color normalButtonFg;
 
-    public static void main(String[] args)
+    public static void main(final String[] args)
     {
         try
         {
             UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
         }
-        catch(Exception e)
+        catch(final Exception e)
         {
             // Do not print as an exception is thrown in most cases
             try
             {
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             }
-            catch(ClassNotFoundException e1)
+            catch(final ClassNotFoundException e1)
             {
                 e1.printStackTrace();
             }
-            catch(InstantiationException e1)
+            catch(final InstantiationException e1)
             {
                 e1.printStackTrace();
             }
-            catch(IllegalAccessException e1)
+            catch(final IllegalAccessException e1)
             {
                 e1.printStackTrace();
             }
-            catch(UnsupportedLookAndFeelException e1)
+            catch(final UnsupportedLookAndFeelException e1)
             {
                 e1.printStackTrace();
             }
         }
 
-        FileDialog jfc = new FileDialog((Dialog)null);
+        final FileDialog jfc = new FileDialog((Dialog)null);
         jfc.setTitle("Choose a Branching Story Tree file...");
         jfc.setVisible(true);
         if(jfc.getFile() != null)
@@ -113,24 +117,26 @@ public class BranchingStoryPlayerSwing extends JFrame
             try
             {
                 file = new File(jfc.getDirectory() + jfc.getFile());
-                BranchingStoryPlayerSwing window = new BranchingStoryPlayerSwing(parser.parse(new BufferedReader(new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8"))), new Dictionnary()));
+                final BranchingStoryPlayerSwing window = new BranchingStoryPlayerSwing(parser.parse(new BufferedReader(new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8"))), new Dictionnary()));
 
                 BSTCentral.setPlayerComponent(window);
             }
-            catch(IOException e)
+            catch(final IOException e)
             {
                 e.printStackTrace();
                 JOptionPane.showMessageDialog(null, "<html>There was an error during file loading. Please try again and make sure your file is correct.<p>(" + e.getClass().getSimpleName() + ": " + e.getMessage() + ")", "Error", JOptionPane.ERROR_MESSAGE);
                 System.exit(0);
             }
-            catch(BSTException e)
+            catch(final BSTException e)
             {
                 e.printStackTrace();
                 String s = "<html><b>-- BST Error --</b><p>";
                 s += "Your file seems to have an error here :<p>";
                 s += "Line : " + e.getWhere() + "<p>";
                 if(e.getCause() != null)
+                {
                     s += "Cause : " + e.getCause().getClass().getSimpleName() + ": " + e.getCause().getMessage() + "<p>";
+                }
                 s += "Message : " + e.getMessage() + "<p>";
                 s += "<b>-- BST Error --</b>";
                 JOptionPane.showMessageDialog(null, s, "BST Error", JOptionPane.ERROR_MESSAGE);
@@ -142,7 +148,7 @@ public class BranchingStoryPlayerSwing extends JFrame
         }
     }
 
-    public BranchingStoryPlayerSwing(BranchingStory story)
+    public BranchingStoryPlayerSwing(final BranchingStory story)
     {
         this.story = story;
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -151,13 +157,13 @@ public class BranchingStoryPlayerSwing extends JFrame
         {
             setIconImage(ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icon/icon.png")));
         }
-        catch(IOException e1)
+        catch(final IOException e1)
         {
             e1.printStackTrace();
         }
         getContentPane().setLayout(new MigLayout("", "[grow]", "[grow][]"));
 
-        JScrollPane scrollPane = new JScrollPane();
+        final JScrollPane scrollPane = new JScrollPane();
         scrollPane.setBackground(Color.WHITE);
         getContentPane().add(scrollPane, "cell 0 0,grow");
 
@@ -169,22 +175,22 @@ public class BranchingStoryPlayerSwing extends JFrame
         {
 
             @Override
-            public void mouseClicked(MouseEvent ev)
+            public void mouseClicked(final MouseEvent ev)
             {
                 if(SwingUtilities.isRightMouseButton(ev))
                 {
-                    JPopupMenu menu = new JPopupMenu();
+                    final JPopupMenu menu = new JPopupMenu();
 
-                    JMenuItem jmi = new JMenuItem("Node : " + currentNode.getId());
+                    final JMenuItem jmi = new JMenuItem("Node : " + currentNode.getId());
                     jmi.setEnabled(false);
                     menu.add(jmi);
                     menu.add(new JSeparator());
 
-                    JMenuItem restart = new JMenuItem("Restart from the beginning (without resetting)");
+                    final JMenuItem restart = new JMenuItem("Restart from the beginning (without resetting)");
                     restart.addActionListener(ev2 -> showNode(story.getInitialNode()));
                     menu.add(restart);
 
-                    JMenuItem reset = new JMenuItem("Reset and restart from the beginning");
+                    final JMenuItem reset = new JMenuItem("Reset and restart from the beginning");
                     reset.addActionListener(ev2 ->
                     {
                         story.reset();
@@ -192,29 +198,31 @@ public class BranchingStoryPlayerSwing extends JFrame
                     });
                     menu.add(reset);
 
-                    JMenuItem reload = new JMenuItem("Reload the source file(s), reset and restart");
+                    final JMenuItem reload = new JMenuItem("Reload the source file(s), reset and restart");
                     reload.addActionListener(ev2 ->
                     {
                         try
                         {
                             dispose();
-                            BranchingStoryPlayerSwing window = new BranchingStoryPlayerSwing(parser.parse(new BufferedReader(new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8"))), new Dictionnary()));
+                            final BranchingStoryPlayerSwing window = new BranchingStoryPlayerSwing(parser.parse(new BufferedReader(new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8"))), new Dictionnary()));
                             BSTCentral.setPlayerComponent(window);
                         }
-                        catch(IOException e)
+                        catch(final IOException e)
                         {
                             e.printStackTrace();
                             JOptionPane.showMessageDialog(null, "<html>There was an error during file loading. Please try again and make sure your file is correct.<p>(" + e.getClass().getSimpleName() + ": " + e.getMessage() + ")", "Error", JOptionPane.ERROR_MESSAGE);
                             System.exit(0);
                         }
-                        catch(BSTException e)
+                        catch(final BSTException e)
                         {
                             e.printStackTrace();
                             String s = "<html><b>-- BST Error --</b><p>";
                             s += "Your file seems to have an error here :<p>";
                             s += "Line : " + e.getWhere() + "<p>";
                             if(e.getCause() != null)
+                            {
                                 s += "Cause : " + e.getCause().getClass().getSimpleName() + ": " + e.getCause().getMessage() + "<p>";
+                            }
                             s += "Message : " + e.getMessage() + "<p>";
                             s += "<b>-- BST Error --</b>";
                             JOptionPane.showMessageDialog(null, s, "BST Error", JOptionPane.ERROR_MESSAGE);
@@ -226,7 +234,7 @@ public class BranchingStoryPlayerSwing extends JFrame
                 }
             }
         });
-        JScrollablePanel jsp = new JScrollablePanel(new BorderLayout());
+        final JScrollablePanel jsp = new JScrollablePanel(new BorderLayout());
         jsp.add(textLabel, BorderLayout.CENTER);
         jsp.setScrollableWidth(ScrollableSizeHint.FIT);
         jsp.setBackground(Color.WHITE);
@@ -235,14 +243,17 @@ public class BranchingStoryPlayerSwing extends JFrame
 
         // Quick analysis of all the nodes to get the maximum amount of options
         int maxOptions = 0;
-        for(StoryNode sn : story.getAllNodes())
+        for(final StoryNode sn : story.getAllNodes())
         {
-            if(sn instanceof TextNode)
-                if(((TextNode)sn).getOptions().size() > maxOptions)
-                    maxOptions = ((TextNode)sn).getOptions().size();
+            if(sn instanceof TextNode && ((TextNode)sn).getOptions().size() > maxOptions)
+            {
+                maxOptions = ((TextNode)sn).getOptions().size();
+            }
         }
         if(maxOptions < 4)
+        {
             maxOptions = 4;
+        }
         int rows = maxOptions / 2;
         // Make sure the options are always a multiple of 2
         if(maxOptions % 2 == 1)
@@ -254,8 +265,8 @@ public class BranchingStoryPlayerSwing extends JFrame
         panel.setLayout(new GridLayout(rows, 2, 5, 5));
         for(int i = 0; i < options.length; i++)
         {
-            int optionId = i;
-            JButton button = new JButton();
+            final int optionId = i;
+            final JButton button = new JButton();
             normalButtonFg = button.getForeground();
             button.addActionListener(ev ->
             {
@@ -263,7 +274,7 @@ public class BranchingStoryPlayerSwing extends JFrame
                 {
                     optionSelected(options[optionId]);
                 }
-                catch(BSTException e)
+                catch(final BSTException e)
                 {
                     e.printStackTrace();
                     JOptionPane.showMessageDialog(this, "Error on node " + currentNode.getId() + " :" + "\n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -281,7 +292,7 @@ public class BranchingStoryPlayerSwing extends JFrame
         setLocationRelativeTo(null);
         setVisible(true);
 
-        if(story.hasTag("nsfw") && (JOptionPane.showConfirmDialog(this, "<html><b>WARNING</b><p>You are about to read a NSFW story. This story is not suitable for children.<p>Only click OK if you are OVER 18 YEARS OLD.", "NSFW WARNING", JOptionPane.WARNING_MESSAGE) != JOptionPane.OK_OPTION))
+        if(story.hasTag("nsfw") && JOptionPane.showConfirmDialog(this, "<html><b>WARNING</b><p>You are about to read a NSFW story. This story is not suitable for children.<p>Only click OK if you are OVER 18 YEARS OLD.", "NSFW WARNING", JOptionPane.WARNING_MESSAGE) != JOptionPane.OK_OPTION)
         {
             System.exit(0);
         }
@@ -292,7 +303,7 @@ public class BranchingStoryPlayerSwing extends JFrame
         setTitle(story.getTagMap().getOrDefault("title", "<untitled>") + " by " + story.getTagMap().getOrDefault("author", "<unknown>") + " -- BST Player");
     }
 
-    private void showNode(StoryNode storyNode)
+    private void showNode(final StoryNode storyNode)
     {
         currentNode = storyNode;
         try
@@ -300,7 +311,7 @@ public class BranchingStoryPlayerSwing extends JFrame
             // If this is a LogicalNode, we need to solve it.
             if(storyNode instanceof LogicalNode)
             {
-                int i = ((LogicalNode)storyNode).solve();
+                final int i = ((LogicalNode)storyNode).solve();
                 // TODO Throw a nicer exception when an invalid value is returned
                 showNode(story.getNode(i));
             }
@@ -308,7 +319,7 @@ public class BranchingStoryPlayerSwing extends JFrame
             // This is supposed to be executed when the StoryNode is a TextNode
             if(storyNode instanceof TextNode)
             {
-                TextNode textNode = (TextNode)storyNode;
+                final TextNode textNode = (TextNode)storyNode;
 
                 String text = StoryUtils.solveVariables(textNode, story);
 
@@ -316,7 +327,7 @@ public class BranchingStoryPlayerSwing extends JFrame
                 // 0 == none
                 // 1 == Markdown
                 // 2 == HTML
-                int markupLanguage = solveMarkup(textNode);
+                final int markupLanguage = solveMarkup(textNode);
 
                 switch(markupLanguage)
                 {
@@ -335,11 +346,14 @@ public class BranchingStoryPlayerSwing extends JFrame
                 textLabel.setText(text);
                 if(textNode.hasTag("color"))
                 {
-                    String color = textNode.getTag("color");
+                    final String color = textNode.getTag("color");
                     Color c = null;
                     if(color.startsWith("#"))
+                    {
                         c = new Color(Integer.parseInt(color.substring(1), 16));
+                    }
                     else
+                    {
                         try
                         {
                             c = (Color)Color.class.getField(color).get(null);
@@ -349,6 +363,7 @@ public class BranchingStoryPlayerSwing extends JFrame
                             System.err.println("COLOR DOES NOT EXIST : " + color);
                             e.printStackTrace();
                         }
+                    }
                     if(c != null)
                     {
                         textLabel.setForeground(c);
@@ -366,17 +381,17 @@ public class BranchingStoryPlayerSwing extends JFrame
                 showOptions(textNode);
             }
         }
-        catch(BSTException e)
+        catch(final BSTException e)
         {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Error on node " + storyNode.getId() + " :" + "\n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    private void showOptions(TextNode textNode) throws BSTException
+    private void showOptions(final TextNode textNode) throws BSTException
     {
-        ArrayList<NodeOption> validOptions = new ArrayList<>();
-        for(NodeOption no : textNode.getOptions())
+        final ArrayList<NodeOption> validOptions = new ArrayList<>();
+        for(final NodeOption no : textNode.getOptions())
         {
             if(no.getChecker().check())
             {
@@ -386,18 +401,21 @@ public class BranchingStoryPlayerSwing extends JFrame
         boolean end = true;
         for(int i = 0; i < validOptions.size(); i++)
         {
-            NodeOption option = validOptions.get(i);
+            final NodeOption option = validOptions.get(i);
             end = false;
-            JButton button = optionsButton[i];
+            final JButton button = optionsButton[i];
             options[i] = option;
             button.setEnabled(true);
             if(option.hasTag("color"))
             {
-                String color = option.getTag("color");
+                final String color = option.getTag("color");
                 Color c = null;
                 if(color.startsWith("#"))
+                {
                     c = new Color(Integer.parseInt(color.substring(1), 16));
+                }
                 else
+                {
                     try
                     {
                         c = (Color)Color.class.getField(color).get(null);
@@ -407,6 +425,7 @@ public class BranchingStoryPlayerSwing extends JFrame
                         System.err.println("COLOR DOES NOT EXIST : " + color);
                         e.printStackTrace();
                     }
+                }
                 if(c != null)
                 {
                     button.setForeground(c);
@@ -420,22 +439,26 @@ public class BranchingStoryPlayerSwing extends JFrame
             optionsButton[1].setText("Final node : " + textNode.getId());
             optionsButton[2].setText("Restart");
             optionsButton[2].setEnabled(true);
-            ActionListener[] original = optionsButton[2].getActionListeners();
-            ActionListener[] original2 = optionsButton[3].getActionListeners();
-            for(ActionListener al : original)
+            final ActionListener[] original = optionsButton[2].getActionListeners();
+            final ActionListener[] original2 = optionsButton[3].getActionListeners();
+            for(final ActionListener al : original)
             {
                 optionsButton[2].removeActionListener(al);
             }
-            ActionListener shutdownListener = e -> System.exit(0);
+            final ActionListener shutdownListener = e -> System.exit(0);
             optionsButton[2].addActionListener(new ActionListener()
             {
                 @Override
-                public void actionPerformed(ActionEvent e)
+                public void actionPerformed(final ActionEvent e)
                 {
-                    for(ActionListener al : original)
+                    for(final ActionListener al : original)
+                    {
                         optionsButton[2].addActionListener(al);
-                    for(ActionListener al : original2)
+                    }
+                    for(final ActionListener al : original2)
+                    {
                         optionsButton[3].addActionListener(al);
+                    }
                     optionsButton[2].removeActionListener(this);
                     optionsButton[3].removeActionListener(shutdownListener);
                     story.reset();
@@ -444,7 +467,7 @@ public class BranchingStoryPlayerSwing extends JFrame
             });
             optionsButton[3].setText("Quit");
             optionsButton[3].setEnabled(true);
-            for(ActionListener al : original2)
+            for(final ActionListener al : original2)
             {
                 optionsButton[3].removeActionListener(al);
             }
@@ -453,13 +476,13 @@ public class BranchingStoryPlayerSwing extends JFrame
 
     }
 
-    private int solveMarkup(TextNode textNode)
+    private int solveMarkup(final TextNode textNode)
     {
         if(story.hasTag("markup") || textNode.hasTag("markup"))
         {
             if(textNode.hasTag("markup"))
             {
-                String s = textNode.getTag("markup");
+                final String s = textNode.getTag("markup");
                 if(s.equalsIgnoreCase("md") || s.equalsIgnoreCase("markdown"))
                 {
                     return 1;
@@ -471,7 +494,7 @@ public class BranchingStoryPlayerSwing extends JFrame
             }
             else if(story.hasTag("markup"))
             {
-                String s = story.getTag("markup");
+                final String s = story.getTag("markup");
                 if(s.equalsIgnoreCase("md") || s.equalsIgnoreCase("markdown"))
                 {
                     return 1;
@@ -490,17 +513,19 @@ public class BranchingStoryPlayerSwing extends JFrame
         for(int i = 0; i < optionsButton.length; i++)
         {
             options[i] = null;
-            JButton button = optionsButton[i];
+            final JButton button = optionsButton[i];
             button.setForeground(normalButtonFg);
             button.setEnabled(false);
             button.setText("");
         }
     }
 
-    private void optionSelected(NodeOption nodeOption) throws BSTException
+    private void optionSelected(final NodeOption nodeOption) throws BSTException
     {
-        for(ScriptAction oa : nodeOption.getDoOnClickActions())
+        for(final ScriptAction oa : nodeOption.getDoOnClickActions())
+        {
             oa.exec();
+        }
         showNode(story.getNode(nodeOption.getNextNode()));
     }
 

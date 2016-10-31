@@ -35,20 +35,20 @@ public class BranchingStoryTreeParser
 {
     private static final int NORMAL = 0, VIRTUAL = 1, LOGICAL = 2;
 
-    private Pattern beginningOfNodePattern = Pattern.compile("^\\d+:.+$");
-    private Pattern logicalNodePattern = Pattern.compile("^\\d+:&$");
-    private Pattern virtualNodePattern = Pattern.compile("\\d+:>.+$");
-    private Pattern scriptPattern = Pattern.compile("(\\{(.+?):(.*?)})|(\\[(.+?):(.*?)])");
-    private Pattern ifNextNodeDefiner = Pattern.compile("(\\d+),(\\d+)\\[(.+:.+)]");
+    private final Pattern beginningOfNodePattern = Pattern.compile("^\\d+:.+$");
+    private final Pattern logicalNodePattern = Pattern.compile("^\\d+:&$");
+    private final Pattern virtualNodePattern = Pattern.compile("\\d+:>.+$");
+    private final Pattern scriptPattern = Pattern.compile("(\\{(.+?):(.*?)})|(\\[(.+?):(.*?)])");
+    private final Pattern ifNextNodeDefiner = Pattern.compile("(\\d+),(\\d+)\\[(.+:.+)]");
 
-    private Pattern lnLineSubscript = Pattern.compile("(.+?):(.+)");
-    private Pattern lnTernary = Pattern.compile("((\\[.+?:.*?])+)\\?((\\{.+?:.*?})+):((\\{.+?:.*?})*)");
-    private Pattern lnChecker = Pattern.compile("\\[(.+?):(.*?)]");
-    private Pattern lnScript = Pattern.compile("\\{(.+?):(.*?)}");
+    private final Pattern lnLineSubscript = Pattern.compile("(.+?):(.+)");
+    private final Pattern lnTernary = Pattern.compile("((\\[.+?:.*?])+)\\?((\\{.+?:.*?})+):((\\{.+?:.*?})*)");
+    private final Pattern lnChecker = Pattern.compile("\\[(.+?):(.*?)]");
+    private final Pattern lnScript = Pattern.compile("\\{(.+?):(.*?)}");
 
-    public BranchingStory parse(BufferedReader br, Dictionnary dictionnary) throws IOException, BSTException
+    public BranchingStory parse(final BufferedReader br, final Dictionnary dictionnary) throws IOException, BSTException
     {
-        BranchingStory story = new BranchingStory();
+        final BranchingStory story = new BranchingStory();
 
         String line = null;
         int lineNumber = 0;
@@ -64,7 +64,9 @@ public class BranchingStoryTreeParser
             {
                 lineNumber++;
                 if(line.startsWith("#"))
+                {
                     continue;
+                }
 
                 // Handle empty lines
                 if(line.isEmpty())
@@ -82,11 +84,11 @@ public class BranchingStoryTreeParser
                     }
                 }
 
-                char firstChar = line.charAt(0);
+                final char firstChar = line.charAt(0);
                 if(beginningOfNodePattern.matcher(line).matches())
                 {
                     // This is a new node
-                    int id = Integer.parseInt(line.split("\\:")[0]);
+                    final int id = Integer.parseInt(line.split("\\:")[0]);
 
                     // Check if logical node
                     if(logicalNodePattern.matcher(line).matches())
@@ -117,7 +119,7 @@ public class BranchingStoryTreeParser
                 else if(Character.isAlphabetic(firstChar) && node == null)
                 {
                     // This is a tag (probably)
-                    String tagName = line.split("\\=")[0];
+                    final String tagName = line.split("\\=")[0];
                     story.putTag(tagName, line.substring(line.indexOf("=") + 1));
                 }
 
@@ -127,33 +129,37 @@ public class BranchingStoryTreeParser
                     {
                         if(line.startsWith("::"))
                         {
-                            String s = line.substring(2);
-                            String[] bits = s.split("\\=");
+                            final String s = line.substring(2);
+                            final String[] bits = s.split("\\=");
                             latestHolder.putTag(bits[0], bits[1]);
                         }
                         else
                         {
-                            String s = line.substring(1);
-                            String[] bits = s.split("\\|");
-                            String text = bits[0];
-                            NodeOption option = new NodeOption(text);
+                            final String s = line.substring(1);
+                            final String[] bits = s.split("\\|");
+                            final String text = bits[0];
+                            final NodeOption option = new NodeOption(text);
                             latestHolder = option;
                             ((TextNode)node).addOption(option);
 
-                            String nextNodeDefiner = bits[1];
+                            final String nextNodeDefiner = bits[1];
                             Matcher matcher = ifNextNodeDefiner.matcher(nextNodeDefiner);
                             if(matcher.matches())
                             {
-                                int first = Integer.parseInt(matcher.group(1));
-                                int second = Integer.parseInt(matcher.group(2));
-                                String script = matcher.group(3);
-                                String command = script.substring(0, script.indexOf(':'));
-                                String desc = script.substring(script.indexOf(':') + 1);
-                                ScriptChecker oc = dictionnary.getChecker(command, desc, story.getRegistry());
+                                final int first = Integer.parseInt(matcher.group(1));
+                                final int second = Integer.parseInt(matcher.group(2));
+                                final String script = matcher.group(3);
+                                final String command = script.substring(0, script.indexOf(':'));
+                                final String desc = script.substring(script.indexOf(':') + 1);
+                                final ScriptChecker oc = dictionnary.getChecker(command, desc, story.getRegistry());
                                 if(oc == null)
+                                {
                                     throw new IllegalArgumentException("Unknown checker : " + command);
+                                }
                                 else
+                                {
                                     option.setNextNode(new IfNextNodeDefiner(first, second, oc));
+                                }
                             }
                             else
                             {
@@ -162,30 +168,38 @@ public class BranchingStoryTreeParser
 
                             if(bits.length > 2)
                             {
-                                String scripts = s.substring(s.indexOf('|', s.indexOf('|') + 1) + 1);
+                                final String scripts = s.substring(s.indexOf('|', s.indexOf('|') + 1) + 1);
                                 matcher = scriptPattern.matcher(scripts);
                                 while(matcher.find())
                                 {
                                     String script = scripts.substring(matcher.start(), matcher.end());
-                                    int type = script.startsWith("{") ? 0 : script.startsWith("[") ? 1 : -1;
+                                    final int type = script.startsWith("{") ? 0 : script.startsWith("[") ? 1 : -1;
                                     script = script.substring(1, script.length() - 1);
-                                    String command = matcher.group(type == 0 ? 2 : 5);
-                                    String desc = matcher.group(type == 0 ? 3 : 6);
+                                    final String command = matcher.group(type == 0 ? 2 : 5);
+                                    final String desc = matcher.group(type == 0 ? 3 : 6);
                                     if(type == 0)
                                     {
-                                        ScriptAction action = dictionnary.getAction(command, desc, story.getRegistry());
+                                        final ScriptAction action = dictionnary.getAction(command, desc, story.getRegistry());
                                         if(action == null)
+                                        {
                                             throw new IllegalArgumentException("Unknown action : " + action);
+                                        }
                                         else
+                                        {
                                             option.addDoOnClick(action);
+                                        }
                                     }
                                     else if(type == 1)
                                     {
-                                        ScriptChecker oc = dictionnary.getChecker(command, desc, story.getRegistry());
+                                        final ScriptChecker oc = dictionnary.getChecker(command, desc, story.getRegistry());
                                         if(oc == null)
+                                        {
                                             throw new IllegalArgumentException("Unknown checker : " + command);
+                                        }
                                         else
+                                        {
                                             option.setChecker(oc);
+                                        }
                                     }
                                 }
                             }
@@ -193,20 +207,24 @@ public class BranchingStoryTreeParser
                     }
                     else if(nodeType == LOGICAL)
                     {
-                        String nextNodeDefiner = line.substring(1);
-                        Matcher matcher = ifNextNodeDefiner.matcher(nextNodeDefiner);
+                        final String nextNodeDefiner = line.substring(1);
+                        final Matcher matcher = ifNextNodeDefiner.matcher(nextNodeDefiner);
                         if(matcher.matches())
                         {
-                            int first = Integer.parseInt(matcher.group(1));
-                            int second = Integer.parseInt(matcher.group(2));
-                            String script = matcher.group(3);
-                            String command = script.substring(0, script.indexOf(':'));
-                            String desc = script.substring(script.indexOf(':') + 1);
-                            ScriptChecker oc = dictionnary.getChecker(command, desc, story.getRegistry());
+                            final int first = Integer.parseInt(matcher.group(1));
+                            final int second = Integer.parseInt(matcher.group(2));
+                            final String script = matcher.group(3);
+                            final String command = script.substring(0, script.indexOf(':'));
+                            final String desc = script.substring(script.indexOf(':') + 1);
+                            final ScriptChecker oc = dictionnary.getChecker(command, desc, story.getRegistry());
                             if(oc == null)
+                            {
                                 throw new IllegalArgumentException("Unknown checker : " + command);
+                            }
                             else
+                            {
                                 ((LogicalNode)node).addInstruction(new LNCondReturn(new IfNextNodeDefiner(first, second, oc)));
+                            }
                         }
                         else
                         {
@@ -216,12 +234,14 @@ public class BranchingStoryTreeParser
                 }
                 else if(node != null && !optionsStarted)
                 {
-                    if((nodeType == NORMAL && !optionsStarted) || nodeType == VIRTUAL)
+                    if(nodeType == NORMAL && !optionsStarted || nodeType == VIRTUAL)
                     {
-                        VirtualNode tn = (VirtualNode)node;
+                        final VirtualNode tn = (VirtualNode)node;
                         // This is the continuation of a text node
                         for(int i = 0; i < skipLinesOnNextAdd; i++)
+                        {
                             tn.appendText("\n");
+                        }
                         tn.appendText("\n");
                         tn.appendText(line);
                         skipLinesOnNextAdd = 0;
@@ -229,64 +249,76 @@ public class BranchingStoryTreeParser
                     else if(nodeType == LOGICAL)
                     {
                         // This is a Logical Node for
-                        LogicalNode ln = (LogicalNode)node;
-                        Matcher m = lnLineSubscript.matcher(line);
+                        final LogicalNode ln = (LogicalNode)node;
+                        final Matcher m = lnLineSubscript.matcher(line);
                         if(m.matches())
                         {
-                            String name = m.group(1);
-                            String body = m.group(2);
+                            final String name = m.group(1);
+                            final String body = m.group(2);
                             ln.addInstruction(new LNExec(dictionnary.getAction(name, body, story.getRegistry())));
                         }
                         else
                         {
-                            Matcher m2 = lnTernary.matcher(line);
+                            final Matcher m2 = lnTernary.matcher(line);
                             if(m2.matches())
                             {
-                                String conditions = m2.group(1);
-                                String yes = m2.group(3);
-                                String no = m2.group(5);
+                                final String conditions = m2.group(1);
+                                final String yes = m2.group(3);
+                                final String no = m2.group(5);
 
-                                ArrayList<ScriptChecker> check = new ArrayList<>();
-                                ArrayList<ScriptAction> yeses = new ArrayList<>();
-                                ArrayList<ScriptAction> nos = new ArrayList<>();
+                                final ArrayList<ScriptChecker> check = new ArrayList<>();
+                                final ArrayList<ScriptAction> yeses = new ArrayList<>();
+                                final ArrayList<ScriptAction> nos = new ArrayList<>();
 
                                 Matcher matcher = lnChecker.matcher(conditions);
                                 while(matcher.find())
                                 {
-                                    String command = matcher.group(1);
-                                    String desc = matcher.group(2);
+                                    final String command = matcher.group(1);
+                                    final String desc = matcher.group(2);
 
-                                    ScriptChecker oc = dictionnary.getChecker(command, desc, story.getRegistry());
+                                    final ScriptChecker oc = dictionnary.getChecker(command, desc, story.getRegistry());
                                     if(oc == null)
+                                    {
                                         throw new IllegalArgumentException("Unknown checker : " + command);
+                                    }
                                     else
+                                    {
                                         check.add(oc);
+                                    }
                                 }
 
                                 matcher = lnScript.matcher(yes);
                                 while(matcher.find())
                                 {
-                                    String command = matcher.group(1);
-                                    String desc = matcher.group(2);
+                                    final String command = matcher.group(1);
+                                    final String desc = matcher.group(2);
 
-                                    ScriptAction oc = dictionnary.getAction(command, desc, story.getRegistry());
+                                    final ScriptAction oc = dictionnary.getAction(command, desc, story.getRegistry());
                                     if(oc == null)
+                                    {
                                         throw new IllegalArgumentException("Unknown checker : " + command);
+                                    }
                                     else
+                                    {
                                         yeses.add(oc);
+                                    }
                                 }
 
                                 matcher = lnScript.matcher(no);
                                 while(matcher.find())
                                 {
-                                    String command = matcher.group(1);
-                                    String desc = matcher.group(2);
+                                    final String command = matcher.group(1);
+                                    final String desc = matcher.group(2);
 
-                                    ScriptAction oc = dictionnary.getAction(command, desc, story.getRegistry());
+                                    final ScriptAction oc = dictionnary.getAction(command, desc, story.getRegistry());
                                     if(oc == null)
+                                    {
                                         throw new IllegalArgumentException("Unknown checker : " + command);
+                                    }
                                     else
+                                    {
                                         nos.add(oc);
+                                    }
                                 }
 
                                 ln.addInstruction(new LNTern(check, yeses, nos));
@@ -298,16 +330,16 @@ public class BranchingStoryTreeParser
 
             }
         }
-        catch(IOException e)
+        catch(final IOException e)
         {
             throw e;
         }
-        catch(BSTException e)
+        catch(final BSTException e)
         {
             e.setWhere(lineNumber);
             throw e;
         }
-        catch(Exception e)
+        catch(final Exception e)
         {
             throw new BSTException(lineNumber, "An error was detected while trying to understand your file. Please check the line : " + line, e);
         }
