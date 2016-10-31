@@ -24,8 +24,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
@@ -60,15 +58,21 @@ import utybo.branchingstorytree.api.story.LogicalNode;
 import utybo.branchingstorytree.api.story.NodeOption;
 import utybo.branchingstorytree.api.story.StoryNode;
 import utybo.branchingstorytree.api.story.TextNode;
-import utybo.branchingstorytree.api.story.VirtualNode;
 import utybo.branchingstorytree.swing.JScrollablePanel.ScrollableSizeHint;
 
 @SuppressWarnings("serial")
 public class BranchingStoryPlayerSwing extends JFrame
 {
-    private final JPanel panel = new JPanel();
     private static File file;
     private static BranchingStoryTreeParser parser = new BranchingStoryTreeParser();
+
+    private final JPanel panel = new JPanel();
+    private BranchingStory story;
+    private StoryNode currentNode;
+    private NodeOption[] options;
+    private JButton[] optionsButton;
+    private JLabel textLabel;
+    private Color normalButtonFg;
 
     public static void main(String[] args)
     {
@@ -137,13 +141,6 @@ public class BranchingStoryPlayerSwing extends JFrame
             System.exit(0);
         }
     }
-
-    private BranchingStory story;
-    private StoryNode currentNode;
-    private NodeOption[] options;
-    private JButton[] optionsButton;
-    private JLabel textLabel;
-    private Color normalButtonFg;
 
     public BranchingStoryPlayerSwing(BranchingStory story)
     {
@@ -284,10 +281,9 @@ public class BranchingStoryPlayerSwing extends JFrame
         setLocationRelativeTo(null);
         setVisible(true);
 
-        if(story.hasTag("nsfw"))
+        if(story.hasTag("nsfw") && (JOptionPane.showConfirmDialog(this, "<html><b>WARNING</b><p>You are about to read a NSFW story. This story is not suitable for children.<p>Only click OK if you are OVER 18 YEARS OLD.", "NSFW WARNING", JOptionPane.WARNING_MESSAGE) != JOptionPane.OK_OPTION))
         {
-            if(JOptionPane.showConfirmDialog(this, "<html><b>WARNING</b><p>You are about to read a NSFW story. This story is not suitable for children.<p>Only click OK if you are OVER 18 YEARS OLD.", "NSFW WARNING", JOptionPane.WARNING_MESSAGE) != JOptionPane.OK_OPTION)
-                System.exit(0);
+            System.exit(0);
         }
     }
 

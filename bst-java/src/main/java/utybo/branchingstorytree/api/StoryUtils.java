@@ -36,7 +36,7 @@ public class StoryUtils
                 text = vn.replaceFirst(story.getRegistry().get(varName).toString());
             vn.reset(text);
         }
-        
+
         return text;
     }
 }

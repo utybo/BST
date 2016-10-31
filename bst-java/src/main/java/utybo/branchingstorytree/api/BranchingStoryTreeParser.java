@@ -26,27 +26,31 @@ import utybo.branchingstorytree.api.story.StoryNode;
 import utybo.branchingstorytree.api.story.TagHolder;
 import utybo.branchingstorytree.api.story.TextNode;
 import utybo.branchingstorytree.api.story.VirtualNode;
+import utybo.branchingstorytree.api.story.logicalnode.LNCondReturn;
+import utybo.branchingstorytree.api.story.logicalnode.LNExec;
+import utybo.branchingstorytree.api.story.logicalnode.LNReturn;
+import utybo.branchingstorytree.api.story.logicalnode.LNTern;
 
 public class BranchingStoryTreeParser
 {
     private static final int NORMAL = 0, VIRTUAL = 1, LOGICAL = 2;
-    
+
     private Pattern beginningOfNodePattern = Pattern.compile("^\\d+:.+$");
     private Pattern logicalNodePattern = Pattern.compile("^\\d+:&$");
     private Pattern virtualNodePattern = Pattern.compile("\\d+:>.+$");
     private Pattern scriptPattern = Pattern.compile("(\\{(.+?):(.*?)})|(\\[(.+?):(.*?)])");
     private Pattern ifNextNodeDefiner = Pattern.compile("(\\d+),(\\d+)\\[(.+:.+)]");
-    
+
     private Pattern lnLineSubscript = Pattern.compile("(.+?):(.+)");
     private Pattern lnTernary = Pattern.compile("((\\[.+?:.*?])+)\\?((\\{.+?:.*?})+):((\\{.+?:.*?})*)");
     private Pattern lnChecker = Pattern.compile("\\[(.+?):(.*?)]");
     private Pattern lnScript = Pattern.compile("\\{(.+?):(.*?)}");
-    
+
     public BranchingStory parse(BufferedReader br, Dictionnary dictionnary) throws IOException, BSTException
     {
         BranchingStory story = new BranchingStory();
 
-        String line;
+        String line = null;
         int lineNumber = 0;
 
         StoryNode node = null;
@@ -54,10 +58,9 @@ public class BranchingStoryTreeParser
         TagHolder latestHolder = null;
         boolean optionsStarted = false;
         int skipLinesOnNextAdd = 0;
-
-        while((line = br.readLine()) != null)
+        try
         {
-            try
+            while((line = br.readLine()) != null)
             {
                 lineNumber++;
                 if(line.startsWith("#"))
@@ -203,11 +206,11 @@ public class BranchingStoryTreeParser
                             if(oc == null)
                                 throw new IllegalArgumentException("Unknown checker : " + command);
                             else
-                                ((LogicalNode)node).addInstruction(new LogicalNode.LNCondReturn(new IfNextNodeDefiner(first, second, oc)));
+                                ((LogicalNode)node).addInstruction(new LNCondReturn(new IfNextNodeDefiner(first, second, oc)));
                         }
                         else
                         {
-                            ((LogicalNode)node).addInstruction(new LogicalNode.LNReturn(Integer.parseInt(nextNodeDefiner)));
+                            ((LogicalNode)node).addInstruction(new LNReturn(Integer.parseInt(nextNodeDefiner)));
                         }
                     }
                 }
@@ -232,7 +235,7 @@ public class BranchingStoryTreeParser
                         {
                             String name = m.group(1);
                             String body = m.group(2);
-                            ln.addInstruction(new LogicalNode.LNExec(dictionnary.getAction(name, body, story.getRegistry())));
+                            ln.addInstruction(new LNExec(dictionnary.getAction(name, body, story.getRegistry())));
                         }
                         else
                         {
@@ -286,29 +289,27 @@ public class BranchingStoryTreeParser
                                         nos.add(oc);
                                 }
 
-                                ln.addInstruction(new LogicalNode.LNTern(check, yeses, nos));
+                                ln.addInstruction(new LNTern(check, yeses, nos));
                             }
 
                         }
                     }
                 }
+
             }
-            catch(Exception e)
-            {
-                if(e instanceof IOException)
-                {
-                    throw e;
-                }
-                else if(e instanceof BSTException)
-                {
-                    ((BSTException)e).setWhere(lineNumber);
-                    throw e;
-                }
-                else
-                {
-                    throw new BSTException(lineNumber, "An error was detected while trying to understand your file. Please check the line : " + line, e);
-                }
-            }
+        }
+        catch(IOException e)
+        {
+            throw e;
+        }
+        catch(BSTException e)
+        {
+            e.setWhere(lineNumber);
+            throw e;
+        }
+        catch(Exception e)
+        {
+            throw new BSTException(lineNumber, "An error was detected while trying to understand your file. Please check the line : " + line, e);
         }
         return story;
     }
