@@ -62,7 +62,7 @@ public class VariableRegistry
         return null;
     }
 
-    public Object get(final String varName)
+    public Object get(final String varName, Object ifNotFound)
     {
         Object tryingToFindMe = null;
         if(variables.containsKey(varName))
@@ -72,6 +72,10 @@ public class VariableRegistry
         else if(strVar.containsKey(varName))
         {
             tryingToFindMe = strVar.get(varName);
+        }
+        else
+        {
+            tryingToFindMe = ifNotFound;
         }
         return tryingToFindMe;
     }

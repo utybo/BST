@@ -42,7 +42,7 @@ public class StoryUtils
             }
             else
             {
-                text = vn.replaceFirst(story.getRegistry().get(varName).toString());
+                text = vn.replaceFirst(story.getRegistry().get(varName, Integer.valueOf(0)).toString());
             }
             vn.reset(text);
         }

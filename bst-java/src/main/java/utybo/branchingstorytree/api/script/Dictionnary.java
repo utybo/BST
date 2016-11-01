@@ -23,15 +23,22 @@ public class Dictionnary
         case "incr":
             return () ->
             {
-                if(registry.typeOf(desc) != Integer.class)
+                if(registry.typeOf(desc) != null && registry.typeOf(desc) != Integer.class)
                 {
                     throw new BSTException(-1, "incr : The variable " + desc + " is not a number.");
                 }
-                registry.put(desc, (Integer)registry.get(desc) + 1);
+                registry.put(desc, (Integer)registry.get(desc, 0) + 1);
 
             };
         case "decr":
-            return () -> registry.put(desc, (Integer)registry.get(desc) - 1);
+            return () ->
+            {
+                if(registry.typeOf(desc) != null && registry.typeOf(desc) != Integer.class)
+                {
+                    throw new BSTException(-1, "incr : The variable " + desc + " is not a number.");
+                }
+                registry.put(desc, (Integer)registry.get(desc, 0) - 1);
+            };
         case "set":
             return () ->
             {
@@ -71,8 +78,8 @@ public class Dictionnary
                     throw new BSTException(-1, "Invalid syntax : {add:a,b} for a + b with result in a or {add:a,b,c} for b + c with result in a");
                 }
 
-                final int ia = registry.typeOf(a) == Integer.class ? (Integer)registry.get(a) : Integer.parseInt(a);
-                final int ib = registry.typeOf(b) == Integer.class ? (Integer)registry.get(b) : Integer.parseInt(b);
+                final int ia = registry.typeOf(a) == Integer.class ? (Integer)registry.get(a, 0) : Integer.parseInt(a);
+                final int ib = registry.typeOf(b) == Integer.class ? (Integer)registry.get(b, 0) : Integer.parseInt(b);
                 registry.put(putIn, ia + ib);
 
             };
@@ -99,8 +106,8 @@ public class Dictionnary
                     throw new BSTException(-1, "Invalid syntax : {add:a,b} for a + b with result in a or {add:a,b,c} for b + c with result in a");
                 }
 
-                final int ia = registry.typeOf(a) == Integer.class ? (Integer)registry.get(a) : Integer.parseInt(a);
-                final int ib = registry.typeOf(b) == Integer.class ? (Integer)registry.get(b) : Integer.parseInt(b);
+                final int ia = registry.typeOf(a) == Integer.class ? (Integer)registry.get(a, 0) : Integer.parseInt(a);
+                final int ib = registry.typeOf(b) == Integer.class ? (Integer)registry.get(b, 0) : Integer.parseInt(b);
                 registry.put(putIn, ia - ib);
 
             };
@@ -127,8 +134,8 @@ public class Dictionnary
                     throw new BSTException(-1, "Invalid syntax : {add:a,b} for a + b with result in a or {add:a,b,c} for b + c with result in a");
                 }
 
-                final int ia = registry.typeOf(a) == Integer.class ? (Integer)registry.get(a) : Integer.parseInt(a);
-                final int ib = registry.typeOf(b) == Integer.class ? (Integer)registry.get(b) : Integer.parseInt(b);
+                final int ia = registry.typeOf(a) == Integer.class ? (Integer)registry.get(a, 0) : Integer.parseInt(a);
+                final int ib = registry.typeOf(b) == Integer.class ? (Integer)registry.get(b, 0) : Integer.parseInt(b);
                 registry.put(putIn, ia * ib);
 
             };
@@ -155,8 +162,8 @@ public class Dictionnary
                     throw new BSTException(-1, "Invalid syntax : {add:a,b} for a + b with result in a or {add:a,b,c} for b + c with result in a");
                 }
 
-                final int ia = registry.typeOf(a) == Integer.class ? (Integer)registry.get(a) : Integer.parseInt(a);
-                final int ib = registry.typeOf(b) == Integer.class ? (Integer)registry.get(b) : Integer.parseInt(b);
+                final int ia = registry.typeOf(a) == Integer.class ? (Integer)registry.get(a, 0) : Integer.parseInt(a);
+                final int ib = registry.typeOf(b) == Integer.class ? (Integer)registry.get(b, 0) : Integer.parseInt(b);
                 registry.put(putIn, (int)ia / ib);
 
             };
@@ -188,13 +195,13 @@ public class Dictionnary
             return () ->
             {
                 final String varName = desc.split(",")[0];
-                final Object var = registry.get(varName);
+                final Object var = registry.get(varName, 0);
                 final String isEqualWith = desc.split(",")[1];
 
                 try
                 {
                     if(registry.typeOf(isEqualWith) != null)
-                        return var.toString().equals(registry.get(isEqualWith).toString());
+                        return var.toString().equals(registry.get(isEqualWith, 0).toString());
                     final int i = Integer.valueOf(isEqualWith);
                     if(var.getClass() == Integer.class)
                     {
@@ -209,11 +216,13 @@ public class Dictionnary
             return () ->
             {
                 final String varName = desc.split(",")[0];
-                final Object var = registry.get(varName);
+                final Object var = registry.get(varName, 0);
                 final String isEqualWith = desc.split(",")[1];
 
                 try
                 {
+                    if(registry.typeOf(isEqualWith) != null)
+                        return var.toString().equals(registry.get(isEqualWith, 0).toString());
                     final int i = Integer.valueOf(isEqualWith);
                     if(var.getClass() == Integer.class)
                     {
@@ -224,41 +233,45 @@ public class Dictionnary
                 {}
                 return !var.toString().equals(isEqualWith);
             };
-        case "more":
+        case "greater":
             return () ->
             {
                 final String varName = desc.split(",")[0];
-                final Integer var = (Integer)registry.get(varName);
-                final Integer compareTo = Integer.parseInt(desc.split(",")[1]);
+                final Integer var = (Integer)registry.get(varName, 0);
+                final String compareTo = desc.split(",")[1];
+                final Integer var2 = registry.typeOf(compareTo) == Integer.class ? (Integer)registry.get(compareTo, 0) : Integer.parseInt(compareTo);
 
-                return var > compareTo;
+                return var > var2;
             };
         case "less":
             return () ->
             {
                 final String varName = desc.split(",")[0];
-                final Integer var = (Integer)registry.get(varName);
-                final Integer compareTo = Integer.parseInt(desc.split(",")[1]);
+                final Integer var = (Integer)registry.get(varName, 0);
+                final String compareTo = desc.split(",")[1];
+                final Integer var2 = registry.typeOf(compareTo) == Integer.class ? (Integer)registry.get(compareTo, 0) : Integer.parseInt(compareTo);
 
-                return var < compareTo;
+                return var < var2;
             };
-        case "moreequ":
+        case "greaterequ":
             return () ->
             {
                 final String varName = desc.split(",")[0];
-                final Integer var = (Integer)registry.get(varName);
-                final Integer compareTo = Integer.parseInt(desc.split(",")[1]);
+                final Integer var = (Integer)registry.get(varName, 0);
+                final String compareTo = desc.split(",")[1];
+                final Integer var2 = registry.typeOf(compareTo) == Integer.class ? (Integer)registry.get(compareTo, 0) : Integer.parseInt(compareTo);
 
-                return var >= compareTo;
+                return var >= var2;
             };
         case "lessequ":
             return () ->
             {
                 final String varName = desc.split(",")[0];
-                final Integer var = (Integer)registry.get(varName);
-                final Integer compareTo = Integer.parseInt(desc.split(",")[1]);
+                final Integer var = (Integer)registry.get(varName, 0);
+                final String compareTo = desc.split(",")[1];
+                final Integer var2 = registry.typeOf(compareTo) == Integer.class ? (Integer)registry.get(compareTo, 0) : Integer.parseInt(compareTo);
 
-                return var <= compareTo;
+                return var <= var2;
             };
         default:
             return null;
