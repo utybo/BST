@@ -156,6 +156,11 @@ public class BranchingStoryPlayerSwing extends JFrame
                 System.exit(0);
             }
         }
+        catch(final Exception e)
+        {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "OpenBST crashed upon opening your file. Your file may have a problem.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     public BranchingStoryPlayerSwing(final BranchingStory story)
