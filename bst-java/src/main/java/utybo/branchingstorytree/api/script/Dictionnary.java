@@ -193,6 +193,8 @@ public class Dictionnary
 
                 try
                 {
+                    if(registry.typeOf(isEqualWith) != null)
+                        return var.toString().equals(registry.get(isEqualWith).toString());
                     final int i = Integer.valueOf(isEqualWith);
                     if(var.getClass() == Integer.class)
                     {
