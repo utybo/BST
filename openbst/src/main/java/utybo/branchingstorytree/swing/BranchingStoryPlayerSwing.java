@@ -62,6 +62,7 @@ import utybo.branchingstorytree.swing.JScrollablePanel.ScrollableSizeHint;
 
 public class BranchingStoryPlayerSwing extends JFrame
 {
+    public static final String VERSION = "0.1-RC1";
     private static final long serialVersionUID = 1L;
 
     private static File file;
@@ -315,7 +316,7 @@ public class BranchingStoryPlayerSwing extends JFrame
 
     private void updateStory()
     {
-        setTitle(story.getTagMap().getOrDefault("title", "<untitled>") + " by " + story.getTagMap().getOrDefault("author", "<unknown>") + " -- BST Player");
+        setTitle(story.getTagMap().getOrDefault("title", "<untitled>") + " by " + story.getTagMap().getOrDefault("author", "<unknown>") + " -- BST Player " + VERSION);
     }
 
     private void showNode(final StoryNode storyNode)

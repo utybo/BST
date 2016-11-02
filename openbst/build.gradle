@@ -1,5 +1,16 @@
+buildscript {
+  repositories {
+    jcenter() 
+  }
+
+  dependencies {
+    classpath "com.github.jengelman.gradle.plugins:shadow:1.2.3"
+  }
+}
+
 apply plugin: 'application'
 apply plugin: 'eclipse'
+apply plugin: "com.github.johnrengelman.shadow"
 
 repositories {
     mavenCentral()
@@ -17,7 +28,7 @@ sourceSets {
 }
 
 sourceCompatibility = 1.8
-version = '0.1-SNAPSHOT'
+version = '0.1-RC1'
 mainClassName = "utybo.branchingstorytree.swing.BranchingStoryPlayerSwing"
 
 dependencies {
@@ -27,6 +38,6 @@ dependencies {
     compile 'com.github.rjeschke:txtmark:0.13'
 }
 
-task stage {
-  dependsOn build
+shadowJar {
+  classifier = "full"
 }
