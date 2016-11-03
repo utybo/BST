@@ -44,3 +44,10 @@ To build OpenBST :
   - If you're on Mac OS or Linux, run `openbst`
   - If you're on Widnows, run `openbst.bat`
 - Done!
+
+Short version (assuming you have git, gradle, tar and a JDK installed) :
+```shell
+git clone https://github.com/utybo/BST
+cd BST
+gradle build
+```
