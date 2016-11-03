@@ -108,6 +108,7 @@ public class BranchingStoryPlayerSwing extends JFrame
         }
 
         final FileDialog jfc = new FileDialog((Dialog)null);
+        jfc.setLocationRelativeTo(null);
         jfc.setTitle("Choose a Branching Story Tree file...");
         jfc.setVisible(true);
         if(jfc.getFile() != null)
