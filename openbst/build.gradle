@@ -28,7 +28,7 @@ sourceSets {
 }
 
 sourceCompatibility = 1.8
-version = '0.1-RC1'
+version = '0.1-RC2'
 mainClassName = "utybo.branchingstorytree.swing.BranchingStoryPlayerSwing"
 
 dependencies {
