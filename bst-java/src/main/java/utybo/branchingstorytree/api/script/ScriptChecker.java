@@ -8,9 +8,15 @@
  */
 package utybo.branchingstorytree.api.script;
 
+import org.atteo.classindex.IndexSubclasses;
+
+import utybo.branchingstorytree.api.BSTClient;
 import utybo.branchingstorytree.api.BSTException;
 
+@IndexSubclasses
 public interface ScriptChecker
 {
-    public boolean check() throws BSTException;
+    public boolean check(String head, String desc, VariableRegistry registry, BSTClient client) throws BSTException;
+
+    public String[] getName();
 }

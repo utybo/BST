@@ -9,13 +9,13 @@
 package utybo.branchingstorytree.api.story.logicalnode;
 
 import utybo.branchingstorytree.api.BSTException;
-import utybo.branchingstorytree.api.script.ScriptAction;
+import utybo.branchingstorytree.api.script.ActionDescriptor;
 
 public class LNExec extends LNInstruction
 {
-    private final ScriptAction action;
+    private final ActionDescriptor action;
 
-    public LNExec(final ScriptAction action)
+    public LNExec(final ActionDescriptor action)
     {
         this.action = action;
     }

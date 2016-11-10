@@ -14,10 +14,10 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import utybo.branchingstorytree.api.script.ActionDescriptor;
+import utybo.branchingstorytree.api.script.CheckerDescriptor;
 import utybo.branchingstorytree.api.script.Dictionnary;
 import utybo.branchingstorytree.api.script.IfNextNodeDefiner;
-import utybo.branchingstorytree.api.script.ScriptAction;
-import utybo.branchingstorytree.api.script.ScriptChecker;
 import utybo.branchingstorytree.api.script.StaticNextNode;
 import utybo.branchingstorytree.api.story.BranchingStory;
 import utybo.branchingstorytree.api.story.LogicalNode;
@@ -46,7 +46,7 @@ public class BranchingStoryTreeParser
     private final Pattern lnChecker = Pattern.compile("\\[(.+?):(.*?)]");
     private final Pattern lnScript = Pattern.compile("\\{(.+?):(.*?)}");
 
-    public BranchingStory parse(final BufferedReader br, final Dictionnary dictionnary) throws IOException, BSTException
+    public BranchingStory parse(final BufferedReader br, final Dictionnary dictionnary, final BSTClient client) throws IOException, BSTException
     {
         final BranchingStory story = new BranchingStory();
 
@@ -151,8 +151,8 @@ public class BranchingStoryTreeParser
                                 final String script = matcher.group(3);
                                 final String command = script.substring(0, script.indexOf(':'));
                                 final String desc = script.substring(script.indexOf(':') + 1);
-                                final ScriptChecker oc = dictionnary.getChecker(command, desc, story.getRegistry());
-                                if(oc == null)
+                                final CheckerDescriptor oc = new CheckerDescriptor(dictionnary.getChecker(command), command, desc, story.getRegistry(), client);
+                                if(oc.getChecker() == null)
                                 {
                                     throw new IllegalArgumentException("Unknown checker : " + command);
                                 }
@@ -179,8 +179,8 @@ public class BranchingStoryTreeParser
                                     final String desc = matcher.group(type == 0 ? 3 : 6);
                                     if(type == 0)
                                     {
-                                        final ScriptAction action = dictionnary.getAction(command, desc, story.getRegistry());
-                                        if(action == null)
+                                        final ActionDescriptor action = new ActionDescriptor(dictionnary.getAction(command), command, desc, story.getRegistry(), client);
+                                        if(action.getAction() == null)
                                         {
                                             throw new IllegalArgumentException("Unknown action : " + action);
                                         }
@@ -191,8 +191,9 @@ public class BranchingStoryTreeParser
                                     }
                                     else if(type == 1)
                                     {
-                                        final ScriptChecker oc = dictionnary.getChecker(command, desc, story.getRegistry());
-                                        if(oc == null)
+
+                                        final CheckerDescriptor oc = new CheckerDescriptor(dictionnary.getChecker(command), command, desc, story.getRegistry(), client);
+                                        if(oc.getChecker() == null)
                                         {
                                             throw new IllegalArgumentException("Unknown checker : " + command);
                                         }
@@ -216,8 +217,8 @@ public class BranchingStoryTreeParser
                             final String script = matcher.group(3);
                             final String command = script.substring(0, script.indexOf(':'));
                             final String desc = script.substring(script.indexOf(':') + 1);
-                            final ScriptChecker oc = dictionnary.getChecker(command, desc, story.getRegistry());
-                            if(oc == null)
+                            final CheckerDescriptor oc = new CheckerDescriptor(dictionnary.getChecker(command), command, desc, story.getRegistry(), client);
+                            if(oc.getChecker() == null)
                             {
                                 throw new IllegalArgumentException("Unknown checker : " + command);
                             }
@@ -255,7 +256,7 @@ public class BranchingStoryTreeParser
                         {
                             final String name = m.group(1);
                             final String body = m.group(2);
-                            ln.addInstruction(new LNExec(dictionnary.getAction(name, body, story.getRegistry())));
+                            ln.addInstruction(new LNExec(new ActionDescriptor(dictionnary.getAction(name), name, body, story.getRegistry(), client)));
                         }
                         else
                         {
@@ -266,9 +267,9 @@ public class BranchingStoryTreeParser
                                 final String yes = m2.group(3);
                                 final String no = m2.group(5);
 
-                                final ArrayList<ScriptChecker> check = new ArrayList<>();
-                                final ArrayList<ScriptAction> yeses = new ArrayList<>();
-                                final ArrayList<ScriptAction> nos = new ArrayList<>();
+                                final ArrayList<CheckerDescriptor> check = new ArrayList<>();
+                                final ArrayList<ActionDescriptor> yeses = new ArrayList<>();
+                                final ArrayList<ActionDescriptor> nos = new ArrayList<>();
 
                                 Matcher matcher = lnChecker.matcher(conditions);
                                 while(matcher.find())
@@ -276,8 +277,8 @@ public class BranchingStoryTreeParser
                                     final String command = matcher.group(1);
                                     final String desc = matcher.group(2);
 
-                                    final ScriptChecker oc = dictionnary.getChecker(command, desc, story.getRegistry());
-                                    if(oc == null)
+                                    final CheckerDescriptor oc = new CheckerDescriptor(dictionnary.getChecker(command), command, desc, story.getRegistry(), client);
+                                    if(oc.getChecker() == null)
                                     {
                                         throw new IllegalArgumentException("Unknown checker : " + command);
                                     }
@@ -293,8 +294,8 @@ public class BranchingStoryTreeParser
                                     final String command = matcher.group(1);
                                     final String desc = matcher.group(2);
 
-                                    final ScriptAction oc = dictionnary.getAction(command, desc, story.getRegistry());
-                                    if(oc == null)
+                                    final ActionDescriptor oc = new ActionDescriptor(dictionnary.getAction(command), command, desc, story.getRegistry(), client);
+                                    if(oc.getAction() == null)
                                     {
                                         throw new IllegalArgumentException("Unknown checker : " + command);
                                     }
@@ -310,8 +311,8 @@ public class BranchingStoryTreeParser
                                     final String command = matcher.group(1);
                                     final String desc = matcher.group(2);
 
-                                    final ScriptAction oc = dictionnary.getAction(command, desc, story.getRegistry());
-                                    if(oc == null)
+                                    final ActionDescriptor oc = new ActionDescriptor(dictionnary.getAction(command), command, desc, story.getRegistry(), client);
+                                    if(oc.getAction() == null)
                                     {
                                         throw new IllegalArgumentException("Unknown checker : " + command);
                                     }

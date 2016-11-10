@@ -11,16 +11,16 @@ package utybo.branchingstorytree.api.story.logicalnode;
 import java.util.ArrayList;
 
 import utybo.branchingstorytree.api.BSTException;
-import utybo.branchingstorytree.api.script.ScriptAction;
-import utybo.branchingstorytree.api.script.ScriptChecker;
+import utybo.branchingstorytree.api.script.ActionDescriptor;
+import utybo.branchingstorytree.api.script.CheckerDescriptor;
 
 public class LNTern extends LNInstruction
 {
-    private final ArrayList<ScriptAction> trueActions;
-    private final ArrayList<ScriptAction> falseActions;
-    private final ArrayList<ScriptChecker> checkers;
+    private final ArrayList<ActionDescriptor> trueActions;
+    private final ArrayList<ActionDescriptor> falseActions;
+    private final ArrayList<CheckerDescriptor> checkers;
 
-    public LNTern(final ArrayList<ScriptChecker> checker, final ArrayList<ScriptAction> trueActions, final ArrayList<ScriptAction> falseActions)
+    public LNTern(final ArrayList<CheckerDescriptor> checker, final ArrayList<ActionDescriptor> trueActions, final ArrayList<ActionDescriptor> falseActions)
     {
         checkers = checker;
         this.trueActions = trueActions;
@@ -44,7 +44,7 @@ public class LNTern extends LNInstruction
     private boolean solveCheckers() throws BSTException
     {
         boolean b = true;
-        for(final ScriptChecker checker : checkers)
+        for(final CheckerDescriptor checker : checkers)
         {
             if(!checker.check())
             {
@@ -54,9 +54,9 @@ public class LNTern extends LNInstruction
         return b;
     }
 
-    private void solve(final ArrayList<ScriptAction> actions) throws BSTException
+    private void solve(final ArrayList<ActionDescriptor> actions) throws BSTException
     {
-        for(final ScriptAction action : actions)
+        for(final ActionDescriptor action : actions)
         {
             action.exec();
         }

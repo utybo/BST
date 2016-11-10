@@ -12,17 +12,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import utybo.branchingstorytree.api.BSTException;
+import utybo.branchingstorytree.api.script.ActionDescriptor;
 import utybo.branchingstorytree.api.script.AlwaysTrueChecker;
+import utybo.branchingstorytree.api.script.CheckerDescriptor;
 import utybo.branchingstorytree.api.script.NextNodeDefiner;
-import utybo.branchingstorytree.api.script.ScriptAction;
-import utybo.branchingstorytree.api.script.ScriptChecker;
 
 public class NodeOption extends TagHolder
 {
     private NextNodeDefiner nextNode;
     private String text;
-    private ScriptChecker checker;
-    private final List<ScriptAction> doOnClick = new ArrayList<>();
+    private CheckerDescriptor checker;
+    private final List<ActionDescriptor> doOnClick = new ArrayList<>();
 
     public NodeOption(final String text)
     {
@@ -50,22 +50,22 @@ public class NodeOption extends TagHolder
         this.text = text;
     }
 
-    public ScriptChecker getChecker()
+    public CheckerDescriptor getChecker()
     {
-        return checker == null ? new AlwaysTrueChecker() : checker;
+        return checker == null ? new CheckerDescriptor(new AlwaysTrueChecker(), null, null, null, null) : checker;
     }
 
-    public void setChecker(final ScriptChecker checker)
+    public void setChecker(final CheckerDescriptor checker)
     {
         this.checker = checker;
     }
 
-    public List<ScriptAction> getDoOnClickActions()
+    public List<ActionDescriptor> getDoOnClickActions()
     {
         return doOnClick;
     }
 
-    public void addDoOnClick(final ScriptAction doOnClick)
+    public void addDoOnClick(final ActionDescriptor doOnClick)
     {
         this.doOnClick.add(doOnClick);
     }

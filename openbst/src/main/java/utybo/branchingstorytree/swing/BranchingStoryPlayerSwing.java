@@ -46,12 +46,12 @@ import org.apache.commons.lang.StringEscapeUtils;
 import com.github.rjeschke.txtmark.Processor;
 
 import net.miginfocom.swing.MigLayout;
-import utybo.branchingstorytree.api.BSTCentral;
+import utybo.branchingstorytree.api.BSTClient;
 import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.api.BranchingStoryTreeParser;
 import utybo.branchingstorytree.api.StoryUtils;
+import utybo.branchingstorytree.api.script.ActionDescriptor;
 import utybo.branchingstorytree.api.script.Dictionnary;
-import utybo.branchingstorytree.api.script.ScriptAction;
 import utybo.branchingstorytree.api.story.BranchingStory;
 import utybo.branchingstorytree.api.story.LogicalNode;
 import utybo.branchingstorytree.api.story.NodeOption;
@@ -61,11 +61,32 @@ import utybo.branchingstorytree.swing.JScrollablePanel.ScrollableSizeHint;
 
 public class BranchingStoryPlayerSwing extends JFrame
 {
-    public static final String VERSION = "0.1-RC1";
+    public static final String VERSION = "0.2";
     private static final long serialVersionUID = 1L;
 
     private static File file;
     private static BranchingStoryTreeParser parser = new BranchingStoryTreeParser();
+    private static BranchingStoryPlayerSwing instance;
+    private static BSTClient client = new BSTClient()
+    {
+        @Override
+        public String askInput(String message)
+        {
+            String input = null;
+            while(input == null || input.isEmpty())
+            {
+                input = JOptionPane.showInputDialog(instance, message);
+            }
+            return input;
+        }
+
+        @Override
+        public void exit()
+        {
+            System.exit(0);
+            //TODO Cleaner exit
+        }
+    };
 
     private final JPanel panel = new JPanel();
     private final BranchingStory story;
@@ -125,13 +146,9 @@ public class BranchingStoryPlayerSwing extends JFrame
         try
         {
             log("Parsing story");
-            BranchingStory story = parser.parse(new BufferedReader(new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8"))), new Dictionnary());
 
             log("Creating window");
-            final BranchingStoryPlayerSwing window = new BranchingStoryPlayerSwing(story);
-
-            log("Applying BSTCentral settings");
-            BSTCentral.setPlayerComponent(window);
+            instance = new BranchingStoryPlayerSwing(parser.parse(new BufferedReader(new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8"))), new Dictionnary(), client));
         }
         catch(final IOException e)
         {
@@ -591,7 +608,7 @@ public class BranchingStoryPlayerSwing extends JFrame
 
     private void optionSelected(final NodeOption nodeOption) throws BSTException
     {
-        for(final ScriptAction oa : nodeOption.getDoOnClickActions())
+        for(final ActionDescriptor oa : nodeOption.getDoOnClickActions())
         {
             oa.exec();
         }
