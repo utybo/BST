@@ -13,28 +13,29 @@ import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.api.script.ScriptAction;
 import utybo.branchingstorytree.api.script.VariableRegistry;
 
-public class ClientInteraction implements ScriptAction
+public class SetAction implements ScriptAction
 {
 
     @Override
     public void exec(String head, String desc, VariableRegistry registry, BSTClient client) throws BSTException
     {
-        switch(head)
+        final String varName = desc.split(",")[0];
+        final String value = desc.substring(desc.indexOf(',') + 1);
+        try
         {
-        case "input":
-            final String varName = desc.split(",")[0];
-            final String msg = desc.substring(desc.indexOf(',') + 1);
-            registry.put(varName, client.askInput(msg));
-            break;
-        case "exit":
-            client.exit();
+            registry.put(varName, Integer.parseInt(value));
+        }
+        catch(final NumberFormatException e)
+        {
+            // No printStackTrace because this exception is expected in many cases
+            registry.put(varName, value);
         }
     }
 
     @Override
     public String[] getName()
     {
-        return new String[]{"input", "exit"};
+        return new String[]{"set"};
     }
 
 }
