@@ -10,35 +10,27 @@ package utybo.branchingstorytree.swing;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dialog;
-import java.awt.FileDialog;
+import java.awt.Component;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.HashMap;
 
-import javax.imageio.ImageIO;
+import javax.swing.AbstractAction;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
+import javax.swing.JSpinner;
 import javax.swing.JTextArea;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.WindowConstants;
+import javax.swing.JToolBar;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 import org.apache.commons.lang.StringEscapeUtils;
@@ -46,231 +38,251 @@ import org.apache.commons.lang.StringEscapeUtils;
 import com.github.rjeschke.txtmark.Processor;
 
 import net.miginfocom.swing.MigLayout;
-import utybo.branchingstorytree.api.BSTClient;
 import utybo.branchingstorytree.api.BSTException;
-import utybo.branchingstorytree.api.BranchingStoryTreeParser;
 import utybo.branchingstorytree.api.StoryUtils;
 import utybo.branchingstorytree.api.script.ActionDescriptor;
-import utybo.branchingstorytree.api.script.Dictionnary;
 import utybo.branchingstorytree.api.story.BranchingStory;
 import utybo.branchingstorytree.api.story.LogicalNode;
 import utybo.branchingstorytree.api.story.NodeOption;
+import utybo.branchingstorytree.api.story.SaveState;
 import utybo.branchingstorytree.api.story.StoryNode;
 import utybo.branchingstorytree.api.story.TextNode;
 import utybo.branchingstorytree.swing.JScrollablePanel.ScrollableSizeHint;
 
-public class BranchingStoryPlayerSwing extends JFrame
+@SuppressWarnings("serial")
+public class StoryPanel extends JPanel
 {
-    public static final String VERSION = "0.2";
-    private static final long serialVersionUID = 1L;
-
-    private static File file;
-    private static BranchingStoryTreeParser parser = new BranchingStoryTreeParser();
-    private static BranchingStoryPlayerSwing instance;
-    private static BSTClient client = new BSTClient()
-    {
-        @Override
-        public String askInput(String message)
-        {
-            String input = null;
-            while(input == null || input.isEmpty())
-            {
-                input = JOptionPane.showInputDialog(instance, message);
-            }
-            return input;
-        }
-
-        @Override
-        public void exit()
-        {
-            System.exit(0);
-            //TODO Cleaner exit
-        }
-    };
-
     private final JPanel panel = new JPanel();
-    private final BranchingStory story;
+    private BranchingStory story;
     private StoryNode currentNode;
-    private final NodeOption[] options;
-    private final JButton[] optionsButton;
+    private NodeOption[] options;
+    private JButton[] optionsButton;
     private final JLabel textLabel;
+    private final JLabel nodeIdLabel;
     private Color normalButtonFg;
+    private OpenBST parentWindow;
+    private File file;
+    private TabClient client;
 
-    public static void main(final String[] args)
-    {
-        log("OpenBST version " + VERSION + ", part of the BST project");
-        log("[ INIT ]");
-        log("Applying Look and Feel");
-        try
-        {
-            UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
-            log("=> GTKLookAndFeel");
-        }
-        catch(final Exception e)
-        {
-            // Do not print as an exception is thrown in most cases
-            try
-            {
-                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-                log("=> System LookAndFeel");
-            }
-            catch(final Exception e1)
-            {
-                e1.printStackTrace();
-                log("=> No LookAndFeel compatible. Using default");
-            }
-        }
-
-        log("[ FILE ]");
-        log("Asking for file");
-        final FileDialog jfc = new FileDialog((Dialog)null);
-        jfc.setLocationRelativeTo(null);
-        jfc.setTitle("Choose a Branching Story Tree file...");
-        jfc.setVisible(true);
-        if(jfc.getFile() != null)
-        {
-            log("=> File selected");
-            file = new File(jfc.getDirectory() + jfc.getFile());
-            log("[ LAUNCHING ]");
-            loadFile();
-        }
-        else
-        {
-            log("=> No file selected. Exit.");
-            System.exit(0);
-        }
-    }
-
-    private static void loadFile()
-    {
-        try
-        {
-            log("Parsing story");
-
-            log("Creating window");
-            instance = new BranchingStoryPlayerSwing(parser.parse(new BufferedReader(new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8"))), new Dictionnary(), client));
-        }
-        catch(final IOException e)
-        {
-            log("=! IOException caught");
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(null, "<html>There was an error during file loading. Please try again and make sure your file is correct.<p>(" + e.getClass().getSimpleName() + ": " + e.getMessage() + ")", "Error", JOptionPane.ERROR_MESSAGE);
-            System.exit(0);
-        }
-        catch(final BSTException e)
-        {
-            log("=! BSTException caught");
-            e.printStackTrace();
-            String s = "<html><b>-- BST Error --</b><p>";
-            s += "Your file seems to have an error here :<p>";
-            s += "Line : " + e.getWhere() + "<p>";
-            if(e.getCause() != null)
-            {
-                s += "Cause : " + e.getCause().getClass().getSimpleName() + " : " + e.getCause().getMessage() + "<p>";
-            }
-            s += "Message : " + e.getMessage() + "<p>";
-            s += "<b>-- BST Error --</b>";
-            s += "<p><p>Do you wish to reload the file?";
-            if(JOptionPane.showConfirmDialog(null, s, "BST Error", JOptionPane.ERROR_MESSAGE, JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
-            {
-                log("Reloading");
-                loadFile();
-            }
-            else
-            {
-                System.exit(0);
-            }
-        }
-        catch(final Exception e)
-        {
-            log("=! Random exception caught");
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(null, "OpenBST crashed upon opening your file. Your file may have a problem.", "Error", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-    public BranchingStoryPlayerSwing(final BranchingStory story)
+    public StoryPanel(BranchingStory story, OpenBST parentWindow, File f, TabClient client)
     {
         log("=> Initial setup");
         this.story = story;
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        updateStory();
-        try
-        {
-            log("=> Loading icon");
-            setIconImage(ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icon/icon.png")));
-        }
-        catch(final IOException e1)
-        {
-            log("=! IOException caught when loading icon");
-            e1.printStackTrace();
-        }
+        this.parentWindow = parentWindow;
+        file = f;
+        this.client = client;
 
         log("=> Creating visual elements");
-        getContentPane().setLayout(new MigLayout("", "[grow]", "[grow][]"));
+        setLayout(new MigLayout("", "[grow]", "[][grow][]"));
+
+        JToolBar toolBar = new JToolBar();
+        toolBar.setFloatable(false);
+        toolBar.add(new AbstractAction("Export Save State", new ImageIcon(OpenBST.exportImage))
+        {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                // TODO
+            }
+        }).setEnabled(false);;
+        toolBar.add(new AbstractAction("Import Save State", new ImageIcon(OpenBST.importImage))
+        {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                // TODO
+            }
+        }).setEnabled(false);;
+        toolBar.addSeparator();
+        toolBar.add(new AbstractAction("Reset and restart from the beginning", new ImageIcon(OpenBST.returnImage))
+        {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                if(JOptionPane.showConfirmDialog(parentWindow, "<html><body style='width: 300px'>You are about to reset your progress and restart from the beginning. Are you sure you want to continue?", "Reset and Restart confirmation", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, new ImageIcon(OpenBST.returnBigImage)) == JOptionPane.YES_OPTION)
+                {
+                    reset();
+                }
+            }
+        });
+        toolBar.add(new AbstractAction("Soft Reload (reload the file and go back to where I left)", new ImageIcon(OpenBST.refreshImage))
+        {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                if(JOptionPane.showConfirmDialog(parentWindow, "<html><body style='width: 300px'>You are about to reload the BST file. We will try to restore where you were, but this is not a good idea if you heavily edited nodes and scripting. Are you sure you want to continue?", "Soft Reload confirmation", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, new ImageIcon(OpenBST.refreshBigImage)) == JOptionPane.YES_OPTION)
+                {
+                    SaveState ss = new SaveState(currentNode.getId(), story.getRegistry());
+                    reload();
+                    restoreSaveState(ss);
+                }
+            }
+        });
+        toolBar.add(new AbstractAction("Hard Reload (reload and reset)", new ImageIcon(OpenBST.synchronizeImage))
+        {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                if(JOptionPane.showConfirmDialog(parentWindow, "<html><body style='width: 300px'>You are about to reload the BST file. This will also reset all your progress. Are you sure you want to continue?", "Hard Reload confirmation", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, new ImageIcon(OpenBST.synchronizeBigImage)) == JOptionPane.YES_OPTION)
+                {
+                    reload();
+                    reset();
+                }
+            }
+        });
+        toolBar.addSeparator();
+        toolBar.add(new AbstractAction("Jump to Node...", new ImageIcon(OpenBST.jumpImage))
+        {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                SpinnerNumberModel model = new SpinnerNumberModel(1, 1, Integer.MAX_VALUE, 1);
+                JSpinner spinner = new JSpinner(model);
+                int i = JOptionPane.showOptionDialog(parentWindow, spinner, "Jump to Node number...", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, new ImageIcon(OpenBST.jumpBigImage), null, null);
+                if(i == JOptionPane.OK_OPTION)
+                {
+                    showNode(story.getNode((Integer)spinner.getModel().getValue()));
+                }
+            }
+        });
+        toolBar.add(new AbstractAction("See all variables...", new ImageIcon(OpenBST.addonSearchImage))
+        {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                // TODO
+            }
+        }).setEnabled(false);
+
+        toolBar.addSeparator();
+
+        toolBar.add(new AbstractAction("Close tab", new ImageIcon(OpenBST.closeImage))
+        {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                if(JOptionPane.showConfirmDialog(parentWindow, "<html><body style='width: 300px'>You are about to close this BST file. All unsaved progress will be lost. Are you sure you want to close this tab?", "Tab close confirmation", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, new ImageIcon(OpenBST.closeBigImage)) == JOptionPane.YES_OPTION)
+                {
+                    parentWindow.removeStory(StoryPanel.this);
+                }
+            }
+        });
+
+        toolBar.addSeparator();
+
+        nodeIdLabel = new JLabel("Please wait...");
+        nodeIdLabel.setVerticalAlignment(SwingConstants.CENTER);
+        nodeIdLabel.setEnabled(false);
+        toolBar.add(nodeIdLabel);
+
+        toolBar.addSeparator();
+
+        JLabel hintLabel = new JLabel("Hover on one of the icons for more details.");
+        hintLabel.setEnabled(false);
+        toolBar.add(hintLabel);
+
+        for(Component component : toolBar.getComponents())
+        {
+            if(component instanceof JButton)
+            {
+                ((JButton)component).setHideActionText(false);
+                ((JButton)component).setToolTipText(((JButton)component).getText());
+                ((JButton)component).setText("");
+            }
+        }
+        add(toolBar, "cell 0 0,growx");
 
         final JScrollPane scrollPane = new JScrollPane();
         scrollPane.setBackground(Color.WHITE);
-        getContentPane().add(scrollPane, "cell 0 0,grow");
+        add(scrollPane, "cell 0 1,grow");
 
         textLabel = new JLabel("<html>Please wait...");
         textLabel.setFont(new JTextArea().getFont());
         textLabel.setForeground(Color.BLACK);
         textLabel.setBorder(new EmptyBorder(10, 10, 10, 10));
-        textLabel.addMouseListener(new MouseAdapter()
-        {
+        // TODO Change to a system that works with the new layout
+        //        textLabel.addMouseListener(new MouseAdapter()
+        //        {
+        //
+        //            @Override
+        //            public void mouseClicked(final MouseEvent ev)
+        //            {
+        //                if(SwingUtilities.isRightMouseButton(ev))
+        //                {
+        //                    final JPopupMenu menu = new JPopupMenu();
+        //
+        //                    final JMenuItem jmi = new JMenuItem("Node : " + currentNode.getId());
+        //                    jmi.setEnabled(false);
+        //                    menu.add(jmi);
+        //                    menu.add(new JSeparator());
+        //
+        //                    final JMenuItem restart = new JMenuItem("Restart from the beginning (without resetting)");
+        //                    restart.addActionListener(ev2 ->
+        //                    {
+        //                        log("Showing initial node again (no reset)");
+        //                        showNode(story.getInitialNode());
+        //                    });
+        //                    menu.add(restart);
+        //
+        //                    final JMenuItem reset = new JMenuItem("Reset and restart from the beginning");
+        //                    reset.addActionListener(ev2 ->
+        //                    {
+        //                        log("Resetting");
+        //                        log("=> Performing internal reset");
+        //                        story.reset();
+        //                        log("Showing initial node");
+        //                        showNode(story.getInitialNode());
+        //                    });
+        //                    menu.add(reset);
 
-            @Override
-            public void mouseClicked(final MouseEvent ev)
-            {
-                if(SwingUtilities.isRightMouseButton(ev))
-                {
-                    final JPopupMenu menu = new JPopupMenu();
-
-                    final JMenuItem jmi = new JMenuItem("Node : " + currentNode.getId());
-                    jmi.setEnabled(false);
-                    menu.add(jmi);
-                    menu.add(new JSeparator());
-
-                    final JMenuItem restart = new JMenuItem("Restart from the beginning (without resetting)");
-                    restart.addActionListener(ev2 ->
-                    {
-                        log("Showing initial node again (no reset)");
-                        showNode(story.getInitialNode());
-                    });
-                    menu.add(restart);
-
-                    final JMenuItem reset = new JMenuItem("Reset and restart from the beginning");
-                    reset.addActionListener(ev2 ->
-                    {
-                        log("Resetting");
-                        log("=> Performing internal reset");
-                        story.reset();
-                        log("Showing initial node");
-                        showNode(story.getInitialNode());
-                    });
-                    menu.add(reset);
-
-                    final JMenuItem reload = new JMenuItem("Reload the source file(s), reset and restart");
-                    reload.addActionListener(ev2 ->
-                    {
-                        log("[ FULL RELOAD ]");
-                        dispose();
-                        loadFile();
-                    });
-                    menu.add(reload);
-
-                    menu.show(textLabel, ev.getX(), ev.getY());
-                }
-            }
-        });
+        //                    final JMenuItem reload = new JMenuItem("Reload the source file(s), reset and restart");
+        //                    reload.addActionListener(ev2 ->
+        //                    {
+        //                        log("[ FULL RELOAD ]");
+        //                        dispose();
+        //                        loadFile();
+        //                    });
+        //                    menu.add(reload);
+        //
+        //                    menu.show(textLabel, ev.getX(), ev.getY());
+        //                }
+        //            }
+        //        });
         final JScrollablePanel jsp = new JScrollablePanel(new BorderLayout());
         jsp.add(textLabel, BorderLayout.CENTER);
         jsp.setScrollableWidth(ScrollableSizeHint.FIT);
         jsp.setBackground(Color.WHITE);
         scrollPane.setViewportView(jsp);
-        getContentPane().add(panel, "cell 0 1,growx,aligny top");
 
+        add(panel, "cell 0 2,growx,aligny top");
+
+        setupStory();
+    }
+
+    protected void restoreSaveState(SaveState ss)
+    {
+        ss.applySaveState(story);
+        showNode(story.getNode(ss.getNode()));
+    }
+
+    private void setupStory()
+    {
         log("=> Analyzing options and deducing maximum option amount");
         // Quick analysis of all the nodes to get the maximum amount of options
         int maxOptions = 0;
@@ -293,6 +305,7 @@ public class BranchingStoryPlayerSwing extends JFrame
         }
         options = new NodeOption[rows * 2];
         optionsButton = new JButton[rows * 2];
+        panel.removeAll();
         panel.setLayout(new GridLayout(rows, 2, 5, 5));
         for(int i = 0; i < options.length; i++)
         {
@@ -318,22 +331,12 @@ public class BranchingStoryPlayerSwing extends JFrame
 
         log("Displaying first node");
         showNode(story.getInitialNode());
-
-        setSize(830, 480);
-        setLocationRelativeTo(null);
-        setVisible(true);
-
-        log("Issuing NSFW warning");
-        if(story.hasTag("nsfw") && JOptionPane.showConfirmDialog(this, "<html><b>WARNING</b><p>You are about to read a NSFW story. This story is not suitable for children.<p>Only click OK if you are OVER 18 YEARS OLD.", "NSFW WARNING", JOptionPane.WARNING_MESSAGE) != JOptionPane.OK_OPTION)
-        {
-            log("=> Exit");
-            System.exit(0);
-        }
     }
 
-    private void updateStory()
+    protected void reload()
     {
-        setTitle(story.getTagMap().getOrDefault("title", "<untitled>") + " by " + story.getTagMap().getOrDefault("author", "<unknown>") + " -- BST Player " + VERSION);
+        story = parentWindow.loadFile(file, client);
+        setupStory();
     }
 
     private void showNode(final StoryNode storyNode)
@@ -346,7 +349,6 @@ public class BranchingStoryPlayerSwing extends JFrame
             {
                 log("=! It was the initial node");
                 JOptionPane.showMessageDialog(this, "The initial node does not exist. Make sure you are using a correct BST file.", "Error", JOptionPane.ERROR_MESSAGE);
-                System.exit(-1);
             }
             else
             {
@@ -357,6 +359,7 @@ public class BranchingStoryPlayerSwing extends JFrame
         log("=> Trying to show node : " + storyNode.getId());
 
         currentNode = storyNode;
+        nodeIdLabel.setText("Node : " + currentNode.getId());
 
         try
         {
@@ -373,7 +376,7 @@ public class BranchingStoryPlayerSwing extends JFrame
             // This is supposed to be executed when the StoryNode is a TextNode
             if(storyNode instanceof TextNode)
             {
-                log("=> Text node detexted");
+                log("=> Text node detected");
                 final TextNode textNode = (TextNode)storyNode;
 
                 log("=> Solving variables");
@@ -481,6 +484,8 @@ public class BranchingStoryPlayerSwing extends JFrame
                 final JButton button = optionsButton[i];
                 options[i] = option;
                 button.setEnabled(true);
+                if(i == 0)
+                    button.requestFocus();
                 if(option.hasTag("color"))
                 {
                     final String color = option.getTag("color");
@@ -517,13 +522,14 @@ public class BranchingStoryPlayerSwing extends JFrame
             optionsButton[1].setText("Final node : " + textNode.getId());
             optionsButton[2].setText("Restart");
             optionsButton[2].setEnabled(true);
+            optionsButton[2].requestFocus();
             final ActionListener[] original = optionsButton[2].getActionListeners();
             final ActionListener[] original2 = optionsButton[3].getActionListeners();
             for(final ActionListener al : original)
             {
                 optionsButton[2].removeActionListener(al);
             }
-            final ActionListener shutdownListener = e -> System.exit(0);
+            final ActionListener shutdownListener = e -> parentWindow.removeStory(this);
             optionsButton[2].addActionListener(new ActionListener()
             {
                 @Override
@@ -543,7 +549,7 @@ public class BranchingStoryPlayerSwing extends JFrame
                     reset();
                 }
             });
-            optionsButton[3].setText("Quit");
+            optionsButton[3].setText("Close");
             optionsButton[3].setEnabled(true);
             for(final ActionListener al : original2)
             {
@@ -621,4 +627,25 @@ public class BranchingStoryPlayerSwing extends JFrame
         System.out.println(message);
     }
 
+    public String getTitle()
+    {
+        HashMap<String, String> tagMap = story.getTagMap();
+        String s = "";
+        s += tagMap.getOrDefault("title", "<undefined>");
+        s += " - ";
+        s += tagMap.getOrDefault("author", "<unknown>");
+        return s;
+    }
+
+    public boolean postCreation()
+    {
+        log("Issuing NSFW warning");
+        if(story.hasTag("nsfw") && JOptionPane.showConfirmDialog(this, "<html><b>WARNING</b><p>You are about to read a NSFW story. This story is not suitable for children.<p>Only click OK if you are OVER 18 YEARS OLD.", "NSFW WARNING", JOptionPane.WARNING_MESSAGE) != JOptionPane.OK_OPTION)
+        {
+            log("=> Close");
+            return false;
+        }
+        nodeIdLabel.setForeground(Color.RED);
+        return true;
+    }
 }
