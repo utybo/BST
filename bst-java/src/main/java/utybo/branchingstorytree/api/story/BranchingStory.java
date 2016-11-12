@@ -17,7 +17,7 @@ public class BranchingStory extends TagHolder
 {
     private int initialNode = 1;
     private final TreeMap<Integer, StoryNode> nodes = new TreeMap<>();
-    private final VariableRegistry registry = new VariableRegistry();
+    private VariableRegistry registry = new VariableRegistry();
 
     public StoryNode getInitialNode()
     {
@@ -54,6 +54,11 @@ public class BranchingStory extends TagHolder
     public VariableRegistry getRegistry()
     {
         return registry;
+    }
+    
+    public void setRegistry(VariableRegistry registry)
+    {
+        this.registry = registry;
     }
 
     public Collection<StoryNode> getAllNodes()

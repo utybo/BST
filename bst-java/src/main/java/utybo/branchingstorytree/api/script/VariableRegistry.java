@@ -79,4 +79,13 @@ public class VariableRegistry
         }
         return tryingToFindMe;
     }
+    
+    @Override
+    public VariableRegistry clone()
+    {
+        VariableRegistry vr = new VariableRegistry();
+        vr.strVar.putAll(strVar);
+        vr.variables.putAll(variables);
+        return vr;
+    }
 }
