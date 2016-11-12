@@ -28,6 +28,7 @@ public class ClientInteraction implements ScriptAction
             break;
         case "exit":
             client.exit();
+            break;
         }
     }
 

@@ -85,7 +85,7 @@ public class StoryPanel extends JPanel
             {
                 // TODO
             }
-        }).setEnabled(false);;
+        }).setEnabled(false);
         toolBar.add(new AbstractAction("Import Save State", new ImageIcon(OpenBST.importImage))
         {
             private static final long serialVersionUID = 1L;
