@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.swing.AbstractAction;
+import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -169,6 +170,21 @@ public class StoryPanel extends JPanel
 
         toolBar.addSeparator();
 
+        nodeIdLabel = new JLabel("Please wait...");
+        nodeIdLabel.setVerticalAlignment(SwingConstants.CENTER);
+        nodeIdLabel.setEnabled(false);
+        toolBar.add(nodeIdLabel);
+
+        toolBar.addSeparator();
+
+        JLabel hintLabel = new JLabel("Hover on one of the icons for more details.");
+        hintLabel.setEnabled(false);
+        toolBar.add(hintLabel);        
+
+        toolBar.add(Box.createHorizontalGlue());
+        
+        toolBar.addSeparator();
+
         toolBar.add(new AbstractAction("Close tab", new ImageIcon(OpenBST.closeImage))
         {
             private static final long serialVersionUID = 1L;
@@ -182,19 +198,6 @@ public class StoryPanel extends JPanel
                 }
             }
         });
-
-        toolBar.addSeparator();
-
-        nodeIdLabel = new JLabel("Please wait...");
-        nodeIdLabel.setVerticalAlignment(SwingConstants.CENTER);
-        nodeIdLabel.setEnabled(false);
-        toolBar.add(nodeIdLabel);
-
-        toolBar.addSeparator();
-
-        JLabel hintLabel = new JLabel("Hover on one of the icons for more details.");
-        hintLabel.setEnabled(false);
-        toolBar.add(hintLabel);
 
         for(Component component : toolBar.getComponents())
         {
