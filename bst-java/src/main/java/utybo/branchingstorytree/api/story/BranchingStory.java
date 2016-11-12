@@ -55,7 +55,7 @@ public class BranchingStory extends TagHolder
     {
         return registry;
     }
-    
+
     public void setRegistry(VariableRegistry registry)
     {
         this.registry = registry;

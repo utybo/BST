@@ -12,12 +12,12 @@ public class SaveState
         this.node = node;
         registry = vr.clone();
     }
-    
+
     public int getNode()
     {
         return node;
     }
-    
+
     public void applySaveState(BranchingStory bs)
     {
         bs.setRegistry(registry);

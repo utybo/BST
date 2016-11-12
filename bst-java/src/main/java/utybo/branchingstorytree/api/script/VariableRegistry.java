@@ -79,7 +79,7 @@ public class VariableRegistry
         }
         return tryingToFindMe;
     }
-    
+
     @Override
     public VariableRegistry clone()
     {

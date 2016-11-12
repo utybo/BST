@@ -42,7 +42,7 @@ public class Comparison implements ScriptChecker
     @Override
     public String[] getName()
     {
-        return new String[]{"greater", "greaterequ", "less", "lessequ"};
+        return new String[] {"greater", "greaterequ", "less", "lessequ"};
     }
 
 }

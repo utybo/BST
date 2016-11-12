@@ -34,7 +34,7 @@ public class ClientInteraction implements ScriptAction
     @Override
     public String[] getName()
     {
-        return new String[]{"input", "exit"};
+        return new String[] {"input", "exit"};
     }
 
 }

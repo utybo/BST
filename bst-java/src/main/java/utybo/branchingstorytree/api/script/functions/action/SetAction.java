@@ -35,7 +35,7 @@ public class SetAction implements ScriptAction
     @Override
     public String[] getName()
     {
-        return new String[]{"set"};
+        return new String[] {"set"};
     }
 
 }

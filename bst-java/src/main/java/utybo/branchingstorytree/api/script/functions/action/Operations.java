@@ -65,7 +65,7 @@ public class Operations implements ScriptAction
     @Override
     public String[] getName()
     {
-        return new String[]{"add", "sub", "mul", "div"};
+        return new String[] {"add", "sub", "mul", "div"};
     }
 
 }

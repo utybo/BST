@@ -42,7 +42,7 @@ public class EqualityInequality implements ScriptChecker
             final int i = Integer.valueOf(isEqualWith);
             if(var.getClass() == Integer.class)
             {
-                
+
                 return (((Integer)var).intValue() == i) == equ;
             }
         }
@@ -54,7 +54,7 @@ public class EqualityInequality implements ScriptChecker
     @Override
     public String[] getName()
     {
-        return new String[]{"equ", "not"};
+        return new String[] {"equ", "not"};
     }
 
 }
