@@ -8,6 +8,7 @@
  */
 package utybo.branchingstorytree.swing;
 
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 import utybo.branchingstorytree.api.BSTClient;
@@ -28,7 +29,7 @@ public class TabClient implements BSTClient
         String input = null;
         while(input == null || input.isEmpty())
         {
-            input = JOptionPane.showInputDialog(instance, message);
+            input = JOptionPane.showInputDialog(instance, message, "Input asked", JOptionPane.QUESTION_MESSAGE, new ImageIcon(OpenBST.renameImage), null, null).toString();
         }
         return input;
     }
