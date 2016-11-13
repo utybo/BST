@@ -12,18 +12,18 @@ import utybo.branchingstorytree.api.script.VariableRegistry;
 
 public class SaveState
 {
-    private int node;
+    private int nodeId;
     private VariableRegistry registry;
 
-    public SaveState(int node, VariableRegistry vr)
+    public SaveState(int nodeId, VariableRegistry vr)
     {
-        this.node = node;
+        this.nodeId = nodeId;
         registry = vr.clone();
     }
 
-    public int getNode()
+    public int getNodeId()
     {
-        return node;
+        return nodeId;
     }
 
     public void applySaveState(BranchingStory bs)

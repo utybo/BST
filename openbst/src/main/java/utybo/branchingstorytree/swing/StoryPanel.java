@@ -11,10 +11,14 @@ package utybo.branchingstorytree.swing;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.FileDialog;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -36,6 +40,7 @@ import javax.swing.border.EmptyBorder;
 import org.apache.commons.lang.StringEscapeUtils;
 
 import com.github.rjeschke.txtmark.Processor;
+import com.google.gson.Gson;
 
 import net.miginfocom.swing.MigLayout;
 import utybo.branchingstorytree.api.BSTException;
@@ -52,17 +57,22 @@ import utybo.branchingstorytree.swing.JScrollablePanel.ScrollableSizeHint;
 @SuppressWarnings("serial")
 public class StoryPanel extends JPanel
 {
-    private final JPanel panel = new JPanel();
+    
     private BranchingStory story;
     private StoryNode currentNode;
-    private NodeOption[] options;
-    private JButton[] optionsButton;
+    private TabClient client;
+    private SaveState latestSaveState;
+    private File file;
+
+    private OpenBST parentWindow;
     private final JLabel textLabel;
     private final JLabel nodeIdLabel;
+    private NodeOption[] options;
+    private JButton[] optionsButton;
+    private final JPanel panel = new JPanel();
     private Color normalButtonFg;
-    private OpenBST parentWindow;
-    private File file;
-    private TabClient client;
+    
+    private JButton restoreSaveStateButton, exportSaveStateButton;
 
     public StoryPanel(BranchingStory story, OpenBST parentWindow, File f, TabClient client)
     {
@@ -77,16 +87,65 @@ public class StoryPanel extends JPanel
 
         JToolBar toolBar = new JToolBar();
         toolBar.setFloatable(false);
-        toolBar.add(new AbstractAction("Export Save State", new ImageIcon(OpenBST.exportImage))
+        toolBar.add(new AbstractAction("Create Save State", new ImageIcon(OpenBST.saveAsImage))
         {
             private static final long serialVersionUID = 1L;
 
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                // TODO
+                latestSaveState = new SaveState(currentNode.getId(), story.getRegistry());
+                restoreSaveStateButton.setEnabled(true);
+                exportSaveStateButton.setEnabled(true);
             }
-        }).setEnabled(false);
+        });
+        restoreSaveStateButton = toolBar.add(new AbstractAction("Restore latest Save State", new ImageIcon(OpenBST.undoImage))
+        {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                if(JOptionPane.showConfirmDialog(parentWindow, "<html><body style='width: 300px'>You are about to go back to the latest save state. Are you sure you want to do this?", "Restore Save State confirmation", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, new ImageIcon(OpenBST.undoBigImage)) == JOptionPane.YES_OPTION)
+                {
+                    restoreSaveState(latestSaveState);
+                }
+            }
+        });
+        restoreSaveStateButton.setEnabled(false);
+        exportSaveStateButton = toolBar.add(new AbstractAction("Export latest Save State", new ImageIcon(OpenBST.exportImage))
+        {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                final FileDialog jfc = new FileDialog(parentWindow, "Save State location", FileDialog.SAVE);
+                jfc.setLocationRelativeTo(parentWindow);
+                jfc.setIconImage(OpenBST.exportImage);
+                jfc.setVisible(true);
+                if(jfc.getFile() != null)
+                {
+                    File file = new File(jfc.getDirectory() + jfc.getFile());
+                    Gson gson = new Gson();
+                    file.delete();
+                    try
+                    {
+                        file.createNewFile();
+                        FileWriter writer = new FileWriter(file);
+                        gson.toJson(new SaveState(currentNode.getId(), story.getRegistry()), writer);
+                        writer.flush();
+                        writer.close();
+                    }
+                    catch(IOException e1)
+                    {
+                        e1.printStackTrace();
+                        JOptionPane.showMessageDialog(parentWindow, "Could not save the file : " + e1.getMessage() + " (" + e1.getClass().getSimpleName() + ")");
+                    }
+                }
+            }
+        });
+        exportSaveStateButton.setEnabled(false);
         toolBar.add(new AbstractAction("Import Save State", new ImageIcon(OpenBST.importImage))
         {
             private static final long serialVersionUID = 1L;
@@ -94,9 +153,29 @@ public class StoryPanel extends JPanel
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                // TODO
+                final FileDialog jfc = new FileDialog(parentWindow, "Save State location", FileDialog.LOAD);
+                jfc.setLocationRelativeTo(parentWindow);
+                jfc.setIconImage(OpenBST.importImage);
+                jfc.setVisible(true);
+                if(jfc.getFile() != null)
+                {
+                    File file = new File(jfc.getDirectory() + jfc.getFile());
+                    Gson gson = new Gson();
+                    try
+                    {
+                        FileReader reader = new FileReader(file);
+                        latestSaveState = gson.fromJson(reader, SaveState.class);
+                        reader.close();
+                        restoreSaveState(latestSaveState);
+                    }
+                    catch(IOException e1)
+                    {
+                        e1.printStackTrace();
+                        JOptionPane.showMessageDialog(parentWindow, "Could not save the file : " + e1.getMessage() + " (" + e1.getClass().getSimpleName() + ")");
+                    }
+                }
             }
-        }).setEnabled(false);;
+        });
         toolBar.addSeparator();
         toolBar.add(new AbstractAction("Reset and restart from the beginning", new ImageIcon(OpenBST.returnImage))
         {
@@ -179,10 +258,10 @@ public class StoryPanel extends JPanel
 
         JLabel hintLabel = new JLabel("Hover on one of the icons for more details.");
         hintLabel.setEnabled(false);
-        toolBar.add(hintLabel);        
+        toolBar.add(hintLabel);
 
         toolBar.add(Box.createHorizontalGlue());
-        
+
         toolBar.addSeparator();
 
         toolBar.add(new AbstractAction("Close tab", new ImageIcon(OpenBST.closeImage))
@@ -280,7 +359,7 @@ public class StoryPanel extends JPanel
     protected void restoreSaveState(SaveState ss)
     {
         ss.applySaveState(story);
-        showNode(story.getNode(ss.getNode()));
+        showNode(story.getNode(ss.getNodeId()));
     }
 
     private void setupStory()

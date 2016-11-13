@@ -55,8 +55,9 @@ public class OpenBST extends JFrame
     public static Image activeDirectoryImage;
     public static Image openFolderImage;
     public static Image cancelImage, errorImage, aboutImage, renameImage;
-    public static Image addonSearchImage, closeImage, closeBigImage, jumpImage, jumpBigImage, exportImage, gearsImage, importImage, refreshImage, refreshBigImage, returnImage, returnBigImage, synchronizeImage, synchronizeBigImage;
-
+    public static Image addonSearchImage, closeImage, closeBigImage, jumpImage, jumpBigImage, exportImage;
+    public static Image gearsImage, importImage, refreshImage, refreshBigImage, returnImage, returnBigImage;
+    public static Image saveAsImage, synchronizeImage, synchronizeBigImage, undoImage, undoBigImage;
     private JTabbedPane container;
 
     public static void main(final String[] args)
@@ -199,8 +200,12 @@ public class OpenBST extends JFrame
             refreshBigImage = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/toolbar/Refresh Big.png"));
             returnImage = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/toolbar/Return.png"));
             returnBigImage = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/toolbar/Return Big.png"));
+            saveAsImage = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/toolbar/Save as.png"));
             synchronizeImage = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/toolbar/Synchronize.png"));
             synchronizeBigImage = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/toolbar/Synchronize Big.png"));
+            undoImage = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/toolbar/Undo.png"));
+            undoBigImage = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/toolbar/Undo Big.png"));
+
             // Note : this does not work with GTKLookAndFeel
             UIManager.put("OptionPane.errorIcon", new ImageIcon(cancelImage));
             UIManager.put("OptionPane.informationIcon", new ImageIcon(aboutImage));
