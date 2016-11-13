@@ -10,26 +10,27 @@ package utybo.branchingstorytree.api.script;
 
 import utybo.branchingstorytree.api.BSTClient;
 import utybo.branchingstorytree.api.BSTException;
+import utybo.branchingstorytree.api.story.BranchingStory;
 
 public class CheckerDescriptor
 {
     private ScriptChecker checker;
     private String head, desc;
     private BSTClient client;
-    private VariableRegistry registry;
+    private BranchingStory story;
 
-    public CheckerDescriptor(ScriptChecker checker, String head, String desc, VariableRegistry registry, BSTClient client)
+    public CheckerDescriptor(ScriptChecker checker, String head, String desc, BranchingStory story, BSTClient client)
     {
         this.checker = checker;
         this.head = head;
         this.desc = desc;
         this.client = client;
-        this.registry = registry;
+        this.story = story;
     }
 
     public boolean check() throws BSTException
     {
-        return checker.check(head, desc, registry, client);
+        return checker.check(head, desc, story, client);
     }
 
     public ScriptChecker getChecker()
@@ -52,9 +53,9 @@ public class CheckerDescriptor
         return client;
     }
 
-    public VariableRegistry getRegistry()
+    public BranchingStory getStory()
     {
-        return registry;
+        return story;
     }
 
 }

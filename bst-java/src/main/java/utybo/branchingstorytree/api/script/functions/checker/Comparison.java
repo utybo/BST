@@ -12,13 +12,15 @@ import utybo.branchingstorytree.api.BSTClient;
 import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.api.script.ScriptChecker;
 import utybo.branchingstorytree.api.script.VariableRegistry;
+import utybo.branchingstorytree.api.story.BranchingStory;
 
 public class Comparison implements ScriptChecker
 {
 
     @Override
-    public boolean check(String head, String desc, VariableRegistry registry, BSTClient client) throws BSTException
+    public boolean check(String head, String desc, BranchingStory story, BSTClient client) throws BSTException
     {
+        VariableRegistry registry = story.getRegistry();
         final String varName = desc.split(",")[0];
         final Integer var = (Integer)registry.get(varName, 0);
         final String compareTo = desc.split(",")[1];

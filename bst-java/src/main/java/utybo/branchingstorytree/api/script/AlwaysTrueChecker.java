@@ -10,12 +10,13 @@ package utybo.branchingstorytree.api.script;
 
 import utybo.branchingstorytree.api.BSTClient;
 import utybo.branchingstorytree.api.BSTException;
+import utybo.branchingstorytree.api.story.BranchingStory;
 
 public class AlwaysTrueChecker implements ScriptChecker
 {
 
     @Override
-    public boolean check(String head, String desc, VariableRegistry registry, BSTClient client) throws BSTException
+    public boolean check(String head, String desc, BranchingStory story, BSTClient client) throws BSTException
     {
         return true;
     }

@@ -10,26 +10,27 @@ package utybo.branchingstorytree.api.script;
 
 import utybo.branchingstorytree.api.BSTClient;
 import utybo.branchingstorytree.api.BSTException;
+import utybo.branchingstorytree.api.story.BranchingStory;
 
 public class ActionDescriptor
 {
     private ScriptAction action;
     private String head, desc;
     private BSTClient client;
-    private VariableRegistry registry;
+    private BranchingStory story;
 
-    public ActionDescriptor(ScriptAction action, String head, String desc, VariableRegistry registry, BSTClient client)
+    public ActionDescriptor(ScriptAction action, String head, String desc, BranchingStory story, BSTClient client)
     {
         this.action = action;
         this.head = head;
         this.desc = desc;
         this.client = client;
-        this.registry = registry;
+        this.story = story;
     }
 
     public void exec() throws BSTException
     {
-        action.exec(head, desc, registry, client);
+        action.exec(head, desc, story, client);
     }
 
     public ScriptAction getAction()
@@ -52,9 +53,9 @@ public class ActionDescriptor
         return client;
     }
 
-    public VariableRegistry getRegistry()
+    public BranchingStory getStory()
     {
-        return registry;
+        return story;
     }
 
 }

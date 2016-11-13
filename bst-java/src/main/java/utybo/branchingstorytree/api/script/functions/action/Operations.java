@@ -12,13 +12,15 @@ import utybo.branchingstorytree.api.BSTClient;
 import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.api.script.ScriptAction;
 import utybo.branchingstorytree.api.script.VariableRegistry;
+import utybo.branchingstorytree.api.story.BranchingStory;
 
 public class Operations implements ScriptAction
 {
 
     @Override
-    public void exec(String head, String desc, VariableRegistry registry, BSTClient client) throws BSTException
+    public void exec(String head, String desc, BranchingStory story, BSTClient client) throws BSTException
     {
+        VariableRegistry registry = story.getRegistry();
         final String[] pars = desc.split(",");
         String putIn = null;
         String a = null;

@@ -12,11 +12,12 @@ import org.atteo.classindex.IndexSubclasses;
 
 import utybo.branchingstorytree.api.BSTClient;
 import utybo.branchingstorytree.api.BSTException;
+import utybo.branchingstorytree.api.story.BranchingStory;
 
 @IndexSubclasses
 public interface ScriptAction
 {
-    public void exec(String head, String desc, VariableRegistry registry, BSTClient client) throws BSTException;
+    public void exec(String head, String desc, BranchingStory story, BSTClient client) throws BSTException;
 
     public String[] getName();
 }
