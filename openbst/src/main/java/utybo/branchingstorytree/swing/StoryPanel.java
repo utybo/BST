@@ -126,7 +126,7 @@ public class StoryPanel extends JPanel
                 jfc.setVisible(true);
                 if(jfc.getFile() != null)
                 {
-                    File file = new File(jfc.getDirectory() + jfc.getFile());
+                    File file = new File(jfc.getFile().endsWith(".bss") ? jfc.getDirectory() + jfc.getFile() : jfc.getDirectory() + jfc.getFile() + ".bss");
                     Gson gson = new Gson();
                     file.delete();
                     try
