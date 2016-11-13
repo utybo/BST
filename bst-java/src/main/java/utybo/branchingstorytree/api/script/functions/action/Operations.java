@@ -41,8 +41,25 @@ public class Operations implements ScriptAction
             throw new BSTException(-1, "Invalid syntax : {" + head + ":a,b} for a + b with result in a or {add:a,b,c} for b + c with result in a");
         }
 
-        final int ia = registry.typeOf(a) == Integer.class ? (Integer)registry.get(a, 0) : Integer.parseInt(a);
-        final int ib = registry.typeOf(b) == Integer.class ? (Integer)registry.get(b, 0) : Integer.parseInt(b);
+        int ia, ib;
+        try
+        {
+            ia = registry.typeOf(a) == Integer.class ? (Integer)registry.get(a, 0) : Integer.parseInt(a);
+        }
+        catch(NumberFormatException nfe)
+        {
+            // This means that the first number is probably a variable that was not initialized
+            // thus registry.typeOf(a) returned null. We take 0 by default.
+            ia = 0;
+        }
+        try
+        {
+            ib = registry.typeOf(b) == Integer.class ? (Integer)registry.get(b, 0) : Integer.parseInt(b);
+        }
+        catch(NumberFormatException nfe)
+        {
+            ib = 0;
+        }
 
         switch(head)
         {
