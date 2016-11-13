@@ -28,7 +28,7 @@ sourceSets {
 }
 
 sourceCompatibility = 1.8
-version = '0.1-RC2'
+version = '0.2-RC1'
 mainClassName = "utybo.branchingstorytree.swing.OpenBST"
 
 dependencies {
