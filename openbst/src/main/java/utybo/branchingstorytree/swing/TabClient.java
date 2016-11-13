@@ -26,12 +26,12 @@ public class TabClient implements BSTClient
     @Override
     public String askInput(String message)
     {
-        String input = null;
-        while(input == null || input.isEmpty())
+        Object input = null;
+        while(input == null || input.toString().isEmpty())
         {
-            input = JOptionPane.showInputDialog(instance, message, "Input asked", JOptionPane.QUESTION_MESSAGE, new ImageIcon(OpenBST.renameImage), null, null).toString();
+            input = JOptionPane.showInputDialog(instance, message, "Input asked", JOptionPane.QUESTION_MESSAGE, new ImageIcon(OpenBST.renameImage), null, null);
         }
-        return input;
+        return input.toString();
     }
 
     @Override
