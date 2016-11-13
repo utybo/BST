@@ -21,7 +21,7 @@ public class StoryUtils
     public static String solveVariables(final TextNode textNode, final BranchingStory story) throws BSTException
     {
         String text = textNode.getText();
-        final Pattern vp = Pattern.compile("\\$\\{((\\>\\d+)|(\\w+))\\}");
+        final Pattern vp = Pattern.compile("\\$\\{(([\\&\\>]\\d+)|(\\w+))\\}");
         final Matcher vn = vp.matcher(text);
         while(vn.find())
         {
