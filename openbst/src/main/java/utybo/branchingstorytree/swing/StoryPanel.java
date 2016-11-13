@@ -15,6 +15,7 @@ import java.awt.FileDialog;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -32,6 +33,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTextArea;
+import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
@@ -57,22 +59,24 @@ import utybo.branchingstorytree.swing.JScrollablePanel.ScrollableSizeHint;
 @SuppressWarnings("serial")
 public class StoryPanel extends JPanel
 {
-    
-    private BranchingStory story;
+
+    protected BranchingStory story;
     private StoryNode currentNode;
     private TabClient client;
     private SaveState latestSaveState;
     private File file;
 
-    private OpenBST parentWindow;
+    protected OpenBST parentWindow;
     private final JLabel textLabel;
     private final JLabel nodeIdLabel;
     private NodeOption[] options;
     private JButton[] optionsButton;
     private final JPanel panel = new JPanel();
     private Color normalButtonFg;
-    
+
     private JButton restoreSaveStateButton, exportSaveStateButton;
+    protected JToggleButton variableWatcherButton;
+    protected VariableWatchDialog variableWatcher;
 
     public StoryPanel(BranchingStory story, OpenBST parentWindow, File f, TabClient client)
     {
@@ -236,16 +240,21 @@ public class StoryPanel extends JPanel
                 }
             }
         });
-        toolBar.add(new AbstractAction("See all variables...", new ImageIcon(OpenBST.addonSearchImage))
+        variableWatcherButton = new JToggleButton("", new ImageIcon(OpenBST.addonSearchImage));
+        variableWatcherButton.addItemListener(e ->
         {
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public void actionPerformed(ActionEvent e)
+            if(e.getStateChange() == ItemEvent.SELECTED)
             {
-                // TODO
+                variableWatcher = new VariableWatchDialog(StoryPanel.this);
+                variableWatcher.setVisible(true);
             }
-        }).setEnabled(false);
+            else if(e.getStateChange() == ItemEvent.DESELECTED)
+            {
+                variableWatchClosing();
+            }
+        });
+        variableWatcherButton.setToolTipText("Variable watcher...");
+        toolBar.add(variableWatcherButton);
 
         toolBar.addSeparator();
 
@@ -297,54 +306,6 @@ public class StoryPanel extends JPanel
         textLabel.setFont(new JTextArea().getFont());
         textLabel.setForeground(Color.BLACK);
         textLabel.setBorder(new EmptyBorder(10, 10, 10, 10));
-        // TODO Change to a system that works with the new layout
-        //        textLabel.addMouseListener(new MouseAdapter()
-        //        {
-        //
-        //            @Override
-        //            public void mouseClicked(final MouseEvent ev)
-        //            {
-        //                if(SwingUtilities.isRightMouseButton(ev))
-        //                {
-        //                    final JPopupMenu menu = new JPopupMenu();
-        //
-        //                    final JMenuItem jmi = new JMenuItem("Node : " + currentNode.getId());
-        //                    jmi.setEnabled(false);
-        //                    menu.add(jmi);
-        //                    menu.add(new JSeparator());
-        //
-        //                    final JMenuItem restart = new JMenuItem("Restart from the beginning (without resetting)");
-        //                    restart.addActionListener(ev2 ->
-        //                    {
-        //                        log("Showing initial node again (no reset)");
-        //                        showNode(story.getInitialNode());
-        //                    });
-        //                    menu.add(restart);
-        //
-        //                    final JMenuItem reset = new JMenuItem("Reset and restart from the beginning");
-        //                    reset.addActionListener(ev2 ->
-        //                    {
-        //                        log("Resetting");
-        //                        log("=> Performing internal reset");
-        //                        story.reset();
-        //                        log("Showing initial node");
-        //                        showNode(story.getInitialNode());
-        //                    });
-        //                    menu.add(reset);
-
-        //                    final JMenuItem reload = new JMenuItem("Reload the source file(s), reset and restart");
-        //                    reload.addActionListener(ev2 ->
-        //                    {
-        //                        log("[ FULL RELOAD ]");
-        //                        dispose();
-        //                        loadFile();
-        //                    });
-        //                    menu.add(reload);
-        //
-        //                    menu.show(textLabel, ev.getX(), ev.getY());
-        //                }
-        //            }
-        //        });
         final JScrollablePanel jsp = new JScrollablePanel(new BorderLayout());
         jsp.add(textLabel, BorderLayout.CENTER);
         jsp.setScrollableWidth(ScrollableSizeHint.FIT);
@@ -537,7 +498,7 @@ public class StoryPanel extends JPanel
                 showOptions(textNode);
             }
         }
-        catch(final BSTException e)
+        catch(final Exception e)
         {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Error on node " + storyNode.getId() + " :" + "\n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -728,5 +689,12 @@ public class StoryPanel extends JPanel
         }
         nodeIdLabel.setForeground(Color.RED);
         return true;
+    }
+
+    protected void variableWatchClosing()
+    {
+        variableWatcherButton.setSelected(false);
+        variableWatcher.deathNotified();
+        variableWatcher.dispose();
     }
 }

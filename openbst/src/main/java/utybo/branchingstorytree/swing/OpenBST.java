@@ -55,7 +55,7 @@ public class OpenBST extends JFrame
     public static Image activeDirectoryImage;
     public static Image openFolderImage;
     public static Image cancelImage, errorImage, aboutImage, renameImage;
-    public static Image addonSearchImage, closeImage, closeBigImage, jumpImage, jumpBigImage, exportImage;
+    public static Image addonSearchImage, addonSearchMediumImage, closeImage, closeBigImage, jumpImage, jumpBigImage, exportImage;
     public static Image gearsImage, importImage, refreshImage, refreshBigImage, returnImage, returnBigImage;
     public static Image saveAsImage, synchronizeImage, synchronizeBigImage, undoImage, undoBigImage;
     private JTabbedPane container;
@@ -189,6 +189,7 @@ public class OpenBST extends JFrame
             renameImage = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/Rename.png"));
 
             addonSearchImage = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/toolbar/Addon Search.png"));
+            addonSearchMediumImage = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/toolbar/Addon Search Medium.png"));
             closeImage = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/toolbar/Close.png"));
             closeBigImage = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/toolbar/Close Big.png"));
             jumpImage = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/toolbar/Jump.png"));
