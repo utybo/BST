@@ -9,6 +9,7 @@
 package utybo.branchingstorytree.api.script;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class VariableRegistry
 {
@@ -42,6 +43,11 @@ public class VariableRegistry
     public HashMap<String, Integer> getAllInt()
     {
         return variables;
+    }
+
+    public Map<String, String> getAllString()
+    {
+        return strVar;
     }
 
     public void reset()
