@@ -309,6 +309,7 @@ public class StoryPanel extends JPanel
         final JScrollablePanel jsp = new JScrollablePanel(new BorderLayout());
         jsp.add(textLabel, BorderLayout.CENTER);
         jsp.setScrollableWidth(ScrollableSizeHint.FIT);
+        jsp.setScrollableHeight(ScrollableSizeHint.STRETCH);
         jsp.setBackground(Color.WHITE);
         scrollPane.setViewportView(jsp);
 
