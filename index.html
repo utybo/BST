@@ -1,67 +1,96 @@
-<!DOCTYPE html>
-<html lang="en-us">
-  <head>
-    <meta charset="UTF-8">
-    <title>BST &amp; OpenBST by utybo</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
-    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
-  </head>
-  <body>
-    <section class="page-header">
-      <h1 class="project-name">BST &amp; OpenBST</h1>
-      <h2 class="project-tagline">Create your own branching story easily</h2>
-      <a href="https://github.com/utybo/BST" class="btn">View on GitHub</a>
-      <a href="#download-now" class="btn">Downloads</a>
-      <a href="https://github.com/utybo/BST/releases" class="btn">Latest release</a>
-    </section>
+---
+layout: default
+---
+<div class="page-content">
+  <div class="mdl-grid">
+  {% if site.post_type == 'highlight' %}
 
-    <section class="main-content">
-      <h1>
-<a id="bst" class="anchor" href="#bst" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>BST</h1>
+    {% for post in site.posts %}
+    {% if post.highlight %}
 
-<p>BST is a simple, straight-forward language built from the ground up to provide the most user-friendly clutter-free experience possible to both users and story creators. Creating BST files simply requires any text file editor : Windows' Notepad.exe, Notepad++, gedit, Mousepad, Pluma, Atom.io, Sublime Text, any can do!</p>
+    <div class="section-highlight section--center mdl-grid mdl-grid--no-spacing mdl-shadow--2dp">
 
-<pre><code>1:This small text box is all you need to know to get started
-:Cool!|2
+      <header class="section__play-btn mdl-cell mdl-cell--3-col-desktop mdl-cell--2-col-tablet mdl-cell--4-col-phone" {% if post.image %} style="background: url('{{ post.image }}') center/cover;" {% endif %}></header>
 
-2:I know right? :D
-</code></pre>
+      <div class="mdl-card mdl-cell mdl-cell--9-col-desktop mdl-cell--6-col-tablet mdl-cell--4-col-phone">
+        <div class="mdl-card__supporting-text">
+          <h4>{{ post.title }}</h4>
+          <p>{{ post.excerpt }}</p>
+        </div>
+        <div class="mdl-card__actions">
+          <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" href="{{ post.url | prepend: site.baseurl }}">Read More</a>
+        </div>
+      </div>
 
-<p>And you can even create more complex story with scripting. Heck, you could even create your very own text-based game with it -- your imagination is the limit.</p>
+      <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon" id="btn-high-{{ post.id }}">
+        <i class="material-icons">more_vert</i>
+      </button>
+      <ul class="mdl-menu mdl-js-menu mdl-menu--bottom-right" for="btn-high-{{ post.id }}">
+        <li><a href="https://www.facebook.com/dialog/share?app_id={{site.facebook_app_id}}&display=page&href={{ post.url | prepend: site.baseurl }}&redirect_uri={{ site.baseurl }}" class="mdl-menu__item">Facebook</a></li>
+        <li><a href="https://twitter.com/share?url={{ post.url | prepend: site.baseurl }}&text={{ post.title }}&via={{ site.twitter_username }}" class="mdl-menu__item">Twitter</a></li>
+        <li><a href="https://plus.google.com/share?url={{ post.url | prepend: site.baseurl }}" class="mdl-menu__item">Google+</a></li>
+      </ul>
 
-<p>The BST format is open, and documentation is available freely to download from the Release page.</p>
+    </div>
 
-<h1>
-<a id="openbst" class="anchor" href="#openbst" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>OpenBST</h1>
+    {% else %}
 
-<p>OpenBST is a simple, cross-platform and universal program to read and interact with any BST formatted file. It aims to be up to date with the latest new fancy features.</p>
+    <div class="mdl-card mdl-shadow--2dp mdl-cell mdl-cell--4-col mdl-cell--4-col-desktop mdl-cell--4-col-tablet mdl-cell--12-col-phone">
+      <div class="mdl-card__title" {% if post.image %} style="background: url('{{ post.image }}') center/cover;" {% endif %}>
+        <h2 class="mdl-card__title-text">{{ post.title }}</h2>
+      </div>
+      <div class="mdl-card__supporting-text">
+        <span>{{ post.date | date: "%b %-d, %Y" }}</span>
+        <p>{{ post.excerpt }}</p>
+      </div>
+      <div class="mdl-card__actions mdl-card--border">
+        <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" href="{{ post.url | prepend: site.baseurl }}">Read More</a>
+      </div>
+      <div class="mdl-card__menu">
+        <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" id="post-{{ post.id }}">
+          <i class="material-icons">share</i>
+        </button>
+        <ul class="mdl-menu mdl-js-menu mdl-menu--bottom-right" for="post-{{ post.id }}">
+          <li><a href="https://www.facebook.com/dialog/share?app_id={{site.facebook_app_id}}&display=page&href={{ post.url | prepend: site.baseurl }}&redirect_uri={{ site.baseurl }}" class="mdl-menu__item">Facebook</a></li>
+          <li><a href="https://twitter.com/share?url={{ post.url | prepend: site.baseurl }}&text={{ post.title }}&via={{ site.twitter_username }}" class="mdl-menu__item">Twitter</a></li>
+          <li><a href="https://plus.google.com/share?url={{ post.url | prepend: site.baseurl }}" class="mdl-menu__item">Google+</a></li>
+        </ul>
+      </div>
+    </div>
+    {% endif %}
+    {% endfor %}
 
-<p>Its interface is simple enough for newcomers while containing everything needed for power users and story creators.</p>
+  {% else %}
 
-<h1>
-<a id="download-now" class="anchor" href="#download-now" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Download now (Version 0.2-RC1)</h1>
+    {% for post in site.posts %}
 
-<h3>
-<a id="download-the-bst-tutorial-and-its-examples--download-openbst" class="anchor" href="#download-the-bst-tutorial-and-its-examples--download-openbst" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><a href="https://github.com/utybo/BST/releases/download/v0.2-RC1/The.BST.Tutorial.pdf">Download the BST Tutorial</a> (and its <a href="https://github.com/utybo/BST/releases/download/v0.2-RC1/examples.zip">examples</a>) | <a href="https://github.com/utybo/BST/releases/download/v0.2-RC1/openbst-0.2-RC1-full.jar">Download OpenBST</a>
-</h3>
+    <div class="mdl-card mdl-shadow--2dp mdl-cell mdl-cell--4-col mdl-cell--4-col-desktop mdl-cell--4-col-tablet  mdl-cell--12-col-phone">
+      <div class="mdl-card__title" {% if post.image %} style="background: url('{{ post.image }}') center/cover;" {% endif %}>
+        <h2 class="mdl-card__title-text">{{ post.title }}</h2>
+      </div>
+      <div class="mdl-card__supporting-text">
+        <span>{{ post.date | date: "%b %-d, %Y" }}</span>
+        <p>{{ post.excerpt }}</p>
+      </div>
+      <div class="mdl-card__actions mdl-card--border">
+        <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" href="{{ post.url | prepend: site.baseurl }}">
+          Read More
+        </a>
+      </div>
+      <div class="mdl-card__menu">
+        <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" id="post-{{ post.id }}">
+          <i class="material-icons">share</i>
+        </button>
+        <ul class="mdl-menu mdl-js-menu mdl-menu--bottom-right" for="post-{{ post.id }}">
+          <li><a href="https://www.facebook.com/dialog/share?app_id={{site.facebook_app_id}}&display=page&href={{ post.url | prepend: site.baseurl }}&redirect_uri={{ site.baseurl }}" class="mdl-menu__item">Facebook</a></li>
+          <li><a href="https://twitter.com/share?url={{ post.url | prepend: site.baseurl }}&text={{ post.title }}&via={{ site.twitter_username }}" class="mdl-menu__item">Twitter</a></li>
+          <li><a href="https://plus.google.com/share?url={{ post.url | prepend: site.baseurl }}" class="mdl-menu__item">Google+</a></li>
+        </ul>
+      </div>
+    </div>
 
-<h3>
-<a id="report-bugs-here" class="anchor" href="#report-bugs-here" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><a href="https://github.com/utybo/BST/issues">Report bugs here</a>
-</h3>
+    {% endfor %}
 
-<p>OpenBST is licensed under the MPL-v2 License. The BST tutorial and all its examples (including but not limited to the files contained in the examples.zip file) are licensed under the CC-BY-NC-SA v4 International license.</p>
-
-      <footer class="site-footer">
-        <span class="site-footer-owner"><a href="https://github.com/utybo/BST">BST, OpenBST and the BST Tutorial</a> are maintained by <a href="https://github.com/utybo">utybo</a>.</span>
-
-        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
-      </footer>
-
-    </section>
-
-  
-  </body>
-</html>
+  {% endif %}
+  </div>
+</div>

@@ -1,0 +1,30 @@
+# Site settings
+title: The BST & OpenBST Projects
+email: utybodev@gmail.com
+description: > # this means to ignore newlines until "baseurl:"
+  Create branching stories and small text-based games easily.
+  Free and Open Source!
+baseurl: "/BST" # the subpath of your site, e.g. /blog/
+url: "http://utybo.github.io" # the base hostname & protocol for your site
+# twitter_username: 
+github_username:  utybo
+# google_play: ''
+# google_plus_com: ''  # Community link
+# google_plus_per: '+'  #Personal link
+# facebook_app_id: 12345
+
+# Layout settings
+header_type: default  # values [ drawer, default ]
+post_type: highlight    # values [ highlight, default ]
+pagination_type: default  # values [ ops, default ]
+
+more_vert:
+  option1:
+    name: GitHub
+    link: github.com/utybo/BST
+
+disqus: false
+# disqus_shortname: ''
+
+# Build settings
+markdown: kramdown

@@ -1,0 +1,16 @@
+---
+layout: post
+title:  "OpenBST 0.2 RC1 Released"
+date:   2016-11-16 01:01:02
+categories: main
+author: utybo
+highlight: true
+image: img/v0.2RC1.png
+---
+The first Release Candidate of OpenBST is out! Check out the full description [here][relpage]! The main difference you will notice is the new interface. Some bugfixing is required on it, but other than that, it is pretty stable!
+
+![Promo]({{ site.baseurl }}/img/v0.2RC1.png)
+
+The Tutorial was updated too! It is now fully complete with the BST language. More details will be added when BST will reach 1.0 with plugin compatibility.
+
+[relpage]: https://github.com/utybo/BST/releases/v0.2-RC1
