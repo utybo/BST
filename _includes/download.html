@@ -1,0 +1,32 @@
+<p>Here, you can find all the downloads for OpenBST and the BST Tutorial</p>
+<p>Versions that have a slightly red background are not suitable for production use (they are beta versions).</p>
+
+<table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp" style="width: 100%;">
+  <thead>
+    <tr>
+      <th class="mdl-data-table__cell--non-numeric">Version</th>
+      <th class="mdl-data-table__cell--non-numeric">Tag</th>
+      <th class="mdl-data-table__cell--non-numeric">Blog post</th>
+      <th class="mdl-data-table__cell--non-numeric">OpenBST</th>
+      <th class="mdl-data-table__cell--non-numeric">The BST Tutorial</th>
+      <th class="mdl-data-table__cell--non-numeric">Examples</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for version in site.versions %}
+    <tr {% if version.stable != true %} style="background-color: #ffeeee;" {% endif %}>
+      <td class="mdl-data-table__cell--non-numeric">{{ version.name }}</td>
+      
+      <td class="mdl-data-table__cell--non-numeric"><button class="mdl-button mdl-js-button mdl-js-ripple-effect" {% if version.devtag %} onclick="location.href='https://github.com/utybo/BST/tree/{{ version.devtag }}'" {% else %} disabled {% endif %} style="line-height: 20px; margin-top: -6px; width: 100%;">Tag</button></td>
+      
+      <td class="mdl-data-table__cell--non-numeric"><button class="mdl-button mdl-js-button mdl-js-ripple-effect" {% if version.blogpost %} onclick="location.href='{{ version.blogpost }}'" {% else %} disabled {% endif %} style="line-height: 20px; margin-top: -6px; width: 100%;">Blog post</button></td>
+      
+      <td class="mdl-data-table__cell--non-numeric"><button class="mdl-button mdl-button--raised mdl-button--colored mdl-js-button mdl-js-ripple-effect" {% if version.jar %} onclick="location.href='{{ version.jar }}'" {% else %} disabled {% endif %} style="line-height: 20px; margin-top: -6px; width: 100%;">OpenBST</button></td>
+      
+      <td class="mdl-data-table__cell--non-numeric"><button class="mdl-button mdl-button--raised mdl-button--colored mdl-button--accent mdl-js-button mdl-js-ripple-effect" {% if version.tutorial %} onclick="location.href='{{ version.tutorial }}'" {% else %} disabled {% endif %} style="line-height: 20px; margin-top: -6px; width: 100%;">Tutorial</button></td>
+      
+      <td class="mdl-data-table__cell--non-numeric"><button class="mdl-button mdl-button--raised mdl-js-button mdl-js-ripple-effect" {% if version.examples %} onclick="location.href='{{ version.examples }}'" {% else %} disabled {% endif %} style="line-height: 20px; margin-top: -6px; width: 100%;">Examples</button></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
