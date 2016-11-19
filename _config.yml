@@ -31,9 +31,9 @@ markdown: kramdown
 
 # Versions
 versions:
-- name: 0.2 RC2
+- name: 0.2 RC1
   devtag: v0.2-RC1
-  blogpost: http://127.0.0.1:4000/BST/main/2016/11/16/0.2-rc1-released.html
+  blogpost: /main/2016/11/16/0.2-rc1-released.html
   stable: false
   jar: https://github.com/utybo/BST/releases/download/v0.2-RC1/openbst-0.2-RC1-full.jar
   tutorial: https://github.com/utybo/BST/releases/download/v0.2-RC1/The.BST.Tutorial.pdf

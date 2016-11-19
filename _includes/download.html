@@ -19,7 +19,7 @@
       
       <td class="mdl-data-table__cell--non-numeric"><button class="mdl-button mdl-js-button mdl-js-ripple-effect" {% if version.devtag %} onclick="location.href='https://github.com/utybo/BST/tree/{{ version.devtag }}'" {% else %} disabled {% endif %} style="line-height: 20px; margin-top: -6px; width: 100%;">Tag</button></td>
       
-      <td class="mdl-data-table__cell--non-numeric"><button class="mdl-button mdl-js-button mdl-js-ripple-effect" {% if version.blogpost %} onclick="location.href='{{ version.blogpost }}'" {% else %} disabled {% endif %} style="line-height: 20px; margin-top: -6px; width: 100%;">Blog post</button></td>
+      <td class="mdl-data-table__cell--non-numeric"><button class="mdl-button mdl-js-button mdl-js-ripple-effect" {% if version.blogpost %} onclick="location.href='{{ site.baseurl }}{{ version.blogpost }}'" {% else %} disabled {% endif %} style="line-height: 20px; margin-top: -6px; width: 100%;">Blog post</button></td>
       
       <td class="mdl-data-table__cell--non-numeric"><button class="mdl-button mdl-button--raised mdl-button--colored mdl-js-button mdl-js-ripple-effect" {% if version.jar %} onclick="location.href='{{ version.jar }}'" {% else %} disabled {% endif %} style="line-height: 20px; margin-top: -6px; width: 100%;">OpenBST</button></td>
       
