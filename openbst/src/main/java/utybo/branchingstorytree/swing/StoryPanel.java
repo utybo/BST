@@ -303,6 +303,7 @@ public class StoryPanel extends JPanel
         add(scrollPane, "cell 0 1,grow");
 
         textLabel = new JLabel("<html>Please wait...");
+        textLabel.setVerticalAlignment(SwingConstants.TOP);
         textLabel.setFont(new JTextArea().getFont());
         textLabel.setForeground(Color.BLACK);
         textLabel.setBorder(new EmptyBorder(10, 10, 10, 10));
