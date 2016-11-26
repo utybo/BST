@@ -152,7 +152,7 @@ public class StoryPanel extends JPanel implements UIBarHandler
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                if(JOptionPane.showConfirmDialog(parentWindow, "<html><body style='width: 300px'>You are about to go back to the latest save state. Are you sure you want to do this?", "Restore Save State confirmation", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, new ImageIcon(OpenBST.undoBigImage)) == JOptionPane.YES_OPTION)
+                if(JOptionPane.showConfirmDialog(parentWindow, "<html><body style='width: 300px'>You are about to go back to the latest save state. Are you sure you want to do this?<p><p>(Note : any change to the tag 'hidetools' will be ignored)", "Restore Save State confirmation", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, new ImageIcon(OpenBST.undoBigImage)) == JOptionPane.YES_OPTION)
                 {
                     restoreSaveState(latestSaveState);
                 }
@@ -246,7 +246,9 @@ public class StoryPanel extends JPanel implements UIBarHandler
                 if(JOptionPane.showConfirmDialog(parentWindow, "<html><body style='width: 300px'>You are about to reload the BST file. We will try to restore where you were, but this is not a good idea if you heavily edited nodes and scripting. Are you sure you want to continue?", "Soft Reload confirmation", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, new ImageIcon(OpenBST.refreshBigImage)) == JOptionPane.YES_OPTION)
                 {
                     SaveState ss = new SaveState(currentNode.getId(), story.getRegistry());
+                    reset();
                     reload();
+                    reset();
                     restoreSaveState(ss);
                 }
             }
@@ -1012,7 +1014,11 @@ public class StoryPanel extends JPanel implements UIBarHandler
             // Redefine if visible or not
             if("true".equals(story.getTag("__uib__visible")))
             {
-
+                uibPanel.setVisible(true);
+            }
+            else
+            {
+                uibPanel.setVisible(false);
             }
         }
     }
@@ -1037,7 +1043,7 @@ public class StoryPanel extends JPanel implements UIBarHandler
         uibPanel.revalidate();
         uibPanel.repaint();
         uibPanel.setVisible(false);
-        uibInitialized = false;
         uibComponents.clear();
+        uibInitialized = false;
     }
 }
