@@ -131,188 +131,202 @@ public class StoryPanel extends JPanel implements UIBarHandler
 
     private void createToolbar()
     {
+        int toolbarLevel = readToolbarLevel();
         JToolBar toolBar = new JToolBar();
         toolBar.setFloatable(false);
-        toolBar.add(new AbstractAction("Create Save State", new ImageIcon(OpenBST.saveAsImage))
+        if(toolbarLevel > 0)
         {
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public void actionPerformed(ActionEvent e)
+            toolBar.add(new AbstractAction("Create Save State", new ImageIcon(OpenBST.saveAsImage))
             {
-                latestSaveState = new SaveState(currentNode.getId(), story.getRegistry());
-                restoreSaveStateButton.setEnabled(true);
-                exportSaveStateButton.setEnabled(true);
-            }
-        });
-        restoreSaveStateButton = toolBar.add(new AbstractAction("Restore latest Save State", new ImageIcon(OpenBST.undoImage))
-        {
-            private static final long serialVersionUID = 1L;
+                private static final long serialVersionUID = 1L;
 
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                if(JOptionPane.showConfirmDialog(parentWindow, "<html><body style='width: 300px'>You are about to go back to the latest save state. Are you sure you want to do this?<p><p>(Note : any change to the tag 'hidetools' will be ignored)", "Restore Save State confirmation", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, new ImageIcon(OpenBST.undoBigImage)) == JOptionPane.YES_OPTION)
+                @Override
+                public void actionPerformed(ActionEvent e)
                 {
-                    restoreSaveState(latestSaveState);
+                    latestSaveState = new SaveState(currentNode.getId(), story.getRegistry());
+                    restoreSaveStateButton.setEnabled(true);
+                    if(exportSaveStateButton != null)
+                        exportSaveStateButton.setEnabled(true);
                 }
-            }
-        });
-        restoreSaveStateButton.setEnabled(false);
-        exportSaveStateButton = toolBar.add(new AbstractAction("Export latest Save State", new ImageIcon(OpenBST.exportImage))
-        {
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public void actionPerformed(ActionEvent e)
+            });
+            restoreSaveStateButton = toolBar.add(new AbstractAction("Restore latest Save State", new ImageIcon(OpenBST.undoImage))
             {
-                final FileDialog jfc = new FileDialog(parentWindow, "Save State location", FileDialog.SAVE);
-                jfc.setLocationRelativeTo(parentWindow);
-                jfc.setIconImage(OpenBST.exportImage);
-                jfc.setVisible(true);
-                if(jfc.getFile() != null)
-                {
-                    File file = new File(jfc.getFile().endsWith(".bss") ? jfc.getDirectory() + jfc.getFile() : jfc.getDirectory() + jfc.getFile() + ".bss");
-                    Gson gson = new Gson();
-                    file.delete();
-                    try
-                    {
-                        file.createNewFile();
-                        FileWriter writer = new FileWriter(file);
-                        gson.toJson(new SaveState(currentNode.getId(), story.getRegistry()), writer);
-                        writer.flush();
-                        writer.close();
-                    }
-                    catch(IOException e1)
-                    {
-                        e1.printStackTrace();
-                        JOptionPane.showMessageDialog(parentWindow, "Could not save the file : " + e1.getMessage() + " (" + e1.getClass().getSimpleName() + ")");
-                    }
-                }
-            }
-        });
-        exportSaveStateButton.setEnabled(false);
-        toolBar.add(new AbstractAction("Import Save State", new ImageIcon(OpenBST.importImage))
-        {
-            private static final long serialVersionUID = 1L;
+                private static final long serialVersionUID = 1L;
 
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                final FileDialog jfc = new FileDialog(parentWindow, "Save State location", FileDialog.LOAD);
-                jfc.setLocationRelativeTo(parentWindow);
-                jfc.setIconImage(OpenBST.importImage);
-                jfc.setVisible(true);
-                if(jfc.getFile() != null)
+                @Override
+                public void actionPerformed(ActionEvent e)
                 {
-                    File file = new File(jfc.getDirectory() + jfc.getFile());
-                    Gson gson = new Gson();
-                    try
+                    if(JOptionPane.showConfirmDialog(parentWindow, "<html><body style='width: 300px'>You are about to go back to the latest save state. Are you sure you want to do this?<p><p>(Note : any change to the tag 'hidetools' will be ignored)", "Restore Save State confirmation", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, new ImageIcon(OpenBST.undoBigImage)) == JOptionPane.YES_OPTION)
                     {
-                        FileReader reader = new FileReader(file);
-                        latestSaveState = gson.fromJson(reader, SaveState.class);
-                        reader.close();
                         restoreSaveState(latestSaveState);
                     }
-                    catch(IOException e1)
+                }
+            });
+            restoreSaveStateButton.setEnabled(false);
+            if(toolbarLevel > 1)
+            {
+                exportSaveStateButton = toolBar.add(new AbstractAction("Export latest Save State", new ImageIcon(OpenBST.exportImage))
+                {
+                    private static final long serialVersionUID = 1L;
+
+                    @Override
+                    public void actionPerformed(ActionEvent e)
                     {
-                        e1.printStackTrace();
-                        JOptionPane.showMessageDialog(parentWindow, "Could not save the file : " + e1.getMessage() + " (" + e1.getClass().getSimpleName() + ")");
+                        final FileDialog jfc = new FileDialog(parentWindow, "Save State location", FileDialog.SAVE);
+                        jfc.setLocationRelativeTo(parentWindow);
+                        jfc.setIconImage(OpenBST.exportImage);
+                        jfc.setVisible(true);
+                        if(jfc.getFile() != null)
+                        {
+                            File file = new File(jfc.getFile().endsWith(".bss") ? jfc.getDirectory() + jfc.getFile() : jfc.getDirectory() + jfc.getFile() + ".bss");
+                            Gson gson = new Gson();
+                            file.delete();
+                            try
+                            {
+                                file.createNewFile();
+                                FileWriter writer = new FileWriter(file);
+                                gson.toJson(new SaveState(currentNode.getId(), story.getRegistry()), writer);
+                                writer.flush();
+                                writer.close();
+                            }
+                            catch(IOException e1)
+                            {
+                                e1.printStackTrace();
+                                JOptionPane.showMessageDialog(parentWindow, "Could not save the file : " + e1.getMessage() + " (" + e1.getClass().getSimpleName() + ")");
+                            }
+                        }
+                    }
+                });
+                exportSaveStateButton.setEnabled(false);
+                toolBar.add(new AbstractAction("Import Save State", new ImageIcon(OpenBST.importImage))
+                {
+                    private static final long serialVersionUID = 1L;
+
+                    @Override
+                    public void actionPerformed(ActionEvent e)
+                    {
+                        final FileDialog jfc = new FileDialog(parentWindow, "Save State location", FileDialog.LOAD);
+                        jfc.setLocationRelativeTo(parentWindow);
+                        jfc.setIconImage(OpenBST.importImage);
+                        jfc.setVisible(true);
+                        if(jfc.getFile() != null)
+                        {
+                            File file = new File(jfc.getDirectory() + jfc.getFile());
+                            Gson gson = new Gson();
+                            try
+                            {
+                                FileReader reader = new FileReader(file);
+                                latestSaveState = gson.fromJson(reader, SaveState.class);
+                                reader.close();
+                                restoreSaveState(latestSaveState);
+                            }
+                            catch(IOException e1)
+                            {
+                                e1.printStackTrace();
+                                JOptionPane.showMessageDialog(parentWindow, "Could not save the file : " + e1.getMessage() + " (" + e1.getClass().getSimpleName() + ")");
+                            }
+                        }
+                    }
+                });
+                if(toolbarLevel > 2)
+                {
+                    toolBar.addSeparator();
+                    toolBar.add(new AbstractAction("Reset and restart from the beginning", new ImageIcon(OpenBST.returnImage))
+                    {
+                        private static final long serialVersionUID = 1L;
+
+                        @Override
+                        public void actionPerformed(ActionEvent e)
+                        {
+                            if(JOptionPane.showConfirmDialog(parentWindow, "<html><body style='width: 300px'>You are about to reset your progress and restart from the beginning. Are you sure you want to continue?", "Reset and Restart confirmation", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, new ImageIcon(OpenBST.returnBigImage)) == JOptionPane.YES_OPTION)
+                            {
+                                reset();
+                            }
+                        }
+                    });
+                    toolBar.add(new AbstractAction("Soft Reload (reload the file and go back to where I left)", new ImageIcon(OpenBST.refreshImage))
+                    {
+                        private static final long serialVersionUID = 1L;
+
+                        @Override
+                        public void actionPerformed(ActionEvent e)
+                        {
+                            if(JOptionPane.showConfirmDialog(parentWindow, "<html><body style='width: 300px'>You are about to reload the BST file. We will try to restore where you were, but this is not a good idea if you heavily edited nodes and scripting. Are you sure you want to continue?", "Soft Reload confirmation", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, new ImageIcon(OpenBST.refreshBigImage)) == JOptionPane.YES_OPTION)
+                            {
+                                SaveState ss = new SaveState(currentNode.getId(), story.getRegistry());
+                                reset();
+                                reload();
+                                reset();
+                                restoreSaveState(ss);
+                            }
+                        }
+                    });
+                    toolBar.add(new AbstractAction("Hard Reload (reload and reset)", new ImageIcon(OpenBST.synchronizeImage))
+                    {
+                        private static final long serialVersionUID = 1L;
+
+                        @Override
+                        public void actionPerformed(ActionEvent e)
+                        {
+                            if(JOptionPane.showConfirmDialog(parentWindow, "<html><body style='width: 300px'>You are about to reload the BST file. This will also reset all your progress. Are you sure you want to continue?", "Hard Reload confirmation", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, new ImageIcon(OpenBST.synchronizeBigImage)) == JOptionPane.YES_OPTION)
+                            {
+                                reset();
+                                reload();
+                                reset();
+                            }
+                        }
+                    });
+                    if(toolbarLevel > 3)
+                    {
+                        toolBar.addSeparator();
+                        toolBar.add(new AbstractAction("Jump to Node...", new ImageIcon(OpenBST.jumpImage))
+                        {
+                            private static final long serialVersionUID = 1L;
+
+                            @Override
+                            public void actionPerformed(ActionEvent e)
+                            {
+                                SpinnerNumberModel model = new SpinnerNumberModel(1, 1, Integer.MAX_VALUE, 1);
+                                JSpinner spinner = new JSpinner(model);
+                                int i = JOptionPane.showOptionDialog(parentWindow, spinner, "Jump to Node number...", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, new ImageIcon(OpenBST.jumpBigImage), null, null);
+                                if(i == JOptionPane.OK_OPTION)
+                                {
+                                    showNode(story.getNode((Integer)spinner.getModel().getValue()));
+                                }
+                            }
+                        });
+                        variableWatcherButton = new JToggleButton("", new ImageIcon(OpenBST.addonSearchImage));
+                        variableWatcherButton.addItemListener(e ->
+                        {
+                            if(e.getStateChange() == ItemEvent.SELECTED)
+                            {
+                                variableWatcher = new VariableWatchDialog(StoryPanel.this);
+                                variableWatcher.setVisible(true);
+                            }
+                            else if(e.getStateChange() == ItemEvent.DESELECTED)
+                            {
+                                variableWatchClosing();
+                            }
+                        });
+                        variableWatcherButton.setToolTipText("Variable watcher...");
+                        toolBar.add(variableWatcherButton);
+
+                        toolBar.addSeparator();
+
+                        nodeIdLabel = new JLabel("Please wait...");
+                        nodeIdLabel.setVerticalAlignment(SwingConstants.CENTER);
+                        nodeIdLabel.setEnabled(false);
+                        toolBar.add(nodeIdLabel);
                     }
                 }
             }
-        });
-        toolBar.addSeparator();
-        toolBar.add(new AbstractAction("Reset and restart from the beginning", new ImageIcon(OpenBST.returnImage))
-        {
-            private static final long serialVersionUID = 1L;
 
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                if(JOptionPane.showConfirmDialog(parentWindow, "<html><body style='width: 300px'>You are about to reset your progress and restart from the beginning. Are you sure you want to continue?", "Reset and Restart confirmation", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, new ImageIcon(OpenBST.returnBigImage)) == JOptionPane.YES_OPTION)
-                {
-                    reset();
-                }
-            }
-        });
-        toolBar.add(new AbstractAction("Soft Reload (reload the file and go back to where I left)", new ImageIcon(OpenBST.refreshImage))
-        {
-            private static final long serialVersionUID = 1L;
+            toolBar.addSeparator();
 
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                if(JOptionPane.showConfirmDialog(parentWindow, "<html><body style='width: 300px'>You are about to reload the BST file. We will try to restore where you were, but this is not a good idea if you heavily edited nodes and scripting. Are you sure you want to continue?", "Soft Reload confirmation", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, new ImageIcon(OpenBST.refreshBigImage)) == JOptionPane.YES_OPTION)
-                {
-                    SaveState ss = new SaveState(currentNode.getId(), story.getRegistry());
-                    reset();
-                    reload();
-                    reset();
-                    restoreSaveState(ss);
-                }
-            }
-        });
-        toolBar.add(new AbstractAction("Hard Reload (reload and reset)", new ImageIcon(OpenBST.synchronizeImage))
-        {
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                if(JOptionPane.showConfirmDialog(parentWindow, "<html><body style='width: 300px'>You are about to reload the BST file. This will also reset all your progress. Are you sure you want to continue?", "Hard Reload confirmation", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, new ImageIcon(OpenBST.synchronizeBigImage)) == JOptionPane.YES_OPTION)
-                {
-                    reset();
-                    reload();
-                    reset();
-                }
-            }
-        });
-        toolBar.addSeparator();
-        toolBar.add(new AbstractAction("Jump to Node...", new ImageIcon(OpenBST.jumpImage))
-        {
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                SpinnerNumberModel model = new SpinnerNumberModel(1, 1, Integer.MAX_VALUE, 1);
-                JSpinner spinner = new JSpinner(model);
-                int i = JOptionPane.showOptionDialog(parentWindow, spinner, "Jump to Node number...", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, new ImageIcon(OpenBST.jumpBigImage), null, null);
-                if(i == JOptionPane.OK_OPTION)
-                {
-                    showNode(story.getNode((Integer)spinner.getModel().getValue()));
-                }
-            }
-        });
-        variableWatcherButton = new JToggleButton("", new ImageIcon(OpenBST.addonSearchImage));
-        variableWatcherButton.addItemListener(e ->
-        {
-            if(e.getStateChange() == ItemEvent.SELECTED)
-            {
-                variableWatcher = new VariableWatchDialog(StoryPanel.this);
-                variableWatcher.setVisible(true);
-            }
-            else if(e.getStateChange() == ItemEvent.DESELECTED)
-            {
-                variableWatchClosing();
-            }
-        });
-        variableWatcherButton.setToolTipText("Variable watcher...");
-        toolBar.add(variableWatcherButton);
-
-        toolBar.addSeparator();
-
-        nodeIdLabel = new JLabel("Please wait...");
-        nodeIdLabel.setVerticalAlignment(SwingConstants.CENTER);
-        nodeIdLabel.setEnabled(false);
-        toolBar.add(nodeIdLabel);
-
-        toolBar.addSeparator();
-
-        JLabel hintLabel = new JLabel("Hover on one of the icons for more details.");
-        hintLabel.setEnabled(false);
-        toolBar.add(hintLabel);
+            JLabel hintLabel = new JLabel("Hover on one of the icons for more details.");
+            hintLabel.setEnabled(false);
+            toolBar.add(hintLabel);
+        }
 
         toolBar.add(Box.createHorizontalGlue());
 
@@ -342,6 +356,28 @@ public class StoryPanel extends JPanel implements UIBarHandler
             }
         }
         add(toolBar, "growx, wrap");
+    }
+
+    private int readToolbarLevel()
+    {
+        String value = story.getTag("supertools");
+        if(value == null)
+            return 4;
+        switch(value)
+        {
+        case "all":
+            return 4;
+        case "hidecheat":
+            return 3;
+        case "savestate":
+            return 2;
+        case "savestatenoio":
+            return 1;
+        case "none":
+            return 0;
+        default:
+            return 0;
+        }
     }
 
     protected void restoreSaveState(SaveState ss)
@@ -428,7 +464,8 @@ public class StoryPanel extends JPanel implements UIBarHandler
         log("=> Trying to show node : " + storyNode.getId());
 
         currentNode = storyNode;
-        nodeIdLabel.setText("Node : " + currentNode.getId());
+        if(nodeIdLabel != null)
+            nodeIdLabel.setText("Node : " + currentNode.getId());
 
         try
         {
