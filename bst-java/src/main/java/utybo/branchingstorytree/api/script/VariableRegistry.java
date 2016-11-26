@@ -52,10 +52,8 @@ public class VariableRegistry
 
     public void reset()
     {
-        for(final String s : variables.keySet())
-        {
-            variables.remove(s);
-        }
+        variables.clear();
+        strVar.clear();
     }
 
     public Class<?> typeOf(final String name)
