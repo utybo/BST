@@ -15,7 +15,7 @@ sourceSets {
     }
 }
 
-version = '0.2-RC1'
+version = '0.3-RC1'
 
 dependencies {
     compile 'org.atteo.classindex:classindex:3.4'
