@@ -18,9 +18,9 @@ import utybo.branchingstorytree.api.story.VirtualNode;
 
 public class StoryUtils
 {
-    public static String solveVariables(final TextNode textNode, final BranchingStory story) throws BSTException
+    public static String solveVariables(final VirtualNode virtualNode, final BranchingStory story) throws BSTException
     {
-        String text = textNode.getText();
+        String text = virtualNode.getText();
         final Pattern vp = Pattern.compile("\\$\\{(([\\&\\>]\\d+)|(\\w+))\\}");
         final Matcher vn = vp.matcher(text);
         while(vn.find())
