@@ -22,15 +22,21 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.regex.Pattern;
 
 import javax.swing.AbstractAction;
 import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.JSpinner;
 import javax.swing.JTextArea;
 import javax.swing.JToggleButton;
@@ -48,16 +54,19 @@ import net.miginfocom.swing.MigLayout;
 import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.api.StoryUtils;
 import utybo.branchingstorytree.api.script.ActionDescriptor;
+import utybo.branchingstorytree.api.script.VariableRegistry;
 import utybo.branchingstorytree.api.story.BranchingStory;
 import utybo.branchingstorytree.api.story.LogicalNode;
 import utybo.branchingstorytree.api.story.NodeOption;
 import utybo.branchingstorytree.api.story.SaveState;
 import utybo.branchingstorytree.api.story.StoryNode;
 import utybo.branchingstorytree.api.story.TextNode;
+import utybo.branchingstorytree.api.story.VirtualNode;
 import utybo.branchingstorytree.swing.JScrollablePanel.ScrollableSizeHint;
+import utybo.branchingstorytree.uib.UIBarHandler;
 
 @SuppressWarnings("serial")
-public class StoryPanel extends JPanel
+public class StoryPanel extends JPanel implements UIBarHandler
 {
 
     protected BranchingStory story;
@@ -68,7 +77,7 @@ public class StoryPanel extends JPanel
 
     protected OpenBST parentWindow;
     private final JLabel textLabel;
-    private final JLabel nodeIdLabel;
+    private JLabel nodeIdLabel;
     private NodeOption[] options;
     private JButton[] optionsButton;
     private final JPanel panel = new JPanel();
@@ -81,14 +90,47 @@ public class StoryPanel extends JPanel
     public StoryPanel(BranchingStory story, OpenBST parentWindow, File f, TabClient client)
     {
         log("=> Initial setup");
+        client.setStoryPanel(this);
         this.story = story;
         this.parentWindow = parentWindow;
         file = f;
         this.client = client;
 
         log("=> Creating visual elements");
-        setLayout(new MigLayout("", "[grow]", "[][grow][]"));
+        setLayout(new MigLayout("hidemode 3", "[grow]", ""));
 
+        createToolbar();
+
+        if(story.hasTag("uib_layout"))
+        {
+            uibPanel = new JPanel();
+            add(uibPanel, "growx, wrap");
+            uibPanel.setVisible(false);
+        }
+
+        final JScrollPane scrollPane = new JScrollPane();
+        scrollPane.setBackground(Color.WHITE);
+        add(scrollPane, "grow, pushy, wrap");
+
+        textLabel = new JLabel("<html><b>If you see this, there was a problem.</b><p>You may have seen a failure message. Please fix the problem and reload the file :)");
+        textLabel.setVerticalAlignment(SwingConstants.TOP);
+        textLabel.setFont(new JTextArea().getFont());
+        textLabel.setForeground(Color.BLACK);
+        textLabel.setBorder(new EmptyBorder(10, 10, 10, 10));
+        final JScrollablePanel jsp = new JScrollablePanel(new BorderLayout());
+        jsp.add(textLabel, BorderLayout.CENTER);
+        jsp.setScrollableWidth(ScrollableSizeHint.FIT);
+        jsp.setScrollableHeight(ScrollableSizeHint.STRETCH);
+        jsp.setBackground(Color.WHITE);
+        scrollPane.setViewportView(jsp);
+
+        add(panel, "growx");
+
+        setupStory();
+    }
+
+    private void createToolbar()
+    {
         JToolBar toolBar = new JToolBar();
         toolBar.setFloatable(false);
         toolBar.add(new AbstractAction("Create Save State", new ImageIcon(OpenBST.saveAsImage))
@@ -218,6 +260,7 @@ public class StoryPanel extends JPanel
             {
                 if(JOptionPane.showConfirmDialog(parentWindow, "<html><body style='width: 300px'>You are about to reload the BST file. This will also reset all your progress. Are you sure you want to continue?", "Hard Reload confirmation", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, new ImageIcon(OpenBST.synchronizeBigImage)) == JOptionPane.YES_OPTION)
                 {
+                    reset();
                     reload();
                     reset();
                 }
@@ -296,27 +339,7 @@ public class StoryPanel extends JPanel
                 ((JButton)component).setText("");
             }
         }
-        add(toolBar, "cell 0 0,growx");
-
-        final JScrollPane scrollPane = new JScrollPane();
-        scrollPane.setBackground(Color.WHITE);
-        add(scrollPane, "cell 0 1,grow");
-
-        textLabel = new JLabel("<html>Please wait...");
-        textLabel.setVerticalAlignment(SwingConstants.TOP);
-        textLabel.setFont(new JTextArea().getFont());
-        textLabel.setForeground(Color.BLACK);
-        textLabel.setBorder(new EmptyBorder(10, 10, 10, 10));
-        final JScrollablePanel jsp = new JScrollablePanel(new BorderLayout());
-        jsp.add(textLabel, BorderLayout.CENTER);
-        jsp.setScrollableWidth(ScrollableSizeHint.FIT);
-        jsp.setScrollableHeight(ScrollableSizeHint.STRETCH);
-        jsp.setBackground(Color.WHITE);
-        scrollPane.setViewportView(jsp);
-
-        add(panel, "cell 0 2,growx,aligny top");
-
-        setupStory();
+        add(toolBar, "growx, wrap");
     }
 
     protected void restoreSaveState(SaveState ss)
@@ -432,23 +455,7 @@ public class StoryPanel extends JPanel
                 // 1 == Markdown
                 // 2 == HTML
                 final int markupLanguage = solveMarkup(textNode);
-
-                switch(markupLanguage)
-                {
-                case 1:
-                    log("=> Processing markup language : Markdown");
-                    text = "<html>" + Processor.process(text); // MD to HTML
-                    // TODO Test to see if HTML characters are escaped
-                    break;
-                case 2:
-                    log("=> Processing markup language : HTML");
-                    text = "<html>" + text; // HTML to HTML
-                    break;
-                default:
-                    log("=> Processing markup language : None");
-                    text = "<html>" + StringEscapeUtils.escapeHtml(text).replace("\n", "<br>"); // Plain text to HTML
-                    break;
-                }
+                text = translateMarkup(markupLanguage, text);
 
                 log("=> Applying text");
                 textLabel.setText(text);
@@ -498,12 +505,32 @@ public class StoryPanel extends JPanel
 
                 log("Applying options for node : " + textNode.getId());
                 showOptions(textNode);
+
+                log("Updating UIB if necessary");
+                updateUIB();
             }
         }
         catch(final Exception e)
         {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Error on node " + storyNode.getId() + " :" + "\n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private String translateMarkup(int markupLanguage, String input)
+    {
+        switch(markupLanguage)
+        {
+        case 1:
+            log("=> Processing markup language : Markdown");
+            return "<html>" + Processor.process(input); // MD to HTML
+        // TODO Test to see if HTML characters are escaped
+        case 2:
+            log("=> Processing markup language : HTML");
+            return "<html>" + input; // HTML to HTML
+        default:
+            log("=> Processing markup language : None");
+            return "<html>" + StringEscapeUtils.escapeHtml(input).replace("\n", "<br>"); // Plain text to HTML
         }
     }
 
@@ -608,15 +635,18 @@ public class StoryPanel extends JPanel
     {
         log("=> Performing internal reset");
         story.reset();
+
+        resetUib();
+
         log("=> Processing initial node again");
         showNode(story.getInitialNode());
     }
 
     private int solveMarkup(final TextNode textNode)
     {
-        if(story.hasTag("markup") || textNode.hasTag("markup"))
+        if(story.hasTag("markup") || (textNode != null && textNode.hasTag("markup")))
         {
-            if(textNode.hasTag("markup"))
+            if(textNode != null && textNode.hasTag("markup"))
             {
                 final String s = textNode.getTag("markup");
                 if(s.equalsIgnoreCase("md") || s.equalsIgnoreCase("markdown"))
@@ -698,5 +728,316 @@ public class StoryPanel extends JPanel
         variableWatcherButton.setSelected(false);
         variableWatcher.deathNotified();
         variableWatcher.dispose();
+    }
+
+    // --------------------- UIB --------------------- //
+
+    private String layout;
+    private JPanel uibPanel;
+    private TreeMap<String, JComponent> uibComponents = new TreeMap<>();
+    private boolean uibInitialized = false;
+
+    @Override
+    public void setLayout(String layoutIdentifier) throws BSTException
+    {
+        layout = layoutIdentifier;
+    }
+
+    @Override
+    public void initialize() throws BSTException
+    {
+        uibInitialized = true;
+        story.putTag("__uib__initialized", "true");
+        boolean gridMode = story.hasTag("uib_grid");
+        String columnDef = story.getTag("uib_grid");
+        boolean advancedMode = Boolean.parseBoolean(story.getTag("uib_advanced"));
+        uibPanel.setLayout(new MigLayout((gridMode ? "" : "nogrid, ") + "fillx", columnDef));
+        String[] parts = layout.split(advancedMode ? ";" : "[,;]");
+        boolean newLine = false;
+        for(int i = 0; i < parts.length; i++)
+        {
+            String s = parts[i];
+            int index = s.indexOf(':');
+            String comp = index > -1 ? s.substring(0, index) : s;
+            String constraints = advancedMode && index > -1 ? s.substring(index + 1) : "";
+            Component toAdd = null;
+            switch(comp)
+            {
+            case "tb":
+                JLabel t = new JLabel();
+                uibComponents.put(determineNext("t"), t);
+                uibPanel.add(t, (newLine ? "newline" : "") + ", alignx right");
+                newLine = false;
+                // $FALL-THROUGH$
+            case "b":
+                JProgressBar jpb = new JProgressBar();
+                uibComponents.put(determineNext("b"), jpb);
+                toAdd = jpb;
+                if(!advancedMode)
+                    constraints += ", grow";
+                uibPanel.add(jpb);
+                break;
+            case "t":
+                JLabel t1 = new JLabel();
+                uibComponents.put(determineNext("t"), t1);
+                constraints += ", aligny top";
+                toAdd = t1;
+                break;
+            case "vs":
+                toAdd = new JSeparator(SwingConstants.VERTICAL);
+                constraints += ", growy";
+                break;
+            case "hs":
+                toAdd = new JSeparator(SwingConstants.HORIZONTAL);
+                constraints += ", growx";
+                break;
+            case "nl":
+                // $FALL-THROUGH$
+            case "ln":
+                newLine = true;
+                continue; // Get out of here! we don't have anything to add
+            case "gu":
+                toAdd = Box.createHorizontalStrut(5);
+                break;
+            default:
+                throw new BSTException(-1, "Unknown component : '" + comp + "'");
+            }
+            if(newLine)
+            {
+                constraints += ", newline";
+            }
+            uibPanel.add(toAdd, constraints);
+        }
+        uibPanel.revalidate();
+    }
+
+    private String determineNext(String string)
+    {
+        int i = 0;
+        Pattern p = Pattern.compile(string + "\\d+");
+        for(String s : uibComponents.keySet())
+        {
+            if(p.matcher(s).matches())
+            {
+                i++;
+            }
+        }
+        return string + i;
+    }
+
+    @Override
+    public boolean isElementValueTypeInteger(String element) throws BSTException
+    {
+        JComponent c = uibComponents.get(element);
+        return c != null && c instanceof JProgressBar;
+    }
+
+    @Override
+    public void setElementValue(String element, int value) throws BSTException
+    {
+        JComponent c = uibComponents.get(element);
+        if(c != null)
+        {
+            story.putTag("__uib__" + element + "_value", "" + value);
+            updateComponent(element, c);
+        }
+    }
+
+    @Override
+    public void setElementValue(String element, String value) throws BSTException
+    {
+        JComponent c = uibComponents.get(element);
+        if(c != null)
+        {
+            story.putTag("__uib__" + element + "_value", "" + value);
+            updateComponent(element, c);
+        }
+    }
+
+    @Override
+    public void setElementMax(String element, int max)
+    {
+        JComponent c = uibComponents.get(element);
+        if(c instanceof JProgressBar)
+        {
+            story.putTag("__uib__" + element + "_max", "" + max);
+            ((JProgressBar)c).getModel().setMaximum(max);
+        }
+
+    }
+
+    @Override
+    public void setElementMin(String element, int min)
+    {
+        JComponent c = uibComponents.get(element);
+        if(c instanceof JProgressBar)
+        {
+            story.putTag("__uib__" + element + "_min", "" + min);
+            ((JProgressBar)c).getModel().setMinimum(min);
+        }
+
+    }
+
+    @Override
+    public boolean supportsDynamicInteger(String element)
+    {
+        JComponent c = uibComponents.get(element);
+        return c instanceof JProgressBar;
+    }
+
+    @Override
+    public void setUIBVisisble(boolean parseBoolean)
+    {
+        uibPanel.setVisible(parseBoolean);
+        story.putTag("__uib__visible", Boolean.toString(parseBoolean));
+    }
+
+    @Override
+    public boolean elementExists(String element)
+    {
+        return uibComponents.containsKey(element);
+    }
+
+    public void updateUIB() throws BSTException
+    {
+        if(uibInitialized)
+        {
+            for(String element : uibComponents.keySet())
+            {
+                updateComponent(element, uibComponents.get(element));
+            }
+        }
+    }
+
+    private void updateComponent(String element, JComponent c) throws BSTException
+    {
+        if(c instanceof JLabel)
+        {
+            String s = translateMarkup(solveMarkup(null), computeText(story.getTag("__uib__" + element + "_value")));
+            //String s = computeText(uibch.getValue().toString());
+            ((JLabel)c).setText(s);
+        }
+        else if(c instanceof JProgressBar)
+        {
+            ((JProgressBar)c).setValue(computeInt(story.getTag("__uib__" + element + "_value")));
+        }
+
+    }
+
+    private int computeInt(String value)
+    {
+        if(value == null)
+            return 0;
+
+        VariableRegistry registry = story.getRegistry();
+        try
+        {
+            return registry.typeOf(value) == Integer.class ? (Integer)registry.get(value, 0) : Integer.parseInt(value);
+        }
+        catch(NumberFormatException nfe2)
+        {
+            return 0;
+        }
+    }
+
+    private String computeText(String string) throws BSTException
+    {
+        if(string == null)
+            return "";
+        try
+        {
+            if(string.startsWith(">"))
+            {
+                return computeText(Integer.valueOf(string.substring(1)), true);
+            }
+            else if(string.startsWith("&"))
+            {
+                return computeText(Integer.valueOf(string.substring(1)), false);
+            }
+        }
+        catch(NumberFormatException e)
+        {}
+        return string;
+    }
+
+    private String computeText(int i, boolean isVirtual) throws BSTException
+    {
+        if(isVirtual)
+        {
+            return StoryUtils.solveVariables((VirtualNode)story.getNode(i), story);
+        }
+        else
+        {
+            int j = ((LogicalNode)story.getNode(i)).solve();
+            return computeText(j, story.getNode(j) instanceof LogicalNode ? false : true);
+        }
+    }
+
+    @Override
+    public void restoreState() throws BSTException
+    {
+        // While save states aim to be restored at a minimum cost,
+        // UIB will be reset when restored. This is to avoid glitches
+        // and make sure we build onto a clean UIB.
+        resetUib();
+
+        if(Boolean.parseBoolean("__uib__initialized"))
+        {
+            // Initialize
+            initialize();
+
+            // Restore all values
+            for(String element : uibComponents.keySet())
+            {
+                Map<String, String> componentTags = getUibTags(element);
+
+                for(String tag : componentTags.keySet())
+                {
+                    String value = componentTags.get(tag);
+                    switch(tag)
+                    {
+                    case "max":
+                        setElementMax(element, Integer.parseInt(value));
+                        break;
+                    case "min":
+                        setElementMin(element, Integer.parseInt(value));
+                        break;
+                    case "value":
+                        setElementValue(element, value);
+                        break;
+                    }
+                }
+            }
+
+            // Redefine if visible or not
+            if("true".equals(story.getTag("__uib__visible")))
+            {
+
+            }
+        }
+    }
+
+    private Map<String, String> getUibTags(String element)
+    {
+        HashMap<String, String> map = new HashMap<>();
+        for(String tagName : story.getTagMap().keySet())
+        {
+            if(tagName.startsWith("__uib__" + element + "_"))
+            {
+                map.put(tagName.substring("__uib__".length() + element.length() + "_".length()), map.get(tagName));
+            }
+        }
+        return map;
+    }
+
+    public void resetUib()
+    {
+        log("=> Performing UIB Reset");
+        uibPanel.removeAll();
+        uibPanel.revalidate();
+        uibPanel.repaint();
+        uibPanel.setVisible(false);
+        uibInitialized = false;
+        uibComponents.clear();
     }
 }

@@ -42,7 +42,7 @@ import utybo.branchingstorytree.swing.JScrollablePanel.ScrollableSizeHint;
 
 public class OpenBST extends JFrame
 {
-    public static final String VERSION = "0.2";
+    public static final String VERSION = "0.3";
     private static final long serialVersionUID = 1L;
 
     private BranchingStoryTreeParser parser = new BranchingStoryTreeParser();
@@ -247,7 +247,7 @@ public class OpenBST extends JFrame
                 BranchingStory bs = loadFile(f, client);
                 if(bs != null)
                 {
-                    client.setStoryPanel(addStory(bs, f, client));
+                    addStory(bs, f, client);
                 }
             }
         });

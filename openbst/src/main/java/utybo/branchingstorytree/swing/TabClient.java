@@ -12,6 +12,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 import utybo.branchingstorytree.api.BSTClient;
+import utybo.branchingstorytree.uib.UIBarHandler;
 
 public class TabClient implements BSTClient
 {
@@ -43,6 +44,12 @@ public class TabClient implements BSTClient
     public void setStoryPanel(StoryPanel sp)
     {
         tab = sp;
+    }
+
+    @Override
+    public UIBarHandler getUIBarHandler()
+    {
+        return tab;
     }
 
 }

@@ -8,9 +8,16 @@
  */
 package utybo.branchingstorytree.api;
 
+import utybo.branchingstorytree.uib.UIBarHandler;
+
 public interface BSTClient
 {
     public String askInput(String message);
 
     public void exit();
+
+    public default UIBarHandler getUIBarHandler()
+    {
+        return null;
+    }
 }
