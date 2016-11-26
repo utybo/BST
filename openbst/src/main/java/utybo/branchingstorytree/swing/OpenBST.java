@@ -11,6 +11,7 @@ package utybo.branchingstorytree.swing;
 import java.awt.BorderLayout;
 import java.awt.FileDialog;
 import java.awt.Image;
+import java.awt.Toolkit;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -69,6 +70,21 @@ public class OpenBST extends JFrame
         {
             UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
             log("=> GTKLookAndFeel");
+
+            // If GTKLookAndFeel was successfully loaded, apply Gnome Shell fix
+            try
+            {
+                Toolkit xToolkit = Toolkit.getDefaultToolkit();
+                java.lang.reflect.Field awtAppClassNameField = xToolkit.getClass().getDeclaredField("awtAppClassName");
+                awtAppClassNameField.setAccessible(true);
+                awtAppClassNameField.set(xToolkit, "OpenBST");
+            }
+            catch(Exception e)
+            {
+                log("=! Could not apply X fix");
+                e.printStackTrace();
+            }
+
         }
         catch(final Exception e)
         {
