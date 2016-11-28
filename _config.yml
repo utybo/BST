@@ -1,5 +1,6 @@
 # Site settings
 title: The BST & OpenBST Projects
+subtitle: 0.3 coming soon!
 email: utybodev@gmail.com
 description: > # this means to ignore newlines until "baseurl:"
   Create branching stories and small text-based games easily.
@@ -17,6 +18,8 @@ github_username:  utybo
 header_type: default  # values [ drawer, default ]
 post_type: default    # values [ highlight, default ]
 pagination_type: default  # values [ ops, default ]
+color1: brown
+color2: amber
 
 more_vert:
   option1:
