@@ -454,11 +454,13 @@ public class StoryPanel extends JPanel implements UIBarHandler
             {
                 log("=! It was the initial node");
                 JOptionPane.showMessageDialog(this, Lang.get("story.missinginitial"), Lang.get("error"), JOptionPane.ERROR_MESSAGE);
+                return;
             }
             else
             {
                 // TODO continue i18n
                 JOptionPane.showMessageDialog(this, Lang.get("story.missingnode").replace("$n", "" + currentNode.getId()), Lang.get("error"), JOptionPane.ERROR_MESSAGE);
+                return;
             }
         }
 
