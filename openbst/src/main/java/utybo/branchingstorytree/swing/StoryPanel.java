@@ -198,7 +198,7 @@ public class StoryPanel extends JPanel implements UIBarHandler
                     }
                 });
                 exportSaveStateButton.setEnabled(false);
-                toolBar.add(new AbstractAction("", new ImageIcon(OpenBST.importImage))
+                toolBar.add(new AbstractAction(Lang.get("story.importss"), new ImageIcon(OpenBST.importImage))
                 {
                     private static final long serialVersionUID = 1L;
 
@@ -744,7 +744,7 @@ public class StoryPanel extends JPanel implements UIBarHandler
     public String getTitle()
     {
         HashMap<String, String> tagMap = story.getTagMap();
-        return Lang.get("story.title").replace("$t", tagMap.getOrDefault("title", "story.missingtitle")).replace("$a", tagMap.getOrDefault("author", Lang.get("story.missingauthor")));
+        return Lang.get("story.title").replace("$t", tagMap.getOrDefault("title", Lang.get("story.missingtitle"))).replace("$a", tagMap.getOrDefault("author", Lang.get("story.missingauthor")));
     }
 
     public boolean postCreation()
