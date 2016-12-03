@@ -458,7 +458,7 @@ public class StoryPanel extends JPanel implements UIBarHandler
             else
             {
                 // TODO continue i18n
-                JOptionPane.showMessageDialog(this, Lang.get("story.missingnode").replace("$n", "" +currentNode.getId()), Lang.get("error"), JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, Lang.get("story.missingnode").replace("$n", "" + currentNode.getId()), Lang.get("error"), JOptionPane.ERROR_MESSAGE);
             }
         }
 
@@ -1072,12 +1072,15 @@ public class StoryPanel extends JPanel implements UIBarHandler
 
     public void resetUib()
     {
-        log("=> Performing UIB Reset");
-        uibPanel.removeAll();
-        uibPanel.revalidate();
-        uibPanel.repaint();
-        uibPanel.setVisible(false);
-        uibComponents.clear();
-        uibInitialized = false;
+        if(uibInitialized == true || uibPanel != null)
+        {
+            log("=> Performing UIB Reset");
+            uibPanel.removeAll();
+            uibPanel.revalidate();
+            uibPanel.repaint();
+            uibPanel.setVisible(false);
+            uibComponents.clear();
+            uibInitialized = false;
+        }
     }
 }
