@@ -1,0 +1,71 @@
+# English translation by utybo
+# Powered by Lang, based on MinkJ
+
+# General
+title=OpenBST
+error=Error
+bsterror=BST Error
+wait=Please wait...
+
+# Loading files
+file.title=Choose a BST file...
+file.error=<html>There was an error during file loading. Please try again and make sure your file is correct.<p>($e: $m)
+file.bsterror.1=<html><b>-- BST Error --</b><p>
+file.bsterror.2=Your file seems to have an error here :<p>
+file.bsterror.3=Line : $l<p>
+file.bsterror.4=Cause : $e ($m)<p>
+file.bsterror.5=Message : $m<p>
+file.bsterror.6=<p>Do you wish to reload the file?
+file.crash=OpenBST crashed upon opening your file. Your file may have a problem.
+
+
+# Story tab
+story.problem=<html><b>If you see this, there was a problem.</b><p>You may have seen a failure message. Please fix the problem and reload the file :)
+story.createss=Create Save State
+story.restoress=Restore latest Save State
+story.restoress.confirm=<html><body style='width: 300px'>You are about to go back to the latest save state. Are you sure you want to do this?<p><p>(Note : any change to the tag 'hidetools' will be ignored)
+story.exportss=Export latest Save State
+story.exportss.error=Could not save the file : $m ($e)
+story.sslocation=Save State location
+story.importss=Import Save State
+story.reset=Reset and restart from the beginning
+story.reset.confirm=<html><body style='width: 300px'>You are about to reset your progress and restart from the beginning. Are you sure you want to continue?
+story.sreload=Soft Reload (reload the file and go back to where I left)
+story.sreload.confirm.title=Soft Reload
+story.sreload.confirm=<html><body style='width: 300px'>You are about to reload the BST file. We will try to restore where you were, but this is not a good idea if you heavily edited nodes and scripting. Are you sure you want to continue?
+story.hreload=Hard Reload (reload and reset)
+story.hreload.confirm=<html><body style='width: 300px'>You are about to reload the BST file. This will also reset all your progress. Are you sure you want to continue?
+story.hreload.confirm.title=Hard Reload
+story.jumptonode=Jump to Node...
+story.variablewatcher=Variable watcher...
+story.tip=Hover on one of the icons for more details.
+story.close=Close tab
+story.close.confirm=<html><body style='width: 300px'>You are about to close this BST file. All unsaved progress will be lost. Are you sure you want to close this tab?
+story.error=<html>Error on node $n :<p>$m
+story.missinginitial=The initial node does not exist. Make sure you are using a correct BST file.
+story.missingnode=The node that was supposed to be opened does not exist. Current node : $n
+story.final.end=The End.
+story.final.node=Final node : $n
+story.final.restart=Restart
+story.final.close=Close
+story.title=$t - $a
+story.missingtitle=<undefined>
+story.missingauthor=<unknown>
+story.nsfw=<html><b>WARNING</b><p>You are about to use a NSFW (Not Safe For Work) file. This file is not suitable for children.<p>Only click OK if you are OVER 18 YEARS OLD.
+story.nsfw.title=NSFW WARNING
+
+
+# Welcome screen
+welcome=Welcome
+welcome.intro=Welcome to OpenBST. To get started, please open a file using the button below.
+welcome.open=Open a file...
+welcome.whatis=What is BST?
+welcome.about=<html>BST is a simple language that allows you to easily create a branching story.
+welcome.imagine=<html><body style='width: 100px; text-align: center;'><h1>Imagine it<p style='text-align: justify'>Create your own branching story inside your head, think about all the details and how to make it an unbelievable experience.
+welcome.write=<html><body style='width: 100px; text-align: center;'><h1>Write it<p style='text-align: justify'>Write it down, make it real. With BST's syntax, creating your branching story has never been easier! You can even make it even more dynamic with some scripting!
+welcome.play=<html><body style='width: 100px; text-align: center;'><h1>Play it<p style='text-align: justify'>After writing it all, enjoy your new, fun story and just do cool stuff with it! Or even play some little text based game that use the scripting system in BST!
+welcome.enjoy=<html><body style='width: 100px; text-align: center;'><h1>Enjoy it<p style='text-align: justify'>Write what you love, love what you write! Here, your imagination is the limit; go wild, create everything you want and make it a magnificent branching story. BST FTW!
+welcome.icons=Icons by icons8.com, go check them out, they make awesome icons!
+
+
+

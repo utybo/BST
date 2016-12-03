@@ -18,6 +18,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
+import java.util.Locale;
+import java.util.Map;
 
 import javax.imageio.ImageIO;
 import javax.swing.Box;
@@ -32,6 +34,9 @@ import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import net.miginfocom.swing.MigLayout;
 import utybo.branchingstorytree.api.BSTClient;
@@ -65,6 +70,9 @@ public class OpenBST extends JFrame
     {
         log("OpenBST version " + VERSION + ", part of the BST project");
         log("[ INIT ]");
+        log("Loading language files");
+        
+        loadLang(args.length > 0 ? args[0] : null);
         log("Applying Look and Feel");
         try
         {
@@ -77,7 +85,7 @@ public class OpenBST extends JFrame
                 Toolkit xToolkit = Toolkit.getDefaultToolkit();
                 java.lang.reflect.Field awtAppClassNameField = xToolkit.getClass().getDeclaredField("awtAppClassName");
                 awtAppClassNameField.setAccessible(true);
-                awtAppClassNameField.set(xToolkit, "OpenBST");
+                awtAppClassNameField.set(xToolkit, Lang.get("title"));
             }
             catch(Exception e)
             {
@@ -108,7 +116,7 @@ public class OpenBST extends JFrame
     {
         final FileDialog jfc = new FileDialog(instance);
         jfc.setLocationRelativeTo(instance);
-        jfc.setTitle("Choose a Branching Story Tree file...");
+        jfc.setTitle(Lang.get("file.title"));
         jfc.setVisible(true);
         if(jfc.getFile() != null)
         {
@@ -135,24 +143,23 @@ public class OpenBST extends JFrame
         {
             log("=! IOException caught");
             e.printStackTrace();
-            JOptionPane.showMessageDialog(instance, "<html>There was an error during file loading. Please try again and make sure your file is correct.<p>(" + e.getClass().getSimpleName() + ": " + e.getMessage() + ")", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(instance, Lang.get("file.error").replace("$e", e.getClass().getSimpleName()).replace("$m", e.getMessage()), Lang.get("error"), JOptionPane.ERROR_MESSAGE);
             return null;
         }
         catch(final BSTException e)
         {
             log("=! BSTException caught");
             e.printStackTrace();
-            String s = "<html><b>-- BST Error --</b><p>";
-            s += "Your file seems to have an error here :<p>";
-            s += "Line : " + e.getWhere() + "<p>";
+            String s = Lang.get("file.bsterror.1");
+            s += Lang.get("file.bsterror.2");
+            s += Lang.get("file.bsterror.3").replace("$l", "" + e.getWhere());
             if(e.getCause() != null)
             {
-                s += "Cause : " + e.getCause().getClass().getSimpleName() + " : " + e.getCause().getMessage() + "<p>";
+                s+= Lang.get("file.bsterror.4").replace("$e", e.getCause().getClass().getSimpleName()).replace("$m", e.getCause().getMessage());
             }
-            s += "Message : " + e.getMessage() + "<p>";
-            s += "<b>-- BST Error --</b>";
-            s += "<p><p>Do you wish to reload the file?";
-            if(JOptionPane.showConfirmDialog(instance, s, "BST Error", JOptionPane.ERROR_MESSAGE, JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
+            s += Lang.get("file.bsterror.5").replace("$m", e.getMessage());
+            s += Lang.get("file.bsterror.6");
+            if(JOptionPane.showConfirmDialog(instance, s, Lang.get("bsterror"), JOptionPane.ERROR_MESSAGE, JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
             {
                 log("Reloading");
                 return loadFile(file, client);
@@ -163,9 +170,40 @@ public class OpenBST extends JFrame
         {
             log("=! Random exception caught");
             e.printStackTrace();
-            JOptionPane.showMessageDialog(instance, "OpenBST crashed upon opening your file. Your file may have a problem.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(instance, Lang.get("file.crash"), Lang.get("error"), JOptionPane.ERROR_MESSAGE);
             return null;
         }
+    }
+
+    private static void loadLang(String userCustomLanguage)
+    {
+        Map<String, String> languages = new Gson().fromJson(new InputStreamReader(OpenBST.class.getResourceAsStream("/utybo/branchingstorytree/swing/lang/langs.json")), new TypeToken<Map<String, String>>()
+        {}.getType());
+        try
+        {
+            Lang.loadTranslationsFromFile(Lang.getDefaultLanguage(), OpenBST.class.getResourceAsStream("/utybo/branchingstorytree/swing/lang/" + languages.get("default")));
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+        if(userCustomLanguage != null)
+            Lang.setSelectedLanguage(new Locale(userCustomLanguage));
+        Locale userLanguage = Lang.getSelectedLanguage();
+        languages.forEach((k, v) ->
+        {
+            if(userLanguage.equals(new Locale(k)) && !v.equals(languages.get("default")))
+            {
+                try
+                {
+                    Lang.loadTranslationsFromFile(userLanguage, OpenBST.class.getResourceAsStream("/utybo/branchingstorytree/swing/lang/" + v));
+                }
+                catch(Exception e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     private StoryPanel addStory(BranchingStory story, File file, TabClient client)
@@ -243,16 +281,16 @@ public class OpenBST extends JFrame
         welcomePanel.setScrollableWidth(ScrollableSizeHint.FIT);
         welcomePanel.setLayout(new MigLayout("", "[grow,center]", "[][][][][][][][][]"));
         container.add(new JScrollPane(welcomePanel));
-        container.setTitleAt(0, "Welcome");
+        container.setTitleAt(0, Lang.get("welcome"));
 
-        JLabel lblOpenbst = new JLabel("<html><font size=32>OpenBST");
+        JLabel lblOpenbst = new JLabel("<html><font size=32>" + Lang.get("title"));
         lblOpenbst.setIcon(new ImageIcon(activeDirectoryImage));
         welcomePanel.add(lblOpenbst, "cell 0 0");
 
-        JLabel lblWelcomeToOpenbst = new JLabel("Welcome to OpenBST. To get started, please open a file using the button below.");
+        JLabel lblWelcomeToOpenbst = new JLabel(Lang.get("welcome.intro"));
         welcomePanel.add(lblWelcomeToOpenbst, "cell 0 1");
 
-        JButton btnOpenAFile = new JButton("Open a file...");
+        JButton btnOpenAFile = new JButton(Lang.get("welcome.open"));
         btnOpenAFile.setIcon(new ImageIcon(openFolderImage));
         btnOpenAFile.addActionListener(e ->
         {
@@ -272,14 +310,14 @@ public class OpenBST extends JFrame
         JSeparator separator = new JSeparator();
         welcomePanel.add(separator, "cell 0 3,growx");
 
-        JLabel lblwhatIsBst = new JLabel("What is BST?");
+        JLabel lblwhatIsBst = new JLabel(Lang.get("welcome.whatis"));
         lblwhatIsBst.setFont(lblwhatIsBst.getFont().deriveFont(28F));
         welcomePanel.add(lblwhatIsBst, "cell 0 4");
 
-        JLabel lblbstIsA = new JLabel("<html>BST is a simple language that allows you to easily create a branching story.");
+        JLabel lblbstIsA = new JLabel(Lang.get("welcome.about"));
         welcomePanel.add(lblbstIsA, "cell 0 5,alignx center,growy");
 
-        JLabel lblimagineItcreate = new JLabel("<html><body style='width: 100px; text-align: center;'><h1>Imagine it\n<p style='text-align: justify'>Create your own branching story inside your head, think about all the details and how to make it an unbelievable experience.");
+        JLabel lblimagineItcreate = new JLabel(Lang.get("welcome.imagine"));
         lblimagineItcreate.setVerticalTextPosition(SwingConstants.BOTTOM);
         lblimagineItcreate.setHorizontalTextPosition(SwingConstants.CENTER);
         lblimagineItcreate.setIcon(new ImageIcon(ideaImage));
@@ -287,7 +325,7 @@ public class OpenBST extends JFrame
 
         welcomePanel.add(Box.createHorizontalStrut(20), "cell 0 6");
 
-        JLabel lblwriteItwriteSaid = new JLabel("<html><body style='width: 100px; text-align: center;'><h1>Write it\n<p style='text-align: justify'>Write it down, make it real. With BST's syntax, creating your branching story has never been easier! You can even make it even more dynamic with some scripting!");
+        JLabel lblwriteItwriteSaid = new JLabel(Lang.get("welcome.write"));
         lblwriteItwriteSaid.setVerticalTextPosition(SwingConstants.BOTTOM);
         lblwriteItwriteSaid.setHorizontalTextPosition(SwingConstants.CENTER);
         lblwriteItwriteSaid.setIcon(new ImageIcon(blogImage));
@@ -295,7 +333,7 @@ public class OpenBST extends JFrame
 
         welcomePanel.add(Box.createHorizontalStrut(20), "cell 0 6");
 
-        JLabel lblPlayIt = new JLabel("<html><body style='width: 100px; text-align: center;'><h1>Play it\n<p style='text-align: justify'>After some hard work, enjoy your new, fun story and just do cool stuff with it! Or even play some little text based game that use the scripting system in BST!");
+        JLabel lblPlayIt = new JLabel(Lang.get("welcome.play"));
         lblPlayIt.setVerticalTextPosition(SwingConstants.BOTTOM);
         lblPlayIt.setHorizontalTextPosition(SwingConstants.CENTER);
         lblPlayIt.setIcon(new ImageIcon(controllerImage));
@@ -303,17 +341,16 @@ public class OpenBST extends JFrame
 
         welcomePanel.add(Box.createHorizontalStrut(20), "cell 0 6");
 
-        JLabel lblEnjoyIt = new JLabel("<html><body style='width: 100px; text-align: center;'><h1>Enjoy it\n<p style='text-align: justify'>Write what you love, love what you write! Here, your imagination is the limit; go wild, create everything you want and make it a magnificent branching story. BST FTW!");
+        JLabel lblEnjoyIt = new JLabel(Lang.get("welcome.enjoy"));
         lblEnjoyIt.setVerticalTextPosition(SwingConstants.BOTTOM);
         lblEnjoyIt.setHorizontalTextPosition(SwingConstants.CENTER);
         lblEnjoyIt.setIcon(new ImageIcon(inLoveImage));
-        welcomePanel.add(lblEnjoyIt, "cell 0 6");
+        welcomePanel.add(lblEnjoyIt, "cell 0 6, aligny top");
 
-        JLabel lblIconsByIconscom = new JLabel("Icons by icons8.com, go check them out, they make awesome icons!");
+        JLabel lblIconsByIconscom = new JLabel(Lang.get("welcome.icons"));
         lblIconsByIconscom.setEnabled(false);
         welcomePanel.add(lblIconsByIconscom, "cell 0 8,alignx left");
 
-        // TODO Add components 
         setSize(830, 480);
         setLocationRelativeTo(null);
         setVisible(true);

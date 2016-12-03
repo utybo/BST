@@ -1,0 +1,70 @@
+# French translation by utybo
+# Powered by Lang, based on MinkJ
+
+# General
+title=OpenBST
+error=Erreur
+bsterror=Erreur BST
+wait=Patientez...
+
+# Loading files
+file.title=Choisissez un fichier BST...
+file.error=<html>Il y a eu une erreur durant le chargement du fichier. Veuillez réessayer en vérifiant la validité de votre fichier.<p>($e: $m)
+file.bsterror.1=<html><b>-- Erreur BST --</b><p>
+file.bsterror.2=Votre fichier semble être erroné ici :<p>
+file.bsterror.3=Ligne : $l<p>
+file.bsterror.4=Cause : $e ($m)<p>
+file.bsterror.5=Message : $m<p>
+file.bsterror.6=<p>Souhaitez vous recharger le fichier?
+file.crash=OpenBST a rencontré une erreur en ouvrant votre fichier. Merci de vérifier sa validité.
+
+
+# Story tab
+story.problem=<html><b>Si vous voyez ceci, il y a eu un problème!</b><p>Vous avez peut être eu un message d'erreur. Merci de corriger le problème et recharger le fichier :)
+story.createss=Créer une image de sauvegarde (Save State)
+story.restoress=Retourner à la dernière image de sauvegarde (Save State)
+story.restoress.confirm=<html><body style='width: 300px'>Vous allez retourner à la dernière image de sauvegarde (Save State). Souhaitez vous vraiment faire cela?<p><p>(Note : les changements au tag 'supertools' seront ignorés)
+story.exportss=Exporter la dernière image de sauvegarde
+story.exportss.error=Impossible de sauvegarder le fichier : $m ($e)
+story.sslocation=Emplacement de l'image de sauvegarde
+story.importss=Importer l'image de sauvegarde
+story.reset=Redémarrer depuis le début
+story.reset.confirm=<html><body style='width: 300px'>Vous alllez recommencer depuis le début. Êtes vous sûr de vouloir continuer?
+story.sreload=Rechargement doux (recharger le fichier et retourner là où j'étais)
+story.sreload.confirm.title=Rechargement doux
+story.sreload.confirm=<html><body style='width: 300px'>Vous allez recharger le fichier BST. Êtes vous sûr de vouloir continuer?
+story.hreload=Rechargement dur (recharger et redémarrer)
+story.hreload.confirm=<html><body style='width: 300px'>Vous allez recharger le fichier. Votre progression ne sera pas sauvegarder. Souhaitez vous vraiment faire cela?
+story.hreload.confirm.title=Rechargement dur
+story.jumptonode=Aller à la node...
+story.variablewatcher=Observation de variable...
+story.tip=Passez votre curseur sur une icône pour plus d'informations.
+story.close=Fermer l'onglet
+story.close.confirm=<html><body style='width: 300px'>Voulez vous vraiment fermer cet onglet? Toute progression non sauvegardée et exportée sera perdue.
+story.error=<html>Erreur sur la node $n :<p>$m
+story.missinginitial=La node initiale n'existe pas. Vérifiez votre fichier BST.
+story.missingnode=La node qui devait être ouverte n'existe pas. Node actuelle : $n
+story.final.end=Fin.
+story.final.node=Node finale : $n
+story.final.restart=Redémarrer
+story.final.close=Fermer
+story.title=$t - $a
+story.missingtitle=<inconnu>
+story.missingauthor=<inconnu>
+story.nsfw=<html><b>ATTENTION</b><p>Vous allez charger un fichier au contenu choquant. Il est inapproprié pour les enfants.<p>NE CLIQUEZ SUR OK QUE SI VOUS AVEZ AU MOINS 18 ANS.
+story.nsfw.title=ALERTE -18
+
+
+# Welcome screen
+welcome=Bienvenue
+welcome.intro=Bienvenue dans OpenBST. Pour démarrer, ouvrez un fichier en utilisant le bouton ci-dessous
+welcome.open=Ouvrir un fichier...
+welcome.whatis=Qu'est-ce que BST?
+welcome.about=<html>BST est un language simple qui permet de facilement créer des histoires ramifiées.
+welcome.imagine=<html><body style='width: 100px; text-align: center;'><h1>Imaginez<p style='text-align: justify'>Créez votre histoire dans votre tête, pensez à tous les détails pour en faire une expérience inoubliable.
+welcome.write=<html><body style='width: 100px; text-align: center;'><h1>Ecrivez<p style='text-align: justify'>Ecrivez là, faites en une réalité. Avec la syntaxe simple de BST, cela n'a jamais été aussi facile! Vous pouvez même créer des histoires plus complexes  grâce à de simples scripts!
+welcome.play=<html><body style='width: 100px; text-align: center;'><h1>Jouez<p style='text-align: justify'>Après l'effort (minime, avouons le), le réconfort! Jouez à votre histoire, améliorez la! Vous pouvez même jouer à de petits jeux avec la puissance de BST!
+welcome.enjoy=<html><body style='width: 100px; text-align: center;'><h1>Adorez<p style='text-align: justify'>BST a été pensé pour être simple et agréable, alors faites ce qu'il vous plait! Amusez vous bien!
+welcome.icons=Icônes par icons8.com, allez les voir, leurs icônes sont géniales!
+
+

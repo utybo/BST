@@ -112,7 +112,7 @@ public class StoryPanel extends JPanel implements UIBarHandler
         scrollPane.setBackground(Color.WHITE);
         add(scrollPane, "grow, pushy, wrap");
 
-        textLabel = new JLabel("<html><b>If you see this, there was a problem.</b><p>You may have seen a failure message. Please fix the problem and reload the file :)");
+        textLabel = new JLabel(Lang.get("story.problem"));
         textLabel.setVerticalAlignment(SwingConstants.TOP);
         textLabel.setFont(new JTextArea().getFont());
         textLabel.setForeground(Color.BLACK);
@@ -136,7 +136,7 @@ public class StoryPanel extends JPanel implements UIBarHandler
         toolBar.setFloatable(false);
         if(toolbarLevel > 0)
         {
-            toolBar.add(new AbstractAction("Create Save State", new ImageIcon(OpenBST.saveAsImage))
+            toolBar.add(new AbstractAction(Lang.get("story.createss"), new ImageIcon(OpenBST.saveAsImage))
             {
                 private static final long serialVersionUID = 1L;
 
@@ -149,14 +149,14 @@ public class StoryPanel extends JPanel implements UIBarHandler
                         exportSaveStateButton.setEnabled(true);
                 }
             });
-            restoreSaveStateButton = toolBar.add(new AbstractAction("Restore latest Save State", new ImageIcon(OpenBST.undoImage))
+            restoreSaveStateButton = toolBar.add(new AbstractAction(Lang.get("restoress"), new ImageIcon(OpenBST.undoImage))
             {
                 private static final long serialVersionUID = 1L;
 
                 @Override
                 public void actionPerformed(ActionEvent e)
                 {
-                    if(JOptionPane.showConfirmDialog(parentWindow, "<html><body style='width: 300px'>You are about to go back to the latest save state. Are you sure you want to do this?<p><p>(Note : any change to the tag 'hidetools' will be ignored)", "Restore Save State confirmation", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, new ImageIcon(OpenBST.undoBigImage)) == JOptionPane.YES_OPTION)
+                    if(JOptionPane.showConfirmDialog(parentWindow, Lang.get("story.restoress.confirm"), Lang.get("story.restoress"), JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, new ImageIcon(OpenBST.undoBigImage)) == JOptionPane.YES_OPTION)
                     {
                         restoreSaveState(latestSaveState);
                     }
@@ -165,14 +165,14 @@ public class StoryPanel extends JPanel implements UIBarHandler
             restoreSaveStateButton.setEnabled(false);
             if(toolbarLevel > 1)
             {
-                exportSaveStateButton = toolBar.add(new AbstractAction("Export latest Save State", new ImageIcon(OpenBST.exportImage))
+                exportSaveStateButton = toolBar.add(new AbstractAction(Lang.get("story.exportss"), new ImageIcon(OpenBST.exportImage))
                 {
                     private static final long serialVersionUID = 1L;
 
                     @Override
                     public void actionPerformed(ActionEvent e)
                     {
-                        final FileDialog jfc = new FileDialog(parentWindow, "Save State location", FileDialog.SAVE);
+                        final FileDialog jfc = new FileDialog(parentWindow, Lang.get("story.sslocation"), FileDialog.SAVE);
                         jfc.setLocationRelativeTo(parentWindow);
                         jfc.setIconImage(OpenBST.exportImage);
                         jfc.setVisible(true);
@@ -192,20 +192,20 @@ public class StoryPanel extends JPanel implements UIBarHandler
                             catch(IOException e1)
                             {
                                 e1.printStackTrace();
-                                JOptionPane.showMessageDialog(parentWindow, "Could not save the file : " + e1.getMessage() + " (" + e1.getClass().getSimpleName() + ")");
+                                JOptionPane.showMessageDialog(parentWindow, Lang.get("story.exportss.error").replace("$m", e1.getMessage()).replace("$e", e1.getClass().getSimpleName()));
                             }
                         }
                     }
                 });
                 exportSaveStateButton.setEnabled(false);
-                toolBar.add(new AbstractAction("Import Save State", new ImageIcon(OpenBST.importImage))
+                toolBar.add(new AbstractAction("", new ImageIcon(OpenBST.importImage))
                 {
                     private static final long serialVersionUID = 1L;
 
                     @Override
                     public void actionPerformed(ActionEvent e)
                     {
-                        final FileDialog jfc = new FileDialog(parentWindow, "Save State location", FileDialog.LOAD);
+                        final FileDialog jfc = new FileDialog(parentWindow, Lang.get("story.sslocation"), FileDialog.LOAD);
                         jfc.setLocationRelativeTo(parentWindow);
                         jfc.setIconImage(OpenBST.importImage);
                         jfc.setVisible(true);
@@ -223,7 +223,7 @@ public class StoryPanel extends JPanel implements UIBarHandler
                             catch(IOException e1)
                             {
                                 e1.printStackTrace();
-                                JOptionPane.showMessageDialog(parentWindow, "Could not save the file : " + e1.getMessage() + " (" + e1.getClass().getSimpleName() + ")");
+                                JOptionPane.showMessageDialog(parentWindow, Lang.get("story.exportss.error").replace("$m", e1.getMessage()).replace("$e", e1.getClass().getSimpleName()));
                             }
                         }
                     }
@@ -231,27 +231,27 @@ public class StoryPanel extends JPanel implements UIBarHandler
                 if(toolbarLevel > 2)
                 {
                     toolBar.addSeparator();
-                    toolBar.add(new AbstractAction("Reset and restart from the beginning", new ImageIcon(OpenBST.returnImage))
+                    toolBar.add(new AbstractAction(Lang.get("story.reset"), new ImageIcon(OpenBST.returnImage))
                     {
                         private static final long serialVersionUID = 1L;
 
                         @Override
                         public void actionPerformed(ActionEvent e)
                         {
-                            if(JOptionPane.showConfirmDialog(parentWindow, "<html><body style='width: 300px'>You are about to reset your progress and restart from the beginning. Are you sure you want to continue?", "Reset and Restart confirmation", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, new ImageIcon(OpenBST.returnBigImage)) == JOptionPane.YES_OPTION)
+                            if(JOptionPane.showConfirmDialog(parentWindow, Lang.get("story.reset.confirm"), Lang.get("story.reset"), JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, new ImageIcon(OpenBST.returnBigImage)) == JOptionPane.YES_OPTION)
                             {
                                 reset();
                             }
                         }
                     });
-                    toolBar.add(new AbstractAction("Soft Reload (reload the file and go back to where I left)", new ImageIcon(OpenBST.refreshImage))
+                    toolBar.add(new AbstractAction(Lang.get("story.sreload"), new ImageIcon(OpenBST.refreshImage))
                     {
                         private static final long serialVersionUID = 1L;
 
                         @Override
                         public void actionPerformed(ActionEvent e)
                         {
-                            if(JOptionPane.showConfirmDialog(parentWindow, "<html><body style='width: 300px'>You are about to reload the BST file. We will try to restore where you were, but this is not a good idea if you heavily edited nodes and scripting. Are you sure you want to continue?", "Soft Reload confirmation", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, new ImageIcon(OpenBST.refreshBigImage)) == JOptionPane.YES_OPTION)
+                            if(JOptionPane.showConfirmDialog(parentWindow, Lang.get("story.sreload.confirm"), Lang.get("story.sreload.confirm.title"), JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, new ImageIcon(OpenBST.refreshBigImage)) == JOptionPane.YES_OPTION)
                             {
                                 SaveState ss = new SaveState(currentNode.getId(), story.getRegistry());
                                 reset();
@@ -261,14 +261,14 @@ public class StoryPanel extends JPanel implements UIBarHandler
                             }
                         }
                     });
-                    toolBar.add(new AbstractAction("Hard Reload (reload and reset)", new ImageIcon(OpenBST.synchronizeImage))
+                    toolBar.add(new AbstractAction(Lang.get("story.hreload"), new ImageIcon(OpenBST.synchronizeImage))
                     {
                         private static final long serialVersionUID = 1L;
 
                         @Override
                         public void actionPerformed(ActionEvent e)
                         {
-                            if(JOptionPane.showConfirmDialog(parentWindow, "<html><body style='width: 300px'>You are about to reload the BST file. This will also reset all your progress. Are you sure you want to continue?", "Hard Reload confirmation", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, new ImageIcon(OpenBST.synchronizeBigImage)) == JOptionPane.YES_OPTION)
+                            if(JOptionPane.showConfirmDialog(parentWindow, Lang.get("story.hreload.confirm"), Lang.get("story.hreload.confirm.title"), JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, new ImageIcon(OpenBST.synchronizeBigImage)) == JOptionPane.YES_OPTION)
                             {
                                 reset();
                                 reload();
@@ -279,7 +279,7 @@ public class StoryPanel extends JPanel implements UIBarHandler
                     if(toolbarLevel > 3)
                     {
                         toolBar.addSeparator();
-                        toolBar.add(new AbstractAction("Jump to Node...", new ImageIcon(OpenBST.jumpImage))
+                        toolBar.add(new AbstractAction(Lang.get("story.jumptonode"), new ImageIcon(OpenBST.jumpImage))
                         {
                             private static final long serialVersionUID = 1L;
 
@@ -288,7 +288,7 @@ public class StoryPanel extends JPanel implements UIBarHandler
                             {
                                 SpinnerNumberModel model = new SpinnerNumberModel(1, 1, Integer.MAX_VALUE, 1);
                                 JSpinner spinner = new JSpinner(model);
-                                int i = JOptionPane.showOptionDialog(parentWindow, spinner, "Jump to Node number...", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, new ImageIcon(OpenBST.jumpBigImage), null, null);
+                                int i = JOptionPane.showOptionDialog(parentWindow, spinner, Lang.get("story.jumptonode"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, new ImageIcon(OpenBST.jumpBigImage), null, null);
                                 if(i == JOptionPane.OK_OPTION)
                                 {
                                     showNode(story.getNode((Integer)spinner.getModel().getValue()));
@@ -308,12 +308,12 @@ public class StoryPanel extends JPanel implements UIBarHandler
                                 variableWatchClosing();
                             }
                         });
-                        variableWatcherButton.setToolTipText("Variable watcher...");
+                        variableWatcherButton.setToolTipText(Lang.get("story.variablewatcher"));
                         toolBar.add(variableWatcherButton);
 
                         toolBar.addSeparator();
 
-                        nodeIdLabel = new JLabel("Please wait...");
+                        nodeIdLabel = new JLabel(Lang.get("wait"));
                         nodeIdLabel.setVerticalAlignment(SwingConstants.CENTER);
                         nodeIdLabel.setEnabled(false);
                         toolBar.add(nodeIdLabel);
@@ -323,7 +323,7 @@ public class StoryPanel extends JPanel implements UIBarHandler
 
             toolBar.addSeparator();
 
-            JLabel hintLabel = new JLabel("Hover on one of the icons for more details.");
+            JLabel hintLabel = new JLabel(Lang.get("story.tip"));
             hintLabel.setEnabled(false);
             toolBar.add(hintLabel);
         }
@@ -332,14 +332,14 @@ public class StoryPanel extends JPanel implements UIBarHandler
 
         toolBar.addSeparator();
 
-        toolBar.add(new AbstractAction("Close tab", new ImageIcon(OpenBST.closeImage))
+        toolBar.add(new AbstractAction(Lang.get("story.close"), new ImageIcon(OpenBST.closeImage))
         {
             private static final long serialVersionUID = 1L;
 
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                if(JOptionPane.showConfirmDialog(parentWindow, "<html><body style='width: 300px'>You are about to close this BST file. All unsaved progress will be lost. Are you sure you want to close this tab?", "Tab close confirmation", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, new ImageIcon(OpenBST.closeBigImage)) == JOptionPane.YES_OPTION)
+                if(JOptionPane.showConfirmDialog(parentWindow, Lang.get("story.close.confirm"), Lang.get("story.close"), JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, new ImageIcon(OpenBST.closeBigImage)) == JOptionPane.YES_OPTION)
                 {
                     parentWindow.removeStory(StoryPanel.this);
                 }
@@ -426,7 +426,7 @@ public class StoryPanel extends JPanel implements UIBarHandler
                 catch(final BSTException e)
                 {
                     e.printStackTrace();
-                    JOptionPane.showMessageDialog(this, "Error on node " + currentNode.getId() + " :" + "\n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, Lang.get("story.error").replace("$n", "" + currentNode.getId()).replace("$m", e.getMessage()), Lang.get("error"), JOptionPane.ERROR_MESSAGE);
                 }
             });
             panel.add(button);
@@ -453,11 +453,12 @@ public class StoryPanel extends JPanel implements UIBarHandler
             if(currentNode == null)
             {
                 log("=! It was the initial node");
-                JOptionPane.showMessageDialog(this, "The initial node does not exist. Make sure you are using a correct BST file.", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, Lang.get("story.missinginitial"), Lang.get("error"), JOptionPane.ERROR_MESSAGE);
             }
             else
             {
-                JOptionPane.showMessageDialog(this, "The node that was supposed to be opened does not exist. Current node : " + currentNode.getId(), "Error", JOptionPane.ERROR_MESSAGE);
+                // TODO continue i18n
+                JOptionPane.showMessageDialog(this, Lang.get("story.missingnode").replace("$n", "" +currentNode.getId()), Lang.get("error"), JOptionPane.ERROR_MESSAGE);
             }
         }
 
@@ -552,7 +553,7 @@ public class StoryPanel extends JPanel implements UIBarHandler
         catch(final Exception e)
         {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Error on node " + storyNode.getId() + " :" + "\n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, Lang.get("story.error").replace("$n", "" + currentNode.getId()).replace("$m", e.getMessage()), Lang.get("error"), JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -628,9 +629,9 @@ public class StoryPanel extends JPanel implements UIBarHandler
         {
             log("=> No valid options found (" + validOptions.size() + " total");
             log("=> Shwoing ending");
-            optionsButton[0].setText("The End.");
-            optionsButton[1].setText("Final node : " + textNode.getId());
-            optionsButton[2].setText("Restart");
+            optionsButton[0].setText(Lang.get("story.final.end"));
+            optionsButton[1].setText(Lang.get("story.final.node").replace("$n", "" + textNode.getId()));
+            optionsButton[2].setText(Lang.get("story.final.restart"));
             optionsButton[2].setEnabled(true);
             optionsButton[2].requestFocus();
             final ActionListener[] original = optionsButton[2].getActionListeners();
@@ -659,7 +660,7 @@ public class StoryPanel extends JPanel implements UIBarHandler
                     reset();
                 }
             });
-            optionsButton[3].setText("Close");
+            optionsButton[3].setText(Lang.get("story.final.close"));
             optionsButton[3].setEnabled(true);
             for(final ActionListener al : original2)
             {
@@ -743,17 +744,13 @@ public class StoryPanel extends JPanel implements UIBarHandler
     public String getTitle()
     {
         HashMap<String, String> tagMap = story.getTagMap();
-        String s = "";
-        s += tagMap.getOrDefault("title", "<undefined>");
-        s += " - ";
-        s += tagMap.getOrDefault("author", "<unknown>");
-        return s;
+        return Lang.get("story.title").replace("$t", tagMap.getOrDefault("title", "story.missingtitle")).replace("$a", tagMap.getOrDefault("author", Lang.get("story.missingauthor")));
     }
 
     public boolean postCreation()
     {
         log("Issuing NSFW warning");
-        if(story.hasTag("nsfw") && JOptionPane.showConfirmDialog(this, "<html><b>WARNING</b><p>You are about to read a NSFW story. This story is not suitable for children.<p>Only click OK if you are OVER 18 YEARS OLD.", "NSFW WARNING", JOptionPane.WARNING_MESSAGE) != JOptionPane.OK_OPTION)
+        if(story.hasTag("nsfw") && JOptionPane.showConfirmDialog(this, Lang.get("story.nsfw"), Lang.get("story.nsfw.title"), JOptionPane.WARNING_MESSAGE) != JOptionPane.OK_OPTION)
         {
             log("=> Close");
             return false;
