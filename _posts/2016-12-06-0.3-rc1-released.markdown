@@ -1,0 +1,22 @@
+---
+layout: post
+title:  "OpenBST 0.3 RC1 Released"
+date:   2016-12-06 01:01:02
+categories: main
+author: utybo
+highlight: true
+image: img/v0.3RC1.png
+---
+
+A very experimental release. This is barely usable, so do NOT use it if you are not mentally ready to do some debugging! It includes everything that was teased in the previous [post][relpage]. The tutorial was updated too.
+
+![Promo]({{ site.baseurl }}/img/v0.3RC1.png)
+
+Use this as a sneak peek tool! I'll be working on debugging everything that is found.
+
+**Again, if you wish to truly use BST, do NOT download this version!** 
+
+*Downloads are now in the Downloads tab*
+
+[relpage]: {{ site.baseurl }}{% post_url 2016-11-26-coming-soon-in-0.3 %}
+

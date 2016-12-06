@@ -65,8 +65,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="2.275"
-     inkscape:cx="154.94629"
-     inkscape:cy="44.615659"
+     inkscape:cx="136.48475"
+     inkscape:cy="79.780494"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -75,10 +75,10 @@
      fit-margin-left="0"
      fit-margin-right="0"
      fit-margin-bottom="0"
-     inkscape:window-width="1920"
-     inkscape:window-height="1018"
+     inkscape:window-width="1366"
+     inkscape:window-height="714"
      inkscape:window-x="0"
-     inkscape:window-y="34"
+     inkscape:window-y="26"
      inkscape:window-maximized="1"
      inkscape:object-nodes="true"
      inkscape:snap-center="true" />
@@ -90,7 +90,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -150,6 +150,6 @@
          y="46.747772"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.513484px;line-height:125%;font-family:ubuntu;-inkscape-font-specification:'ubuntu, Normal';text-align:end;writing-mode:lr-tb;text-anchor:end;fill:#ff0000;fill-opacity:1"><tspan
    style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.93888903px;line-height:125%;font-family:ubuntu;-inkscape-font-specification:'ubuntu, Normal';text-align:end;writing-mode:lr-tb;text-anchor:end"
-   id="tspan4192">Pre-release</tspan> 0.2 RC1</tspan></text>
+   id="tspan4192">Pre-release</tspan> 0.3 RC1</tspan></text>
   </g>
 </svg>
