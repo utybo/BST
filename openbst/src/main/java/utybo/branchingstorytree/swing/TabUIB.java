@@ -210,7 +210,7 @@ public class TabUIB implements UIBarHandler
     {
         if(c instanceof JLabel)
         {
-            String s = tab.translateMarkup(tab.solveMarkup(null), computeText(tab.story.getTag("__uib__" + element + "_value")));
+            String s = MarkupUtils.translateMarkup(MarkupUtils.solveMarkup(tab.story, null), computeText(tab.story.getTag("__uib__" + element + "_value")));
             //String s = computeText(uibch.getValue().toString());
             ((JLabel)c).setText(s);
         }

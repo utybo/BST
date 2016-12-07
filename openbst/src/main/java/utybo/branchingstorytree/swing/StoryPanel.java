@@ -8,7 +8,6 @@
  */
 package utybo.branchingstorytree.swing;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.FileDialog;
@@ -32,16 +31,11 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
-import javax.swing.JTextArea;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
-import javax.swing.border.EmptyBorder;
 
-import org.apache.commons.lang.StringEscapeUtils;
-
-import com.github.rjeschke.txtmark.Processor;
 import com.google.gson.Gson;
 
 import net.miginfocom.swing.MigLayout;
@@ -68,7 +62,7 @@ public class StoryPanel extends JPanel
     protected TabUIB uibHandler = new TabUIB(this);
 
     protected OpenBST parentWindow;
-    private final JLabel textLabel;
+    private final NodePanel nodePanel;
     private JLabel nodeIdLabel;
     private NodeOption[] options;
     private JButton[] optionsButton;
@@ -104,17 +98,10 @@ public class StoryPanel extends JPanel
         scrollPane.setBackground(Color.WHITE);
         add(scrollPane, "grow, pushy, wrap");
 
-        textLabel = new JLabel(Lang.get("story.problem"));
-        textLabel.setVerticalAlignment(SwingConstants.TOP);
-        textLabel.setFont(new JTextArea().getFont());
-        textLabel.setForeground(Color.BLACK);
-        textLabel.setBorder(new EmptyBorder(10, 10, 10, 10));
-        final JScrollablePanel jsp = new JScrollablePanel(new BorderLayout());
-        jsp.add(textLabel, BorderLayout.CENTER);
-        jsp.setScrollableWidth(ScrollableSizeHint.FIT);
-        jsp.setScrollableHeight(ScrollableSizeHint.STRETCH);
-        jsp.setBackground(Color.WHITE);
-        scrollPane.setViewportView(jsp);
+        nodePanel = new NodePanel();
+        nodePanel.setScrollableWidth(ScrollableSizeHint.FIT);
+        nodePanel.setScrollableHeight(ScrollableSizeHint.STRETCH);
+        scrollPane.setViewportView(nodePanel);
 
         add(panel, "growx");
 
@@ -479,60 +466,9 @@ public class StoryPanel extends JPanel
                 log("=> Text node detected");
                 final TextNode textNode = (TextNode)storyNode;
 
-                log("=> Solving variables");
-                String text = StoryUtils.solveVariables(textNode, story);
-
-                log("=> Solving markup language");
-                // Process the markup language
-                // 0 == none
-                // 1 == Markdown
-                // 2 == HTML
-                final int markupLanguage = solveMarkup(textNode);
-                text = translateMarkup(markupLanguage, text);
-
                 log("=> Applying text");
-                textLabel.setText(text);
+                nodePanel.applyNode(story, textNode);
 
-                if(textNode.hasTag("color"))
-                {
-                    log("=> Tag 'color' found");
-                    final String color = textNode.getTag("color");
-                    Color c = null;
-                    if(color.startsWith("#"))
-                    {
-                        log("=> Hex color found, parsing");
-                        c = new Color(Integer.parseInt(color.substring(1), 16));
-                    }
-                    else
-                    {
-                        log("=> Trying to parse normal color : " + color);
-                        try
-                        {
-                            c = (Color)Color.class.getField(color).get(null);
-                        }
-                        catch(IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e)
-                        {
-                            log("=! Color does not exist!");
-                            System.err.println("COLOR DOES NOT EXIST : " + color);
-                            e.printStackTrace();
-                        }
-                    }
-                    if(c != null)
-                    {
-                        log("=> Applying custom color");
-                        textLabel.setForeground(c);
-                    }
-                    else
-                    {
-                        log("=> Applying default color");
-                        textLabel.setForeground(Color.BLACK);
-                    }
-                }
-                else
-                {
-                    log("=> Tag 'color' not found, applying default color");
-                    textLabel.setForeground(Color.BLACK);
-                }
                 log("Resetting options");
                 resetOptions();
 
@@ -547,23 +483,6 @@ public class StoryPanel extends JPanel
         {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, Lang.get("story.error").replace("$n", "" + currentNode.getId()).replace("$m", e.getMessage()), Lang.get("error"), JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-    protected String translateMarkup(int markupLanguage, String input)
-    {
-        switch(markupLanguage)
-        {
-        case 1:
-            log("=> Processing markup language : Markdown");
-            return "<html>" + Processor.process(input); // MD to HTML
-        // TODO Test to see if HTML characters are escaped
-        case 2:
-            log("=> Processing markup language : HTML");
-            return "<html>" + input; // HTML to HTML
-        default:
-            log("=> Processing markup language : None");
-            return "<html>" + StringEscapeUtils.escapeHtml(input).replace("\n", "<br>"); // Plain text to HTML
         }
     }
 
@@ -675,38 +594,6 @@ public class StoryPanel extends JPanel
         showNode(story.getInitialNode());
     }
 
-    protected int solveMarkup(final TextNode textNode)
-    {
-        if(story.hasTag("markup") || (textNode != null && textNode.hasTag("markup")))
-        {
-            if(textNode != null && textNode.hasTag("markup"))
-            {
-                final String s = textNode.getTag("markup");
-                if(s.equalsIgnoreCase("md") || s.equalsIgnoreCase("markdown"))
-                {
-                    return 1;
-                }
-                else if(s.equalsIgnoreCase("html"))
-                {
-                    return 2;
-                }
-            }
-            else if(story.hasTag("markup"))
-            {
-                final String s = story.getTag("markup");
-                if(s.equalsIgnoreCase("md") || s.equalsIgnoreCase("markdown"))
-                {
-                    return 1;
-                }
-                else if(s.equalsIgnoreCase("html"))
-                {
-                    return 2;
-                }
-            }
-        }
-        return 0;
-    }
-
     private void resetOptions()
     {
         for(int i = 0; i < optionsButton.length; i++)
@@ -748,9 +635,8 @@ public class StoryPanel extends JPanel
             log("=> Close");
             return false;
         }
-        else
-            if(nodeIdLabel != null)
-                nodeIdLabel.setForeground(Color.RED);
+        else if(nodeIdLabel != null)
+            nodeIdLabel.setForeground(Color.RED);
         return true;
     }
 
