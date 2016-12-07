@@ -760,7 +760,4 @@ public class StoryPanel extends JPanel
         variableWatcher.deathNotified();
         variableWatcher.dispose();
     }
-
-    // --------------------- UIB --------------------- //
-
 }
