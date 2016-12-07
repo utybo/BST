@@ -49,7 +49,7 @@ public class TabClient implements BSTClient
     @Override
     public UIBarHandler getUIBarHandler()
     {
-        return tab;
+        return tab.uibHandler;
     }
 
 }
