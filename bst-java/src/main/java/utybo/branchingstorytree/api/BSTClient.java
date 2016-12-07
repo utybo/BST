@@ -8,6 +8,8 @@
  */
 package utybo.branchingstorytree.api;
 
+import utybo.branchingstorytree.brm.BRMHandler;
+import utybo.branchingstorytree.ssb.SSBHandler;
 import utybo.branchingstorytree.uib.UIBarHandler;
 
 public interface BSTClient
@@ -17,6 +19,16 @@ public interface BSTClient
     public void exit();
 
     public default UIBarHandler getUIBarHandler()
+    {
+        return null;
+    }
+    
+    public default SSBHandler getSSBHandler()
+    {
+        return null;
+    }
+    
+    public default BRMHandler getBRMHandler()
     {
         return null;
     }
