@@ -8,7 +8,9 @@
  */
 package utybo.branchingstorytree.brm;
 
+import utybo.branchingstorytree.api.BSTException;
+
 public interface BRMHandler
 {
-    public void loadAuto();
+    public void loadAuto() throws BSTException;
 }

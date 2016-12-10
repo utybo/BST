@@ -8,7 +8,9 @@
  */
 package utybo.branchingstorytree.brm;
 
+import utybo.branchingstorytree.api.BSTException;
+
 public interface BRMResourceConsumer
 {
-    public void load(String pathToResource, String name);
+    public void load(String pathToResource, String name) throws BSTException;
 }
