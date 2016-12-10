@@ -12,16 +12,20 @@ import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 import utybo.branchingstorytree.api.BSTClient;
-import utybo.branchingstorytree.uib.UIBarHandler;
+import utybo.branchingstorytree.brm.BRMHandler;
 
 public class TabClient implements BSTClient
 {
     private OpenBST instance;
     private StoryPanel tab;
+    private TabUIB uibHandler;
+    private BRMClient brmClient;
+    private SSBClient ssbClient;
 
     public TabClient(OpenBST instance)
     {
         this.instance = instance;
+        this.ssbClient = new SSBClient();
     }
 
     @Override
@@ -44,12 +48,27 @@ public class TabClient implements BSTClient
     public void setStoryPanel(StoryPanel sp)
     {
         tab = sp;
+        uibHandler = new TabUIB(tab);
+        brmClient = new BRMClient(tab.getBSTFile(), this);
     }
 
     @Override
-    public UIBarHandler getUIBarHandler()
+    public TabUIB getUIBarHandler()
     {
-        return tab.uibHandler;
+        return uibHandler;
     }
 
+    @Override
+    public SSBClient getSSBHandler()
+    {
+        return ssbClient;
+    }
+
+    @Override
+    public BRMHandler getBRMHandler()
+    {
+        return brmClient;
+    }
+
+    
 }

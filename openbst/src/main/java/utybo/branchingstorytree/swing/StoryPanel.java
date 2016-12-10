@@ -40,7 +40,6 @@ import com.google.gson.Gson;
 
 import net.miginfocom.swing.MigLayout;
 import utybo.branchingstorytree.api.BSTException;
-import utybo.branchingstorytree.api.StoryUtils;
 import utybo.branchingstorytree.api.script.ActionDescriptor;
 import utybo.branchingstorytree.api.story.BranchingStory;
 import utybo.branchingstorytree.api.story.LogicalNode;
@@ -58,8 +57,7 @@ public class StoryPanel extends JPanel
     private StoryNode currentNode;
     private TabClient client;
     private SaveState latestSaveState;
-    private File file;
-    protected TabUIB uibHandler = new TabUIB(this);
+    private File bstFile;
 
     protected OpenBST parentWindow;
     private final NodePanel nodePanel;
@@ -76,10 +74,10 @@ public class StoryPanel extends JPanel
     public StoryPanel(BranchingStory story, OpenBST parentWindow, File f, TabClient client)
     {
         log("=> Initial setup");
+        bstFile = f;
         client.setStoryPanel(this);
         this.story = story;
         this.parentWindow = parentWindow;
-        file = f;
         this.client = client;
 
         log("=> Creating visual elements");
@@ -419,7 +417,7 @@ public class StoryPanel extends JPanel
 
     protected void reload()
     {
-        story = parentWindow.loadFile(file, client);
+        story = parentWindow.loadFile(bstFile, client);
         setupStory();
     }
 
@@ -476,7 +474,7 @@ public class StoryPanel extends JPanel
                 showOptions(textNode);
 
                 log("Updating UIB if necessary");
-                uibHandler.updateUIB();
+                client.getUIBarHandler().updateUIB();
             }
         }
         catch(final Exception e)
@@ -588,7 +586,7 @@ public class StoryPanel extends JPanel
         log("=> Performing internal reset");
         story.reset();
 
-        uibHandler.resetUib();
+        client.getUIBarHandler().resetUib();
 
         log("=> Processing initial node again");
         showNode(story.getInitialNode());
@@ -645,5 +643,10 @@ public class StoryPanel extends JPanel
         variableWatcherButton.setSelected(false);
         variableWatcher.deathNotified();
         variableWatcher.dispose();
+    }
+    
+    public File getBSTFile()
+    {
+        return bstFile;
     }
 }

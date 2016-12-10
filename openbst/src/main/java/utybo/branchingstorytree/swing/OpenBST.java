@@ -63,7 +63,7 @@ public class OpenBST extends JFrame
     public static Image cancelImage, errorImage, aboutImage, renameImage;
     public static Image addonSearchImage, addonSearchMediumImage, closeImage, closeBigImage, jumpImage, jumpBigImage, exportImage;
     public static Image gearsImage, importImage, refreshImage, refreshBigImage, returnImage, returnBigImage;
-    public static Image saveAsImage, synchronizeImage, synchronizeBigImage, undoImage, undoBigImage;
+    public static Image saveAsImage, speakerImage, synchronizeImage, synchronizeBigImage, undoImage, undoBigImage;
     private JTabbedPane container;
 
     public static void main(final String[] args)
@@ -256,6 +256,7 @@ public class OpenBST extends JFrame
             returnImage = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/toolbar/Return.png"));
             returnBigImage = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/toolbar/Return Big.png"));
             saveAsImage = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/toolbar/Save as.png"));
+            speakerImage = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/toolbar/Speaker.png"));
             synchronizeImage = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/toolbar/Synchronize.png"));
             synchronizeBigImage = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/toolbar/Synchronize Big.png"));
             undoImage = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/toolbar/Undo.png"));
