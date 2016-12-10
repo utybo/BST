@@ -52,25 +52,90 @@ import utybo.branchingstorytree.swing.JScrollablePanel.ScrollableSizeHint;
 @SuppressWarnings("serial")
 public class StoryPanel extends JPanel
 {
+    /**
+     * The story represented by this StoryPanel. This variable will change if
+     * the file is reload.
+     */
     protected BranchingStory story;
+
+    /**
+     * The panel for use with the UIB Module
+     */
     protected JPanel uibPanel;
+
+    /**
+     * The node currently on screen
+     */
     private StoryNode currentNode;
+
+    /**
+     * The {@link TabClient} linked to this panel
+     */
     private TabClient client;
+
+    /**
+     * The latest save state made - this is used with the save state buttons
+     */
     private SaveState latestSaveState;
+
+    /**
+     * The file this story is from
+     */
     private File bstFile;
 
+    /**
+     * The OpenBST window
+     */
     protected OpenBST parentWindow;
+
+    /**
+     * The node panel the text is displayed in
+     */
     private final NodePanel nodePanel;
+
+    /**
+     * The label displaying the current node ID.
+     */
     private JLabel nodeIdLabel;
+
+    /**
+     * The list of node options for the current node
+     */
     private NodeOption[] options;
+
+    /**
+     * An array of the Option Buttons available in the grid
+     */
     private JButton[] optionsButton;
-    private final JPanel panel = new JPanel();
+
+    /**
+     * The panel in which option buttons are placed
+     */
+    private final JPanel optionPanel = new JPanel();
+
+    /**
+     * The regular foreground for option buttons when the "color" tag is not
+     * applied
+     */
     private Color normalButtonFg;
 
+    // --- Toolbar buttons ---
     private JButton restoreSaveStateButton, exportSaveStateButton;
     protected JToggleButton variableWatcherButton;
     protected VariableWatchDialog variableWatcher;
 
+    /**
+     * Initialize the story panel
+     * 
+     * @param story
+     *            the story to create
+     * @param parentWindow
+     *            the OpenBST instance we are creating this story from
+     * @param f
+     *            the file the story is from
+     * @param client
+     *            the client that will be linked to this story
+     */
     public StoryPanel(BranchingStory story, OpenBST parentWindow, File f, TabClient client)
     {
         log("=> Initial setup");
@@ -101,11 +166,14 @@ public class StoryPanel extends JPanel
         nodePanel.setScrollableHeight(ScrollableSizeHint.STRETCH);
         scrollPane.setViewportView(nodePanel);
 
-        add(panel, "growx");
+        add(optionPanel, "growx");
 
         setupStory();
     }
 
+    /**
+     * Create the toolbar, enforcing the supertools tag
+     */
     private void createToolbar()
     {
         int toolbarLevel = readToolbarLevel();
@@ -335,6 +403,12 @@ public class StoryPanel extends JPanel
         add(toolBar, "growx, wrap");
     }
 
+    /**
+     * Read the toolbar level
+     * 
+     * @return an integer that represents the level specified in the
+     *         "supertools" tag
+     */
     private int readToolbarLevel()
     {
         String value = story.getTag("supertools");
@@ -357,12 +431,21 @@ public class StoryPanel extends JPanel
         }
     }
 
+    /**
+     * Restore a previous save state by applying it to the story first and
+     * showing the node stored
+     * 
+     * @param ss
+     */
     protected void restoreSaveState(SaveState ss)
     {
         ss.applySaveState(story);
         showNode(story.getNode(ss.getNodeId()));
     }
 
+    /**
+     * Setup of the story. This can be ran again if the story changed
+     */
     private void setupStory()
     {
         log("=> Analyzing options and deducing maximum option amount");
@@ -387,8 +470,8 @@ public class StoryPanel extends JPanel
         }
         options = new NodeOption[rows * 2];
         optionsButton = new JButton[rows * 2];
-        panel.removeAll();
-        panel.setLayout(new GridLayout(rows, 2, 5, 5));
+        optionPanel.removeAll();
+        optionPanel.setLayout(new GridLayout(rows, 2, 5, 5));
         for(int i = 0; i < options.length; i++)
         {
             final int optionId = i;
@@ -406,7 +489,7 @@ public class StoryPanel extends JPanel
                     JOptionPane.showMessageDialog(this, Lang.get("story.error").replace("$n", "" + currentNode.getId()).replace("$m", e.getMessage()), Lang.get("error"), JOptionPane.ERROR_MESSAGE);
                 }
             });
-            panel.add(button);
+            optionPanel.add(button);
             optionsButton[i] = button;
             button.setEnabled(false);
         }
@@ -415,12 +498,22 @@ public class StoryPanel extends JPanel
         showNode(story.getInitialNode());
     }
 
+    /**
+     * Reload the file (not clean, this is a subroutine method part of the
+     * entire reloading process)
+     */
     protected void reload()
     {
         story = parentWindow.loadFile(bstFile, client);
         setupStory();
     }
 
+    /**
+     * Show a specific node
+     * 
+     * @param storyNode
+     *            the node to show
+     */
     private void showNode(final StoryNode storyNode)
     {
         if(storyNode == null)
@@ -484,6 +577,12 @@ public class StoryPanel extends JPanel
         }
     }
 
+    /**
+     * The options to show
+     * 
+     * @param textNode
+     * @throws BSTException
+     */
     private void showOptions(final TextNode textNode) throws BSTException
     {
         log("=> Filtering valid options");
@@ -581,6 +680,9 @@ public class StoryPanel extends JPanel
 
     }
 
+    /**
+     * Internal reset (subroutine method)
+     */
     private void reset()
     {
         log("=> Performing internal reset");
@@ -592,6 +694,9 @@ public class StoryPanel extends JPanel
         showNode(story.getInitialNode());
     }
 
+    /**
+     * Reset all the options and return to a clean state for the options panel
+     */
     private void resetOptions()
     {
         for(int i = 0; i < optionsButton.length; i++)
@@ -604,6 +709,13 @@ public class StoryPanel extends JPanel
         }
     }
 
+    /**
+     * Triggered when an option is selected
+     * 
+     * @param nodeOption
+     *            The option selected
+     * @throws BSTException
+     */
     private void optionSelected(final NodeOption nodeOption) throws BSTException
     {
         for(final ActionDescriptor oa : nodeOption.getDoOnClickActions())
@@ -613,18 +725,35 @@ public class StoryPanel extends JPanel
         showNode(story.getNode(nodeOption.getNextNode()));
     }
 
+    /**
+     * Log a message
+     * 
+     * @param message
+     *            the message to log
+     */
     public static void log(String message)
     {
         // TODO Add a better logging system
         System.out.println(message);
     }
 
+    /**
+     * Get the title of this story, used to get the title for the tab
+     * 
+     * @return
+     */
     public String getTitle()
     {
         HashMap<String, String> tagMap = story.getTagMap();
         return Lang.get("story.title").replace("$t", tagMap.getOrDefault("title", Lang.get("story.missingtitle"))).replace("$a", tagMap.getOrDefault("author", Lang.get("story.missingauthor")));
     }
 
+    /**
+     * Check if there is anything to do after creation and we can continue
+     * running the story
+     * 
+     * @return true if we can continue running the story, false otherwise
+     */
     public boolean postCreation()
     {
         log("Issuing NSFW warning");
@@ -638,13 +767,22 @@ public class StoryPanel extends JPanel
         return true;
     }
 
+    /**
+     * Notify that the variable watcher is closing (this is used to reset the
+     * button's state
+     */
     protected void variableWatchClosing()
     {
         variableWatcherButton.setSelected(false);
         variableWatcher.deathNotified();
         variableWatcher.dispose();
     }
-    
+
+    /**
+     * Get the file the story is from
+     * 
+     * @return the file originally put in the constructor
+     */
     public File getBSTFile()
     {
         return bstFile;

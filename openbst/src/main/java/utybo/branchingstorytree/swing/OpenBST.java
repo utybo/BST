@@ -46,14 +46,34 @@ import utybo.branchingstorytree.api.script.Dictionnary;
 import utybo.branchingstorytree.api.story.BranchingStory;
 import utybo.branchingstorytree.swing.JScrollablePanel.ScrollableSizeHint;
 
+/**
+ * OpenBST is an open source implementation of the BST language that aims to be
+ * fully compatible with every single feature of BST.
+ * <p>
+ * This class is both the main class and the main JFrame.
+ * 
+ * @author utybo
+ *
+ */
 public class OpenBST extends JFrame
 {
-    public static final String VERSION = "0.3";
+    /**
+     * Version number of OpenBST
+     */
+    public static final String VERSION = "0.4";
     private static final long serialVersionUID = 1L;
 
+    /**
+     * The parser that will be reused throughout the entire session.
+     */
     private BranchingStoryTreeParser parser = new BranchingStoryTreeParser();
+
+    /**
+     * The JFrame instance
+     */
     private static OpenBST instance;
 
+    // --- IMAGES ---
     public static Image ideaImage;
     public static Image blogImage;
     public static Image controllerImage;
@@ -64,14 +84,24 @@ public class OpenBST extends JFrame
     public static Image addonSearchImage, addonSearchMediumImage, closeImage, closeBigImage, jumpImage, jumpBigImage, exportImage;
     public static Image gearsImage, importImage, refreshImage, refreshBigImage, returnImage, returnBigImage;
     public static Image saveAsImage, speakerImage, synchronizeImage, synchronizeBigImage, undoImage, undoBigImage;
+
+    /**
+     * Container for all the tabs
+     */
     private JTabbedPane container;
 
+    /**
+     * Launch OpenBST
+     * 
+     * @param args
+     *            Arguments. The first argument is the language code to be used
+     */
     public static void main(final String[] args)
     {
         log("OpenBST version " + VERSION + ", part of the BST project");
         log("[ INIT ]");
         log("Loading language files");
-        
+
         loadLang(args.length > 0 ? args[0] : null);
         log("Applying Look and Feel");
         try
@@ -112,6 +142,12 @@ public class OpenBST extends JFrame
         instance = new OpenBST();
     }
 
+    /**
+     * Open a prompt asking for a BST File
+     * 
+     * @return The file selected, or null if none was chosen/the dialog was
+     *         closed
+     */
     private File askForFile()
     {
         final FileDialog jfc = new FileDialog(instance);
@@ -132,6 +168,16 @@ public class OpenBST extends JFrame
         }
     }
 
+    /**
+     * Load and parse a file, using appropriate dialogs if an error occurs to
+     * inform the user and even give him the option to reload the file
+     * 
+     * @param file
+     *            The file to load
+     * @param client
+     *            The BST Client. This is required for parsing the file
+     * @return
+     */
     public BranchingStory loadFile(File file, BSTClient client)
     {
         try
@@ -155,7 +201,7 @@ public class OpenBST extends JFrame
             s += Lang.get("file.bsterror.3").replace("$l", "" + e.getWhere());
             if(e.getCause() != null)
             {
-                s+= Lang.get("file.bsterror.4").replace("$e", e.getCause().getClass().getSimpleName()).replace("$m", e.getCause().getMessage());
+                s += Lang.get("file.bsterror.4").replace("$e", e.getCause().getClass().getSimpleName()).replace("$m", e.getCause().getMessage());
             }
             s += Lang.get("file.bsterror.5").replace("$m", e.getMessage());
             s += Lang.get("file.bsterror.6");
@@ -175,6 +221,13 @@ public class OpenBST extends JFrame
         }
     }
 
+    /**
+     * Load a specific language. This avoid RAM usage blowing up by loading all
+     * the languages
+     * 
+     * @param userCustomLanguage
+     *            The language to use, as defined in the langs.json file
+     */
     private static void loadLang(String userCustomLanguage)
     {
         Map<String, String> languages = new Gson().fromJson(new InputStreamReader(OpenBST.class.getResourceAsStream("/utybo/branchingstorytree/swing/lang/langs.json")), new TypeToken<Map<String, String>>()
@@ -206,6 +259,18 @@ public class OpenBST extends JFrame
         });
     }
 
+    /**
+     * Add a story by creating a tab and initializing its panel. Also triggers
+     * post-creation events (such as NSFW warnings)
+     * 
+     * @param story
+     *            The story to create a tab for
+     * @param file
+     *            The file the story was loaded from
+     * @param client
+     *            The client to use
+     * @return
+     */
     private StoryPanel addStory(BranchingStory story, File file, TabClient client)
     {
         log("Creating tab");
@@ -223,6 +288,9 @@ public class OpenBST extends JFrame
         }
     }
 
+    /**
+     * Load all the icons and initialize the frame
+     */
     public OpenBST()
     {
         setTitle("OpenBST " + VERSION);
@@ -357,12 +425,23 @@ public class OpenBST extends JFrame
         setVisible(true);
     }
 
+    /**
+     * Log a message
+     * 
+     * @param message
+     *            the message to be logged
+     */
     public static void log(String message)
     {
         // TODO Add a better logging system
         System.out.println(message);
     }
 
+    /**
+     * Remove a story panel from the tabs
+     * 
+     * @param storyPanel
+     */
     public void removeStory(StoryPanel storyPanel)
     {
         container.remove(storyPanel);
