@@ -9,6 +9,7 @@
 package utybo.branchingstorytree.api;
 
 import utybo.branchingstorytree.brm.BRMHandler;
+import utybo.branchingstorytree.img.IMGHandler;
 import utybo.branchingstorytree.ssb.SSBHandler;
 import utybo.branchingstorytree.uib.UIBarHandler;
 
@@ -29,6 +30,11 @@ public interface BSTClient
     }
     
     public default BRMHandler getBRMHandler()
+    {
+        return null;
+    }
+    
+    public default IMGHandler getIMGHandler()
     {
         return null;
     }
