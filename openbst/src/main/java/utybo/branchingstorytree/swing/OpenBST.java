@@ -82,7 +82,7 @@ public class OpenBST extends JFrame
     public static Image openFolderImage;
     public static Image cancelImage, errorImage, aboutImage, renameImage;
     public static Image addonSearchImage, addonSearchMediumImage, closeImage, closeBigImage, jumpImage, jumpBigImage, exportImage;
-    public static Image gearsImage, importImage, refreshImage, refreshBigImage, returnImage, returnBigImage;
+    public static Image gearsImage, importImage, muteImage, refreshImage, refreshBigImage, returnImage, returnBigImage;
     public static Image saveAsImage, speakerImage, synchronizeImage, synchronizeBigImage, undoImage, undoBigImage;
 
     /**
@@ -319,6 +319,7 @@ public class OpenBST extends JFrame
             exportImage = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/toolbar/Export.png"));
             gearsImage = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/toolbar/Gears.png"));
             importImage = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/toolbar/Import.png"));
+            muteImage = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/toolbar/Mute.png"));
             refreshImage = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/toolbar/Refresh.png"));
             refreshBigImage = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/toolbar/Refresh Big.png"));
             returnImage = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/toolbar/Return.png"));
