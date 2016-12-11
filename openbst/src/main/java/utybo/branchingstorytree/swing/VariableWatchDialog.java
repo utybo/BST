@@ -20,13 +20,13 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.JTable;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
 import net.miginfocom.swing.MigLayout;
 import utybo.branchingstorytree.api.script.VariableRegistry;
-import javax.swing.JSeparator;
 
 @SuppressWarnings("serial")
 public class VariableWatchDialog extends JDialog

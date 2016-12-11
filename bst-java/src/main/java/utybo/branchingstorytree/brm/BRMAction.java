@@ -28,7 +28,7 @@ public class BRMAction implements ScriptAction
     @Override
     public String[] getName()
     {
-        return new String[]{"brm_load"};
+        return new String[] {"brm_load"};
     }
 
 }

@@ -49,7 +49,7 @@ public class MarkupUtils
         return 0;
     }
 
-    public static  String translateMarkup(int markupLanguage, String input)
+    public static String translateMarkup(int markupLanguage, String input)
     {
         switch(markupLanguage)
         {

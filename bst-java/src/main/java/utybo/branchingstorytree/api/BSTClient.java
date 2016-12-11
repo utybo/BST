@@ -23,17 +23,17 @@ public interface BSTClient
     {
         return null;
     }
-    
+
     public default SSBHandler getSSBHandler()
     {
         return null;
     }
-    
+
     public default BRMHandler getBRMHandler()
     {
         return null;
     }
-    
+
     public default IMGHandler getIMGHandler()
     {
         return null;

@@ -13,7 +13,6 @@ import java.util.regex.Pattern;
 
 import utybo.branchingstorytree.api.story.BranchingStory;
 import utybo.branchingstorytree.api.story.LogicalNode;
-import utybo.branchingstorytree.api.story.TextNode;
 import utybo.branchingstorytree.api.story.VirtualNode;
 
 public class StoryUtils

@@ -40,7 +40,7 @@ public class SSBAction implements ScriptAction
     @Override
     public String[] getName()
     {
-        return new String[]{"ssb_play", "ssb_stop", "ssb_ambient"};
+        return new String[] {"ssb_play", "ssb_stop", "ssb_ambient"};
     }
 
 }

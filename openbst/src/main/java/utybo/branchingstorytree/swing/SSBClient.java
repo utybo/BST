@@ -9,7 +9,6 @@
 package utybo.branchingstorytree.swing;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
 
@@ -23,9 +22,7 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import org.apache.commons.io.FilenameUtils;
-import org.tritonus.share.sampled.file.TAudioFileFormat;
 
-import javazoom.spi.mpeg.sampled.convert.DecodedMpegAudioInputStream;
 import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.ssb.SSBHandler;
 
@@ -45,7 +42,7 @@ public class SSBClient implements SSBHandler
             if(FilenameUtils.isExtension(pathToResource, "mp3") || FilenameUtils.isExtension(pathToResource, "ogg"))
             {
                 AudioFormat base = ais.getFormat();
-                
+
                 System.out.println(base.getChannels() * 2);
                 AudioFormat decoded = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, base.getSampleRate(), 16, base.getChannels(), base.getChannels() * 2, base.getSampleRate(), false);
                 ais = AudioSystem.getAudioInputStream(decoded, ais);
@@ -68,7 +65,7 @@ public class SSBClient implements SSBHandler
         {
             // Happens on Linux using IcedTea -- no known fix...
             e.printStackTrace();
-            
+
         }
     }
 
