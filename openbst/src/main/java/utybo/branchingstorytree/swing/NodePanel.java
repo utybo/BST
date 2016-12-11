@@ -144,7 +144,7 @@ public class NodePanel extends JScrollablePanel
 
             g.drawImage(scaled, x, y, this);
             g.setColor(new Color(255, 255, 255, 200));
-            //g.fillRect(0, 0, width + 1, height + 1);
+            g.fillRect(0, 0, width + 1, height + 1);
         }
     }
 
