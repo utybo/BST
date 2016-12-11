@@ -120,16 +120,16 @@ public class NodePanel extends JScrollablePanel
         super.paintComponent(g);
         if(imageClient != null && imageClient.getCurrentBackground() != null)
         {
-            System.out.println("boop");
             BufferedImage image = imageClient.getCurrentBackground();
             double scaleFactor = 1d;
+            // TODO More testing
             if(image.getWidth() > image.getHeight())
             {
-                scaleFactor = Math.min(1d, getScaleFactorToFill(new Dimension(image.getWidth(), image.getHeight()), getParent().getSize()));
+                scaleFactor = getScaleFactorToFill(new Dimension(image.getWidth(), image.getHeight()), getParent().getSize());
             }
             else if(image.getHeight() > image.getWidth())
             {
-                scaleFactor = Math.max(1d, getScaleFactorToFill(new Dimension(image.getWidth(), image.getHeight()), getParent().getSize()));
+                scaleFactor = getScaleFactorToFill(new Dimension(image.getWidth(), image.getHeight()), getParent().getSize());
             }
             int scaleWidth = (int)Math.round(image.getWidth() * scaleFactor);
             int scaleHeight = (int)Math.round(image.getHeight() * scaleFactor);
@@ -144,7 +144,7 @@ public class NodePanel extends JScrollablePanel
 
             g.drawImage(scaled, x, y, this);
             g.setColor(new Color(255, 255, 255, 200));
-            g.fillRect(0, 0, width + 1, height + 1);
+            //g.fillRect(0, 0, width + 1, height + 1);
         }
     }
 
