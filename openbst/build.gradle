@@ -38,8 +38,6 @@ dependencies {
     compile 'com.github.rjeschke:txtmark:0.13'
     compile 'com.google.code.gson:gson:2.8.0'
     compile 'commons-io:commons-io:2.5'
-    compile 'com.googlecode.soundlibs:mp3spi:1.9.5.4'
-    compile 'com.googlecode.soundlibs:vorbisspi:1.0.3.3'
 }
 
 shadowJar {

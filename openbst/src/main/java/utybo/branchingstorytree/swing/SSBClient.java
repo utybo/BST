@@ -39,20 +39,8 @@ public class SSBClient implements SSBHandler
         {
             File f = new File(pathToResource);
             AudioInputStream ais = AudioSystem.getAudioInputStream(f);
-            if(FilenameUtils.isExtension(pathToResource, "mp3") || FilenameUtils.isExtension(pathToResource, "ogg"))
-            {
-                AudioFormat base = ais.getFormat();
-
-                System.out.println(base.getChannels() * 2);
-                AudioFormat decoded = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, base.getSampleRate(), 16, base.getChannels(), base.getChannels() * 2, base.getSampleRate(), false);
-                ais = AudioSystem.getAudioInputStream(decoded, ais);
-            }
             AudioFormat format = ais.getFormat();
             DataLine.Info info = new DataLine.Info(Clip.class, format);
-            System.out.println("FF");
-            System.out.println(ais.getFrameLength());
-            System.out.println(ais.getFormat().getFrameSize());
-            System.out.println(ais.getFrameLength() * ais.getFormat().getFrameSize());
             Clip c = (Clip)AudioSystem.getLine(info);
             c.open(ais);
             resources.put(name, c);
