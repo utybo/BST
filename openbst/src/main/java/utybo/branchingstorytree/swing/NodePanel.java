@@ -71,6 +71,10 @@ public class NodePanel extends JScrollablePanel
             else
                 imageClient.setBackground(bg);
         }
+        else if(textNode.hasTag("img_manual") && Boolean.parseBoolean(textNode.getTag("img_manual")))
+        {
+            imageClient.setBackground(null);
+        }
         System.out.println(textNode.getTagMap());
     }
 
