@@ -194,7 +194,7 @@ public class StoryPanel extends JPanel
                         exportSaveStateButton.setEnabled(true);
                 }
             });
-            restoreSaveStateButton = toolBar.add(new AbstractAction(Lang.get("restoress"), new ImageIcon(OpenBST.undoImage))
+            restoreSaveStateButton = toolBar.add(new AbstractAction(Lang.get("story.restoress"), new ImageIcon(OpenBST.undoImage))
             {
                 private static final long serialVersionUID = 1L;
 
@@ -376,6 +376,19 @@ public class StoryPanel extends JPanel
         toolBar.add(Box.createHorizontalGlue());
 
         toolBar.addSeparator();
+
+        JToggleButton muteButton = new JToggleButton("", new ImageIcon(OpenBST.speakerImage));
+        muteButton.addActionListener(e ->
+        {
+            SSBClient ssb = client.getSSBHandler();
+            if(ssb != null)
+            {
+                ssb.setMuted(muteButton.isSelected());
+                muteButton.setIcon(new ImageIcon(muteButton.isSelected() ? OpenBST.muteImage : OpenBST.speakerImage));
+            }
+        });
+        muteButton.setToolTipText(Lang.get("story.mute"));
+        toolBar.add(muteButton);
 
         toolBar.add(new AbstractAction(Lang.get("story.close"), new ImageIcon(OpenBST.closeImage))
         {
