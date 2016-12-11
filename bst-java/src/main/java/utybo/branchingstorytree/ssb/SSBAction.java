@@ -22,8 +22,8 @@ public class SSBAction implements ScriptAction
         SSBHandler ssb = client.getSSBHandler();
         if(ssb == null)
             throw new BSTException(-1, "ssb not supported");
-        head = head.substring(4);
-        switch(head)
+        String action = head.substring(4);
+        switch(action)
         {
         case "play":
             ssb.play(desc);

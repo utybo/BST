@@ -33,14 +33,14 @@ public class TabUIB implements UIBarHandler
 {
     protected final StoryPanel tab;
 
+    private String layout;
+    private TreeMap<String, JComponent> uibComponents = new TreeMap<>();
+    private boolean uibInitialized = false;
+
     public TabUIB(StoryPanel story)
     {
         tab = story;
     }
-
-    private String layout;
-    private TreeMap<String, JComponent> uibComponents = new TreeMap<>();
-    private boolean uibInitialized = false;
 
     @Override
     public void setLayout(String layoutIdentifier) throws BSTException
@@ -340,7 +340,7 @@ public class TabUIB implements UIBarHandler
 
     public void resetUib()
     {
-        if(uibInitialized == true || tab.uibPanel != null)
+        if(uibInitialized || tab.uibPanel != null)
         {
             StoryPanel.log("=> Performing UIB Reset");
             tab.uibPanel.removeAll();

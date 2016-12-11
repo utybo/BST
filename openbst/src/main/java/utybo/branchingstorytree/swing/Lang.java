@@ -86,11 +86,8 @@ public class Lang
 
     }
 
-    public static synchronized void loadTranslationsFromFile(Locale locale, File file) throws UnrespectedModelException, NullPointerException, FileNotFoundException, IOException
+    public static synchronized void loadTranslationsFromFile(Locale locale, File file) throws UnrespectedModelException, FileNotFoundException, IOException
     {
-        if(locale == null || file == null)
-            throw new NullPointerException();
-
         if(map.get(locale) == null)
             map.put(locale, new HashMap<String, String>());
 
@@ -98,23 +95,16 @@ public class Lang
 
     }
 
-    public static synchronized void loadTranslationsFromFile(Locale locale, InputStream input) throws UnrespectedModelException, NullPointerException, FileNotFoundException, IOException
+    public static synchronized void loadTranslationsFromFile(Locale locale, InputStream input) throws UnrespectedModelException, FileNotFoundException, IOException
     {
-        if(locale == null || input == null)
-            throw new NullPointerException();
-
         if(map.get(locale) == null)
             map.put(locale, new HashMap<String, String>());
 
         loadTranslationFromBufferedReader(new BufferedReader(new InputStreamReader(input, "UTF-8")), locale, input.toString());
-
     }
 
     private synchronized static void loadTranslationFromBufferedReader(BufferedReader br, Locale locale, String fileName) throws IOException, UnrespectedModelException
     {
-        if(br == null)
-            throw new NullPointerException();
-        assert br != null;
         try
         {
             String line;
@@ -123,7 +113,7 @@ public class Lang
                 if(!(line.startsWith("#") || line.isEmpty()))
                 {
                     String[] translation = line.split("=");
-                    if(!(translation.length > 1))
+                    if(translation.length < 2)
                     {
                         log("Errrored String : " + line + ". Here is the index :", true);
                         for(int i = 0; i < translation.length; i++)

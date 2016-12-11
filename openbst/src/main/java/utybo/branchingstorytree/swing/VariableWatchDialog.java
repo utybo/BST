@@ -32,7 +32,6 @@ import utybo.branchingstorytree.api.script.VariableRegistry;
 public class VariableWatchDialog extends JDialog
 {
     private final JPanel contentPanel = new JPanel();
-    private JTable table;
     private DefaultTableModel model;
     private StoryPanel parent;
     private boolean wasDeathNotified;
@@ -83,7 +82,7 @@ public class VariableWatchDialog extends JDialog
         JScrollPane scrollPane = new JScrollPane();
         contentPanel.add(scrollPane, "cell 0 2 2 1,grow");
 
-        table = new JTable();
+        JTable table = new JTable();
         model = new DefaultTableModel()
         {
             public boolean isCellEditable(int row, int column)
