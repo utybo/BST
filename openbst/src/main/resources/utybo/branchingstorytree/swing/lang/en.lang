@@ -39,6 +39,9 @@ story.hreload.confirm.title=Hard Reload
 story.jumptonode=Jump to Node...
 story.variablewatcher=Variable watcher...
 story.tip=Hover on one of the icons for more details.
+story.seebackground=View the background
+story.background=Background picture
+story.mute=Mute
 story.close=Close tab
 story.close.confirm=<html><body style='width: 300px'>You are about to close this BST file. All unsaved progress will be lost. Are you sure you want to close this tab?
 story.error=<html>Error on node $n :<p>$m

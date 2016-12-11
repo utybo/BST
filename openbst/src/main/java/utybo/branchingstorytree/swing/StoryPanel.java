@@ -10,11 +10,16 @@ package utybo.branchingstorytree.swing;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dialog.ModalityType;
+import java.awt.Dimension;
 import java.awt.FileDialog;
+import java.awt.Graphics;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -26,6 +31,7 @@ import javax.swing.AbstractAction;
 import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -123,6 +129,7 @@ public class StoryPanel extends JPanel
     private JButton restoreSaveStateButton, exportSaveStateButton;
     protected JToggleButton variableWatcherButton;
     protected VariableWatchDialog variableWatcher;
+    private JButton backgroundButton;
 
     /**
      * Initialize the story panel
@@ -377,6 +384,74 @@ public class StoryPanel extends JPanel
 
         toolBar.addSeparator();
 
+        backgroundButton = toolBar.add(new AbstractAction(Lang.get("story.seebackground"), new ImageIcon(OpenBST.pictureImage))
+        {
+
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                JDialog dialog = new JDialog(parentWindow);
+                dialog.add(new JPanel()
+                {
+                    @Override
+                    protected void paintComponent(Graphics g)
+                    {
+                        super.paintComponent(g);
+                        BufferedImage image = client.getIMGHandler().getCurrentBackground();
+                        double scaleFactor = 1d;
+                        if(image.getWidth() > image.getHeight())
+                        {
+                            scaleFactor = getScaleFactorToFit(new Dimension(image.getWidth(), image.getHeight()), getParent().getSize());
+                        }
+                        else if(image.getHeight() > image.getWidth())
+                        {
+                            scaleFactor = getScaleFactorToFit(new Dimension(image.getWidth(), image.getHeight()), getParent().getSize());
+                        }
+                        int scaleWidth = (int)Math.round(image.getWidth() * scaleFactor);
+                        int scaleHeight = (int)Math.round(image.getHeight() * scaleFactor);
+
+                        Image scaled = image.getScaledInstance(scaleWidth, scaleHeight, Image.SCALE_SMOOTH);
+
+                        int width = getWidth() - 1;
+                        int height = getHeight() - 1;
+
+                        int x = (width - scaled.getWidth(this)) / 2;
+                        int y = (height - scaled.getHeight(this)) / 2;
+
+                        g.drawImage(scaled, x, y, this);
+                    }
+
+                    private double getScaleFactorToFit(Dimension masterSize, Dimension targetSize)
+                    {
+                        double dScaleWidth = getScaleFactor(masterSize.width, targetSize.width);
+                        double dScaleHeight = getScaleFactor(masterSize.height, targetSize.height);
+                        double dScale = Math.min(dScaleHeight, dScaleWidth);
+                        return dScale;
+                    }
+
+                    private double getScaleFactor(int iMasterSize, int iTargetSize)
+                    {
+                        double dScale = 1;
+                        if(iMasterSize > iTargetSize)
+                        {
+                            dScale = (double)iTargetSize / (double)iMasterSize;
+                        }
+                        else
+                        {
+                            dScale = (double)iTargetSize / (double)iMasterSize;
+                        }
+                        return dScale;
+                    }
+                });
+                dialog.setTitle(Lang.get("story.background"));
+                dialog.setModalityType(ModalityType.APPLICATION_MODAL);
+                dialog.setIconImage(OpenBST.pictureImage);
+                dialog.setSize(300, 300);
+                dialog.setLocationRelativeTo(parentWindow);
+                dialog.setVisible(true);
+            }
+        });
+
         JToggleButton muteButton = new JToggleButton("", new ImageIcon(OpenBST.speakerImage));
         muteButton.addActionListener(e ->
         {
@@ -581,6 +656,8 @@ public class StoryPanel extends JPanel
 
                 log("Updating UIB if necessary");
                 client.getUIBarHandler().updateUIB();
+
+                backgroundButton.setEnabled(client.getIMGHandler().getCurrentBackground() != null);
             }
         }
         catch(final Exception e)
