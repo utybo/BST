@@ -15,13 +15,11 @@ import java.util.HashMap;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.BooleanControl;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.DataLine;
+import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
-
-import org.apache.commons.io.FilenameUtils;
 
 import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.ssb.SSBHandler;
@@ -31,6 +29,12 @@ public class SSBClient implements SSBHandler
     private HashMap<String, Clip> resources = new HashMap<>();
     private Clip currentAmbient;
     private boolean muted;
+    private StoryPanel panel;
+
+    public SSBClient(StoryPanel panel)
+    {
+        this.panel = panel;
+    }
 
     @Override
     public void load(String pathToResource, String name) throws BSTException
@@ -44,16 +48,12 @@ public class SSBClient implements SSBHandler
             Clip c = (Clip)AudioSystem.getLine(info);
             c.open(ais);
             resources.put(name, c);
+            FloatControl control = (FloatControl)c.getControl(FloatControl.Type.VOLUME);
+            control.setValue(control.getMaximum());
         }
         catch(UnsupportedAudioFileException | IOException | LineUnavailableException e)
         {
             throw new BSTException(-1, "Error when loading " + pathToResource, e);
-        }
-        catch(NegativeArraySizeException e)
-        {
-            // Happens on Linux using IcedTea -- no known fix...
-            e.printStackTrace();
-
         }
     }
 
@@ -70,12 +70,14 @@ public class SSBClient implements SSBHandler
     @Override
     public void ambient(String name)
     {
+        System.out.println("Playing " + name);
         if(currentAmbient != null)
         {
             currentAmbient.stop();
         }
+        panel.story.getRegistry().put("__ssb__ambient", name);
         Clip c = resources.get(name);
-        if(!muted && c != null)
+        if(c != null)
             c.loop(Clip.LOOP_CONTINUOUSLY);
         currentAmbient = c;
     }
@@ -85,15 +87,47 @@ public class SSBClient implements SSBHandler
     {
         currentAmbient.stop();
         currentAmbient = null;
+        panel.story.getRegistry().put("__ssb__ambient", "//null");
+    }
+
+    public void shutdown()
+    {
+        resources.forEach((id, clip) ->
+        {
+            clip.stop();
+            clip.close();
+        });
     }
 
     public void setMuted(boolean muted)
     {
         resources.forEach((id, clip) ->
         {
-            BooleanControl control = (BooleanControl)clip.getControl(BooleanControl.Type.MUTE);
-            control.setValue(muted);
+            FloatControl control = (FloatControl)clip.getControl(FloatControl.Type.VOLUME);
+            control.setValue(muted ? 0F : control.getMaximum());
         });
+    }
+
+    public void reset()
+    {
+        resources.forEach((id, clip) ->
+        {
+            clip.stop();
+            clip.setMicrosecondPosition(0L);
+        });
+        resources.clear();
+    }
+
+    public void restoreSaveState()
+    {
+        try
+        {
+            ambient(panel.story.getRegistry().get("__ssb__ambient", null).toString());
+        }
+        catch(NullPointerException e)
+        {
+            // This is thrown is the save state has an invalid tag, which can happen in many cases
+        }
     }
 
 }

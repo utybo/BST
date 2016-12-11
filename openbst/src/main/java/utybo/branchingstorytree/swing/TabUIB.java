@@ -52,7 +52,7 @@ public class TabUIB implements UIBarHandler
     public void initialize() throws BSTException
     {
         uibInitialized = true;
-        tab.story.putTag("__uib__initialized", "true");
+        tab.story.getRegistry().put("__uib__initialized", "true");
         boolean gridMode = tab.story.hasTag("uib_grid");
         String columnDef = tab.story.getTag("uib_grid");
         boolean advancedMode = Boolean.parseBoolean(tab.story.getTag("uib_advanced"));
@@ -143,7 +143,7 @@ public class TabUIB implements UIBarHandler
         JComponent c = uibComponents.get(element);
         if(c != null)
         {
-            tab.story.putTag("__uib__" + element + "_value", "" + value);
+            tab.story.getRegistry().put("__uib__" + element + "_value", "" + value);
             updateComponent(element, c);
         }
     }
@@ -154,7 +154,7 @@ public class TabUIB implements UIBarHandler
         JComponent c = uibComponents.get(element);
         if(c != null)
         {
-            tab.story.putTag("__uib__" + element + "_value", "" + value);
+            tab.story.getRegistry().put("__uib__" + element + "_value", "" + value);
             updateComponent(element, c);
         }
     }
@@ -165,7 +165,7 @@ public class TabUIB implements UIBarHandler
         JComponent c = uibComponents.get(element);
         if(c instanceof JProgressBar)
         {
-            tab.story.putTag("__uib__" + element + "_max", "" + max);
+            tab.story.getRegistry().put("__uib__" + element + "_max", "" + max);
             ((JProgressBar)c).getModel().setMaximum(max);
         }
 
@@ -177,7 +177,7 @@ public class TabUIB implements UIBarHandler
         JComponent c = uibComponents.get(element);
         if(c instanceof JProgressBar)
         {
-            tab.story.putTag("__uib__" + element + "_min", "" + min);
+            tab.story.getRegistry().put("__uib__" + element + "_min", "" + min);
             ((JProgressBar)c).getModel().setMinimum(min);
         }
 
@@ -194,7 +194,7 @@ public class TabUIB implements UIBarHandler
     public void setUIBVisisble(boolean parseBoolean)
     {
         tab.uibPanel.setVisible(parseBoolean);
-        tab.story.putTag("__uib__visible", Boolean.toString(parseBoolean));
+        tab.story.getRegistry().put("__uib__visible", Boolean.toString(parseBoolean));
     }
 
     @Override
@@ -218,13 +218,12 @@ public class TabUIB implements UIBarHandler
     {
         if(c instanceof JLabel)
         {
-            String s = MarkupUtils.translateMarkup(MarkupUtils.solveMarkup(tab.story, null), computeText(tab.story.getTag("__uib__" + element + "_value")));
-            //String s = computeText(uibch.getValue().toString());
+            String s = MarkupUtils.translateMarkup(MarkupUtils.solveMarkup(tab.story, null), computeText(tab.story.getRegistry().get("__uib__" + element + "_value", "").toString()));
             ((JLabel)c).setText(s);
         }
         else if(c instanceof JProgressBar)
         {
-            ((JProgressBar)c).setValue(computeInt(tab.story.getTag("__uib__" + element + "_value")));
+            ((JProgressBar)c).setValue(computeInt(tab.story.getRegistry().get("__uib__" + element + "_value", "0").toString()));
         }
 
     }
@@ -286,7 +285,7 @@ public class TabUIB implements UIBarHandler
         // and make sure we build onto a clean UIB.
         resetUib();
 
-        if(Boolean.parseBoolean("__uib__initialized"))
+        if(Boolean.parseBoolean(tab.story.getRegistry().get("__uib__initialized", "false").toString()))
         {
             // Initialize
             initialize();
@@ -294,12 +293,12 @@ public class TabUIB implements UIBarHandler
             // Restore all values
             for(String element : uibComponents.keySet())
             {
-                Map<String, String> componentTags = getUibTags(element);
+                Map<String, String> componentInfo = getUibInfo(element);
 
-                for(String tag : componentTags.keySet())
+                for(String varName : componentInfo.keySet())
                 {
-                    String value = componentTags.get(tag);
-                    switch(tag)
+                    String value = componentInfo.get(varName);
+                    switch(varName)
                     {
                     case "max":
                         setElementMax(element, Integer.parseInt(value));
@@ -315,7 +314,7 @@ public class TabUIB implements UIBarHandler
             }
 
             // Redefine if visible or not
-            if("true".equals(tab.story.getTag("__uib__visible")))
+            if("true".equals(tab.story.getRegistry().get("__uib__visible", null)))
             {
                 tab.uibPanel.setVisible(true);
             }
@@ -326,14 +325,14 @@ public class TabUIB implements UIBarHandler
         }
     }
 
-    private Map<String, String> getUibTags(String element)
+    private Map<String, String> getUibInfo(String element)
     {
         HashMap<String, String> map = new HashMap<>();
-        for(String tagName : tab.story.getTagMap().keySet())
+        for(String varName : tab.story.getRegistry().getAllString().keySet())
         {
-            if(tagName.startsWith("__uib__" + element + "_"))
+            if(varName.startsWith("__uib__" + element + "_"))
             {
-                map.put(tagName.substring("__uib__".length() + element.length() + "_".length()), map.get(tagName));
+                map.put(varName.substring("__uib__".length() + element.length() + "_".length()), tab.story.getRegistry().getAllString().get(varName));
             }
         }
         return map;

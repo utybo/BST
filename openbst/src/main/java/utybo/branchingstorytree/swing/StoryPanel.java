@@ -474,6 +474,7 @@ public class StoryPanel extends JPanel
             {
                 if(JOptionPane.showConfirmDialog(parentWindow, Lang.get("story.close.confirm"), Lang.get("story.close"), JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, new ImageIcon(OpenBST.closeBigImage)) == JOptionPane.YES_OPTION)
                 {
+                    client.getSSBHandler().shutdown();
                     parentWindow.removeStory(StoryPanel.this);
                 }
             }
@@ -529,6 +530,18 @@ public class StoryPanel extends JPanel
     {
         ss.applySaveState(story);
         showNode(story.getNode(ss.getNodeId()));
+        // Also notify modules that need to restore their state
+        client.getSSBHandler().restoreSaveState();
+        client.getIMGHandler().restoreSaveState();
+        try
+        {
+            client.getUIBarHandler().restoreState();
+        }
+        catch(BSTException e)
+        {
+            // TODO Indicate this exception happened
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -779,6 +792,8 @@ public class StoryPanel extends JPanel
         story.reset();
 
         client.getUIBarHandler().resetUib();
+        client.getIMGHandler().reset();
+        client.getSSBHandler().reset();
 
         log("=> Processing initial node again");
         showNode(story.getInitialNode());

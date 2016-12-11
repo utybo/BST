@@ -26,8 +26,6 @@ public class TabClient implements BSTClient
     public TabClient(OpenBST instance)
     {
         this.instance = instance;
-        this.ssbClient = new SSBClient();
-        imgClient = new IMGClient();
     }
 
     @Override
@@ -52,6 +50,8 @@ public class TabClient implements BSTClient
         tab = sp;
         uibHandler = new TabUIB(tab);
         brmClient = new BRMClient(tab.getBSTFile(), this);
+        ssbClient = new SSBClient(tab);
+        imgClient = new IMGClient(tab);
     }
 
     @Override
