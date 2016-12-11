@@ -21,11 +21,13 @@ public class TabClient implements BSTClient
     private TabUIB uibHandler;
     private BRMClient brmClient;
     private SSBClient ssbClient;
+    private IMGClient imgClient;
 
     public TabClient(OpenBST instance)
     {
         this.instance = instance;
         this.ssbClient = new SSBClient();
+        imgClient = new IMGClient();
     }
 
     @Override
@@ -70,5 +72,9 @@ public class TabClient implements BSTClient
         return brmClient;
     }
 
-    
+    @Override
+    public IMGClient getIMGHandler()
+    {
+        return imgClient;
+    }
 }

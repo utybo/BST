@@ -161,7 +161,7 @@ public class StoryPanel extends JPanel
         scrollPane.setBackground(Color.WHITE);
         add(scrollPane, "grow, pushy, wrap");
 
-        nodePanel = new NodePanel();
+        nodePanel = new NodePanel(client.getIMGHandler());
         nodePanel.setScrollableWidth(ScrollableSizeHint.FIT);
         nodePanel.setScrollableHeight(ScrollableSizeHint.STRETCH);
         scrollPane.setViewportView(nodePanel);
