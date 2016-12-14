@@ -18,6 +18,8 @@ import utybo.branchingstorytree.api.script.ActionDescriptor;
 import utybo.branchingstorytree.api.script.CheckerDescriptor;
 import utybo.branchingstorytree.api.script.Dictionnary;
 import utybo.branchingstorytree.api.script.IfNextNodeDefiner;
+import utybo.branchingstorytree.api.script.ScriptAction;
+import utybo.branchingstorytree.api.script.ScriptChecker;
 import utybo.branchingstorytree.api.script.StaticNextNode;
 import utybo.branchingstorytree.api.script.VariableNextNode;
 import utybo.branchingstorytree.api.story.BranchingStory;
@@ -177,36 +179,64 @@ public class BranchingStoryTreeParser
                             {
                                 final String scripts = s.substring(s.indexOf('|', s.indexOf('|') + 1) + 1);
                                 matcher = scriptPattern.matcher(scripts);
-                                while(matcher.find())
+                                if(Character.isAlphabetic(scripts.charAt(0)))
                                 {
-                                    String script = scripts.substring(matcher.start(), matcher.end());
-                                    final int type = script.startsWith("{") ? 0 : script.startsWith("[") ? 1 : -1;
-                                    script = script.substring(1, script.length() - 1);
-                                    final String command = matcher.group(type == 0 ? 2 : 5);
-                                    final String desc = matcher.group(type == 0 ? 3 : 6);
-                                    if(type == 0)
+                                    // Attempt to find a checker first
+                                    // If not found, attempt to find an action
+                                    Matcher m = lnLineSubscript.matcher(scripts);
+                                    if(m.matches())
                                     {
-                                        final ActionDescriptor action = new ActionDescriptor(dictionnary.getAction(command), command, desc, story, client);
-                                        if(action.getAction() == null)
-                                        {
-                                            throw new IllegalArgumentException("Unknown action : " + action);
-                                        }
-                                        else
-                                        {
-                                            option.addDoOnClick(action);
-                                        }
+                                       String header = m.group(1); 
+                                       ScriptAction possibleAction = dictionnary.getAction(header);
+                                       ScriptChecker possibleChecker = dictionnary.getChecker(header);
+                                       if(possibleAction != null)
+                                       {
+                                           option.addDoOnClick(new ActionDescriptor(possibleAction, header, m.group(2), story, client));
+                                       }
+                                       else if(possibleChecker != null)
+                                       {
+                                           option.setChecker(new CheckerDescriptor(possibleChecker, header, m.group(2), story, client));
+                                       }
+                                       else
+                                       {
+                                           throw new BSTException(lineNumber, "This checker or action does not exist : " + header);
+                                       }
+                                       
                                     }
-                                    else if(type == 1)
+                                }
+                                else
+                                {
+                                    while(matcher.find())
                                     {
-
-                                        final CheckerDescriptor oc = new CheckerDescriptor(dictionnary.getChecker(command), command, desc, story, client);
-                                        if(oc.getChecker() == null)
+                                        String script = scripts.substring(matcher.start(), matcher.end());
+                                        final int type = script.startsWith("{") ? 0 : script.startsWith("[") ? 1 : -1;
+                                        script = script.substring(1, script.length() - 1);
+                                        final String command = matcher.group(type == 0 ? 2 : 5);
+                                        final String desc = matcher.group(type == 0 ? 3 : 6);
+                                        if(type == 0)
                                         {
-                                            throw new IllegalArgumentException("Unknown checker : " + command);
+                                            final ActionDescriptor action = new ActionDescriptor(dictionnary.getAction(command), command, desc, story, client);
+                                            if(action.getAction() == null)
+                                            {
+                                                throw new IllegalArgumentException("Unknown action : " + action);
+                                            }
+                                            else
+                                            {
+                                                option.addDoOnClick(action);
+                                            }
                                         }
-                                        else
+                                        else if(type == 1)
                                         {
-                                            option.setChecker(oc);
+
+                                            final CheckerDescriptor oc = new CheckerDescriptor(dictionnary.getChecker(command), command, desc, story, client);
+                                            if(oc.getChecker() == null)
+                                            {
+                                                throw new IllegalArgumentException("Unknown checker : " + command);
+                                            }
+                                            else
+                                            {
+                                                option.setChecker(oc);
+                                            }
                                         }
                                     }
                                 }
