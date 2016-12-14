@@ -18,6 +18,7 @@ import utybo.branchingstorytree.api.script.ActionDescriptor;
 import utybo.branchingstorytree.api.script.CheckerDescriptor;
 import utybo.branchingstorytree.api.script.Dictionnary;
 import utybo.branchingstorytree.api.script.IfNextNodeDefiner;
+import utybo.branchingstorytree.api.script.NextNodeDefiner;
 import utybo.branchingstorytree.api.script.ScriptAction;
 import utybo.branchingstorytree.api.script.ScriptChecker;
 import utybo.branchingstorytree.api.script.StaticNextNode;
@@ -31,7 +32,6 @@ import utybo.branchingstorytree.api.story.TextNode;
 import utybo.branchingstorytree.api.story.VirtualNode;
 import utybo.branchingstorytree.api.story.logicalnode.LNCondReturn;
 import utybo.branchingstorytree.api.story.logicalnode.LNExec;
-import utybo.branchingstorytree.api.story.logicalnode.LNReturn;
 import utybo.branchingstorytree.api.story.logicalnode.LNTern;
 
 public class BranchingStoryTreeParser
@@ -147,34 +147,9 @@ public class BranchingStoryTreeParser
                             ((TextNode)node).addOption(option);
 
                             final String nextNodeDefiner = bits[1];
-                            Matcher matcher = ifNextNodeDefiner.matcher(nextNodeDefiner);
-                            Matcher matchStatic = staticNodeDefiner.matcher(nextNodeDefiner);
-                            if(matcher.matches())
-                            {
-                                final int first = Integer.parseInt(matcher.group(1));
-                                final int second = Integer.parseInt(matcher.group(2));
-                                final String script = matcher.group(3);
-                                final String command = script.substring(0, script.indexOf(':'));
-                                final String desc = script.substring(script.indexOf(':') + 1);
-                                final CheckerDescriptor oc = new CheckerDescriptor(dictionnary.getChecker(command), command, desc, story, client);
-                                if(oc.getChecker() == null)
-                                {
-                                    throw new IllegalArgumentException("Unknown checker : " + command);
-                                }
-                                else
-                                {
-                                    option.setNextNode(new IfNextNodeDefiner(first, second, oc));
-                                }
-                            }
-                            else if(matchStatic.matches())
-                            {
-                                option.setNextNode(new StaticNextNode(Integer.parseInt(nextNodeDefiner)));
-                            }
-                            else
-                            {
-                                option.setNextNode(new VariableNextNode(story, nextNodeDefiner));
-                            }
+                            option.setNextNode(parseNND(nextNodeDefiner, dictionnary, story, client));
 
+                            Matcher matcher;
                             if(bits.length > 2)
                             {
                                 final String scripts = s.substring(s.indexOf('|', s.indexOf('|') + 1) + 1);
@@ -246,33 +221,7 @@ public class BranchingStoryTreeParser
                     else if(nodeType == LOGICAL)
                     {
                         final String nextNodeDefiner = line.substring(1);
-                        final Matcher matcher = ifNextNodeDefiner.matcher(nextNodeDefiner);
-                        final Matcher m2 = staticNodeDefiner.matcher(nextNodeDefiner);
-                        if(matcher.matches())
-                        {
-                            final int first = Integer.parseInt(matcher.group(1));
-                            final int second = Integer.parseInt(matcher.group(2));
-                            final String script = matcher.group(3);
-                            final String command = script.substring(0, script.indexOf(':'));
-                            final String desc = script.substring(script.indexOf(':') + 1);
-                            final CheckerDescriptor oc = new CheckerDescriptor(dictionnary.getChecker(command), command, desc, story, client);
-                            if(oc.getChecker() == null)
-                            {
-                                throw new IllegalArgumentException("Unknown checker : " + command);
-                            }
-                            else
-                            {
-                                ((LogicalNode)node).addInstruction(new LNCondReturn(new IfNextNodeDefiner(first, second, oc)));
-                            }
-                        }
-                        else if(m2.matches())
-                        {
-                            ((LogicalNode)node).addInstruction(new LNReturn(Integer.parseInt(nextNodeDefiner)));
-                        }
-                        else
-                        {
-                            ((LogicalNode)node).addInstruction(new LNCondReturn(new VariableNextNode(story, nextNodeDefiner)));
-                        }
+                        ((LogicalNode)node).addInstruction(new LNCondReturn(parseNND(nextNodeDefiner, dictionnary, story, client)));
                     }
                 }
                 else if(node != null && !optionsStarted)
@@ -390,5 +339,30 @@ public class BranchingStoryTreeParser
             throw new BSTException(lineNumber, "An error was detected while trying to understand your file. Please check the line : " + line, e);
         }
         return story;
+    }
+
+    private NextNodeDefiner parseNND(String nnd, Dictionnary dictionnary, BranchingStory story, BSTClient client) throws BSTException
+    {
+        Matcher matcher = ifNextNodeDefiner.matcher(nnd);
+        Matcher matchStatic = staticNodeDefiner.matcher(nnd);
+        if(matcher.matches())
+        {
+            final int first = Integer.parseInt(matcher.group(1));
+            final int second = Integer.parseInt(matcher.group(2));
+            final String script = matcher.group(3);
+            final String command = script.substring(0, script.indexOf(':'));
+            final String desc = script.substring(script.indexOf(':') + 1);
+            final CheckerDescriptor oc = new CheckerDescriptor(dictionnary.getChecker(command), command, desc, story, client);
+            return new IfNextNodeDefiner(first, second, oc);
+        }
+        else if(matchStatic.matches())
+        {
+            return new StaticNextNode(Integer.parseInt(nnd));
+        }
+        else
+        {
+            return new VariableNextNode(story, nnd);
+        }
+
     }
 }

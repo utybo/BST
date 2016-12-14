@@ -52,7 +52,14 @@ public class NodeOption extends TagHolder
 
     public CheckerDescriptor getChecker()
     {
-        return checker == null ? new CheckerDescriptor(new AlwaysTrueChecker(), null, null, null, null) : checker;
+        try
+        {
+            return checker == null ? new CheckerDescriptor(new AlwaysTrueChecker(), null, null, null, null) : checker;
+        }
+        catch(BSTException e)
+        {
+            throw new Error("Impossible state", e);
+        }
     }
 
     public void setChecker(final CheckerDescriptor checker)
