@@ -45,8 +45,8 @@ public class BranchingStoryTreeParser
     private final Pattern ifNextNodeDefiner = Pattern.compile("([-]?\\d+),([-]?\\d+)\\[(.+:.+)]");
     private final Pattern staticNodeDefiner = Pattern.compile("\\d+");
 
-    private final Pattern lnLineSubscript = Pattern.compile("(.+?):(.*)");
-    private final Pattern lnTernary = Pattern.compile("((\\[.+?:.*?])+)\\?((\\{.+?:.*?})+):((\\{.+?:.*?})*)");
+    private final Pattern lnLineSubscript = Pattern.compile("(\\w+?):(.*)");
+    private final Pattern lnTernary = Pattern.compile("((\\[.+?:.*?])+)\\?((\\{.+?:.*?})+)(:((\\{.+?:.*?})*))?");
     private final Pattern lnChecker = Pattern.compile("\\[(.+?):(.*?)]");
     private final Pattern lnScript = Pattern.compile("\\{(.+?):(.*?)}");
 
@@ -186,22 +186,22 @@ public class BranchingStoryTreeParser
                                     Matcher m = lnLineSubscript.matcher(scripts);
                                     if(m.matches())
                                     {
-                                       String header = m.group(1); 
-                                       ScriptAction possibleAction = dictionnary.getAction(header);
-                                       ScriptChecker possibleChecker = dictionnary.getChecker(header);
-                                       if(possibleAction != null)
-                                       {
-                                           option.addDoOnClick(new ActionDescriptor(possibleAction, header, m.group(2), story, client));
-                                       }
-                                       else if(possibleChecker != null)
-                                       {
-                                           option.setChecker(new CheckerDescriptor(possibleChecker, header, m.group(2), story, client));
-                                       }
-                                       else
-                                       {
-                                           throw new BSTException(lineNumber, "This checker or action does not exist : " + header);
-                                       }
-                                       
+                                        String header = m.group(1);
+                                        ScriptAction possibleAction = dictionnary.getAction(header);
+                                        ScriptChecker possibleChecker = dictionnary.getChecker(header);
+                                        if(possibleAction != null)
+                                        {
+                                            option.addDoOnClick(new ActionDescriptor(possibleAction, header, m.group(2), story, client));
+                                        }
+                                        else if(possibleChecker != null)
+                                        {
+                                            option.setChecker(new CheckerDescriptor(possibleChecker, header, m.group(2), story, client));
+                                        }
+                                        else
+                                        {
+                                            throw new BSTException(lineNumber, "This checker or action does not exist : " + header);
+                                        }
+
                                     }
                                 }
                                 else
@@ -247,6 +247,7 @@ public class BranchingStoryTreeParser
                     {
                         final String nextNodeDefiner = line.substring(1);
                         final Matcher matcher = ifNextNodeDefiner.matcher(nextNodeDefiner);
+                        final Matcher m2 = staticNodeDefiner.matcher(nextNodeDefiner);
                         if(matcher.matches())
                         {
                             final int first = Integer.parseInt(matcher.group(1));
@@ -264,9 +265,13 @@ public class BranchingStoryTreeParser
                                 ((LogicalNode)node).addInstruction(new LNCondReturn(new IfNextNodeDefiner(first, second, oc)));
                             }
                         }
-                        else
+                        else if(m2.matches())
                         {
                             ((LogicalNode)node).addInstruction(new LNReturn(Integer.parseInt(nextNodeDefiner)));
+                        }
+                        else
+                        {
+                            ((LogicalNode)node).addInstruction(new LNCondReturn(new VariableNextNode(story, nextNodeDefiner)));
                         }
                     }
                 }
@@ -302,7 +307,7 @@ public class BranchingStoryTreeParser
                             {
                                 final String conditions = m2.group(1);
                                 final String yes = m2.group(3);
-                                final String no = m2.group(5);
+                                final String no = m2.group(6);
 
                                 final ArrayList<CheckerDescriptor> check = new ArrayList<>();
                                 final ArrayList<ActionDescriptor> yeses = new ArrayList<>();
@@ -342,20 +347,23 @@ public class BranchingStoryTreeParser
                                     }
                                 }
 
-                                matcher = lnScript.matcher(no);
-                                while(matcher.find())
+                                if(no != null)
                                 {
-                                    final String command = matcher.group(1);
-                                    final String desc = matcher.group(2);
+                                    matcher = lnScript.matcher(no);
+                                    while(matcher.find())
+                                    {
+                                        final String command = matcher.group(1);
+                                        final String desc = matcher.group(2);
 
-                                    final ActionDescriptor oc = new ActionDescriptor(dictionnary.getAction(command), command, desc, story, client);
-                                    if(oc.getAction() == null)
-                                    {
-                                        throw new IllegalArgumentException("Unknown checker : " + command);
-                                    }
-                                    else
-                                    {
-                                        nos.add(oc);
+                                        final ActionDescriptor oc = new ActionDescriptor(dictionnary.getAction(command), command, desc, story, client);
+                                        if(oc.getAction() == null)
+                                        {
+                                            throw new IllegalArgumentException("Unknown checker : " + command);
+                                        }
+                                        else
+                                        {
+                                            nos.add(oc);
+                                        }
                                     }
                                 }
 

@@ -10,12 +10,13 @@ package utybo.branchingstorytree.api.story.logicalnode;
 
 import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.api.script.IfNextNodeDefiner;
+import utybo.branchingstorytree.api.script.NextNodeDefiner;
 
 public class LNCondReturn extends LNInstruction
 {
-    private final IfNextNodeDefiner innd;
+    private final NextNodeDefiner innd;
 
-    public LNCondReturn(final IfNextNodeDefiner innd)
+    public LNCondReturn(final NextNodeDefiner innd)
     {
         this.innd = innd;
     }

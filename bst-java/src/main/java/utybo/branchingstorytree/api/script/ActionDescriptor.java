@@ -19,8 +19,12 @@ public class ActionDescriptor
     private BSTClient client;
     private BranchingStory story;
 
-    public ActionDescriptor(ScriptAction action, String head, String desc, BranchingStory story, BSTClient client)
+    public ActionDescriptor(ScriptAction action, String head, String desc, BranchingStory story, BSTClient client) throws BSTException
     {
+        if(action == null)
+        {
+            throw new BSTException(-1, "Action " + head + " does not exist");
+        }
         this.action = action;
         this.head = head;
         this.desc = desc;

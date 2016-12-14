@@ -19,8 +19,12 @@ public class CheckerDescriptor
     private BSTClient client;
     private BranchingStory story;
 
-    public CheckerDescriptor(ScriptChecker checker, String head, String desc, BranchingStory story, BSTClient client)
+    public CheckerDescriptor(ScriptChecker checker, String head, String desc, BranchingStory story, BSTClient client) throws BSTException
     {
+        if(checker == null)
+        {
+            throw new BSTException(-1, "Checker " + head + " does not exist");
+        }
         this.checker = checker;
         this.head = head;
         this.desc = desc;
