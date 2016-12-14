@@ -823,11 +823,12 @@ public class StoryPanel extends JPanel
      */
     private void optionSelected(final NodeOption nodeOption) throws BSTException
     {
+        int nextNode = nodeOption.getNextNode();
         for(final ActionDescriptor oa : nodeOption.getDoOnClickActions())
         {
             oa.exec();
         }
-        showNode(story.getNode(nodeOption.getNextNode()));
+        showNode(story.getNode(nextNode));
     }
 
     /**
