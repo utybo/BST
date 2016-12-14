@@ -19,6 +19,7 @@ import utybo.branchingstorytree.api.script.CheckerDescriptor;
 import utybo.branchingstorytree.api.script.Dictionnary;
 import utybo.branchingstorytree.api.script.IfNextNodeDefiner;
 import utybo.branchingstorytree.api.script.StaticNextNode;
+import utybo.branchingstorytree.api.script.VariableNextNode;
 import utybo.branchingstorytree.api.story.BranchingStory;
 import utybo.branchingstorytree.api.story.LogicalNode;
 import utybo.branchingstorytree.api.story.NodeOption;
@@ -40,6 +41,7 @@ public class BranchingStoryTreeParser
     private final Pattern virtualNodePattern = Pattern.compile("\\d+:>.+$");
     private final Pattern scriptPattern = Pattern.compile("(\\{(.+?):(.*?)})|(\\[(.+?):(.*?)])");
     private final Pattern ifNextNodeDefiner = Pattern.compile("([-]?\\d+),([-]?\\d+)\\[(.+:.+)]");
+    private final Pattern staticNodeDefiner = Pattern.compile("\\d+");
 
     private final Pattern lnLineSubscript = Pattern.compile("(.+?):(.*)");
     private final Pattern lnTernary = Pattern.compile("((\\[.+?:.*?])+)\\?((\\{.+?:.*?})+):((\\{.+?:.*?})*)");
@@ -144,6 +146,7 @@ public class BranchingStoryTreeParser
 
                             final String nextNodeDefiner = bits[1];
                             Matcher matcher = ifNextNodeDefiner.matcher(nextNodeDefiner);
+                            Matcher matchStatic = staticNodeDefiner.matcher(nextNodeDefiner);
                             if(matcher.matches())
                             {
                                 final int first = Integer.parseInt(matcher.group(1));
@@ -161,9 +164,13 @@ public class BranchingStoryTreeParser
                                     option.setNextNode(new IfNextNodeDefiner(first, second, oc));
                                 }
                             }
-                            else
+                            else if(matchStatic.matches())
                             {
                                 option.setNextNode(new StaticNextNode(Integer.parseInt(nextNodeDefiner)));
+                            }
+                            else
+                            {
+                                option.setNextNode(new VariableNextNode(story, nextNodeDefiner));
                             }
 
                             if(bits.length > 2)
