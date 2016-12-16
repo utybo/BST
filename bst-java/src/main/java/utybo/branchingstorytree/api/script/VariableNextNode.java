@@ -27,9 +27,9 @@ public class VariableNextNode implements NextNodeDefiner
     {
         Integer i = story.getRegistry().getAllInt().get(variable);
         if(i == null)
-            throw new BSTException(-1, "Unknown or unset variable : " + i +" (note : it NEEDS to be an integer)");
+            throw new BSTException(-1, "Unknown or unset variable : " + i + " (note : it NEEDS to be an integer)");
         else
             return i;
     }
-    
+
 }
