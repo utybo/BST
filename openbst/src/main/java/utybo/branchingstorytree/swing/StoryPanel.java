@@ -386,6 +386,9 @@ public class StoryPanel extends JPanel
 
         backgroundButton = toolBar.add(new AbstractAction(Lang.get("story.seebackground"), new ImageIcon(OpenBST.pictureImage))
         {
+            private Dimension previousBounds;
+            private Image previousImage;
+            private int x, y;
 
             @Override
             public void actionPerformed(ActionEvent e)
@@ -397,28 +400,37 @@ public class StoryPanel extends JPanel
                     protected void paintComponent(Graphics g)
                     {
                         super.paintComponent(g);
-                        BufferedImage image = client.getIMGHandler().getCurrentBackground();
-                        double scaleFactor = 1d;
-                        if(image.getWidth() > image.getHeight())
-                        {
-                            scaleFactor = getScaleFactorToFit(new Dimension(image.getWidth(), image.getHeight()), getParent().getSize());
-                        }
-                        else if(image.getHeight() > image.getWidth())
-                        {
-                            scaleFactor = getScaleFactorToFit(new Dimension(image.getWidth(), image.getHeight()), getParent().getSize());
-                        }
-                        int scaleWidth = (int)Math.round(image.getWidth() * scaleFactor);
-                        int scaleHeight = (int)Math.round(image.getHeight() * scaleFactor);
-
-                        Image scaled = image.getScaledInstance(scaleWidth, scaleHeight, Image.SCALE_SMOOTH);
-
+                        Image image;
                         int width = getWidth() - 1;
                         int height = getHeight() - 1;
+                        if(previousBounds != null && previousImage != null && getParent().getSize().equals(previousBounds))
+                        {
+                            image = previousImage;
+                        }
+                        else
+                        {
+                            BufferedImage bi = client.getIMGHandler().getCurrentBackground();
+                            double scaleFactor = 1d;
+                            if(bi.getWidth() > bi.getHeight())
+                            {
+                                scaleFactor = getScaleFactorToFit(new Dimension(bi.getWidth(), bi.getHeight()), getParent().getSize());
+                            }
+                            else if(bi.getHeight() > bi.getWidth())
+                            {
+                                scaleFactor = getScaleFactorToFit(new Dimension(bi.getWidth(), bi.getHeight()), getParent().getSize());
+                            }
+                            int scaleWidth = (int)Math.round(bi.getWidth() * scaleFactor);
+                            int scaleHeight = (int)Math.round(bi.getHeight() * scaleFactor);
 
-                        int x = (width - scaled.getWidth(this)) / 2;
-                        int y = (height - scaled.getHeight(this)) / 2;
+                            image = bi.getScaledInstance(scaleWidth, scaleHeight, Image.SCALE_FAST);
 
-                        g.drawImage(scaled, x, y, this);
+                            previousBounds = getParent().getSize();
+                            previousImage = image;
+                            x = (width - image.getWidth(this)) / 2;
+                            y = (height - image.getHeight(this)) / 2;
+                        }
+
+                        g.drawImage(image, x, y, this);
                     }
 
                     private double getScaleFactorToFit(Dimension masterSize, Dimension targetSize)
