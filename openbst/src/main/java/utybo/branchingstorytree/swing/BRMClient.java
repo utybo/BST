@@ -62,6 +62,8 @@ public class BRMClient implements BRMHandler
             return client.getSSBHandler();
         case "img":
             return client.getIMGHandler();
+        case "bdf":
+            return client.getBDFHandler();
         default:
             return null;
         }

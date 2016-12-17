@@ -794,6 +794,7 @@ public class StoryPanel extends JPanel
         client.getUIBarHandler().resetUib();
         client.getIMGHandler().reset();
         client.getSSBHandler().reset();
+        client.getBDFHandler().reset();
 
         log("=> Processing initial node again");
         showNode(story.getInitialNode());

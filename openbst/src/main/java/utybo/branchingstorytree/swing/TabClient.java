@@ -22,10 +22,12 @@ public class TabClient implements BSTClient
     private BRMClient brmClient;
     private SSBClient ssbClient;
     private IMGClient imgClient;
+    private BDFClient bdfClient;
 
     public TabClient(OpenBST instance)
     {
         this.instance = instance;
+        this.bdfClient = new BDFClient();
     }
 
     @Override
@@ -77,4 +79,12 @@ public class TabClient implements BSTClient
     {
         return imgClient;
     }
+
+    @Override
+    public BDFClient getBDFHandler()
+    {
+        return bdfClient;
+    }
+    
+    
 }
