@@ -28,6 +28,10 @@ public class BDFAction implements ScriptAction
             throw new BSTException(-1, "Invalid syntax : bdf_apply:name OR bdf_apply:name,prefix");
         }
         String name = bits[0];
+        if(name.startsWith("!"))
+        {
+            name = story.getRegistry().get(name.substring(1), "").toString();
+        }
         String prefix = bits.length == 2 ? bits[1] : "";
         if(bdf.getBDFFile(name) == null)
             throw new BSTException(-1, "Unknown BDF file : " + name);
