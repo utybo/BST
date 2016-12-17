@@ -95,7 +95,7 @@ public class UIBarAction implements ScriptAction
     private void elementCheck(String element, UIBarHandler handler) throws BSTException
     {
         if(!handler.elementExists(element))
-            throw new BSTException(-1, "Unknown component : element");
+            throw new BSTException(-1, "Unknown component : " + element);
     }
 
     private int intIfPossible(String value, VariableRegistry registry) throws BSTException

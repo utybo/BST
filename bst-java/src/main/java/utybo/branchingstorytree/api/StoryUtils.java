@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
 
 import utybo.branchingstorytree.api.story.BranchingStory;
 import utybo.branchingstorytree.api.story.LogicalNode;
+import utybo.branchingstorytree.api.story.StoryNode;
 import utybo.branchingstorytree.api.story.VirtualNode;
 
 public class StoryUtils
@@ -37,7 +38,11 @@ public class StoryUtils
                 final String s = varName.substring(1);
                 final int i = Integer.parseInt(s);
                 final LogicalNode ln = (LogicalNode)story.getNode(i);
-                text = text.replace(toReplace, ((VirtualNode)story.getNode(ln.solve())).getText());
+                StoryNode node = story.getNode(ln.solve());
+                while(node instanceof LogicalNode)
+                    node = story.getNode(((LogicalNode)node).solve());
+                    
+                text = text.replace(toReplace, ((VirtualNode)node).getText());
             }
             else
             {

@@ -45,7 +45,7 @@ public class BranchingStoryTreeParser
     private final Pattern ifNextNodeDefiner = Pattern.compile("([-]?\\d+),([-]?\\d+)\\[(.+:.+)]");
     private final Pattern staticNodeDefiner = Pattern.compile("\\d+");
 
-    private final Pattern lnLineSubscript = Pattern.compile("(\\w+?):(.*)");
+    private final Pattern lnLineSubscript = Pattern.compile("([\\w_]+?):(.*)");
     private final Pattern lnTernary = Pattern.compile("((\\[.+?:.*?])+)\\?((\\{.+?:.*?})+)(:((\\{.+?:.*?})*))?");
     private final Pattern lnChecker = Pattern.compile("\\[(.+?):(.*?)]");
     private final Pattern lnScript = Pattern.compile("\\{(.+?):(.*?)}");
