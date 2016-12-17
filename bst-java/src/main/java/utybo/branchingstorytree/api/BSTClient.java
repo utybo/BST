@@ -8,6 +8,7 @@
  */
 package utybo.branchingstorytree.api;
 
+import utybo.branchingstorytree.bdf.BDFHandler;
 import utybo.branchingstorytree.brm.BRMHandler;
 import utybo.branchingstorytree.img.IMGHandler;
 import utybo.branchingstorytree.ssb.SSBHandler;
@@ -35,6 +36,11 @@ public interface BSTClient
     }
 
     public default IMGHandler getIMGHandler()
+    {
+        return null;
+    }
+
+    public default BDFHandler getBDFHandler()
     {
         return null;
     }
