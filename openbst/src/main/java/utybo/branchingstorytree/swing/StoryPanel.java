@@ -390,7 +390,7 @@ public class StoryPanel extends JPanel
             seeBackgroundButton.setIcon(new ImageIcon(seeBackgroundButton.isSelected() ? OpenBST.invisibleImage : OpenBST.visibleImage));
 
         });
-        seeBackgroundButton.setToolTipText(Lang.get("story.mute"));
+        seeBackgroundButton.setToolTipText(Lang.get("story.backgroundvisible"));
         toolBar.add(seeBackgroundButton);
 
         backgroundButton = toolBar.add(new AbstractAction(Lang.get("story.seebackground"), new ImageIcon(OpenBST.pictureImage))

@@ -39,6 +39,7 @@ story.hreload.confirm.title=Hard Reload
 story.jumptonode=Jump to Node...
 story.variablewatcher=Variable watcher...
 story.tip=Hover on one of the icons for more details.
+story.backgroundvisible=Visible background
 story.seebackground=View the background
 story.background=Background picture
 story.mute=Mute

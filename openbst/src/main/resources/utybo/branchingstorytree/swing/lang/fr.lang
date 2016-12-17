@@ -44,6 +44,7 @@ story.close.confirm=<html><body style='width: 300px'>Voulez vous vraiment fermer
 story.error=<html>Erreur sur la node $n :<p>$m
 story.missinginitial=La node initiale n'existe pas. Vérifiez votre fichier BST.
 story.missingnode=La node qui devait être ouverte n'existe pas. Node actuelle : $n
+story.backgroundvisible=Arrière-plan visible
 story.seebackground=Voir l'arrière-plan
 story.background=Arrière-plan
 story.mute=Couper le son
