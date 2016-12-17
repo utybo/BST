@@ -30,6 +30,12 @@ public class NodePanel extends JScrollablePanel
 {
     private JLabel textLabel;
     private IMGClient imageClient;
+    private boolean backgroundVisible = true;
+
+    private Dimension previousBounds;
+    private Image previousScaledImage;
+    private BufferedImage previousImage;
+    private int imageX, imageY;
 
     public NodePanel(IMGClient imageClient)
     {
@@ -122,31 +128,40 @@ public class NodePanel extends JScrollablePanel
     protected void paintComponent(Graphics g)
     {
         super.paintComponent(g);
-        if(imageClient != null && imageClient.getCurrentBackground() != null)
+        if(imageClient != null && imageClient.getCurrentBackground() != null && backgroundVisible)
         {
-            BufferedImage image = imageClient.getCurrentBackground();
-            double scaleFactor = 1d;
-            // TODO More testing
-            if(image.getWidth() > image.getHeight())
-            {
-                scaleFactor = getScaleFactorToFill(new Dimension(image.getWidth(), image.getHeight()), getParent().getSize());
-            }
-            else if(image.getHeight() > image.getWidth())
-            {
-                scaleFactor = getScaleFactorToFill(new Dimension(image.getWidth(), image.getHeight()), getParent().getSize());
-            }
-            int scaleWidth = (int)Math.round(image.getWidth() * scaleFactor);
-            int scaleHeight = (int)Math.round(image.getHeight() * scaleFactor);
-
-            Image scaled = image.getScaledInstance(scaleWidth, scaleHeight, Image.SCALE_FAST);
-
+            Image image;
             int width = getWidth() - 1;
             int height = getHeight() - 1;
+            if(previousBounds != null && previousScaledImage != null && getParent().getSize().equals(previousBounds) && imageClient.getCurrentBackground() == previousImage)
+            {
+                image = previousScaledImage;
+            }
+            else
+            {
+                BufferedImage bi = imageClient.getCurrentBackground();
+                double scaleFactor = 1d;
+                if(bi.getWidth() > bi.getHeight())
+                {
+                    scaleFactor = getScaleFactorToFill(new Dimension(bi.getWidth(), bi.getHeight()), getParent().getSize());
+                }
+                else if(bi.getHeight() > bi.getWidth())
+                {
+                    scaleFactor = getScaleFactorToFill(new Dimension(bi.getWidth(), bi.getHeight()), getParent().getSize());
+                }
+                int scaleWidth = (int)Math.round(bi.getWidth() * scaleFactor);
+                int scaleHeight = (int)Math.round(bi.getHeight() * scaleFactor);
 
-            int x = (width - scaled.getWidth(this)) / 2;
-            int y = (height - scaled.getHeight(this)) / 2;
+                image = bi.getScaledInstance(scaleWidth, scaleHeight, Image.SCALE_FAST);
 
-            g.drawImage(scaled, x, y, this);
+                previousBounds = getParent().getSize();
+                previousScaledImage = image;
+                previousImage = bi;
+                imageX = (width - image.getWidth(this)) / 2;
+                imageY = (height - image.getHeight(this)) / 2;
+            }
+
+            g.drawImage(image, imageX, imageY, this);
             g.setColor(new Color(255, 255, 255, 200));
             g.fillRect(0, 0, width + 1, height + 1);
         }
@@ -172,5 +187,11 @@ public class NodePanel extends JScrollablePanel
             dScale = (double)iTargetSize / (double)iMasterSize;
         }
         return dScale;
+    }
+
+    public void setBackgroundVisible(boolean selected)
+    {
+        backgroundVisible = selected;
+        repaint();
     }
 }

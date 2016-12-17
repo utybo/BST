@@ -383,6 +383,15 @@ public class StoryPanel extends JPanel
         toolBar.add(Box.createHorizontalGlue());
 
         toolBar.addSeparator();
+        JToggleButton seeBackgroundButton = new JToggleButton("", new ImageIcon(OpenBST.visibleImage));
+        seeBackgroundButton.addActionListener(e ->
+        {
+            nodePanel.setBackgroundVisible(!seeBackgroundButton.isSelected());
+            seeBackgroundButton.setIcon(new ImageIcon(seeBackgroundButton.isSelected() ? OpenBST.invisibleImage : OpenBST.visibleImage));
+
+        });
+        seeBackgroundButton.setToolTipText(Lang.get("story.mute"));
+        toolBar.add(seeBackgroundButton);
 
         backgroundButton = toolBar.add(new AbstractAction(Lang.get("story.seebackground"), new ImageIcon(OpenBST.pictureImage))
         {
@@ -422,7 +431,7 @@ public class StoryPanel extends JPanel
                             int scaleWidth = (int)Math.round(bi.getWidth() * scaleFactor);
                             int scaleHeight = (int)Math.round(bi.getHeight() * scaleFactor);
 
-                            image = bi.getScaledInstance(scaleWidth, scaleHeight, Image.SCALE_FAST);
+                            image = bi.getScaledInstance(scaleWidth, scaleHeight, Image.SCALE_SMOOTH);
 
                             previousBounds = getParent().getSize();
                             previousImage = image;
