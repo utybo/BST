@@ -54,7 +54,7 @@ public class MarkupUtils
         switch(markupLanguage)
         {
         case 1:
-            return "<html>" + Processor.process(input); // MD to HTML
+            return "<html>" + Processor.process(input).replaceAll("<p>", "<p><p>"); // MD to HTML
         // TODO Test to see if HTML characters are escaped
         case 2:
             return "<html>" + input; // HTML to HTML
