@@ -16,7 +16,7 @@ public class AlwaysTrueChecker implements ScriptChecker
 {
 
     @Override
-    public boolean check(String head, String desc, BranchingStory story, BSTClient client) throws BSTException
+    public boolean check(String head, String desc, int line, BranchingStory story, BSTClient client) throws BSTException
     {
         return true;
     }

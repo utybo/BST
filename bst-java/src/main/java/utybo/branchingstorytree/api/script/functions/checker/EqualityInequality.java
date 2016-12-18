@@ -18,7 +18,7 @@ public class EqualityInequality implements ScriptChecker
 {
 
     @Override
-    public boolean check(String head, String desc, BranchingStory story, BSTClient client) throws BSTException
+    public boolean check(String head, String desc, int line, BranchingStory story, BSTClient client) throws BSTException
     {
         VariableRegistry registry = story.getRegistry();
         boolean equ;
@@ -31,8 +31,10 @@ public class EqualityInequality implements ScriptChecker
             equ = false;
             break;
         default:
-            throw new BSTException(-1, "Internal error");
+            throw new BSTException(line, "Internal error");
         }
+        if(desc.split(",").length != 2)
+            throw new BSTException(line, "You need two arguments with any operation");
         final String varName = desc.split(",")[0];
         final Object var = registry.get(varName, 0);
         final String isEqualWith = desc.split(",")[1];

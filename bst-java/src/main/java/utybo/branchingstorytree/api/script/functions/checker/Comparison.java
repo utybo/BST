@@ -18,7 +18,7 @@ public class Comparison implements ScriptChecker
 {
 
     @Override
-    public boolean check(String head, String desc, BranchingStory story, BSTClient client) throws BSTException
+    public boolean check(String head, String desc, int line, BranchingStory story, BSTClient client) throws BSTException
     {
         VariableRegistry registry = story.getRegistry();
         final String varName = desc.split(",")[0];
@@ -37,7 +37,7 @@ public class Comparison implements ScriptChecker
         case "lessequ":
             return var <= var2;
         default:
-            throw new BSTException(-1, "Internal error");
+            throw new BSTException(line, "Internal error");
         }
     }
 

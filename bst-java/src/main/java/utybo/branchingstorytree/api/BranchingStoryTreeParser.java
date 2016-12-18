@@ -147,7 +147,7 @@ public class BranchingStoryTreeParser
                             ((TextNode)node).addOption(option);
 
                             final String nextNodeDefiner = bits[1];
-                            option.setNextNode(parseNND(nextNodeDefiner, dictionnary, story, client));
+                            option.setNextNode(parseNND(nextNodeDefiner, dictionnary, lineNumber, story, client));
 
                             Matcher matcher;
                             if(bits.length > 2)
@@ -166,11 +166,11 @@ public class BranchingStoryTreeParser
                                         ScriptChecker possibleChecker = dictionnary.getChecker(header);
                                         if(possibleAction != null)
                                         {
-                                            option.addDoOnClick(new ActionDescriptor(possibleAction, header, m.group(2), story, client));
+                                            option.addDoOnClick(new ActionDescriptor(possibleAction, header, m.group(2), lineNumber, story, client));
                                         }
                                         else if(possibleChecker != null)
                                         {
-                                            option.setChecker(new CheckerDescriptor(possibleChecker, header, m.group(2), story, client));
+                                            option.setChecker(new CheckerDescriptor(possibleChecker, header, m.group(2), lineNumber, story, client));
                                         }
                                         else
                                         {
@@ -190,7 +190,7 @@ public class BranchingStoryTreeParser
                                         final String desc = matcher.group(type == 0 ? 3 : 6);
                                         if(type == 0)
                                         {
-                                            final ActionDescriptor action = new ActionDescriptor(dictionnary.getAction(command), command, desc, story, client);
+                                            final ActionDescriptor action = new ActionDescriptor(dictionnary.getAction(command), command, desc, lineNumber, story, client);
                                             if(action.getAction() == null)
                                             {
                                                 throw new IllegalArgumentException("Unknown action : " + action);
@@ -203,7 +203,7 @@ public class BranchingStoryTreeParser
                                         else if(type == 1)
                                         {
 
-                                            final CheckerDescriptor oc = new CheckerDescriptor(dictionnary.getChecker(command), command, desc, story, client);
+                                            final CheckerDescriptor oc = new CheckerDescriptor(dictionnary.getChecker(command), command, desc, lineNumber, story, client);
                                             if(oc.getChecker() == null)
                                             {
                                                 throw new IllegalArgumentException("Unknown checker : " + command);
@@ -221,7 +221,7 @@ public class BranchingStoryTreeParser
                     else if(nodeType == LOGICAL)
                     {
                         final String nextNodeDefiner = line.substring(1);
-                        ((LogicalNode)node).addInstruction(new LNCondReturn(parseNND(nextNodeDefiner, dictionnary, story, client)));
+                        ((LogicalNode)node).addInstruction(new LNCondReturn(parseNND(nextNodeDefiner, dictionnary, lineNumber, story, client)));
                     }
                 }
                 else if(node != null && !optionsStarted)
@@ -247,7 +247,7 @@ public class BranchingStoryTreeParser
                         {
                             final String name = m.group(1);
                             final String body = m.group(2);
-                            ln.addInstruction(new LNExec(new ActionDescriptor(dictionnary.getAction(name), name, body, story, client)));
+                            ln.addInstruction(new LNExec(new ActionDescriptor(dictionnary.getAction(name), name, body, lineNumber, story, client)));
                         }
                         else
                         {
@@ -268,7 +268,7 @@ public class BranchingStoryTreeParser
                                     final String command = matcher.group(1);
                                     final String desc = matcher.group(2);
 
-                                    final CheckerDescriptor oc = new CheckerDescriptor(dictionnary.getChecker(command), command, desc, story, client);
+                                    final CheckerDescriptor oc = new CheckerDescriptor(dictionnary.getChecker(command), command, desc, lineNumber, story, client);
                                     if(oc.getChecker() == null)
                                     {
                                         throw new IllegalArgumentException("Unknown checker : " + command);
@@ -285,7 +285,7 @@ public class BranchingStoryTreeParser
                                     final String command = matcher.group(1);
                                     final String desc = matcher.group(2);
 
-                                    final ActionDescriptor oc = new ActionDescriptor(dictionnary.getAction(command), command, desc, story, client);
+                                    final ActionDescriptor oc = new ActionDescriptor(dictionnary.getAction(command), command, desc, lineNumber, story, client);
                                     if(oc.getAction() == null)
                                     {
                                         throw new IllegalArgumentException("Unknown checker : " + command);
@@ -304,7 +304,7 @@ public class BranchingStoryTreeParser
                                         final String command = matcher.group(1);
                                         final String desc = matcher.group(2);
 
-                                        final ActionDescriptor oc = new ActionDescriptor(dictionnary.getAction(command), command, desc, story, client);
+                                        final ActionDescriptor oc = new ActionDescriptor(dictionnary.getAction(command), command, desc, lineNumber, story, client);
                                         if(oc.getAction() == null)
                                         {
                                             throw new IllegalArgumentException("Unknown checker : " + command);
@@ -341,7 +341,7 @@ public class BranchingStoryTreeParser
         return story;
     }
 
-    private NextNodeDefiner parseNND(String nnd, Dictionnary dictionnary, BranchingStory story, BSTClient client) throws BSTException
+    private NextNodeDefiner parseNND(String nnd, Dictionnary dictionnary, int lineNumber, BranchingStory story, BSTClient client) throws BSTException
     {
         Matcher matcher = ifNextNodeDefiner.matcher(nnd);
         Matcher matchStatic = staticNodeDefiner.matcher(nnd);
@@ -352,7 +352,7 @@ public class BranchingStoryTreeParser
             final String script = matcher.group(3);
             final String command = script.substring(0, script.indexOf(':'));
             final String desc = script.substring(script.indexOf(':') + 1);
-            final CheckerDescriptor oc = new CheckerDescriptor(dictionnary.getChecker(command), command, desc, story, client);
+            final CheckerDescriptor oc = new CheckerDescriptor(dictionnary.getChecker(command), command, desc, lineNumber, story, client);
             return new IfNextNodeDefiner(first, second, oc);
         }
         else if(matchStatic.matches())

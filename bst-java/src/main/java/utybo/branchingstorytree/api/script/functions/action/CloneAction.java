@@ -18,17 +18,17 @@ public class CloneAction implements ScriptAction
 {
 
     @Override
-    public void exec(String head, String desc, BranchingStory story, BSTClient client) throws BSTException
+    public void exec(String head, String desc, int line, BranchingStory story, BSTClient client) throws BSTException
     {
         String[] opt = desc.split(",");
         VariableRegistry registry = story.getRegistry();
         if(opt.length != 2)
         {
-            throw new BSTException(-1, "Invalid syntax : clone:<to clone>,<clone into>");
+            throw new BSTException(line, "Invalid syntax : clone:<to clone>,<clone into>");
         }
         if(registry.typeOf(opt[0]) == null)
         {
-            throw new BSTException(-1, "Unknown variable : " + opt[0]);
+            throw new BSTException(line, "Unknown variable : " + opt[0]);
         }
         try
         {

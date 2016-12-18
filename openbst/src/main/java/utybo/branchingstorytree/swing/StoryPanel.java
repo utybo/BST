@@ -694,6 +694,12 @@ public class StoryPanel extends JPanel
                 backgroundButton.setEnabled(client.getIMGHandler().getCurrentBackground() != null);
             }
         }
+        catch(final BSTException e)
+        {
+            e.printStackTrace();
+            String s = Lang.get("story.error2").replace("$n", "" + currentNode.getId()).replace("$m", e.getMessage()).replace("$l", e.getWhere() + "");
+            JOptionPane.showMessageDialog(this, s, Lang.get("error"), JOptionPane.ERROR_MESSAGE);
+        }
         catch(final Exception e)
         {
             e.printStackTrace();

@@ -18,23 +18,25 @@ public class ActionDescriptor
     private String head, desc;
     private BSTClient client;
     private BranchingStory story;
+    private int debugLine;
 
-    public ActionDescriptor(ScriptAction action, String head, String desc, BranchingStory story, BSTClient client) throws BSTException
+    public ActionDescriptor(ScriptAction action, String head, String desc, int debugLine, BranchingStory story, BSTClient client) throws BSTException
     {
         if(action == null)
         {
-            throw new BSTException(-1, "Action " + head + " does not exist");
+            throw new BSTException(debugLine, "Action " + head + " does not exist");
         }
         this.action = action;
         this.head = head;
         this.desc = desc;
         this.client = client;
         this.story = story;
+        this.debugLine = debugLine;
     }
 
     public void exec() throws BSTException
     {
-        action.exec(head, desc, story, client);
+        action.exec(head, desc, debugLine, story, client);
     }
 
     public ScriptAction getAction()
@@ -62,4 +64,8 @@ public class ActionDescriptor
         return story;
     }
 
+    public int getLine()
+    {
+        return debugLine;
+    }
 }

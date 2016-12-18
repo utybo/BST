@@ -17,15 +17,15 @@ public class BDFAction implements ScriptAction
 {
 
     @Override
-    public void exec(String head, String desc, BranchingStory story, BSTClient client) throws BSTException
+    public void exec(String head, String desc, int line, BranchingStory story, BSTClient client) throws BSTException
     {
         BDFHandler bdf = client.getBDFHandler();
         if(bdf == null)
-            throw new BSTException(-1, "BDF not supported");
+            throw new BSTException(line, "BDF not supported");
         String[] bits = desc.split(",");
         if(bits.length > 2)
         {
-            throw new BSTException(-1, "Invalid syntax : bdf_apply:name OR bdf_apply:name,prefix");
+            throw new BSTException(line, "Invalid syntax : bdf_apply:name OR bdf_apply:name,prefix");
         }
         String name = bits[0];
         if(name.startsWith("!"))
@@ -34,7 +34,7 @@ public class BDFAction implements ScriptAction
         }
         String prefix = bits.length == 2 ? bits[1] : "";
         if(bdf.getBDFFile(name) == null)
-            throw new BSTException(-1, "Unknown BDF file : " + name);
+            throw new BSTException(line, "Unknown BDF file : " + name);
         bdf.getBDFFile(name).applyTo(story.getRegistry(), prefix);
     }
 

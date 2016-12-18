@@ -18,8 +18,9 @@ public class CheckerDescriptor
     private String head, desc;
     private BSTClient client;
     private BranchingStory story;
+    private int debugLine;
 
-    public CheckerDescriptor(ScriptChecker checker, String head, String desc, BranchingStory story, BSTClient client) throws BSTException
+    public CheckerDescriptor(ScriptChecker checker, String head, String desc, int debugLine, BranchingStory story, BSTClient client) throws BSTException
     {
         if(checker == null)
         {
@@ -30,11 +31,12 @@ public class CheckerDescriptor
         this.desc = desc;
         this.client = client;
         this.story = story;
+        this.debugLine = debugLine;
     }
 
     public boolean check() throws BSTException
     {
-        return checker.check(head, desc, story, client);
+        return checker.check(head, desc, debugLine, story, client);
     }
 
     public ScriptChecker getChecker()
@@ -62,4 +64,8 @@ public class CheckerDescriptor
         return story;
     }
 
+    public int getLine()
+    {
+        return debugLine;
+    }
 }

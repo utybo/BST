@@ -18,7 +18,7 @@ public class SetAction implements ScriptAction
 {
 
     @Override
-    public void exec(String head, String desc, BranchingStory story, BSTClient client) throws BSTException
+    public void exec(String head, String desc, int line, BranchingStory story, BSTClient client) throws BSTException
     {
         VariableRegistry registry = story.getRegistry();
         final String varName = desc.split(",")[0];

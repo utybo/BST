@@ -17,11 +17,11 @@ public class BRMAction implements ScriptAction
 {
 
     @Override
-    public void exec(String head, String desc, BranchingStory story, BSTClient client) throws BSTException
+    public void exec(String head, String desc, int line, BranchingStory story, BSTClient client) throws BSTException
     {
         BRMHandler brm = client.getBRMHandler();
         if(brm == null)
-            throw new BSTException(-1, "brm not supported");
+            throw new BSTException(line, "brm not supported");
         brm.loadAuto();
     }
 

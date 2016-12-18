@@ -46,6 +46,7 @@ story.mute=Mute
 story.close=Close tab
 story.close.confirm=<html><body style='width: 300px'>You are about to close this BST file. All unsaved progress will be lost. Are you sure you want to close this tab?
 story.error=<html>Error on node $n :<p>$m
+story.error2=<html>Error on node $n (line $l) :<p>$m
 story.missinginitial=The initial node does not exist. Make sure you are using a correct BST file.
 story.missingnode=The node that was supposed to be opened does not exist. Current node : $n
 story.final.end=The End.

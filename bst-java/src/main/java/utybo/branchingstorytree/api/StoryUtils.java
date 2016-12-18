@@ -36,12 +36,17 @@ public class StoryUtils
             else if(varName.startsWith("&"))
             {
                 final String s = varName.substring(1);
-                final int i = Integer.parseInt(s);
+                int i = Integer.parseInt(s);
                 final LogicalNode ln = (LogicalNode)story.getNode(i);
-                StoryNode node = story.getNode(ln.solve());
+                i = ln.solve();
+                StoryNode node = story.getNode(i);
                 while(node instanceof LogicalNode)
-                    node = story.getNode(((LogicalNode)node).solve());
-                    
+                {
+                    i = ((LogicalNode)node).solve();
+                    node = story.getNode(i);
+                }
+                if(node == null)
+                    throw new BSTException(-1, "Node does not exist : " + i);
                 text = text.replace(toReplace, ((VirtualNode)node).getText());
             }
             else

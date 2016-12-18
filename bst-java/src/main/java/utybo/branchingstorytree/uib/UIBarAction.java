@@ -23,7 +23,7 @@ public class UIBarAction implements ScriptAction
     private Pattern setPattern = Pattern.compile("(\\w+),(.+)");
 
     @Override
-    public void exec(String head, String desc, BranchingStory story, BSTClient client) throws BSTException
+    public void exec(String head, String desc, int line, BranchingStory story, BSTClient client) throws BSTException
     {
         UIBarHandler handler = client.getUIBarHandler();
         if("uib_setprop".equals(head))
@@ -31,19 +31,19 @@ public class UIBarAction implements ScriptAction
             Matcher m = setPropPattern.matcher(desc);
             if(!m.matches())
             {
-                throw new BSTException(-1, "incorrect syntax : uib_set:element,id,value");
+                throw new BSTException(line, "incorrect syntax : uib_set:element,id,value");
             }
             String element = m.group(1);
-            elementCheck(element, handler);
+            elementCheck(element, line, handler);
             String id = m.group(2);
             String value = m.group(3);
             switch(id)
             {
             case "min":
-                handler.setElementMin(element, intIfPossible(value, story.getRegistry()));
+                handler.setElementMin(element, intIfPossible(value, line, story.getRegistry()));
                 break;
             case "max":
-                handler.setElementMax(element, intIfPossible(value, story.getRegistry()));
+                handler.setElementMax(element, intIfPossible(value, line, story.getRegistry()));
                 break;
             }
         }
@@ -52,10 +52,10 @@ public class UIBarAction implements ScriptAction
             Matcher m = setPattern.matcher(desc);
             if(!m.matches())
             {
-                throw new BSTException(-1, "incorrect syntax : uib_set:element,id,value");
+                throw new BSTException(line, "incorrect syntax : uib_set:element,id,value");
             }
             String element = m.group(1);
-            elementCheck(element, handler);
+            elementCheck(element, line, handler);
             String value = m.group(2);
             if(handler.isElementValueTypeInteger(element))
             {
@@ -72,7 +72,7 @@ public class UIBarAction implements ScriptAction
                     }
                     else
                     {
-                        throw new BSTException(-1, "Invalid value : '" + value + "' for element " + element);
+                        throw new BSTException(line, "Invalid value : '" + value + "' for element " + element);
                     }
                 }
             }
@@ -92,13 +92,13 @@ public class UIBarAction implements ScriptAction
         }
     }
 
-    private void elementCheck(String element, UIBarHandler handler) throws BSTException
+    private void elementCheck(String element, int line, UIBarHandler handler) throws BSTException
     {
         if(!handler.elementExists(element))
-            throw new BSTException(-1, "Unknown component : " + element);
+            throw new BSTException(line, "Unknown component : " + element);
     }
 
-    private int intIfPossible(String value, VariableRegistry registry) throws BSTException
+    private int intIfPossible(String value, int line, VariableRegistry registry) throws BSTException
     {
         try
         {
@@ -106,7 +106,7 @@ public class UIBarAction implements ScriptAction
         }
         catch(NumberFormatException e)
         {
-            throw new BSTException(-1, "invalid value : " + value);
+            throw new BSTException(line, "invalid value : " + value);
         }
     }
 

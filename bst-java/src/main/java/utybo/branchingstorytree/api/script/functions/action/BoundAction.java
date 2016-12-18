@@ -18,19 +18,19 @@ public class BoundAction implements ScriptAction
 {
 
     @Override
-    public void exec(String head, String desc, BranchingStory story, BSTClient client) throws BSTException
+    public void exec(String head, String desc, int line, BranchingStory story, BSTClient client) throws BSTException
     {
         VariableRegistry registry = story.getRegistry();
         String[] bits = desc.split(",");
         if(bits.length != 3)
-            throw new BSTException(-1, "Invalid syntax : bound:tocheck,min,max");
+            throw new BSTException(line, "Invalid syntax : bound:tocheck,min,max");
         if(registry.typeOf(bits[0]) != Integer.class && registry.typeOf(bits[0]) != null)
-                throw new BSTException(-1, "Unknown variable : " + bits[0]);
+                throw new BSTException(line, "Unknown variable : " + bits[0]);
         int toCheck = (Integer)registry.get(bits[0], 0);
         int min = registry.typeOf(bits[1]) == Integer.class ? (Integer)registry.get(bits[1], 0) : Integer.parseInt(bits[1]);
         int max = registry.typeOf(bits[2]) == Integer.class ? (Integer)registry.get(bits[2], 0) : Integer.parseInt(bits[2]);
         if(max < min)
-            throw new BSTException(-1, "min < max");
+            throw new BSTException(line, "min < max");
         if(toCheck < min)
             toCheck = min;
         if(toCheck > max)

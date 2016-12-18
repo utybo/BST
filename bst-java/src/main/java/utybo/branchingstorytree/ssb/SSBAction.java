@@ -17,11 +17,11 @@ public class SSBAction implements ScriptAction
 {
 
     @Override
-    public void exec(String head, String desc, BranchingStory story, BSTClient client) throws BSTException
+    public void exec(String head, String desc, int line, BranchingStory story, BSTClient client) throws BSTException
     {
         SSBHandler ssb = client.getSSBHandler();
         if(ssb == null)
-            throw new BSTException(-1, "ssb not supported");
+            throw new BSTException(line, "ssb not supported");
         String action = head.substring(4);
         switch(action)
         {

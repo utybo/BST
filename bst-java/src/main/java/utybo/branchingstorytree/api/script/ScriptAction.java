@@ -17,7 +17,7 @@ import utybo.branchingstorytree.api.story.BranchingStory;
 @IndexSubclasses
 public interface ScriptAction
 {
-    public void exec(String head, String desc, BranchingStory story, BSTClient client) throws BSTException;
+    public void exec(String head, String desc, int line, BranchingStory story, BSTClient client) throws BSTException;
 
     public String[] getName();
 }

@@ -17,7 +17,7 @@ import utybo.branchingstorytree.api.story.BranchingStory;
 @IndexSubclasses
 public interface ScriptChecker
 {
-    public boolean check(String head, String desc, BranchingStory story, BSTClient client) throws BSTException;
+    public boolean check(String head, String desc, int line, BranchingStory story, BSTClient client) throws BSTException;
 
     public String[] getName();
 }
