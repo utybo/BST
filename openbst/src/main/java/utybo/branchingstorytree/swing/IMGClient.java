@@ -60,6 +60,7 @@ public class IMGClient implements IMGHandler
     public void reset()
     {
         images.clear();
+        setBackground(null);
     }
 
     public void restoreSaveState()
