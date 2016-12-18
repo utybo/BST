@@ -891,15 +891,18 @@ public class StoryPanel extends JPanel
     public boolean postCreation()
     {
         log("Issuing NSFW warning");
-        if(story.hasTag("nsfw") && JOptionPane.showConfirmDialog(parentWindow, Lang.get("story.nsfw"), Lang.get("story.nsfw.title"), JOptionPane.WARNING_MESSAGE) != JOptionPane.OK_OPTION)
+        if(story.hasTag("nsfw"))
         {
-            log("=> Close");
-            return false;
-        }
-        else if(nodeIdLabel != null)
-        {
-            nodeIdLabel.setEnabled(true);
-            nodeIdLabel.setForeground(Color.RED);
+            if(JOptionPane.showConfirmDialog(parentWindow, Lang.get("story.nsfw"), Lang.get("story.nsfw.title"), JOptionPane.WARNING_MESSAGE) != JOptionPane.OK_OPTION)
+            {
+                log("=> Close");
+                return false;
+            }
+            else if(nodeIdLabel != null)
+            {
+                nodeIdLabel.setEnabled(true);
+                nodeIdLabel.setForeground(Color.RED);
+            }
         }
         return true;
     }
