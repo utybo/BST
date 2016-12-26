@@ -18,9 +18,9 @@ public class CallAction implements ScriptAction
 {
 
     @Override
-    public void exec(String head, String desc, int line, BranchingStory story, BSTClient client) throws BSTException
+    public void exec(final String head, final String desc, final int line, final BranchingStory story, final BSTClient client) throws BSTException
     {
-        int i = Integer.parseInt(desc);
+        final int i = Integer.parseInt(desc);
         ((LogicalNode)story.getNode(i)).solve();
         // TODO add exception checking
     }
@@ -28,7 +28,7 @@ public class CallAction implements ScriptAction
     @Override
     public String[] getName()
     {
-        return new String[]{"call"};
+        return new String[] {"call"};
     }
 
 }

@@ -13,6 +13,7 @@ import utybo.branchingstorytree.brm.BRMResourceConsumer;
 
 public interface SSBHandler extends BRMResourceConsumer
 {
+    @Override
     public void load(String relativePath, String name) throws BSTException;
 
     public void play(String name);

@@ -18,9 +18,9 @@ public class IncrDecr implements ScriptAction
 {
 
     @Override
-    public void exec(String head, String desc, int line, BranchingStory story, BSTClient client) throws BSTException
+    public void exec(final String head, final String desc, final int line, final BranchingStory story, final BSTClient client) throws BSTException
     {
-        VariableRegistry registry = story.getRegistry();
+        final VariableRegistry registry = story.getRegistry();
         boolean incr;
         switch(head)
         {

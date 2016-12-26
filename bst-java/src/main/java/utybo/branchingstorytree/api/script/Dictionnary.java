@@ -16,30 +16,34 @@ import utybo.branchingstorytree.api.BSTException;
 
 public class Dictionnary
 {
-    private HashMap<String, ScriptAction> actions = new HashMap<>();
-    private HashMap<String, ScriptChecker> checkers = new HashMap<>();
+    private final HashMap<String, ScriptAction> actions = new HashMap<>();
+    private final HashMap<String, ScriptChecker> checkers = new HashMap<>();
 
     public Dictionnary() throws InstantiationException, IllegalAccessException
     {
-        for(Class<? extends ScriptAction> jclass : ClassIndex.getSubclasses(ScriptAction.class))
+        for(final Class<? extends ScriptAction> jclass : ClassIndex.getSubclasses(ScriptAction.class))
         {
-            ScriptAction sa = jclass.newInstance();
-            String[] names = sa.getName();
+            final ScriptAction sa = jclass.newInstance();
+            final String[] names = sa.getName();
             if(names != null)
-                for(String s : names)
+            {
+                for(final String s : names)
                 {
                     actions.put(s, sa);
                 }
+            }
         }
-        for(Class<? extends ScriptChecker> jclass : ClassIndex.getSubclasses(ScriptChecker.class))
+        for(final Class<? extends ScriptChecker> jclass : ClassIndex.getSubclasses(ScriptChecker.class))
         {
-            ScriptChecker sa = jclass.newInstance();
-            String[] names = sa.getName();
+            final ScriptChecker sa = jclass.newInstance();
+            final String[] names = sa.getName();
             if(names != null)
-                for(String s : names)
+            {
+                for(final String s : names)
                 {
                     checkers.put(s, sa);
                 }
+            }
         }
 
     }

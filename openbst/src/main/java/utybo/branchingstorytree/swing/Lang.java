@@ -21,13 +21,13 @@ import java.util.Map;
 
 /**
  * Adapted from MinkJ -- Originally licensed under the MIT license
- * 
+ *
  * @author utybo
  *
  */
 public class Lang
 {
-    private static transient Map<Locale, Map<String, String>> map = new HashMap<Locale, Map<String, String>>();
+    private static transient Map<Locale, Map<String, String>> map = new HashMap<>();
     private static Locale defaultLanguage = Locale.ENGLISH;
     private static Locale selectedLanguage = new Locale(System.getProperty("user.language"));
     private static boolean muted = false;
@@ -35,23 +35,25 @@ public class Lang
     private Lang()
     {}
 
-    public static synchronized void setLocaleMap(Map<String, String> translations, Locale locale)
+    public static synchronized void setLocaleMap(final Map<String, String> translations, final Locale locale)
     {
         map.put(locale, translations);
     }
 
-    public static synchronized void mergeMapWithLocaleMap(Map<String, String> toMerge, Locale locale)
+    public static synchronized void mergeMapWithLocaleMap(final Map<String, String> toMerge, final Locale locale)
     {
-        for(String s : toMerge.keySet())
+        for(final String s : toMerge.keySet())
+        {
             map.get(locale).put(s, toMerge.get(s));
+        }
     }
 
-    public static Map<String, String> getLocaleMap(Locale locale)
+    public static Map<String, String> getLocaleMap(final Locale locale)
     {
         return map.get(locale);
     }
 
-    public static synchronized void setDefaultLanguage(Locale locale)
+    public static synchronized void setDefaultLanguage(final Locale locale)
     {
         defaultLanguage = locale;
     }
@@ -61,49 +63,57 @@ public class Lang
         return defaultLanguage;
     }
 
-    public static void addTranslation(String key, String translation)
+    public static void addTranslation(final String key, final String translation)
     {
         addTranslation(selectedLanguage, key, translation);
     }
 
-    public static void removeTranslation(String key)
+    public static void removeTranslation(final String key)
     {
         removeTranslation(selectedLanguage, key);
     }
 
-    public static void addTranslation(Locale locale, String key, String translation)
+    public static void addTranslation(final Locale locale, final String key, final String translation)
     {
-        if(!(map.containsKey(locale)))
+        if(!map.containsKey(locale))
+        {
             map.put(locale, new HashMap<String, String>());
+        }
         map.get(locale).put(key, translation);
 
     }
 
-    public static void removeTranslation(Locale locale, String key)
+    public static void removeTranslation(final Locale locale, final String key)
     {
         if(map.containsKey(locale) && map.get(locale).containsKey(key))
+        {
             map.get(locale).remove(key);
+        }
 
     }
 
-    public static synchronized void loadTranslationsFromFile(Locale locale, File file) throws UnrespectedModelException, FileNotFoundException, IOException
+    public static synchronized void loadTranslationsFromFile(final Locale locale, final File file) throws UnrespectedModelException, FileNotFoundException, IOException
     {
         if(map.get(locale) == null)
+        {
             map.put(locale, new HashMap<String, String>());
+        }
 
         loadTranslationFromBufferedReader(new BufferedReader(new FileReader(file)), locale, file.getName());
 
     }
 
-    public static synchronized void loadTranslationsFromFile(Locale locale, InputStream input) throws UnrespectedModelException, FileNotFoundException, IOException
+    public static synchronized void loadTranslationsFromFile(final Locale locale, final InputStream input) throws UnrespectedModelException, FileNotFoundException, IOException
     {
         if(map.get(locale) == null)
+        {
             map.put(locale, new HashMap<String, String>());
+        }
 
         loadTranslationFromBufferedReader(new BufferedReader(new InputStreamReader(input, "UTF-8")), locale, input.toString());
     }
 
-    private synchronized static void loadTranslationFromBufferedReader(BufferedReader br, Locale locale, String fileName) throws IOException, UnrespectedModelException
+    private synchronized static void loadTranslationFromBufferedReader(final BufferedReader br, final Locale locale, final String fileName) throws IOException, UnrespectedModelException
     {
         try
         {
@@ -112,16 +122,20 @@ public class Lang
             {
                 if(!(line.startsWith("#") || line.isEmpty()))
                 {
-                    String[] translation = line.split("=");
+                    final String[] translation = line.split("=");
                     if(translation.length < 2)
                     {
                         log("Errrored String : " + line + ". Here is the index :", true);
                         for(int i = 0; i < translation.length; i++)
+                        {
                             log(translation[i] + "          @ index " + i, true);
+                        }
                         throw new UnrespectedModelException(line);
                     }
                     if(map.get(locale).containsKey(translation[0]))
+                    {
                         log("WARNING : File " + fileName + " overwrites a translation @ " + translation[0], true);
+                    }
                     addTranslation(locale, translation[0], line.substring(line.indexOf("=") + 1));
                 }
             }
@@ -134,7 +148,7 @@ public class Lang
 
     }
 
-    public static synchronized void setSelectedLanguage(Locale locale)
+    public static synchronized void setSelectedLanguage(final Locale locale)
     {
         selectedLanguage = locale;
 
@@ -145,17 +159,17 @@ public class Lang
         return selectedLanguage;
     }
 
-    public static String get(String key)
+    public static String get(final String key)
     {
         return get(key, selectedLanguage);
     }
 
-    public static String get(String key, Locale locale)
+    public static String get(final String key, final Locale locale)
     {
         return isTranslated(key, locale) ? map.get(locale).get(key) : isTranslated(key, defaultLanguage) ? map.get(defaultLanguage).get(key) : key;
     }
 
-    public static boolean isTranslated(String key, Locale locale)
+    public static boolean isTranslated(final String key, final Locale locale)
     {
         return map.containsKey(locale) && map.get(locale).containsKey(key);
     }
@@ -172,14 +186,18 @@ public class Lang
 
     }
 
-    private static void log(String str, boolean error)
+    private static void log(final String str, final boolean error)
     {
         if(!muted)
         {
             if(error)
+            {
                 System.err.println(str);
+            }
             if(!error)
+            {
                 System.out.println(str);
+            }
         }
     }
 
@@ -187,15 +205,15 @@ public class Lang
     {
         private static final long serialVersionUID = -1539821762590369248L;
         private File file;
-        private String line;
+        private final String line;
 
-        public UnrespectedModelException(File f, String line)
+        public UnrespectedModelException(final File f, final String line)
         {
             this.line = line;
             file = f;
         }
 
-        public UnrespectedModelException(String line)
+        public UnrespectedModelException(final String line)
         {
             this.line = line;
         }
@@ -205,7 +223,9 @@ public class Lang
         {
             String message = "Unrespected model (" + line + ") on file";
             if(file != null)
+            {
                 message = message + file.getName();
+            }
             return message;
         }
     }

@@ -18,10 +18,10 @@ public class CloneAction implements ScriptAction
 {
 
     @Override
-    public void exec(String head, String desc, int line, BranchingStory story, BSTClient client) throws BSTException
+    public void exec(final String head, final String desc, final int line, final BranchingStory story, final BSTClient client) throws BSTException
     {
-        String[] opt = desc.split(",");
-        VariableRegistry registry = story.getRegistry();
+        final String[] opt = desc.split(",");
+        final VariableRegistry registry = story.getRegistry();
         if(opt.length != 2)
         {
             throw new BSTException(line, "Invalid syntax : clone:<to clone>,<clone into>");
@@ -34,7 +34,7 @@ public class CloneAction implements ScriptAction
         {
             registry.put(opt[1], (Integer)registry.get(opt[0], null));
         }
-        catch(ClassCastException e)
+        catch(final ClassCastException e)
         {
             registry.put(opt[1], registry.get(opt[0], "").toString());
         }

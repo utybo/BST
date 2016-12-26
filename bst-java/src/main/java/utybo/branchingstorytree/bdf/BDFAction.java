@@ -17,12 +17,14 @@ public class BDFAction implements ScriptAction
 {
 
     @Override
-    public void exec(String head, String desc, int line, BranchingStory story, BSTClient client) throws BSTException
+    public void exec(final String head, final String desc, final int line, final BranchingStory story, final BSTClient client) throws BSTException
     {
-        BDFHandler bdf = client.getBDFHandler();
+        final BDFHandler bdf = client.getBDFHandler();
         if(bdf == null)
+        {
             throw new BSTException(line, "BDF not supported");
-        String[] bits = desc.split(",");
+        }
+        final String[] bits = desc.split(",");
         if(bits.length > 2)
         {
             throw new BSTException(line, "Invalid syntax : bdf_apply:name OR bdf_apply:name,prefix");
@@ -32,16 +34,18 @@ public class BDFAction implements ScriptAction
         {
             name = story.getRegistry().get(name.substring(1), "").toString();
         }
-        String prefix = bits.length == 2 ? bits[1] : "";
+        final String prefix = bits.length == 2 ? bits[1] : "";
         if(bdf.getBDFFile(name) == null)
+        {
             throw new BSTException(line, "Unknown BDF file : " + name);
+        }
         bdf.getBDFFile(name).applyTo(story.getRegistry(), prefix);
     }
 
     @Override
     public String[] getName()
     {
-        return new String[]{"bdf_apply"};
+        return new String[] {"bdf_apply"};
     }
 
 }

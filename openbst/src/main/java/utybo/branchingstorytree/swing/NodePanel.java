@@ -28,8 +28,12 @@ import utybo.branchingstorytree.api.story.TextNode;
 @SuppressWarnings("serial")
 public class NodePanel extends JScrollablePanel
 {
-    private JLabel textLabel;
-    private IMGClient imageClient;
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
+    private final JLabel textLabel;
+    private final IMGClient imageClient;
     private boolean backgroundVisible = true;
 
     private Dimension previousBounds;
@@ -37,7 +41,7 @@ public class NodePanel extends JScrollablePanel
     private BufferedImage previousImage;
     private int imageX, imageY;
 
-    public NodePanel(IMGClient imageClient)
+    public NodePanel(final IMGClient imageClient)
     {
         this.imageClient = imageClient;
         setLayout(new BorderLayout());
@@ -51,9 +55,9 @@ public class NodePanel extends JScrollablePanel
         add(textLabel, BorderLayout.CENTER);
     }
 
-    public void applyNode(BranchingStory story, TextNode textNode) throws BSTException
+    public void applyNode(final BranchingStory story, final TextNode textNode) throws BSTException
     {
-        String text = StoryUtils.solveVariables(textNode, story);
+        final String text = StoryUtils.solveVariables(textNode, story);
         final int markupLanguage = MarkupUtils.solveMarkup(story, textNode);
         setText(MarkupUtils.translateMarkup(markupLanguage, text));
 
@@ -69,13 +73,15 @@ public class NodePanel extends JScrollablePanel
 
         if(textNode.hasTag("img_background"))
         {
-            String bg = textNode.getTag("img_background");
+            final String bg = textNode.getTag("img_background");
             if("none".equals(bg))
             {
                 imageClient.setBackground(null);
             }
             else
+            {
                 imageClient.setBackground(bg);
+            }
         }
         else if(textNode.hasTag("img_manual") && Boolean.parseBoolean(textNode.getTag("img_manual")))
         {
@@ -84,12 +90,12 @@ public class NodePanel extends JScrollablePanel
         System.out.println(textNode.getTagMap());
     }
 
-    public void setText(String text)
+    public void setText(final String text)
     {
         textLabel.setText(text);
     }
 
-    public void setTextColor(String color)
+    public void setTextColor(final String color)
     {
         Color c = null;
         if(color.startsWith("#"))
@@ -119,27 +125,27 @@ public class NodePanel extends JScrollablePanel
         }
     }
 
-    public void setTextColor(Color color)
+    public void setTextColor(final Color color)
     {
         textLabel.setForeground(color);
     }
 
     @Override
-    protected void paintComponent(Graphics g)
+    protected void paintComponent(final Graphics g)
     {
         super.paintComponent(g);
         if(imageClient != null && imageClient.getCurrentBackground() != null && backgroundVisible)
         {
             Image image;
-            int width = getWidth() - 1;
-            int height = getHeight() - 1;
+            final int width = getWidth() - 1;
+            final int height = getHeight() - 1;
             if(previousBounds != null && previousScaledImage != null && getParent().getSize().equals(previousBounds) && imageClient.getCurrentBackground() == previousImage)
             {
                 image = previousScaledImage;
             }
             else
             {
-                BufferedImage bi = imageClient.getCurrentBackground();
+                final BufferedImage bi = imageClient.getCurrentBackground();
                 double scaleFactor = 1d;
                 if(bi.getWidth() > bi.getHeight())
                 {
@@ -149,8 +155,8 @@ public class NodePanel extends JScrollablePanel
                 {
                     scaleFactor = getScaleFactorToFill(new Dimension(bi.getWidth(), bi.getHeight()), getParent().getSize());
                 }
-                int scaleWidth = (int)Math.round(bi.getWidth() * scaleFactor);
-                int scaleHeight = (int)Math.round(bi.getHeight() * scaleFactor);
+                final int scaleWidth = (int)Math.round(bi.getWidth() * scaleFactor);
+                final int scaleHeight = (int)Math.round(bi.getHeight() * scaleFactor);
 
                 image = bi.getScaledInstance(scaleWidth, scaleHeight, Image.SCALE_FAST);
 
@@ -167,15 +173,15 @@ public class NodePanel extends JScrollablePanel
         }
     }
 
-    private double getScaleFactorToFill(Dimension masterSize, Dimension targetSize)
+    private double getScaleFactorToFill(final Dimension masterSize, final Dimension targetSize)
     {
-        double dScaleWidth = getScaleFactor(masterSize.width, targetSize.width);
-        double dScaleHeight = getScaleFactor(masterSize.height, targetSize.height);
-        double dScale = Math.max(dScaleHeight, dScaleWidth);
+        final double dScaleWidth = getScaleFactor(masterSize.width, targetSize.width);
+        final double dScaleHeight = getScaleFactor(masterSize.height, targetSize.height);
+        final double dScale = Math.max(dScaleHeight, dScaleWidth);
         return dScale;
     }
 
-    private double getScaleFactor(int iMasterSize, int iTargetSize)
+    private double getScaleFactor(final int iMasterSize, final int iTargetSize)
     {
         double dScale = 1;
         if(iMasterSize > iTargetSize)
@@ -189,7 +195,7 @@ public class NodePanel extends JScrollablePanel
         return dScale;
     }
 
-    public void setBackgroundVisible(boolean selected)
+    public void setBackgroundVisible(final boolean selected)
     {
         backgroundVisible = selected;
         repaint();

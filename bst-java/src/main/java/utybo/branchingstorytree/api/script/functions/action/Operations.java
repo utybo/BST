@@ -18,9 +18,9 @@ public class Operations implements ScriptAction
 {
 
     @Override
-    public void exec(String head, String desc, int line, BranchingStory story, BSTClient client) throws BSTException
+    public void exec(final String head, final String desc, final int line, final BranchingStory story, final BSTClient client) throws BSTException
     {
-        VariableRegistry registry = story.getRegistry();
+        final VariableRegistry registry = story.getRegistry();
         final String[] pars = desc.split(",");
         String putIn = null;
         String a = null;
@@ -46,7 +46,7 @@ public class Operations implements ScriptAction
         {
             ia = registry.typeOf(a) == Integer.class ? (Integer)registry.get(a, 0) : Integer.parseInt(a);
         }
-        catch(NumberFormatException nfe)
+        catch(final NumberFormatException nfe)
         {
             // This means that the first number is probably a variable that was not initialized
             // thus registry.typeOf(a) returned null. We take 0 by default.
@@ -56,7 +56,7 @@ public class Operations implements ScriptAction
         {
             ib = registry.typeOf(b) == Integer.class ? (Integer)registry.get(b, 0) : Integer.parseInt(b);
         }
-        catch(NumberFormatException nfe)
+        catch(final NumberFormatException nfe)
         {
             ib = 0;
         }

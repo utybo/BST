@@ -13,12 +13,12 @@ import utybo.branchingstorytree.api.script.VariableRegistry;
 public abstract class BDFNode
 {
     private final String name;
-    
-    public BDFNode(String name)
+
+    public BDFNode(final String name)
     {
         this.name = name;
     }
-    
+
     public String getName()
     {
         return name;

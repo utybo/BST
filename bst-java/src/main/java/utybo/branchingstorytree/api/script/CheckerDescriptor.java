@@ -14,13 +14,13 @@ import utybo.branchingstorytree.api.story.BranchingStory;
 
 public class CheckerDescriptor
 {
-    private ScriptChecker checker;
-    private String head, desc;
-    private BSTClient client;
-    private BranchingStory story;
-    private int debugLine;
+    private final ScriptChecker checker;
+    private final String head, desc;
+    private final BSTClient client;
+    private final BranchingStory story;
+    private final int debugLine;
 
-    public CheckerDescriptor(ScriptChecker checker, String head, String desc, int debugLine, BranchingStory story, BSTClient client) throws BSTException
+    public CheckerDescriptor(final ScriptChecker checker, final String head, final String desc, final int debugLine, final BranchingStory story, final BSTClient client) throws BSTException
     {
         if(checker == null)
         {

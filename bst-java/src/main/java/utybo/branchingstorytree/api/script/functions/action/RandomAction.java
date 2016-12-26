@@ -19,10 +19,10 @@ import utybo.branchingstorytree.api.story.BranchingStory;
 public class RandomAction implements ScriptAction
 {
     @Override
-    public void exec(String head, String desc, int line, BranchingStory story, BSTClient client) throws BSTException
+    public void exec(final String head, final String desc, final int line, final BranchingStory story, final BSTClient client) throws BSTException
     {
-        VariableRegistry registry = story.getRegistry();
-        String[] bits = desc.split(",");
+        final VariableRegistry registry = story.getRegistry();
+        final String[] bits = desc.split(",");
         int min = 0;
         int max;
         String varToSet;
@@ -38,7 +38,9 @@ public class RandomAction implements ScriptAction
             max = registry.typeOf(bits[2]) == Integer.class ? (Integer)registry.get(bits[2], 0) : Integer.parseInt(bits[2]);
         }
         else
+        {
             throw new BSTException(line, "Incorrect syntax : rand:variabletoset,maximum OR rand:variabletoset,minimum,maximum");
+        }
         // nextInt is exclusive, we make it "inclusive" by adding 1
         int value = new Random().nextInt(max + 1);
         // Minimum bounds

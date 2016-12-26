@@ -14,13 +14,13 @@ import utybo.branchingstorytree.api.story.BranchingStory;
 
 public class ActionDescriptor
 {
-    private ScriptAction action;
-    private String head, desc;
-    private BSTClient client;
-    private BranchingStory story;
-    private int debugLine;
+    private final ScriptAction action;
+    private final String head, desc;
+    private final BSTClient client;
+    private final BranchingStory story;
+    private final int debugLine;
 
-    public ActionDescriptor(ScriptAction action, String head, String desc, int debugLine, BranchingStory story, BSTClient client) throws BSTException
+    public ActionDescriptor(final ScriptAction action, final String head, final String desc, final int debugLine, final BranchingStory story, final BSTClient client) throws BSTException
     {
         if(action == null)
         {

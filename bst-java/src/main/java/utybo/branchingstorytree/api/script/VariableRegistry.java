@@ -9,7 +9,6 @@
 package utybo.branchingstorytree.api.script;
 
 import java.util.HashMap;
-import java.util.Map;
 
 public class VariableRegistry
 {
@@ -66,7 +65,7 @@ public class VariableRegistry
         return null;
     }
 
-    public Object get(final String varName, Object ifNotFound)
+    public Object get(final String varName, final Object ifNotFound)
     {
         Object tryingToFindMe = null;
         if(variables.containsKey(varName))
@@ -87,12 +86,12 @@ public class VariableRegistry
     @Override
     public VariableRegistry clone()
     {
-        VariableRegistry vr = new VariableRegistry();
+        final VariableRegistry vr = new VariableRegistry();
         vr.strVar.putAll(strVar);
         vr.variables.putAll(variables);
         return vr;
     }
-    
+
     public int getSize()
     {
         return variables.size() + strVar.size();

@@ -16,22 +16,22 @@ import utybo.branchingstorytree.brm.BRMHandler;
 
 public class TabClient implements BSTClient
 {
-    private OpenBST instance;
+    private final OpenBST instance;
     private StoryPanel tab;
     private TabUIB uibHandler;
     private BRMClient brmClient;
     private SSBClient ssbClient;
     private IMGClient imgClient;
-    private BDFClient bdfClient;
+    private final BDFClient bdfClient;
 
-    public TabClient(OpenBST instance)
+    public TabClient(final OpenBST instance)
     {
         this.instance = instance;
-        this.bdfClient = new BDFClient();
+        bdfClient = new BDFClient();
     }
 
     @Override
-    public String askInput(String message)
+    public String askInput(final String message)
     {
         Object input = null;
         while(input == null || input.toString().isEmpty())
@@ -47,7 +47,7 @@ public class TabClient implements BSTClient
         instance.removeStory(tab);
     }
 
-    public void setStoryPanel(StoryPanel sp)
+    public void setStoryPanel(final StoryPanel sp)
     {
         tab = sp;
         uibHandler = new TabUIB(tab);
@@ -85,6 +85,5 @@ public class TabClient implements BSTClient
     {
         return bdfClient;
     }
-    
-    
+
 }

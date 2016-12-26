@@ -158,12 +158,12 @@ public class BranchingStoryTreeParser
                                 {
                                     // Attempt to find a checker first
                                     // If not found, attempt to find an action
-                                    Matcher m = lnLineSubscript.matcher(scripts);
+                                    final Matcher m = lnLineSubscript.matcher(scripts);
                                     if(m.matches())
                                     {
-                                        String header = m.group(1);
-                                        ScriptAction possibleAction = dictionnary.getAction(header);
-                                        ScriptChecker possibleChecker = dictionnary.getChecker(header);
+                                        final String header = m.group(1);
+                                        final ScriptAction possibleAction = dictionnary.getAction(header);
+                                        final ScriptChecker possibleChecker = dictionnary.getChecker(header);
                                         if(possibleAction != null)
                                         {
                                             option.addDoOnClick(new ActionDescriptor(possibleAction, header, m.group(2), lineNumber, story, client));
@@ -341,10 +341,10 @@ public class BranchingStoryTreeParser
         return story;
     }
 
-    private NextNodeDefiner parseNND(String nnd, Dictionnary dictionnary, int lineNumber, BranchingStory story, BSTClient client) throws BSTException
+    private NextNodeDefiner parseNND(final String nnd, final Dictionnary dictionnary, final int lineNumber, final BranchingStory story, final BSTClient client) throws BSTException
     {
-        Matcher matcher = ifNextNodeDefiner.matcher(nnd);
-        Matcher matchStatic = staticNodeDefiner.matcher(nnd);
+        final Matcher matcher = ifNextNodeDefiner.matcher(nnd);
+        final Matcher matchStatic = staticNodeDefiner.matcher(nnd);
         if(matcher.matches())
         {
             final int first = Integer.parseInt(matcher.group(1));

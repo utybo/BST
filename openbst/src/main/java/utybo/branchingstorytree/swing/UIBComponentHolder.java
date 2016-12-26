@@ -12,15 +12,15 @@ import javax.swing.JComponent;
 
 public class UIBComponentHolder
 {
-    private JComponent component;
+    private final JComponent component;
     private Object value;
     private boolean dynamic, textual;
 
-    public UIBComponentHolder(JComponent component, boolean dynamic, boolean textual)
+    public UIBComponentHolder(final JComponent component, final boolean dynamic, final boolean textual)
     {
         this.component = component;
         this.dynamic = dynamic;
-        this.setTextual(textual);
+        setTextual(textual);
     }
 
     public JComponent getComponent()
@@ -33,7 +33,7 @@ public class UIBComponentHolder
         return value;
     }
 
-    public void setValue(Object value)
+    public void setValue(final Object value)
     {
         this.value = value;
     }
@@ -43,7 +43,7 @@ public class UIBComponentHolder
         return dynamic;
     }
 
-    public void setDynamic(boolean dynamic)
+    public void setDynamic(final boolean dynamic)
     {
         this.dynamic = dynamic;
     }
@@ -53,7 +53,7 @@ public class UIBComponentHolder
         return textual;
     }
 
-    public void setTextual(boolean textual)
+    public void setTextual(final boolean textual)
     {
         this.textual = textual;
     }

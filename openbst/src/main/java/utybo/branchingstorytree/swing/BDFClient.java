@@ -22,23 +22,23 @@ import utybo.branchingstorytree.bdf.BDFParser;
 
 public class BDFClient implements BDFHandler
 {
-    private HashMap<String, BDFFile> map = new HashMap<>();
+    private final HashMap<String, BDFFile> map = new HashMap<>();
 
     @Override
-    public void load(String pathToResource, String name) throws BSTException
+    public void load(final String pathToResource, final String name) throws BSTException
     {
         try
         {
             map.put(name, BDFParser.parse(new BufferedReader(new InputStreamReader(new FileInputStream(new File(pathToResource)))), name));
         }
-        catch(IOException e)
+        catch(final IOException e)
         {
             throw new BSTException(-1, "Error when reading file " + pathToResource, e);
         }
     }
 
     @Override
-    public BDFFile getBDFFile(String name)
+    public BDFFile getBDFFile(final String name)
     {
         return map.get(name);
     }

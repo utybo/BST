@@ -26,29 +26,29 @@ import utybo.branchingstorytree.ssb.SSBHandler;
 
 public class SSBClient implements SSBHandler
 {
-    private HashMap<String, Clip> resources = new HashMap<>();
+    private final HashMap<String, Clip> resources = new HashMap<>();
     private Clip currentAmbient;
     private boolean muted;
-    private StoryPanel panel;
+    private final StoryPanel panel;
 
-    public SSBClient(StoryPanel panel)
+    public SSBClient(final StoryPanel panel)
     {
         this.panel = panel;
     }
 
     @Override
-    public void load(String pathToResource, String name) throws BSTException
+    public void load(final String pathToResource, final String name) throws BSTException
     {
         try
         {
-            File f = new File(pathToResource);
-            AudioInputStream ais = AudioSystem.getAudioInputStream(f);
-            AudioFormat format = ais.getFormat();
-            DataLine.Info info = new DataLine.Info(Clip.class, format);
-            Clip c = (Clip)AudioSystem.getLine(info);
+            final File f = new File(pathToResource);
+            final AudioInputStream ais = AudioSystem.getAudioInputStream(f);
+            final AudioFormat format = ais.getFormat();
+            final DataLine.Info info = new DataLine.Info(Clip.class, format);
+            final Clip c = (Clip)AudioSystem.getLine(info);
             c.open(ais);
             resources.put(name, c);
-            FloatControl control = (FloatControl)c.getControl(FloatControl.Type.VOLUME);
+            final FloatControl control = (FloatControl)c.getControl(FloatControl.Type.VOLUME);
             control.setValue(control.getMaximum());
         }
         catch(UnsupportedAudioFileException | IOException | LineUnavailableException e)
@@ -58,17 +58,19 @@ public class SSBClient implements SSBHandler
     }
 
     @Override
-    public void play(String name)
+    public void play(final String name)
     {
-        Clip c = resources.get(name);
+        final Clip c = resources.get(name);
         c.stop();
         c.setMicrosecondPosition(0L);
         if(!muted)
+        {
             c.start();
+        }
     }
 
     @Override
-    public void ambient(String name)
+    public void ambient(final String name)
     {
         System.out.println("Playing " + name);
         if(currentAmbient != null)
@@ -76,9 +78,11 @@ public class SSBClient implements SSBHandler
             currentAmbient.stop();
         }
         panel.story.getRegistry().put("__ssb__ambient", name);
-        Clip c = resources.get(name);
+        final Clip c = resources.get(name);
         if(c != null)
+        {
             c.loop(Clip.LOOP_CONTINUOUSLY);
+        }
         currentAmbient = c;
     }
 
@@ -99,11 +103,11 @@ public class SSBClient implements SSBHandler
         });
     }
 
-    public void setMuted(boolean muted)
+    public void setMuted(final boolean muted)
     {
         resources.forEach((id, clip) ->
         {
-            FloatControl control = (FloatControl)clip.getControl(FloatControl.Type.VOLUME);
+            final FloatControl control = (FloatControl)clip.getControl(FloatControl.Type.VOLUME);
             control.setValue(muted ? 0F : control.getMaximum());
         });
     }
@@ -124,7 +128,7 @@ public class SSBClient implements SSBHandler
         {
             ambient(panel.story.getRegistry().get("__ssb__ambient", null).toString());
         }
-        catch(NullPointerException e)
+        catch(final NullPointerException e)
         {
             // This is thrown is the save state has an invalid tag, which can happen in many cases
         }

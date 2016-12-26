@@ -46,7 +46,9 @@ public class StoryUtils
                     node = story.getNode(i);
                 }
                 if(node == null)
+                {
                     throw new BSTException(-1, "Node does not exist : " + i);
+                }
                 text = text.replace(toReplace, ((VirtualNode)node).getText());
             }
             else

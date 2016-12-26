@@ -56,7 +56,7 @@ public class NodeOption extends TagHolder
         {
             return checker == null ? new CheckerDescriptor(new AlwaysTrueChecker(), null, null, -1, null, null) : checker;
         }
-        catch(BSTException e)
+        catch(final BSTException e)
         {
             throw new Error("Impossible state", e);
         }
