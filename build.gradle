@@ -15,6 +15,7 @@ subprojects {
     apply plugin: "eclipse"
     apply plugin: "com.github.hierynomus.license"
 
+    version = "1.1"
     license { 
         header = rootProject.file('HEADER') 
         exclude "**/*.json"
