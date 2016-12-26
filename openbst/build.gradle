@@ -30,6 +30,12 @@ sourceSets {
 sourceCompatibility = 1.8
 mainClassName = "utybo.branchingstorytree.swing.OpenBST"
 
+jar {
+    manifest {
+        attributes 'Implementation-Title': "OpenBST", 'Implementation-Version': version
+    }
+}
+
 dependencies {
     compile 'com.miglayout:miglayout-swing:4.2'
     compile project(':bst-java')

@@ -60,7 +60,7 @@ public class OpenBST extends JFrame
     /**
      * Version number of OpenBST
      */
-    public static final String VERSION = "1.0";
+    public static String version;
     private static final long serialVersionUID = 1L;
 
     /**
@@ -98,8 +98,13 @@ public class OpenBST extends JFrame
      */
     public static void main(final String[] args)
     {
-        log("OpenBST version " + VERSION + ", part of the BST project");
+        version = OpenBST.class.getPackage().getImplementationVersion();
+        if(version == null)
+            version = "<unknown version>";
+
+        log("OpenBST version " + version + ", part of the BST project");
         log("[ INIT ]");
+
         log("Loading language files");
 
         loadLang(args.length > 0 ? args[0] : null);
@@ -293,7 +298,7 @@ public class OpenBST extends JFrame
      */
     public OpenBST()
     {
-        setTitle("OpenBST " + VERSION);
+        setTitle("OpenBST " + version);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         try
         {
