@@ -45,7 +45,7 @@ public class VariableRegistry
         return variables;
     }
 
-    public Map<String, String> getAllString()
+    public HashMap<String, String> getAllString()
     {
         return strVar;
     }
@@ -91,5 +91,10 @@ public class VariableRegistry
         vr.strVar.putAll(strVar);
         vr.variables.putAll(variables);
         return vr;
+    }
+    
+    public int getSize()
+    {
+        return variables.size() + strVar.size();
     }
 }
