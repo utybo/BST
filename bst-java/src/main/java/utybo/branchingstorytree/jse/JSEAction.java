@@ -71,7 +71,7 @@ public class JSEAction implements ScriptAction
     @Override
     public String[] getName()
     {
-        return new String[] {"js_eval"};
+        return new String[] {"jse_eval"};
     }
 
 }
