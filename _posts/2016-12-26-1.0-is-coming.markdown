@@ -1,0 +1,57 @@
+---
+layout: post
+title:  "OpenBST 1.0 is out!"
+date:   2016-12-26 01:01:02
+categories: main
+author: utybo
+highlight: true
+excerpt: "OpenBST 1.0 is out, with more modules, more customization, an easier language, and other cool stuff. It's also a good opportunity to discover OpenBST if you just came in :)"
+ccolor: "#0000AA"
+---
+
+It's here. It's big. It's gigantic. It's good, too. Merry late christmas!
+
+OpenBST is now **officially out.** No more betas, no more Release Candidates. Which will probably result in a slightly buggy release.
+
+![Promo]({{ site.baseurl }}/img/v1.0.png)
+
+Everything was updated to be as nice as possible, and new modules allow you to do much more.
+
+## Everything new :
+* New modules were added : SSB, IMG, BRM and BDF. SSB allows you to add sound to your BST file, IMG allows you to set a background image for a node, BRM manages the resources used by all the other modules, and BDF is a way to store descriptions when using very advanced scripting (it's kinda like Object Oriented but without objects)
+* New icons in OpenBST to provide more control on the way files are played : Mute, Background Visible and a button to see the background in full.
+* Tons of bug fixes!
+* Debugging your BST file is also easier now, with line information added to ALL errors
+* Added actions : "bound" for making sure a variable is within specific bounds, and "call" to execute a logical node without actually continuing to it, as well as "rand" to generate random numbers
+* Made the syntax easier. There are tons of stupid restrictions that were removed, feel free to re-read the documentation to check them out
+* And, of course, updated the documentation!
+
+
+## Wanna help?
+There are multiple ways to help the BST project, and any help is appreciated. Really. You're awesome.
+### Translating
+Since version 0.3, BST can be fully translated into other languages. If you wish to help, you can translate OpenBST in your own language. Please have a look at the file TRANSLATING here : https://github.com/utybo/BST
+### Report bugs and submit suggestions
+You can report bugs or provide feedback by creating an issue here : https://github.com/utybo/BST/issues <br>If you have any question, do not hesitate!
+### Share and use the "Requires BST" badge!
+Spread the word! We also have a Requires BST badge you can use when sharing your .bst files! *Note for developers : While a small bugfix here and there is always appreciated, please don't look too much at the source code, your eyes may bleed.*
+
+<img src="/BST/img/requires.png" alt="Requires OpenBST" style="width: auto"/>
+
+### Test
+Want to test features before anyone else? You can easily build OpenBST from source using the following commands. This assumes you have Git and the JDK installed.
+
+    git clone -b dev https://github.com/utybo/BST
+    cd BST
+
+We first clone the branch "dev" (which is where development happens, as the normal "master" branch is always stable). Then, on Windows
+
+    gradlew run
+
+Or on anything else
+
+    ./gradlew run
+
+Do note that this branch is extremely unstable! If you wish to update the branch, simply use
+
+    git pull

@@ -3,7 +3,7 @@
       <!-- Title -->
       <span class="mdl-layout-title" onclick="location.href='{{ site.baseurl }}/'" style="cursor:pointer">{{ site.title }}</span>
       
-      <span style="padding-left: 20px; margin-top: -3px;">{{ site.subtitle }}</span>
+      <span style="padding-left: 20px; margin-top: -3px;">[ {{ site.subtitle }} ]</span>
       
       <!-- Add spacer, to align navigation to the right -->
       <div class="mdl-layout-spacer"></div>
@@ -17,7 +17,7 @@
         {% endfor %}
         {% for option in site.more_vert %}
         <div style="width: 20px;"></div>
-        <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised mdl-button--accent" onclick="location.href='{{ option[1].link}}'">{{ option[1].name }}</button>
+        <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised mdl-button--accent" onclick="location.href='{{ option[1].link }}'">{{ option[1].name }}</button>
         {% endfor %}
       </nav>      
      </div>
