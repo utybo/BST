@@ -1,4 +1,4 @@
-# BST [![Codacy Badge](https://api.codacy.com/project/badge/Grade/8416a09095454d3983c78e64eb796429)](https://www.codacy.com/app/utybo/BST?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=utybo/BST&amp;utm_campaign=Badge_Grade) ![Version](https://img.shields.io/badge/version-N%2FA-lightgrey.svg) [![Build Status](https://travis-ci.org/utybo/BST.svg?branch=master)](https://travis-ci.org/utybo/BST)
+# BST [![Codacy Badge](https://api.codacy.com/project/badge/Grade/8416a09095454d3983c78e64eb796429)](https://www.codacy.com/app/utybo/BST?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=utybo/BST&amp;utm_campaign=Badge_Grade) ![Version](https://img.shields.io/badge/version-N%2FA-lightgrey.svg) [![Build Status](https://travis-ci.org/utybo/BST.svg?branch=master)](https://travis-ci.org/utybo/BST) [![Github All Releases](https://img.shields.io/github/downloads/utybo/BST/total.svg)](https://github.com/utybo/BST/releases/latest)
 
 Branching Story Tree, or BST for short, is a Turing complete language that allows you to create branching stories easily, with scripting capabilities.
 
