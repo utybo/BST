@@ -1,0 +1,37 @@
+BRANCHES :
+
+master : stable branch
+dev : development branch
+gh-pages : Website branch
+f-<something>[-<issue>] : feature branch
+
+      WEBSITE [ gh-pages---W1-----W2-W3-----
+                                            
+       STABLE [ master-------------1.x------
+                  \                /        
+          DEV [   dev---A------B--C------D--
+                   \  /  \ \  /  /      /   
+              [     F1    \ F3  /      /    
+     FEATURES [            \   /      /     
+              [             -F2--F'--F''----
+
+
+Further development of features should always be done on the feature
+branch itself.
+
+DOWNLOADING FROM STABLE
+Simply download the latest release
+
+DOWNLOADING FROM DEV (generally unstable)
+Use the following commands :
+
+    git clone -b dev https://github.com/utybo/BST
+    cd BST
+    gradle run
+
+NEVER DOWNLOAD FROM A FEATURE BRANCH!
+Feature branches are considered to be in-development features. They
+are, by definition, very unstable. Bottom line : NEVER use them in
+production!
+Feature branches are directly related to an issue most of the time.
+Discussion of the feature should go in that issue.
