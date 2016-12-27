@@ -16,8 +16,26 @@ import utybo.branchingstorytree.api.story.LogicalNode;
 import utybo.branchingstorytree.api.story.StoryNode;
 import utybo.branchingstorytree.api.story.VirtualNode;
 
+/**
+ * Utility methods that are useful when creating your implementation
+ * 
+ * @author utybo
+ *
+ */
 public class StoryUtils
 {
+    /**
+     * Replace all the variables placeholders from the virtual node by their
+     * real value from the story.
+     * 
+     * @param virtualNode
+     *            The virtual node
+     * @param story
+     *            the story from which to pick the variables
+     * @return The solved virtual node's text
+     * @throws BSTException
+     *             If an exception occurs while solving
+     */
     public static String solveVariables(final VirtualNode virtualNode, final BranchingStory story) throws BSTException
     {
         String text = virtualNode.getText();

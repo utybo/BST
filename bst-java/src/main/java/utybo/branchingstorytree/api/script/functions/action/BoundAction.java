@@ -14,6 +14,12 @@ import utybo.branchingstorytree.api.script.ScriptAction;
 import utybo.branchingstorytree.api.script.VariableRegistry;
 import utybo.branchingstorytree.api.story.BranchingStory;
 
+/**
+ * Implementation of the bound action
+ * 
+ * @author utybo
+ *
+ */
 public class BoundAction implements ScriptAction
 {
 

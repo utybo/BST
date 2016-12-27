@@ -14,6 +14,13 @@ import utybo.branchingstorytree.api.script.ScriptChecker;
 import utybo.branchingstorytree.api.script.VariableRegistry;
 import utybo.branchingstorytree.api.story.BranchingStory;
 
+/**
+ * Implementation of some comparison checkers : greater, greaterequ, less and
+ * lessequ
+ * 
+ * @author utybo
+ *
+ */
 public class Comparison implements ScriptChecker
 {
 

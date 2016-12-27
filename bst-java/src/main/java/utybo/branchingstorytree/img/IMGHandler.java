@@ -10,7 +10,18 @@ package utybo.branchingstorytree.img;
 
 import utybo.branchingstorytree.brm.BRMResourceConsumer;
 
+/**
+ * Handler for the IMG module
+ * 
+ * @author utybo
+ *
+ */
 public interface IMGHandler extends BRMResourceConsumer
 {
+    /**
+     * Set the background to the resource with the given name
+     * 
+     * @param name
+     */
     public void setBackground(String name);
 }

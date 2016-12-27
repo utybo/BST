@@ -13,6 +13,12 @@ import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.api.script.ScriptAction;
 import utybo.branchingstorytree.api.story.BranchingStory;
 
+/**
+ * Implementation of BDF's bdf_apply
+ * 
+ * @author utybo
+ *
+ */
 public class BDFAction implements ScriptAction
 {
 

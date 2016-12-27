@@ -8,25 +8,52 @@
  */
 package utybo.branchingstorytree.api.story;
 
+/**
+ * A node that holds text.
+ * 
+ * @author utybo
+ *
+ */
 public class VirtualNode extends StoryNode
 {
     private String text;
 
+    /**
+     * Create a virtual node with the given ID
+     * 
+     * @param id
+     *            the ID of the node to create
+     */
     public VirtualNode(final int id)
     {
         super(id);
     }
 
+    /**
+     * @return the text contained in this Virtual node
+     */
     public String getText()
     {
         return text;
     }
 
+    /**
+     * Set this node's text
+     * 
+     * @param text
+     *            this node's new text
+     */
     public void setText(final String text)
     {
         this.text = text;
     }
 
+    /**
+     * Add a string at the end of this node's text
+     * 
+     * @param toAppend
+     *            the string to append
+     */
     public void appendText(final String toAppend)
     {
         text += toAppend;

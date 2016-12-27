@@ -14,6 +14,12 @@ import utybo.branchingstorytree.api.script.ScriptChecker;
 import utybo.branchingstorytree.api.script.VariableRegistry;
 import utybo.branchingstorytree.api.story.BranchingStory;
 
+/**
+ * Implementation of the equ and not checkers
+ * 
+ * @author utybo
+ *
+ */
 public class EqualityInequality implements ScriptChecker
 {
 

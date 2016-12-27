@@ -14,12 +14,29 @@ import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.api.script.ActionDescriptor;
 import utybo.branchingstorytree.api.script.CheckerDescriptor;
 
+/**
+ * Instruction implementation of ternary statements (if-then-else)
+ * 
+ * @author utybo
+ *
+ */
 public class LNTern extends LNInstruction
 {
     private final ArrayList<ActionDescriptor> trueActions;
     private final ArrayList<ActionDescriptor> falseActions;
     private final ArrayList<CheckerDescriptor> checkers;
 
+    /**
+     * 
+     * @param checker
+     *            The checkers to be checked. If there are multiple checkers,
+     *            the ternary statement performs an "AND" operation.
+     * @param trueActions
+     *            The actions to execute if the checker(s) (all) return true
+     * @param falseActions
+     *            The actions to execute if (one of) the checker(s) returns
+     *            false
+     */
     public LNTern(final ArrayList<CheckerDescriptor> checker, final ArrayList<ActionDescriptor> trueActions, final ArrayList<ActionDescriptor> falseActions)
     {
         checkers = checker;

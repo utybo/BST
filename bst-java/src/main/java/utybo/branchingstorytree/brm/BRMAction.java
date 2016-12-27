@@ -13,6 +13,12 @@ import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.api.script.ScriptAction;
 import utybo.branchingstorytree.api.story.BranchingStory;
 
+/**
+ * Implementation of actions related to BRM
+ * 
+ * @author utybo
+ *
+ */
 public class BRMAction implements ScriptAction
 {
 

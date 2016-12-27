@@ -8,6 +8,17 @@
  */
 package utybo.branchingstorytree.api;
 
+/**
+ * A BSTException is an exception that is thrown by a component of the BST
+ * language or of the bst-java implementation of the language, or anything else
+ * related to BST.
+ * <p>
+ * The integer you will find in all the constructors is either the line where
+ * the exception happened in the file, or -1 if it is unknown or N/A
+ * 
+ * @author utybo
+ *
+ */
 public class BSTException extends Exception
 {
     private static final long serialVersionUID = 1L;

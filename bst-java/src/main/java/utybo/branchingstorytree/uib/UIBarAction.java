@@ -17,6 +17,12 @@ import utybo.branchingstorytree.api.script.ScriptAction;
 import utybo.branchingstorytree.api.script.VariableRegistry;
 import utybo.branchingstorytree.api.story.BranchingStory;
 
+/**
+ * Implementation of UIB related actions
+ * 
+ * @author utybo
+ *
+ */
 public class UIBarAction implements ScriptAction
 {
     private final Pattern setPropPattern = Pattern.compile("(\\w+),(\\w+),(.+)");

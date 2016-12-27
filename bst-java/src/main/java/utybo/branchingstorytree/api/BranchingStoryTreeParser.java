@@ -34,8 +34,18 @@ import utybo.branchingstorytree.api.story.logicalnode.LNCondReturn;
 import utybo.branchingstorytree.api.story.logicalnode.LNExec;
 import utybo.branchingstorytree.api.story.logicalnode.LNTern;
 
+/**
+ * A parser that turns an input from a {@link BufferedReader} to a
+ * {@link BranchingStory}
+ * 
+ * @author utybo
+ *
+ */
 public class BranchingStoryTreeParser
 {
+    /*
+     * Node types
+     */
     private static final int NORMAL = 0, VIRTUAL = 1, LOGICAL = 2;
 
     private final Pattern beginningOfNodePattern = Pattern.compile("^\\d+:.+$");
@@ -50,6 +60,24 @@ public class BranchingStoryTreeParser
     private final Pattern lnChecker = Pattern.compile("\\[(.+?):(.*?)]");
     private final Pattern lnScript = Pattern.compile("\\{(.+?):(.*?)}");
 
+    /**
+     * Parse the input from the {@link BufferedReader} into a
+     * {@link BranchingStory}
+     * 
+     * @param br
+     *            the BufferedReader to use
+     * @param dictionnary
+     *            the dictionnary to pick the actions and checkers from
+     * @param client
+     *            the client to use in actions and checkers. It does not have to
+     *            be fully functional for the parser to do its work
+     * @return A fresh {@link BranchingStory} that represents the BST input from
+     *         the {@link BufferedReader}
+     * @throws IOException
+     *             if an I/O error occurs
+     * @throws BSTException
+     *             if something is wrong with your input
+     */
     public synchronized BranchingStory parse(final BufferedReader br, final Dictionnary dictionnary, final BSTClient client) throws IOException, BSTException
     {
         final BranchingStory story = new BranchingStory();

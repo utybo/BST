@@ -14,10 +14,43 @@ import utybo.branchingstorytree.api.BSTClient;
 import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.api.story.BranchingStory;
 
+/**
+ * A BST Action. A ScriptAction can cover more than one action (see
+ * {@link #getName()}
+ * 
+ * @author utybo
+ *
+ */
 @IndexSubclasses
 public interface ScriptAction
 {
+    /**
+     * Execute this action
+     * 
+     * @param head
+     *            The name of the action, which is always one of the names from
+     *            {@link #getName()}
+     * @param desc
+     *            The raw arguments to be used
+     * @param line
+     *            The line from which this action is from - this argument should
+     *            be passed if a {@link BSTException} is thrown
+     * @param story
+     *            The story this action is executed from
+     * @param client
+     *            The client this action is executed from
+     * @throws BSTException
+     *             If something wrong happens : incorrect syntax, processing
+     *             error... Make sure to pass the line argument to any thrown
+     *             exception!
+     */
     public void exec(String head, String desc, int line, BranchingStory story, BSTClient client) throws BSTException;
 
+    /**
+     * Gets the different names this ScriptAction represents.
+     * 
+     * @return an array of all the names of the actions this implementation
+     *         covers
+     */
     public String[] getName();
 }

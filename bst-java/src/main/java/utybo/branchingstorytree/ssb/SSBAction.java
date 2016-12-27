@@ -13,6 +13,12 @@ import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.api.script.ScriptAction;
 import utybo.branchingstorytree.api.story.BranchingStory;
 
+/**
+ * Implementation of SSB related actions
+ * 
+ * @author utybo
+ *
+ */
 public class SSBAction implements ScriptAction
 {
 

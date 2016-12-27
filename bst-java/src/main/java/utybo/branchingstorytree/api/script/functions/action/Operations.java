@@ -14,6 +14,13 @@ import utybo.branchingstorytree.api.script.ScriptAction;
 import utybo.branchingstorytree.api.script.VariableRegistry;
 import utybo.branchingstorytree.api.story.BranchingStory;
 
+/**
+ * Implementation of operation related actions : add (addition), sub
+ * (substraction), mul (multiplication), div (division), mod (modulo)
+ * 
+ * @author utybo
+ *
+ */
 public class Operations implements ScriptAction
 {
 
@@ -85,7 +92,7 @@ public class Operations implements ScriptAction
     @Override
     public String[] getName()
     {
-        return new String[] {"add", "sub", "mul", "div"};
+        return new String[] {"add", "sub", "mul", "div", "mod"};
     }
 
 }
