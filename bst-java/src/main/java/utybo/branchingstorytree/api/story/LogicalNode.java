@@ -13,6 +13,13 @@ import java.util.ArrayList;
 import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.api.story.logicalnode.LNInstruction;
 
+/**
+ * A logical node is a node that executes a list of {@link LNInstruction}s in
+ * order, eventually returning a next node.
+ * 
+ * @author utybo
+ *
+ */
 public class LogicalNode extends StoryNode
 {
     private final ArrayList<LNInstruction> instructionStack = new ArrayList<>();
@@ -28,16 +35,35 @@ public class LogicalNode extends StoryNode
     //
     // -- Logical Nodes are part of the Branching Story Tree Scripting interface
 
+    /**
+     * Create a logical node
+     * 
+     * @param id
+     *            the ID of the logical node
+     */
     public LogicalNode(final int id)
     {
         super(id);
     }
 
+    /**
+     * Add an instruction at the bottom of the instruction stack
+     * 
+     * @param instruction
+     *            The instruction to add.
+     */
     public void addInstruction(final LNInstruction instruction)
     {
         instructionStack.add(instruction);
     }
 
+    /**
+     * Execute the logical node
+     * 
+     * @return the next node. Can be -1 if no next node could be determined
+     * @throws BSTException
+     *             If an exception occurs during the execution of an instruction
+     */
     public int solve() throws BSTException
     {
         int i = -1;

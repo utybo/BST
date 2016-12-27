@@ -11,11 +11,26 @@ package utybo.branchingstorytree.api.script;
 import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.api.story.BranchingStory;
 
+/**
+ * A Next Node Definer that defines the next node based on the value of a
+ * variable : said value is the next node.
+ * 
+ * @author utybo
+ *
+ */
 public class VariableNextNode implements NextNodeDefiner
 {
     private final BranchingStory story;
     private final String variable;
 
+    /**
+     * Creates a {@link VariableNextNode}
+     * 
+     * @param story
+     *            The story from which to get the variable
+     * @param nextNodeDefiner
+     *            The variable's name
+     */
     public VariableNextNode(final BranchingStory story, final String nextNodeDefiner)
     {
         this.story = story;

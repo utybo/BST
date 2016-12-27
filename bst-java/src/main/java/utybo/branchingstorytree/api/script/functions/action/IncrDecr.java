@@ -14,6 +14,12 @@ import utybo.branchingstorytree.api.script.ScriptAction;
 import utybo.branchingstorytree.api.script.VariableRegistry;
 import utybo.branchingstorytree.api.story.BranchingStory;
 
+/**
+ * Implementation of the incr and decr actions
+ * 
+ * @author utybo
+ *
+ */
 public class IncrDecr implements ScriptAction
 {
 

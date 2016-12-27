@@ -11,10 +11,22 @@ package utybo.branchingstorytree.api.story.logicalnode;
 import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.api.script.ActionDescriptor;
 
+/**
+ * An instruction that executes an action
+ * 
+ * @author utybo
+ *
+ */
 public class LNExec extends LNInstruction
 {
     private final ActionDescriptor action;
 
+    /**
+     * Create an LNExec
+     * 
+     * @param action
+     *            The action to be wrapped
+     */
     public LNExec(final ActionDescriptor action)
     {
         this.action = action;

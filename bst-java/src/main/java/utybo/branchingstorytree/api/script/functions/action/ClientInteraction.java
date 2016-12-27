@@ -13,6 +13,13 @@ import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.api.script.ScriptAction;
 import utybo.branchingstorytree.api.story.BranchingStory;
 
+/**
+ * Implementation of multiple actions related to interaction with
+ * {@link BSTClient} objects : input and exit.
+ * 
+ * @author utybo
+ *
+ */
 public class ClientInteraction implements ScriptAction
 {
 
