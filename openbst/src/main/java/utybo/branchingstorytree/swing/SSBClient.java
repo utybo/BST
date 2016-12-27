@@ -22,7 +22,6 @@ public class SSBClient implements SSBHandler
 {
     private final HashMap<String, MediaPlayer> resources = new HashMap<>();
     private MediaPlayer currentAmbient;
-    private boolean muted;
     private final StoryPanel panel;
 
     public SSBClient(final StoryPanel panel)
