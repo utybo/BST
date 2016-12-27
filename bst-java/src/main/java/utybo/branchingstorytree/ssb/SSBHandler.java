@@ -8,17 +8,34 @@
  */
 package utybo.branchingstorytree.ssb;
 
-import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.brm.BRMResourceConsumer;
 
+/**
+ * Handler for SSB related tasks (most of these are called from
+ * {@link SSBAction})
+ * 
+ * @author utybo
+ *
+ */
 public interface SSBHandler extends BRMResourceConsumer
 {
-    @Override
-    public void load(String relativePath, String name) throws BSTException;
-
+    /**
+     * Play a sound denoted by the name
+     * 
+     * @param name
+     */
     public void play(String name);
 
+    /**
+     * Loop an ambient sound. There can only be one ambient sound at a time :
+     * replace any currently playing ambient sound.
+     * 
+     * @param name
+     */
     public void ambient(String name);
 
+    /**
+     * Stop the current ambient sound.
+     */
     public void stop();
 }

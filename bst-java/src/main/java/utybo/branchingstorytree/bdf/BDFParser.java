@@ -15,6 +15,12 @@ import java.util.regex.Pattern;
 
 import utybo.branchingstorytree.api.BSTException;
 
+/**
+ * Utility class for parsing {@link BDFFile} objects from BDF-formatted files
+ * 
+ * @author utybo
+ *
+ */
 public class BDFParser
 {
     private static final Pattern startOfInt = Pattern.compile("^([\\w_]+)=(-?\\d+)");

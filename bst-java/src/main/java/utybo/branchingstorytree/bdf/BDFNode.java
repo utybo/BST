@@ -10,6 +10,12 @@ package utybo.branchingstorytree.bdf;
 
 import utybo.branchingstorytree.api.script.VariableRegistry;
 
+/**
+ * A node inside a {@link BDFFile}
+ * 
+ * @author utybo
+ *
+ */
 public abstract class BDFNode
 {
     private final String name;

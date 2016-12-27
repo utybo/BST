@@ -10,6 +10,12 @@ package utybo.branchingstorytree.bdf;
 
 import utybo.branchingstorytree.api.script.VariableRegistry;
 
+/**
+ * A BDFNode that represents an integer value
+ * 
+ * @author utybo
+ *
+ */
 public class BDFIntNode extends BDFNode
 {
     private final int value;
