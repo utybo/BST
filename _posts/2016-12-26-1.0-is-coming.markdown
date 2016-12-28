@@ -5,7 +5,7 @@ date:   2016-12-26 01:01:02
 categories: main
 author: utybo
 highlight: true
-excerpt: "OpenBST 1.0 is out, with more modules, more customization, an easier language, and other cool stuff. It's also a good opportunity to discover OpenBST if you just came in :)"
+excerpt: "<p>OpenBST 1.0 is out, with more modules, more customization, an easier language, and other cool stuff. It's also a good opportunity to discover OpenBST if you just came in :)"
 ccolor: "#0000AA"
 ---
 
