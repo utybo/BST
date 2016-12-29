@@ -28,24 +28,25 @@ import utybo.branchingstorytree.api.story.BranchingStory;
  */
 public class JSEAction implements ScriptAction
 {
-    private ScriptEngine engine;
 
     @Override
     public void exec(final String head, final String desc, final int line, final BranchingStory story, final BSTClient client) throws BSTException
     {
+        JSEHandler handler = client.getJSEHandler();
+
         if(head.equals("jse_reset"))
         {
-            engine = null;
+            handler.setEngine(null);
             return;
         }
 
         final VariableRegistry registry = story.getRegistry();
 
-        if(engine == null)
+        if(handler.getEngine() == null)
         {
-            engine = new ScriptEngineManager().getEngineByName("JavaScript");
+            handler.setEngine(new ScriptEngineManager().getEngineByName("JavaScript"));
         }
-
+        ScriptEngine engine = handler.getEngine();
         switch(head)
         {
         case "jse_eval":
@@ -61,7 +62,7 @@ public class JSEAction implements ScriptAction
                     }
                     catch(final ScriptException e1)
                     {
-                        throw new BSTException(line, "Error during JSE initialization (step INT)", e1);
+                        throw new BSTException(line, "Error during JSE initialization (step INT) : " + e1.getMessage(), e1);
                     }
                 }
                 final HashMap<String, String> strings = registry.getAllString();
@@ -73,11 +74,9 @@ public class JSEAction implements ScriptAction
                     }
                     catch(final ScriptException e1)
                     {
-                        throw new BSTException(line, "Error during JSE initialization (step STRING)", e1);
+                        throw new BSTException(line, "Error during JSE initialization (step STRING) : " + e1.getMessage(), e1);
                     }
-
                 }
-
             }
 
             // Parse
