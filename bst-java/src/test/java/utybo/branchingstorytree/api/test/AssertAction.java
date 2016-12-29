@@ -20,10 +20,21 @@ import utybo.branchingstorytree.api.story.BranchingStory;
 
 public class AssertAction implements ScriptAction
 {
+    private static Dictionnary dict;
 
     @Override
     public void exec(String head, String desc, int line, BranchingStory story, BSTClient client) throws BSTException
     {
+        try
+        {
+            if(dict == null)
+                dict = new Dictionnary();
+        }
+        catch(InstantiationException | IllegalAccessException e)
+        {
+            throw new BSTException(line, "Could not create dictionary", e);
+        }
+
         Pattern p = Pattern.compile("([\\w_]+?):(.*)");
         Matcher m = p.matcher(desc);
         if(!m.matches())
@@ -34,25 +45,20 @@ public class AssertAction implements ScriptAction
         String d = m.group(2);
         try
         {
-            Dictionnary dict = new Dictionnary();
             CheckerDescriptor cd = new CheckerDescriptor(dict.getChecker(h), h, d, line, story, client);
             assert cd.check() == true;
-        }
-        catch(InstantiationException | IllegalAccessException e)
-        {
-            throw new BSTException(line, "Could not create dictionary", e);
         }
         catch(AssertionError error)
         {
             throw new BSTException(line, "Assertion " + desc + " failed.", error);
         }
-        
+
     }
 
     @Override
     public String[] getName()
     {
-        return new String[]{"assert"};
+        return new String[] {"assert"};
     }
 
 }

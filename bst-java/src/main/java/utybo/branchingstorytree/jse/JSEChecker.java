@@ -8,6 +8,8 @@
  */
 package utybo.branchingstorytree.jse;
 
+import static utybo.branchingstorytree.jse.JSEAction.checkReg;
+
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
@@ -15,6 +17,7 @@ import javax.script.ScriptException;
 import utybo.branchingstorytree.api.BSTClient;
 import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.api.script.ScriptChecker;
+import utybo.branchingstorytree.api.script.VariableRegistry;
 import utybo.branchingstorytree.api.story.BranchingStory;
 
 public class JSEChecker implements ScriptChecker
@@ -24,11 +27,13 @@ public class JSEChecker implements ScriptChecker
     public boolean check(String head, String desc, int line, BranchingStory story, BSTClient client) throws BSTException
     {
         JSEHandler handler = client.getJSEHandler();
-        if(handler.getEngine() == null)
+        VariableRegistry registry = story.getRegistry();
+        if(handler.getEngine() == null || !registry.get("__jse__auto", "true").toString().equalsIgnoreCase("false"))
         {
             handler.setEngine(new ScriptEngineManager().getEngineByName("JavaScript"));
         }
         ScriptEngine engine = handler.getEngine();
+        checkReg(engine, registry, line);
         try
         {
             Object result = engine.eval(desc);
@@ -39,18 +44,13 @@ public class JSEChecker implements ScriptChecker
             else if(result instanceof Number)
             {
                 int i = ((Number)result).intValue();
-                if(i == 0)
+                System.out.println(desc + " ==> " + i);
+                if(i <= 0)
                 {
                     return false;
-                }
-                else if(i == 1)
-                {
-                    return true;
                 }
                 else
-                {
-                    return false;
-                }
+                    return true;
             }
             else if(result == null)
             {

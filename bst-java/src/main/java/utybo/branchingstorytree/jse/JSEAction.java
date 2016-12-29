@@ -42,42 +42,19 @@ public class JSEAction implements ScriptAction
 
         final VariableRegistry registry = story.getRegistry();
 
-        if(handler.getEngine() == null)
+        if(handler.getEngine() == null || !registry.get("__jse__auto", "true").toString().equalsIgnoreCase("false"))
         {
             handler.setEngine(new ScriptEngineManager().getEngineByName("JavaScript"));
         }
+
         ScriptEngine engine = handler.getEngine();
+        if(engine == null)
+            throw new Error("Well this doesn't make any sense");
         switch(head)
         {
         case "jse_eval":
         {
-            if(!registry.get("__jse__auto", "true").toString().equalsIgnoreCase("false"))
-            {
-                final HashMap<String, Integer> ints = registry.getAllInt();
-                for(final String name : ints.keySet())
-                {
-                    try
-                    {
-                        engine.eval(name + " = " + ints.get(name));
-                    }
-                    catch(final ScriptException e1)
-                    {
-                        throw new BSTException(line, "Error during JSE initialization (step INT) : " + e1.getMessage(), e1);
-                    }
-                }
-                final HashMap<String, String> strings = registry.getAllString();
-                for(final String name : strings.keySet())
-                {
-                    try
-                    {
-                        engine.eval(name + " = \"" + strings.get(name) + "\"");
-                    }
-                    catch(final ScriptException e1)
-                    {
-                        throw new BSTException(line, "Error during JSE initialization (step STRING) : " + e1.getMessage(), e1);
-                    }
-                }
-            }
+            checkReg(engine, registry, line);
 
             // Parse
             final String varName = desc.split(",")[0];
@@ -111,7 +88,7 @@ public class JSEAction implements ScriptAction
             }
             break;
         }
-        case "jse_update":
+        case "jse_import":
         {
             try
             {
@@ -146,4 +123,34 @@ public class JSEAction implements ScriptAction
         return new String[] {"jse_eval", "jse_reset", "jse_autoimport", "jse_import"};
     }
 
+    public static void checkReg(ScriptEngine engine, VariableRegistry registry, int line) throws BSTException
+    {
+        if(!registry.get("__jse__auto", "true").toString().equalsIgnoreCase("false"))
+        {
+            final HashMap<String, Integer> ints = registry.getAllInt();
+            for(final String name : ints.keySet())
+            {
+                try
+                {
+                    engine.eval(name + " = " + ints.get(name));
+                }
+                catch(final ScriptException e1)
+                {
+                    throw new BSTException(line, "Error during JSE initialization (step INT) : " + e1.getMessage(), e1);
+                }
+            }
+            final HashMap<String, String> strings = registry.getAllString();
+            for(final String name : strings.keySet())
+            {
+                try
+                {
+                    engine.eval(name + " = \"" + strings.get(name) + "\"");
+                }
+                catch(final ScriptException e1)
+                {
+                    throw new BSTException(line, "Error during JSE initialization (step STRING) : " + e1.getMessage(), e1);
+                }
+            }
+        }
+    }
 }
