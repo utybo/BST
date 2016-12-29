@@ -1,0 +1,11 @@
+1:&
+set:a,10
+set:b,10
+add:c,a,b
+assert:equ:c,20
+sub:c,a,b
+assert:equ:c,0
+mul:c,a,b
+assert:equ:c,100
+div:c,a,b
+assert:equ:c,1
