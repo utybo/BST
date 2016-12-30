@@ -50,7 +50,7 @@ public class AssertAction implements ScriptAction
         }
         catch(AssertionError error)
         {
-            throw new BSTException(line, "Assertion " + desc + " failed.", error);
+            throw new AssertionError("Assertion " + desc + " failed. (Registry dumb : " + story.getRegistry().dump(), error);
         }
 
     }

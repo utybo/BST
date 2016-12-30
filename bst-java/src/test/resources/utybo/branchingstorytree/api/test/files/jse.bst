@@ -12,3 +12,7 @@ assert:jse_eval:a & c
 assert:jse_eval:a | b
 assert:jse_eval:!Boolean(b)
 assert:jse_eval:Boolean(a) && !Boolean(b)
+
+set:a,Stringstring
+jse_eval:a,a + "string"
+assert:equ:a,Stringstringstring

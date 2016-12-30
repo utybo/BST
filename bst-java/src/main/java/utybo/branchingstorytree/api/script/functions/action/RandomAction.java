@@ -47,8 +47,8 @@ public class RandomAction implements ScriptAction
         {
             throw new BSTException(line, "Incorrect syntax : rand:variabletoset,maximum OR rand:variabletoset,minimum,maximum");
         }
-        // nextInt is exclusive, we make it "inclusive" by adding 1
-        int value = new Random().nextInt(max + 1);
+        int range = max - min + 1; // +1 because nextInt is exclusive
+        int value = new Random().nextInt(range);
         // Minimum bounds
         value += min;
         registry.put(varToSet, value);
