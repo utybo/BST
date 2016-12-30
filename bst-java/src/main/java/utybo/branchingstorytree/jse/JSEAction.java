@@ -32,70 +32,125 @@ public class JSEAction implements ScriptAction
     @Override
     public void exec(final String head, final String desc, final int line, final BranchingStory story, final BSTClient client) throws BSTException
     {
-        // Initialize the engine
-        final ScriptEngine e = new ScriptEngineManager().getEngineByName("JavaScript");
+        JSEHandler handler = client.getJSEHandler();
+
+        if(head.equals("jse_reset"))
+        {
+            handler.setEngine(null);
+            return;
+        }
+
         final VariableRegistry registry = story.getRegistry();
-        final HashMap<String, Integer> ints = registry.getAllInt();
-        for(final String name : ints.keySet())
+
+        if(handler.getEngine() == null || !registry.get("__jse__auto", "true").toString().equalsIgnoreCase("false"))
         {
+            handler.setEngine(new ScriptEngineManager().getEngineByName("JavaScript"));
+        }
+
+        ScriptEngine engine = handler.getEngine();
+        if(engine == null)
+            throw new Error("Well this doesn't make any sense");
+        switch(head)
+        {
+        case "jse_eval":
+        {
+            checkReg(engine, registry, line);
+
+            // Parse
+            final String varName = desc.split(",")[0];
+            final String script = desc.substring(desc.indexOf(',') + 1);
+
+            // Exec
             try
             {
-                e.eval(name + " = " + ints.get(name));
+                final Object result = engine.eval(script);
+                if(result instanceof Number)
+                {
+                    registry.put(varName, ((Number)result).intValue());
+                }
+                else if(result instanceof String)
+                {
+                    registry.put(varName, (String)result);
+                }
+                else if(result == null)
+                {
+                    registry.remove(varName);
+                }
+                else
+                {
+                    System.err.println("[line " + line + "] Unknown return type : " + result.getClass().getName() + ". Using toString!");
+                    registry.put(varName, result.toString());
+                }
             }
             catch(final ScriptException e1)
             {
-                throw new BSTException(line, "Error during JSE initialization (step INT)", e1);
+                throw new BSTException(line, "Error during script execution : " + e1.getMessage(), e1);
             }
+            break;
         }
-        final HashMap<String, String> strings = registry.getAllString();
-        for(final String name : strings.keySet())
+        case "jse_import":
         {
             try
             {
-                e.eval(name + " = \"" + strings.get(name) + "\"");
+                for(String varName : desc.split(","))
+                {
+                    Class<?> type = registry.typeOf(varName);
+
+                    if(type.equals(Integer.class))
+                        engine.eval(varName + " = " + registry.get(varName, ""));
+                    else if(type.equals(String.class))
+                        engine.eval(varName + " = \"" + registry.get(varName, ""));
+                    else
+                        throw new BSTException(line, "Unknown variable : " + varName);
+
+                }
             }
-            catch(final ScriptException e1)
+            catch(ScriptException e)
             {
-                throw new BSTException(line, "Error during JSE initialization (step STRING)", e1);
+                throw new BSTException(line, "Internal error", e);
             }
+            break;
+        }
+        case "jse_autoimport":
+            registry.put("__jse__auto", desc);
         }
 
-        // Parse
-        final String varName = desc.split(",")[0];
-        final String script = desc.substring(desc.indexOf(',') + 1);
-
-        // Exec
-        try
-        {
-            final Object result = e.eval(script);
-            if(result instanceof Number)
-            {
-                registry.put(varName, ((Number)result).intValue());
-            }
-            else if(result instanceof String)
-            {
-                registry.put(varName, (String)result);
-            }
-            else if(result == null)
-            {
-                registry.remove(varName);
-            }
-            else
-            {
-                System.err.println("[line " + line + "] Unknown return type : " + result.getClass().getName() + ". Using toString!");
-                registry.put(varName, result.toString());
-            }
-        }
-        catch(final ScriptException e1)
-        {
-            throw new BSTException(line, "Error during script execution : " + e1.getMessage(), e1);
-        }
     }
 
     @Override
     public String[] getName()
     {
-        return new String[] {"jse_eval"};
+        return new String[] {"jse_eval", "jse_reset", "jse_autoimport", "jse_import"};
     }
 
+    public static void checkReg(ScriptEngine engine, VariableRegistry registry, int line) throws BSTException
+    {
+        if(!registry.get("__jse__auto", "true").toString().equalsIgnoreCase("false"))
+        {
+            final HashMap<String, Integer> ints = registry.getAllInt();
+            for(final String name : ints.keySet())
+            {
+                try
+                {
+                    engine.eval(name + " = " + ints.get(name));
+                }
+                catch(final ScriptException e1)
+                {
+                    throw new BSTException(line, "Error during JSE initialization (step INT) : " + e1.getMessage(), e1);
+                }
+            }
+            final HashMap<String, String> strings = registry.getAllString();
+            for(final String name : strings.keySet())
+            {
+                try
+                {
+                    engine.eval(name + " = \"" + strings.get(name) + "\"");
+                }
+                catch(final ScriptException e1)
+                {
+                    throw new BSTException(line, "Error during JSE initialization (step STRING) : " + e1.getMessage(), e1);
+                }
+            }
+        }
+    }
 }

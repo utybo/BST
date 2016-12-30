@@ -11,6 +11,7 @@ package utybo.branchingstorytree.api;
 import utybo.branchingstorytree.bdf.BDFHandler;
 import utybo.branchingstorytree.brm.BRMHandler;
 import utybo.branchingstorytree.img.IMGHandler;
+import utybo.branchingstorytree.jse.JSEHandler;
 import utybo.branchingstorytree.ssb.SSBHandler;
 import utybo.branchingstorytree.uib.UIBarHandler;
 
@@ -26,6 +27,7 @@ import utybo.branchingstorytree.uib.UIBarHandler;
  */
 public interface BSTClient
 {
+
     /**
      * Ask the user for input
      * 
@@ -76,6 +78,11 @@ public interface BSTClient
      * @return The BDF module handler, or null is not supported
      */
     public default BDFHandler getBDFHandler()
+    {
+        return null;
+    }
+    
+    public default JSEHandler getJSEHandler()
     {
         return null;
     }

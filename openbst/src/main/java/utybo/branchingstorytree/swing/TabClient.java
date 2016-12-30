@@ -23,11 +23,13 @@ public class TabClient implements BSTClient
     private SSBClient ssbClient;
     private IMGClient imgClient;
     private final BDFClient bdfClient;
+    private final JSEClient jseClient;
 
     public TabClient(final OpenBST instance)
     {
         this.instance = instance;
         bdfClient = new BDFClient();
+        jseClient = new JSEClient();
     }
 
     @Override
