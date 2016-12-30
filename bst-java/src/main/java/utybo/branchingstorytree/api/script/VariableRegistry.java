@@ -103,4 +103,9 @@ public class VariableRegistry
     {
         return variables.size() + strVar.size();
     }
+
+    public String dump()
+    {
+        return "INTEGERS : " + variables.toString() + " | STRINGS : " + strVar.toString();
+    }
 }

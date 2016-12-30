@@ -5,3 +5,4 @@ jse_import:a
 jse_eval:b,a+14
 assert:equ:a,29
 assert:equ:b,43
+jse_reset:

@@ -49,7 +49,7 @@ public class JSESpeedBench
     public static void testFile(String path, BSTClient client) throws IOException, BSTException, InstantiationException, IllegalAccessException
     {
         Dictionnary d = new Dictionnary();
-        BranchingStory story = new BranchingStoryTreeParser().parse(new BufferedReader(new InputStreamReader(BSTTesting.class.getResourceAsStream("/utybo/branchingstorytree/api/test/bench/jse/" + path))), d, client);
+        BranchingStory story = new BranchingStoryTreeParser().parse(new BufferedReader(new InputStreamReader(ActionTesting.class.getResourceAsStream("/utybo/branchingstorytree/api/test/bench/jse/" + path))), d, client);
         StoryNode node = story.getInitialNode();
         while(node != null)
         {

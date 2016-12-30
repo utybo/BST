@@ -71,7 +71,6 @@ public class BDFParser
                 ((BDFStringNode)node).append("\n" + line);
                 continue;
             }
-            throw new BSTException(-1, "Unknown syntax at line " + lineNumber + " in file " + fileName);
         }
 
         return file;
