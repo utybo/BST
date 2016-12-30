@@ -55,7 +55,6 @@ import utybo.branchingstorytree.api.story.StoryNode;
 import utybo.branchingstorytree.api.story.TextNode;
 import utybo.branchingstorytree.swing.JScrollablePanel.ScrollableSizeHint;
 
-@SuppressWarnings("serial")
 public class StoryPanel extends JPanel
 {
     /**

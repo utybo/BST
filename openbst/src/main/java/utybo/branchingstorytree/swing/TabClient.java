@@ -13,6 +13,7 @@ import javax.swing.JOptionPane;
 
 import utybo.branchingstorytree.api.BSTClient;
 import utybo.branchingstorytree.brm.BRMHandler;
+import utybo.branchingstorytree.jse.JSEHandler;
 
 public class TabClient implements BSTClient
 {
@@ -88,4 +89,10 @@ public class TabClient implements BSTClient
         return bdfClient;
     }
 
+    @Override
+    public JSEHandler getJSEHandler()
+    {
+        return jseClient;
+    }
+    
 }

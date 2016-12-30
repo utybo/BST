@@ -28,7 +28,6 @@ import javax.swing.table.DefaultTableModel;
 import net.miginfocom.swing.MigLayout;
 import utybo.branchingstorytree.api.script.VariableRegistry;
 
-@SuppressWarnings("serial")
 public class VariableWatchDialog extends JDialog
 {
     /**

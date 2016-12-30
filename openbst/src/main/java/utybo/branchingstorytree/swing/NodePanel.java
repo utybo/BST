@@ -25,7 +25,6 @@ import utybo.branchingstorytree.api.StoryUtils;
 import utybo.branchingstorytree.api.story.BranchingStory;
 import utybo.branchingstorytree.api.story.TextNode;
 
-@SuppressWarnings("serial")
 public class NodePanel extends JScrollablePanel
 {
     /**
