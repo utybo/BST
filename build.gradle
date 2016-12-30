@@ -25,9 +25,9 @@ subprojects {
         // Language files
         exclude "**/*.lang"
         // Bundled icons license
-        exclude "**/ICONSLICENSE
+        exclude "**/ICONSLICENSE"
         // BST test cases
-        exclude "**/test/**/*.bst
+        exclude "**/test/**/*.bst"
     }
 
     repositories {
