@@ -20,36 +20,40 @@ import utybo.branchingstorytree.img.IMGHandler;
 
 public class IMGClient implements IMGHandler
 {
-    private HashMap<String, BufferedImage> images = new HashMap<>();
+    private final HashMap<String, BufferedImage> images = new HashMap<>();
     private BufferedImage current = null;
-    private StoryPanel panel;
+    private final StoryPanel panel;
 
-    public IMGClient(StoryPanel panel)
+    public IMGClient(final StoryPanel panel)
     {
         this.panel = panel;
     }
 
     @Override
-    public void load(String pathToResource, String name) throws BSTException
+    public void load(final String pathToResource, final String name) throws BSTException
     {
         try
         {
             images.put(name, ImageIO.read(new File(pathToResource)));
         }
-        catch(IOException e)
+        catch(final IOException e)
         {
             throw new BSTException(-1, "Could not load image", e);
         }
     }
 
     @Override
-    public void setBackground(String name)
+    public void setBackground(final String name)
     {
         panel.story.getRegistry().put("__img__background", name);
         if(name == null)
+        {
             current = null;
+        }
         else
+        {
             current = images.get(name);
+        }
     }
 
     public BufferedImage getCurrentBackground()
@@ -69,7 +73,7 @@ public class IMGClient implements IMGHandler
         {
             setBackground(panel.story.getRegistry().get("__img__background", null).toString());
         }
-        catch(NullPointerException e)
+        catch(final NullPointerException e)
         {}
     }
 }

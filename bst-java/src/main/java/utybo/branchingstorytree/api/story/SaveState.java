@@ -10,23 +10,51 @@ package utybo.branchingstorytree.api.story;
 
 import utybo.branchingstorytree.api.script.VariableRegistry;
 
+/**
+ * An implementation of a save state mechanism -- do note this is rather
+ * incomplete and you should beware of applying save states to modules too
+ * 
+ * @author utybo
+ *
+ */
 public class SaveState
 {
-    private int nodeId;
-    private VariableRegistry registry;
+    private final int nodeId;
+    private final VariableRegistry registry;
 
-    public SaveState(int nodeId, VariableRegistry vr)
+    /**
+     * Create a save state that will contain the given node id and a clone of
+     * the given variable registry
+     * 
+     * @param nodeId
+     *            the node ID to be saved in the save state as the "current"
+     *            node id
+     * @param vr
+     *            the variable registry to be cloned and saved in this save
+     *            state.
+     */
+    public SaveState(final int nodeId, final VariableRegistry vr)
     {
         this.nodeId = nodeId;
         registry = vr.clone();
     }
 
+    /**
+     * @return the Node ID of this save state
+     */
     public int getNodeId()
     {
         return nodeId;
     }
 
-    public void applySaveState(BranchingStory bs)
+    /**
+     * Apply the registry saved in this save state to the given story. You will
+     * still need to do separate actions for some modules
+     * 
+     * @param bs
+     *            the branching story to apply the save state on.
+     */
+    public void applySaveState(final BranchingStory bs)
     {
         bs.setRegistry(registry);
     }

@@ -13,11 +13,18 @@ import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.api.script.ScriptAction;
 import utybo.branchingstorytree.api.story.BranchingStory;
 
+/**
+ * Implementation of multiple actions related to interaction with
+ * {@link BSTClient} objects : input and exit.
+ * 
+ * @author utybo
+ *
+ */
 public class ClientInteraction implements ScriptAction
 {
 
     @Override
-    public void exec(String head, String desc, int line, BranchingStory story, BSTClient client) throws BSTException
+    public void exec(final String head, final String desc, final int line, final BranchingStory story, final BSTClient client) throws BSTException
     {
         switch(head)
         {

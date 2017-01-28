@@ -10,6 +10,12 @@ package utybo.branchingstorytree.brm;
 
 import utybo.branchingstorytree.api.BSTException;
 
+/**
+ * Subinterface for module handlers that use BRM for resource handling
+ * 
+ * @author utybo
+ *
+ */
 public interface BRMResourceConsumer
 {
     public void load(String pathToResource, String name) throws BSTException;

@@ -10,6 +10,12 @@ package utybo.branchingstorytree.uib;
 
 import utybo.branchingstorytree.api.BSTException;
 
+/**
+ * Self explanatory methods here for the BST module
+ * 
+ * @author utybo
+ *
+ */
 public interface UIBarHandler
 {
     public void setLayout(String layoutIdentifier) throws BSTException;

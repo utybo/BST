@@ -10,6 +10,12 @@ package utybo.branchingstorytree.api.story;
 
 import java.util.HashMap;
 
+/**
+ * A Tag Holder is an object that can, well... hold tags.
+ * 
+ * @author utybo
+ *
+ */
 public class TagHolder
 {
     private final HashMap<String, String> tags = new HashMap<>();

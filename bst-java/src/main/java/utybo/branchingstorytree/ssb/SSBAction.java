@@ -13,16 +13,24 @@ import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.api.script.ScriptAction;
 import utybo.branchingstorytree.api.story.BranchingStory;
 
+/**
+ * Implementation of SSB related actions
+ * 
+ * @author utybo
+ *
+ */
 public class SSBAction implements ScriptAction
 {
 
     @Override
-    public void exec(String head, String desc, int line, BranchingStory story, BSTClient client) throws BSTException
+    public void exec(final String head, final String desc, final int line, final BranchingStory story, final BSTClient client) throws BSTException
     {
-        SSBHandler ssb = client.getSSBHandler();
+        final SSBHandler ssb = client.getSSBHandler();
         if(ssb == null)
+        {
             throw new BSTException(line, "ssb not supported");
-        String action = head.substring(4);
+        }
+        final String action = head.substring(4);
         switch(action)
         {
         case "play":

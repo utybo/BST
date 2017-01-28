@@ -51,7 +51,7 @@ import utybo.branchingstorytree.swing.JScrollablePanel.ScrollableSizeHint;
  * fully compatible with every single feature of BST.
  * <p>
  * This class is both the main class and the main JFrame.
- * 
+ *
  * @author utybo
  *
  */
@@ -60,13 +60,13 @@ public class OpenBST extends JFrame
     /**
      * Version number of OpenBST
      */
-    public static final String VERSION = "1.0";
+    public static String version;
     private static final long serialVersionUID = 1L;
 
     /**
      * The parser that will be reused throughout the entire session.
      */
-    private BranchingStoryTreeParser parser = new BranchingStoryTreeParser();
+    private final BranchingStoryTreeParser parser = new BranchingStoryTreeParser();
 
     /**
      * The JFrame instance
@@ -88,18 +88,25 @@ public class OpenBST extends JFrame
     /**
      * Container for all the tabs
      */
-    private JTabbedPane container;
+    private final JTabbedPane container;
 
     /**
      * Launch OpenBST
-     * 
+     *
      * @param args
      *            Arguments. The first argument is the language code to be used
      */
     public static void main(final String[] args)
     {
-        log("OpenBST version " + VERSION + ", part of the BST project");
+        version = OpenBST.class.getPackage().getImplementationVersion();
+        if(version == null)
+        {
+            version = "<unknown version>";
+        }
+
+        log("OpenBST version " + version + ", part of the BST project");
         log("[ INIT ]");
+
         log("Loading language files");
 
         loadLang(args.length > 0 ? args[0] : null);
@@ -112,12 +119,12 @@ public class OpenBST extends JFrame
             // If GTKLookAndFeel was successfully loaded, apply Gnome Shell fix
             try
             {
-                Toolkit xToolkit = Toolkit.getDefaultToolkit();
-                java.lang.reflect.Field awtAppClassNameField = xToolkit.getClass().getDeclaredField("awtAppClassName");
+                final Toolkit xToolkit = Toolkit.getDefaultToolkit();
+                final java.lang.reflect.Field awtAppClassNameField = xToolkit.getClass().getDeclaredField("awtAppClassName");
                 awtAppClassNameField.setAccessible(true);
                 awtAppClassNameField.set(xToolkit, Lang.get("title"));
             }
-            catch(Exception e)
+            catch(final Exception e)
             {
                 log("=! Could not apply X fix");
                 e.printStackTrace();
@@ -144,7 +151,7 @@ public class OpenBST extends JFrame
 
     /**
      * Open a prompt asking for a BST File
-     * 
+     *
      * @return The file selected, or null if none was chosen/the dialog was
      *         closed
      */
@@ -157,7 +164,7 @@ public class OpenBST extends JFrame
         if(jfc.getFile() != null)
         {
             log("=> File selected");
-            File file = new File(jfc.getDirectory() + jfc.getFile());
+            final File file = new File(jfc.getDirectory() + jfc.getFile());
             log("[ LAUNCHING ]");
             return file;
         }
@@ -171,14 +178,14 @@ public class OpenBST extends JFrame
     /**
      * Load and parse a file, using appropriate dialogs if an error occurs to
      * inform the user and even give him the option to reload the file
-     * 
+     *
      * @param file
      *            The file to load
      * @param client
      *            The BST Client. This is required for parsing the file
      * @return
      */
-    public BranchingStory loadFile(File file, BSTClient client)
+    public BranchingStory loadFile(final File file, final BSTClient client)
     {
         try
         {
@@ -224,25 +231,27 @@ public class OpenBST extends JFrame
     /**
      * Load a specific language. This avoid RAM usage blowing up by loading all
      * the languages
-     * 
+     *
      * @param userCustomLanguage
      *            The language to use, as defined in the langs.json file
      */
-    private static void loadLang(String userCustomLanguage)
+    private static void loadLang(final String userCustomLanguage)
     {
-        Map<String, String> languages = new Gson().fromJson(new InputStreamReader(OpenBST.class.getResourceAsStream("/utybo/branchingstorytree/swing/lang/langs.json")), new TypeToken<Map<String, String>>()
+        final Map<String, String> languages = new Gson().fromJson(new InputStreamReader(OpenBST.class.getResourceAsStream("/utybo/branchingstorytree/swing/lang/langs.json")), new TypeToken<Map<String, String>>()
         {}.getType());
         try
         {
             Lang.loadTranslationsFromFile(Lang.getDefaultLanguage(), OpenBST.class.getResourceAsStream("/utybo/branchingstorytree/swing/lang/" + languages.get("default")));
         }
-        catch(Exception e)
+        catch(final Exception e)
         {
             e.printStackTrace();
         }
         if(userCustomLanguage != null)
+        {
             Lang.setSelectedLanguage(new Locale(userCustomLanguage));
-        Locale userLanguage = Lang.getSelectedLanguage();
+        }
+        final Locale userLanguage = Lang.getSelectedLanguage();
         languages.forEach((k, v) ->
         {
             if(userLanguage.equals(new Locale(k)) && !v.equals(languages.get("default")))
@@ -251,7 +260,7 @@ public class OpenBST extends JFrame
                 {
                     Lang.loadTranslationsFromFile(userLanguage, OpenBST.class.getResourceAsStream("/utybo/branchingstorytree/swing/lang/" + v));
                 }
-                catch(Exception e)
+                catch(final Exception e)
                 {
                     e.printStackTrace();
                 }
@@ -262,7 +271,7 @@ public class OpenBST extends JFrame
     /**
      * Add a story by creating a tab and initializing its panel. Also triggers
      * post-creation events (such as NSFW warnings)
-     * 
+     *
      * @param story
      *            The story to create a tab for
      * @param file
@@ -271,10 +280,10 @@ public class OpenBST extends JFrame
      *            The client to use
      * @return
      */
-    private StoryPanel addStory(BranchingStory story, File file, TabClient client)
+    private StoryPanel addStory(final BranchingStory story, final File file, final TabClient client)
     {
         log("Creating tab");
-        StoryPanel sp = new StoryPanel(story, this, file, client);
+        final StoryPanel sp = new StoryPanel(story, this, file, client);
         container.addTab(sp.getTitle(), null, sp, null);
         container.setSelectedIndex(container.getTabCount() - 1);
         if(!sp.postCreation())
@@ -293,7 +302,7 @@ public class OpenBST extends JFrame
      */
     public OpenBST()
     {
-        setTitle("OpenBST " + VERSION);
+        setTitle("OpenBST " + version);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         try
         {
@@ -349,29 +358,29 @@ public class OpenBST extends JFrame
         container = new JTabbedPane();
         getContentPane().add(container, BorderLayout.CENTER);
 
-        JScrollablePanel welcomePanel = new JScrollablePanel();
+        final JScrollablePanel welcomePanel = new JScrollablePanel();
         welcomePanel.setScrollableHeight(ScrollableSizeHint.STRETCH);
         welcomePanel.setScrollableWidth(ScrollableSizeHint.FIT);
         welcomePanel.setLayout(new MigLayout("", "[grow,center]", "[][][][][][][][][]"));
         container.add(new JScrollPane(welcomePanel));
         container.setTitleAt(0, Lang.get("welcome"));
 
-        JLabel lblOpenbst = new JLabel("<html><font size=32>" + Lang.get("title"));
+        final JLabel lblOpenbst = new JLabel("<html><font size=32>" + Lang.get("title"));
         lblOpenbst.setIcon(new ImageIcon(activeDirectoryImage));
         welcomePanel.add(lblOpenbst, "cell 0 0");
 
-        JLabel lblWelcomeToOpenbst = new JLabel(Lang.get("welcome.intro"));
+        final JLabel lblWelcomeToOpenbst = new JLabel(Lang.get("welcome.intro"));
         welcomePanel.add(lblWelcomeToOpenbst, "cell 0 1");
 
-        JButton btnOpenAFile = new JButton(Lang.get("welcome.open"));
+        final JButton btnOpenAFile = new JButton(Lang.get("welcome.open"));
         btnOpenAFile.setIcon(new ImageIcon(openFolderImage));
         btnOpenAFile.addActionListener(e ->
         {
-            File f = askForFile();
+            final File f = askForFile();
             if(f != null)
             {
-                TabClient client = new TabClient(instance);
-                BranchingStory bs = loadFile(f, client);
+                final TabClient client = new TabClient(instance);
+                final BranchingStory bs = loadFile(f, client);
                 if(bs != null)
                 {
                     addStory(bs, f, client);
@@ -380,17 +389,17 @@ public class OpenBST extends JFrame
         });
         welcomePanel.add(btnOpenAFile, "cell 0 2");
 
-        JSeparator separator = new JSeparator();
+        final JSeparator separator = new JSeparator();
         welcomePanel.add(separator, "cell 0 3,growx");
 
-        JLabel lblwhatIsBst = new JLabel(Lang.get("welcome.whatis"));
+        final JLabel lblwhatIsBst = new JLabel(Lang.get("welcome.whatis"));
         lblwhatIsBst.setFont(lblwhatIsBst.getFont().deriveFont(28F));
         welcomePanel.add(lblwhatIsBst, "cell 0 4");
 
-        JLabel lblbstIsA = new JLabel(Lang.get("welcome.about"));
+        final JLabel lblbstIsA = new JLabel(Lang.get("welcome.about"));
         welcomePanel.add(lblbstIsA, "cell 0 5,alignx center,growy");
 
-        JLabel lblimagineItcreate = new JLabel(Lang.get("welcome.imagine"));
+        final JLabel lblimagineItcreate = new JLabel(Lang.get("welcome.imagine"));
         lblimagineItcreate.setVerticalTextPosition(SwingConstants.BOTTOM);
         lblimagineItcreate.setHorizontalTextPosition(SwingConstants.CENTER);
         lblimagineItcreate.setIcon(new ImageIcon(ideaImage));
@@ -398,7 +407,7 @@ public class OpenBST extends JFrame
 
         welcomePanel.add(Box.createHorizontalStrut(20), "cell 0 6");
 
-        JLabel lblwriteItwriteSaid = new JLabel(Lang.get("welcome.write"));
+        final JLabel lblwriteItwriteSaid = new JLabel(Lang.get("welcome.write"));
         lblwriteItwriteSaid.setVerticalTextPosition(SwingConstants.BOTTOM);
         lblwriteItwriteSaid.setHorizontalTextPosition(SwingConstants.CENTER);
         lblwriteItwriteSaid.setIcon(new ImageIcon(blogImage));
@@ -406,7 +415,7 @@ public class OpenBST extends JFrame
 
         welcomePanel.add(Box.createHorizontalStrut(20), "cell 0 6");
 
-        JLabel lblPlayIt = new JLabel(Lang.get("welcome.play"));
+        final JLabel lblPlayIt = new JLabel(Lang.get("welcome.play"));
         lblPlayIt.setVerticalTextPosition(SwingConstants.BOTTOM);
         lblPlayIt.setHorizontalTextPosition(SwingConstants.CENTER);
         lblPlayIt.setIcon(new ImageIcon(controllerImage));
@@ -414,13 +423,13 @@ public class OpenBST extends JFrame
 
         welcomePanel.add(Box.createHorizontalStrut(20), "cell 0 6");
 
-        JLabel lblEnjoyIt = new JLabel(Lang.get("welcome.enjoy"));
+        final JLabel lblEnjoyIt = new JLabel(Lang.get("welcome.enjoy"));
         lblEnjoyIt.setVerticalTextPosition(SwingConstants.BOTTOM);
         lblEnjoyIt.setHorizontalTextPosition(SwingConstants.CENTER);
         lblEnjoyIt.setIcon(new ImageIcon(inLoveImage));
         welcomePanel.add(lblEnjoyIt, "cell 0 6, aligny top");
 
-        JLabel lblIconsByIconscom = new JLabel(Lang.get("welcome.icons"));
+        final JLabel lblIconsByIconscom = new JLabel(Lang.get("welcome.icons"));
         lblIconsByIconscom.setEnabled(false);
         welcomePanel.add(lblIconsByIconscom, "cell 0 8,alignx left");
 
@@ -431,11 +440,11 @@ public class OpenBST extends JFrame
 
     /**
      * Log a message
-     * 
+     *
      * @param message
      *            the message to be logged
      */
-    public static void log(String message)
+    public static void log(final String message)
     {
         // TODO Add a better logging system
         System.out.println(message);
@@ -443,10 +452,10 @@ public class OpenBST extends JFrame
 
     /**
      * Remove a story panel from the tabs
-     * 
+     *
      * @param storyPanel
      */
-    public void removeStory(StoryPanel storyPanel)
+    public void removeStory(final StoryPanel storyPanel)
     {
         container.remove(storyPanel);
     }

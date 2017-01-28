@@ -12,19 +12,25 @@ import java.util.ArrayList;
 
 import utybo.branchingstorytree.api.script.VariableRegistry;
 
+/**
+ * Implementation of a BDF file's internal structure
+ * 
+ * @author utybo
+ *
+ */
 public class BDFFile
 {
-    private ArrayList<BDFNode> nodes = new ArrayList<>();
-    
-    public BDFNode addNode(BDFNode node)
+    private final ArrayList<BDFNode> nodes = new ArrayList<>();
+
+    public BDFNode addNode(final BDFNode node)
     {
         nodes.add(node);
         return node;
     }
-    
-    public void applyTo(VariableRegistry registry, String prefix)
+
+    public void applyTo(final VariableRegistry registry, final String prefix)
     {
-        for(BDFNode node : nodes)
+        for(final BDFNode node : nodes)
         {
             node.applyTo(registry, prefix);
         }

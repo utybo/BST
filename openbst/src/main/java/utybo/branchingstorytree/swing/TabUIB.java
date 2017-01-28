@@ -34,16 +34,16 @@ public class TabUIB implements UIBarHandler
     protected final StoryPanel tab;
 
     private String layout;
-    private TreeMap<String, JComponent> uibComponents = new TreeMap<>();
+    private final TreeMap<String, JComponent> uibComponents = new TreeMap<>();
     private boolean uibInitialized = false;
 
-    public TabUIB(StoryPanel story)
+    public TabUIB(final StoryPanel story)
     {
         tab = story;
     }
 
     @Override
-    public void setLayout(String layoutIdentifier) throws BSTException
+    public void setLayout(final String layoutIdentifier) throws BSTException
     {
         layout = layoutIdentifier;
     }
@@ -53,37 +53,38 @@ public class TabUIB implements UIBarHandler
     {
         uibInitialized = true;
         tab.story.getRegistry().put("__uib__initialized", "true");
-        boolean gridMode = tab.story.hasTag("uib_grid");
-        String columnDef = tab.story.getTag("uib_grid");
-        boolean advancedMode = Boolean.parseBoolean(tab.story.getTag("uib_advanced"));
+        final boolean gridMode = tab.story.hasTag("uib_grid");
+        final String columnDef = tab.story.getTag("uib_grid");
+        final boolean advancedMode = Boolean.parseBoolean(tab.story.getTag("uib_advanced"));
         tab.uibPanel.setLayout(new MigLayout((gridMode ? "" : "nogrid, ") + "fillx", columnDef));
-        String[] parts = layout.split(advancedMode ? ";" : "[,;]");
+        final String[] parts = layout.split(advancedMode ? ";" : "[,;]");
         boolean newLine = false;
-        for(int i = 0; i < parts.length; i++)
+        for(final String s : parts)
         {
-            String s = parts[i];
-            int index = s.indexOf(':');
-            String comp = index > -1 ? s.substring(0, index) : s;
+            final int index = s.indexOf(':');
+            final String comp = index > -1 ? s.substring(0, index) : s;
             String constraints = advancedMode && index > -1 ? s.substring(index + 1) : "";
             Component toAdd = null;
             switch(comp)
             {
             case "tb":
-                JLabel t = new JLabel();
+                final JLabel t = new JLabel();
                 uibComponents.put(determineNext("t"), t);
                 tab.uibPanel.add(t, (newLine ? "newline" : "") + ", alignx right");
                 newLine = false;
                 // $FALL-THROUGH$
             case "b":
-                JProgressBar jpb = new JProgressBar();
+                final JProgressBar jpb = new JProgressBar();
                 uibComponents.put(determineNext("b"), jpb);
                 toAdd = jpb;
                 if(!advancedMode)
+                {
                     constraints += ", grow";
+                }
                 tab.uibPanel.add(jpb);
                 break;
             case "t":
-                JLabel t1 = new JLabel();
+                final JLabel t1 = new JLabel();
                 uibComponents.put(determineNext("t"), t1);
                 constraints += ", aligny top";
                 toAdd = t1;
@@ -116,11 +117,11 @@ public class TabUIB implements UIBarHandler
         tab.uibPanel.revalidate();
     }
 
-    private String determineNext(String string)
+    private String determineNext(final String string)
     {
         int i = 0;
-        Pattern p = Pattern.compile(string + "\\d+");
-        for(String s : uibComponents.keySet())
+        final Pattern p = Pattern.compile(string + "\\d+");
+        for(final String s : uibComponents.keySet())
         {
             if(p.matcher(s).matches())
             {
@@ -131,16 +132,16 @@ public class TabUIB implements UIBarHandler
     }
 
     @Override
-    public boolean isElementValueTypeInteger(String element) throws BSTException
+    public boolean isElementValueTypeInteger(final String element) throws BSTException
     {
-        JComponent c = uibComponents.get(element);
+        final JComponent c = uibComponents.get(element);
         return c != null && c instanceof JProgressBar;
     }
 
     @Override
-    public void setElementValue(String element, int value) throws BSTException
+    public void setElementValue(final String element, final int value) throws BSTException
     {
-        JComponent c = uibComponents.get(element);
+        final JComponent c = uibComponents.get(element);
         if(c != null)
         {
             tab.story.getRegistry().put("__uib__" + element + "_value", "" + value);
@@ -149,9 +150,9 @@ public class TabUIB implements UIBarHandler
     }
 
     @Override
-    public void setElementValue(String element, String value) throws BSTException
+    public void setElementValue(final String element, final String value) throws BSTException
     {
-        JComponent c = uibComponents.get(element);
+        final JComponent c = uibComponents.get(element);
         if(c != null)
         {
             tab.story.getRegistry().put("__uib__" + element + "_value", "" + value);
@@ -160,9 +161,9 @@ public class TabUIB implements UIBarHandler
     }
 
     @Override
-    public void setElementMax(String element, int max)
+    public void setElementMax(final String element, final int max)
     {
-        JComponent c = uibComponents.get(element);
+        final JComponent c = uibComponents.get(element);
         if(c instanceof JProgressBar)
         {
             tab.story.getRegistry().put("__uib__" + element + "_max", "" + max);
@@ -172,9 +173,9 @@ public class TabUIB implements UIBarHandler
     }
 
     @Override
-    public void setElementMin(String element, int min)
+    public void setElementMin(final String element, final int min)
     {
-        JComponent c = uibComponents.get(element);
+        final JComponent c = uibComponents.get(element);
         if(c instanceof JProgressBar)
         {
             tab.story.getRegistry().put("__uib__" + element + "_min", "" + min);
@@ -184,21 +185,21 @@ public class TabUIB implements UIBarHandler
     }
 
     @Override
-    public boolean supportsDynamicInteger(String element)
+    public boolean supportsDynamicInteger(final String element)
     {
-        JComponent c = uibComponents.get(element);
+        final JComponent c = uibComponents.get(element);
         return c instanceof JProgressBar;
     }
 
     @Override
-    public void setUIBVisisble(boolean parseBoolean)
+    public void setUIBVisisble(final boolean parseBoolean)
     {
         tab.uibPanel.setVisible(parseBoolean);
         tab.story.getRegistry().put("__uib__visible", Boolean.toString(parseBoolean));
     }
 
     @Override
-    public boolean elementExists(String element)
+    public boolean elementExists(final String element)
     {
         return uibComponents.containsKey(element);
     }
@@ -207,18 +208,18 @@ public class TabUIB implements UIBarHandler
     {
         if(uibInitialized)
         {
-            for(String element : uibComponents.keySet())
+            for(final String element : uibComponents.keySet())
             {
                 updateComponent(element, uibComponents.get(element));
             }
         }
     }
 
-    private void updateComponent(String element, JComponent c) throws BSTException
+    private void updateComponent(final String element, final JComponent c) throws BSTException
     {
         if(c instanceof JLabel)
         {
-            String s = MarkupUtils.translateMarkup(MarkupUtils.solveMarkup(tab.story, null), computeText(tab.story.getRegistry().get("__uib__" + element + "_value", "").toString()));
+            final String s = MarkupUtils.translateMarkup(MarkupUtils.solveMarkup(tab.story, null), computeText(tab.story.getRegistry().get("__uib__" + element + "_value", "").toString()));
             ((JLabel)c).setText(s);
         }
         else if(c instanceof JProgressBar)
@@ -228,26 +229,30 @@ public class TabUIB implements UIBarHandler
 
     }
 
-    private int computeInt(String value)
+    private int computeInt(final String value)
     {
         if(value == null)
+        {
             return 0;
+        }
 
-        VariableRegistry registry = tab.story.getRegistry();
+        final VariableRegistry registry = tab.story.getRegistry();
         try
         {
             return registry.typeOf(value) == Integer.class ? (Integer)registry.get(value, 0) : Integer.parseInt(value);
         }
-        catch(NumberFormatException nfe2)
+        catch(final NumberFormatException nfe2)
         {
             return 0;
         }
     }
 
-    private String computeText(String string) throws BSTException
+    private String computeText(final String string) throws BSTException
     {
         if(string == null)
+        {
             return "";
+        }
         try
         {
             if(string.startsWith(">"))
@@ -259,12 +264,12 @@ public class TabUIB implements UIBarHandler
                 return computeText(Integer.valueOf(string.substring(1)), false);
             }
         }
-        catch(NumberFormatException e)
+        catch(final NumberFormatException e)
         {}
         return string;
     }
 
-    private String computeText(int i, boolean isVirtual) throws BSTException
+    private String computeText(final int i, final boolean isVirtual) throws BSTException
     {
         if(isVirtual)
         {
@@ -272,7 +277,7 @@ public class TabUIB implements UIBarHandler
         }
         else
         {
-            int j = ((LogicalNode)tab.story.getNode(i)).solve();
+            final int j = ((LogicalNode)tab.story.getNode(i)).solve();
             return computeText(j, tab.story.getNode(j) instanceof LogicalNode ? false : true);
         }
     }
@@ -291,13 +296,13 @@ public class TabUIB implements UIBarHandler
             initialize();
 
             // Restore all values
-            for(String element : uibComponents.keySet())
+            for(final String element : uibComponents.keySet())
             {
-                Map<String, String> componentInfo = getUibInfo(element);
+                final Map<String, String> componentInfo = getUibInfo(element);
 
-                for(String varName : componentInfo.keySet())
+                for(final String varName : componentInfo.keySet())
                 {
-                    String value = componentInfo.get(varName);
+                    final String value = componentInfo.get(varName);
                     switch(varName)
                     {
                     case "max":
@@ -325,10 +330,10 @@ public class TabUIB implements UIBarHandler
         }
     }
 
-    private Map<String, String> getUibInfo(String element)
+    private Map<String, String> getUibInfo(final String element)
     {
-        HashMap<String, String> map = new HashMap<>();
-        for(String varName : tab.story.getRegistry().getAllString().keySet())
+        final HashMap<String, String> map = new HashMap<>();
+        for(final String varName : tab.story.getRegistry().getAllString().keySet())
         {
             if(varName.startsWith("__uib__" + element + "_"))
             {

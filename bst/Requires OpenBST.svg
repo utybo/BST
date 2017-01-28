@@ -16,18 +16,21 @@
    id="svg3416"
    version="1.1"
    inkscape:version="0.91 r13725"
-   sodipodi:docname="Requires OpenBST.svg">
+   sodipodi:docname="Requires OpenBST.svg"
+   inkscape:export-filename="/home/chrx/website/BST/img/requires.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
   <defs
      id="defs3">
     <linearGradient
        inkscape:collect="always"
        id="linearGradient4255">
       <stop
-         style="stop-color:#000000;stop-opacity:1"
+         style="stop-color:#151515;stop-opacity:1"
          offset="0"
          id="stop4257" />
       <stop
-         style="stop-color:#252525;stop-opacity:1"
+         style="stop-color:#515151;stop-opacity:1"
          offset="1"
          id="stop4259" />
     </linearGradient>
@@ -35,12 +38,12 @@
        inkscape:collect="always"
        xlink:href="#linearGradient4255"
        id="radialGradient4261"
-       cx="39.319466"
-       cy="51.280869"
-       fx="39.319466"
-       fy="51.280869"
+       cx="40.800419"
+       cy="43.830925"
+       fx="40.800419"
+       fy="43.830925"
        r="29.279278"
-       gradientTransform="matrix(0.99995953,0.00899657,-0.01497975,1.6649842,0.824342,-34.268586)"
+       gradientTransform="matrix(1.4508876,-0.01810546,0.01392852,0.93267001,-18.778476,-2.92076)"
        gradientUnits="userSpaceOnUse" />
     <clipPath
        clipPathUnits="userSpaceOnUse"
@@ -61,9 +64,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="2.275"
-     inkscape:cx="155.38585"
-     inkscape:cy="44.615659"
+     inkscape:zoom="1.6086679"
+     inkscape:cx="-34.70231"
+     inkscape:cy="131.96917"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -72,10 +75,10 @@
      fit-margin-left="0"
      fit-margin-right="0"
      fit-margin-bottom="0"
-     inkscape:window-width="1920"
-     inkscape:window-height="1018"
+     inkscape:window-width="1366"
+     inkscape:window-height="711"
      inkscape:window-x="0"
-     inkscape:window-y="34"
+     inkscape:window-y="33"
      inkscape:window-maximized="1" />
   <metadata
      id="metadata3420">
@@ -85,7 +88,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>

@@ -14,41 +14,78 @@ import org.atteo.classindex.ClassIndex;
 
 import utybo.branchingstorytree.api.BSTException;
 
+/**
+ * This class serves as an index dictionary for all the existing actions and
+ * checkers and their implementation. It detects them using the class-index
+ * library, which creates lists of of implementations of {@link ScriptAction}
+ * and {@link ScriptChecker} at compile time.
+ * 
+ * @author utybo
+ *
+ */
 public class Dictionnary
 {
-    private HashMap<String, ScriptAction> actions = new HashMap<>();
-    private HashMap<String, ScriptChecker> checkers = new HashMap<>();
+    /**
+     * A HashMap with action names as keys and script actions as values
+     */
+    private final HashMap<String, ScriptAction> actions = new HashMap<>();
+    /**
+     * A HashMap with checker names as keys and script checkers as values
+     */
+    private final HashMap<String, ScriptChecker> checkers = new HashMap<>();
 
+    /**
+     * Creates a simple dictionary using all the implementations known.
+     * 
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     */
     public Dictionnary() throws InstantiationException, IllegalAccessException
     {
-        for(Class<? extends ScriptAction> jclass : ClassIndex.getSubclasses(ScriptAction.class))
+        for(final Class<? extends ScriptAction> jclass : ClassIndex.getSubclasses(ScriptAction.class))
         {
-            ScriptAction sa = jclass.newInstance();
-            String[] names = sa.getName();
+            final ScriptAction sa = jclass.newInstance();
+            final String[] names = sa.getName();
             if(names != null)
-                for(String s : names)
+            {
+                for(final String s : names)
                 {
                     actions.put(s, sa);
                 }
+            }
         }
-        for(Class<? extends ScriptChecker> jclass : ClassIndex.getSubclasses(ScriptChecker.class))
+        for(final Class<? extends ScriptChecker> jclass : ClassIndex.getSubclasses(ScriptChecker.class))
         {
-            ScriptChecker sa = jclass.newInstance();
-            String[] names = sa.getName();
+            final ScriptChecker sa = jclass.newInstance();
+            final String[] names = sa.getName();
             if(names != null)
-                for(String s : names)
+            {
+                for(final String s : names)
                 {
                     checkers.put(s, sa);
                 }
+            }
         }
 
     }
 
+    /**
+     * @return The implementation of {@link ScriptAction} which works for the
+     *         given action
+     * @param action
+     *            The action we are looking for
+     */
     public ScriptAction getAction(final String action) throws BSTException
     {
         return actions.get(action);
     }
 
+    /**
+     * @return The implementation of {@link ScriptChecker} which works for the
+     *         given checker
+     * @param action
+     *            The checker we are looking for
+     */
     public ScriptChecker getChecker(final String checker) throws BSTException
     {
         return checkers.get(checker);

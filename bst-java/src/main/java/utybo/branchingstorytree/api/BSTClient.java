@@ -11,36 +11,78 @@ package utybo.branchingstorytree.api;
 import utybo.branchingstorytree.bdf.BDFHandler;
 import utybo.branchingstorytree.brm.BRMHandler;
 import utybo.branchingstorytree.img.IMGHandler;
+import utybo.branchingstorytree.jse.JSEHandler;
 import utybo.branchingstorytree.ssb.SSBHandler;
 import utybo.branchingstorytree.uib.UIBarHandler;
 
+/**
+ * A BSTClient is the core class to be used for interaction between the engine
+ * (bst-java) and the higher-level implementation (OpenBST for example).
+ * <p>
+ * Module handlers return null by default to indicate that they are not
+ * supported.
+ * 
+ * @author utybo
+ *
+ */
 public interface BSTClient
 {
+
+    /**
+     * Ask the user for input
+     * 
+     * @param message
+     *            the message to be shown to them.
+     * @return the input. CANNOT BE NULL.
+     */
     public String askInput(String message);
 
+    /**
+     * Close the current story
+     */
     public void exit();
 
+    /**
+     * @return The UIB module handler, or null is not supported
+     */
     public default UIBarHandler getUIBarHandler()
     {
         return null;
     }
 
+    /**
+     * @return The SSB module handler, or null is not supported
+     */
     public default SSBHandler getSSBHandler()
     {
         return null;
     }
 
+    /**
+     * @return The BRM module handler, or null is not supported
+     */
     public default BRMHandler getBRMHandler()
     {
         return null;
     }
 
+    /**
+     * @return The IMG module handler, or null is not supported
+     */
     public default IMGHandler getIMGHandler()
     {
         return null;
     }
 
+    /**
+     * @return The BDF module handler, or null is not supported
+     */
     public default BDFHandler getBDFHandler()
+    {
+        return null;
+    }
+    
+    public default JSEHandler getJSEHandler()
     {
         return null;
     }

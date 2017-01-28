@@ -15,14 +15,20 @@ import java.util.regex.Pattern;
 
 import utybo.branchingstorytree.api.BSTException;
 
+/**
+ * Utility class for parsing {@link BDFFile} objects from BDF-formatted files
+ * 
+ * @author utybo
+ *
+ */
 public class BDFParser
 {
     private static final Pattern startOfInt = Pattern.compile("^([\\w_]+)=(-?\\d+)");
     private static final Pattern startOfString = Pattern.compile("^([\\w_]+)=(.+)");
 
-    public static BDFFile parse(BufferedReader br, String fileName) throws IOException, BSTException
+    public static BDFFile parse(final BufferedReader br, final String fileName) throws IOException, BSTException
     {
-        BDFFile file = new BDFFile();
+        final BDFFile file = new BDFFile();
 
         String line;
         BDFNode node = null;
@@ -32,7 +38,9 @@ public class BDFParser
         {
             lineNumber++;
             if(line.startsWith("#"))
+            {
                 continue;
+            }
             if(line.isEmpty())
             {
                 emptyLinesToAdd++;
@@ -40,8 +48,8 @@ public class BDFParser
             Matcher matcher = startOfInt.matcher(line);
             if(matcher.matches())
             {
-                String name = matcher.group(1);
-                int i = Integer.parseInt(matcher.group(2));
+                final String name = matcher.group(1);
+                final int i = Integer.parseInt(matcher.group(2));
                 node = file.addNode(new BDFIntNode(name, i));
                 continue;
             }
@@ -49,8 +57,8 @@ public class BDFParser
             if(matcher.matches())
             {
                 emptyLinesToAdd = 0;
-                String name = matcher.group(1);
-                String start = matcher.group(2);
+                final String name = matcher.group(1);
+                final String start = matcher.group(2);
                 node = file.addNode(new BDFStringNode(name, start));
                 continue;
             }
@@ -63,7 +71,6 @@ public class BDFParser
                 ((BDFStringNode)node).append("\n" + line);
                 continue;
             }
-            throw new BSTException(-1, "Unknown syntax at line " + lineNumber + " in file " + fileName);
         }
 
         return file;

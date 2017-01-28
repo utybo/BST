@@ -10,23 +10,29 @@ package utybo.branchingstorytree.bdf;
 
 import utybo.branchingstorytree.api.script.VariableRegistry;
 
+/**
+ * A {@link BDFFile} node that represetns a string value
+ * 
+ * @author utybo
+ *
+ */
 public class BDFStringNode extends BDFNode
 {
     private String value;
 
-    public BDFStringNode(String name, String value)
+    public BDFStringNode(final String name, final String value)
     {
         super(name);
         this.value = value;
     }
 
     @Override
-    public void applyTo(VariableRegistry registry, String prefix)
+    public void applyTo(final VariableRegistry registry, final String prefix)
     {
         registry.put(prefix + getName(), value);
     }
 
-    public void append(String s)
+    public void append(final String s)
     {
         value += s;
     }

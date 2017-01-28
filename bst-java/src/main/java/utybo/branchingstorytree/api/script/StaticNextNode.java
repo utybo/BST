@@ -8,10 +8,22 @@
  */
 package utybo.branchingstorytree.api.script;
 
+/**
+ * A classic next node definer that does not change under any circumstance
+ * 
+ * @author utybo
+ *
+ */
 public class StaticNextNode implements NextNodeDefiner
 {
     private final int nextNode;
 
+    /**
+     * Creates a {@link StaticNextNode}
+     * 
+     * @param nextNode
+     *            The next node represented by this object
+     */
     public StaticNextNode(final int nextNode)
     {
         this.nextNode = nextNode;

@@ -17,26 +17,32 @@ import utybo.branchingstorytree.api.script.ScriptAction;
 import utybo.branchingstorytree.api.script.VariableRegistry;
 import utybo.branchingstorytree.api.story.BranchingStory;
 
+/**
+ * Implementation of UIB related actions
+ * 
+ * @author utybo
+ *
+ */
 public class UIBarAction implements ScriptAction
 {
-    private Pattern setPropPattern = Pattern.compile("(\\w+),(\\w+),(.+)");
-    private Pattern setPattern = Pattern.compile("(\\w+),(.+)");
+    private final Pattern setPropPattern = Pattern.compile("(\\w+),(\\w+),(.+)");
+    private final Pattern setPattern = Pattern.compile("(\\w+),(.+)");
 
     @Override
-    public void exec(String head, String desc, int line, BranchingStory story, BSTClient client) throws BSTException
+    public void exec(final String head, final String desc, final int line, final BranchingStory story, final BSTClient client) throws BSTException
     {
-        UIBarHandler handler = client.getUIBarHandler();
+        final UIBarHandler handler = client.getUIBarHandler();
         if("uib_setprop".equals(head))
         {
-            Matcher m = setPropPattern.matcher(desc);
+            final Matcher m = setPropPattern.matcher(desc);
             if(!m.matches())
             {
                 throw new BSTException(line, "incorrect syntax : uib_set:element,id,value");
             }
-            String element = m.group(1);
+            final String element = m.group(1);
             elementCheck(element, line, handler);
-            String id = m.group(2);
-            String value = m.group(3);
+            final String id = m.group(2);
+            final String value = m.group(3);
             switch(id)
             {
             case "min":
@@ -49,22 +55,22 @@ public class UIBarAction implements ScriptAction
         }
         else if("uib_set".equals(head))
         {
-            Matcher m = setPattern.matcher(desc);
+            final Matcher m = setPattern.matcher(desc);
             if(!m.matches())
             {
                 throw new BSTException(line, "incorrect syntax : uib_set:element,id,value");
             }
-            String element = m.group(1);
+            final String element = m.group(1);
             elementCheck(element, line, handler);
-            String value = m.group(2);
+            final String value = m.group(2);
             if(handler.isElementValueTypeInteger(element))
             {
                 try
                 {
-                    int i = Integer.parseInt(value);
+                    final int i = Integer.parseInt(value);
                     handler.setElementValue(element, i);
                 }
-                catch(NumberFormatException e)
+                catch(final NumberFormatException e)
                 {
                     if(handler.supportsDynamicInteger(element))
                     {
@@ -92,19 +98,21 @@ public class UIBarAction implements ScriptAction
         }
     }
 
-    private void elementCheck(String element, int line, UIBarHandler handler) throws BSTException
+    private void elementCheck(final String element, final int line, final UIBarHandler handler) throws BSTException
     {
         if(!handler.elementExists(element))
+        {
             throw new BSTException(line, "Unknown component : " + element);
+        }
     }
 
-    private int intIfPossible(String value, int line, VariableRegistry registry) throws BSTException
+    private int intIfPossible(final String value, final int line, final VariableRegistry registry) throws BSTException
     {
         try
         {
             return registry.typeOf(value) == Integer.class ? (Integer)registry.get(value, 0) : Integer.parseInt(value);
         }
-        catch(NumberFormatException e)
+        catch(final NumberFormatException e)
         {
             throw new BSTException(line, "invalid value : " + value);
         }

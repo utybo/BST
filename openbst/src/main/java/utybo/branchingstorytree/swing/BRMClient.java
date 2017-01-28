@@ -19,10 +19,10 @@ import utybo.branchingstorytree.brm.BRMResourceConsumer;
 
 public class BRMClient implements BRMHandler
 {
-    private File bstFileLocation;
-    private BSTClient client;
+    private final File bstFileLocation;
+    private final BSTClient client;
 
-    public BRMClient(File bstFile, BSTClient client)
+    public BRMClient(final File bstFile, final BSTClient client)
     {
         bstFileLocation = bstFile;
         this.client = client;
@@ -31,21 +31,23 @@ public class BRMClient implements BRMHandler
     @Override
     public void loadAuto() throws BSTException
     {
-        File parent = bstFileLocation.getParentFile();
-        File resources = new File(parent, "resources");
+        final File parent = bstFileLocation.getParentFile();
+        final File resources = new File(parent, "resources");
         if(resources.exists() && resources.isDirectory())
         {
             // Analysis of module directories list
-            for(File moduleFolder : resources.listFiles())
+            for(final File moduleFolder : resources.listFiles())
             {
                 // Analysis of module directory
                 if(!moduleFolder.isDirectory())
+                {
                     continue;
-                String module = moduleFolder.getName();
-                BRMResourceConsumer handler = getHandler(module);
+                }
+                final String module = moduleFolder.getName();
+                final BRMResourceConsumer handler = getHandler(module);
                 if(handler != null)
                 {
-                    for(File file : moduleFolder.listFiles())
+                    for(final File file : moduleFolder.listFiles())
                     {
                         handler.load(file.getAbsolutePath(), FilenameUtils.getBaseName(file.getName()));
                     }
@@ -54,7 +56,7 @@ public class BRMClient implements BRMHandler
         }
     }
 
-    private BRMResourceConsumer getHandler(String module)
+    private BRMResourceConsumer getHandler(final String module)
     {
         switch(module)
         {

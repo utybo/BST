@@ -9,8 +9,14 @@
 package utybo.branchingstorytree.api.script;
 
 import java.util.HashMap;
-import java.util.Map;
 
+/**
+ * A registry of all the variables. The contract is that there cannot be
+ * multiple variables with the same name.
+ * 
+ * @author utybo
+ *
+ */
 public class VariableRegistry
 {
     private final HashMap<String, Integer> variables = new HashMap<>();
@@ -45,7 +51,7 @@ public class VariableRegistry
         return variables;
     }
 
-    public Map<String, String> getAllString()
+    public HashMap<String, String> getAllString()
     {
         return strVar;
     }
@@ -66,7 +72,7 @@ public class VariableRegistry
         return null;
     }
 
-    public Object get(final String varName, Object ifNotFound)
+    public Object get(final String varName, final Object ifNotFound)
     {
         Object tryingToFindMe = null;
         if(variables.containsKey(varName))
@@ -87,9 +93,19 @@ public class VariableRegistry
     @Override
     public VariableRegistry clone()
     {
-        VariableRegistry vr = new VariableRegistry();
+        final VariableRegistry vr = new VariableRegistry();
         vr.strVar.putAll(strVar);
         vr.variables.putAll(variables);
         return vr;
+    }
+
+    public int getSize()
+    {
+        return variables.size() + strVar.size();
+    }
+
+    public String dump()
+    {
+        return "INTEGERS : " + variables.toString() + " | STRINGS : " + strVar.toString();
     }
 }

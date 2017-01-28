@@ -34,8 +34,18 @@ import utybo.branchingstorytree.api.story.logicalnode.LNCondReturn;
 import utybo.branchingstorytree.api.story.logicalnode.LNExec;
 import utybo.branchingstorytree.api.story.logicalnode.LNTern;
 
+/**
+ * A parser that turns an input from a {@link BufferedReader} to a
+ * {@link BranchingStory}
+ * 
+ * @author utybo
+ *
+ */
 public class BranchingStoryTreeParser
 {
+    /*
+     * Node types
+     */
     private static final int NORMAL = 0, VIRTUAL = 1, LOGICAL = 2;
 
     private final Pattern beginningOfNodePattern = Pattern.compile("^\\d+:.+$");
@@ -50,6 +60,24 @@ public class BranchingStoryTreeParser
     private final Pattern lnChecker = Pattern.compile("\\[(.+?):(.*?)]");
     private final Pattern lnScript = Pattern.compile("\\{(.+?):(.*?)}");
 
+    /**
+     * Parse the input from the {@link BufferedReader} into a
+     * {@link BranchingStory}
+     * 
+     * @param br
+     *            the BufferedReader to use
+     * @param dictionnary
+     *            the dictionnary to pick the actions and checkers from
+     * @param client
+     *            the client to use in actions and checkers. It does not have to
+     *            be fully functional for the parser to do its work
+     * @return A fresh {@link BranchingStory} that represents the BST input from
+     *         the {@link BufferedReader}
+     * @throws IOException
+     *             if an I/O error occurs
+     * @throws BSTException
+     *             if something is wrong with your input
+     */
     public synchronized BranchingStory parse(final BufferedReader br, final Dictionnary dictionnary, final BSTClient client) throws IOException, BSTException
     {
         final BranchingStory story = new BranchingStory();
@@ -158,12 +186,12 @@ public class BranchingStoryTreeParser
                                 {
                                     // Attempt to find a checker first
                                     // If not found, attempt to find an action
-                                    Matcher m = lnLineSubscript.matcher(scripts);
+                                    final Matcher m = lnLineSubscript.matcher(scripts);
                                     if(m.matches())
                                     {
-                                        String header = m.group(1);
-                                        ScriptAction possibleAction = dictionnary.getAction(header);
-                                        ScriptChecker possibleChecker = dictionnary.getChecker(header);
+                                        final String header = m.group(1);
+                                        final ScriptAction possibleAction = dictionnary.getAction(header);
+                                        final ScriptChecker possibleChecker = dictionnary.getChecker(header);
                                         if(possibleAction != null)
                                         {
                                             option.addDoOnClick(new ActionDescriptor(possibleAction, header, m.group(2), lineNumber, story, client));
@@ -341,10 +369,10 @@ public class BranchingStoryTreeParser
         return story;
     }
 
-    private NextNodeDefiner parseNND(String nnd, Dictionnary dictionnary, int lineNumber, BranchingStory story, BSTClient client) throws BSTException
+    private NextNodeDefiner parseNND(final String nnd, final Dictionnary dictionnary, final int lineNumber, final BranchingStory story, final BSTClient client) throws BSTException
     {
-        Matcher matcher = ifNextNodeDefiner.matcher(nnd);
-        Matcher matchStatic = staticNodeDefiner.matcher(nnd);
+        final Matcher matcher = ifNextNodeDefiner.matcher(nnd);
+        final Matcher matchStatic = staticNodeDefiner.matcher(nnd);
         if(matcher.matches())
         {
             final int first = Integer.parseInt(matcher.group(1));

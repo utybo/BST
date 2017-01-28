@@ -14,13 +14,20 @@ import utybo.branchingstorytree.api.script.ScriptChecker;
 import utybo.branchingstorytree.api.script.VariableRegistry;
 import utybo.branchingstorytree.api.story.BranchingStory;
 
+/**
+ * Implementation of some comparison checkers : greater, greaterequ, less and
+ * lessequ
+ * 
+ * @author utybo
+ *
+ */
 public class Comparison implements ScriptChecker
 {
 
     @Override
-    public boolean check(String head, String desc, int line, BranchingStory story, BSTClient client) throws BSTException
+    public boolean check(final String head, final String desc, final int line, final BranchingStory story, final BSTClient client) throws BSTException
     {
-        VariableRegistry registry = story.getRegistry();
+        final VariableRegistry registry = story.getRegistry();
         final String varName = desc.split(",")[0];
         final Integer var = (Integer)registry.get(varName, 0);
         final String compareTo = desc.split(",")[1];

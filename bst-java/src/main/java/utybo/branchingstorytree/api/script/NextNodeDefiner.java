@@ -10,7 +10,21 @@ package utybo.branchingstorytree.api.script;
 
 import utybo.branchingstorytree.api.BSTException;
 
+/**
+ * A next node definer is used to guess which node should be next. Each NND
+ * should store required information from their constructor.
+ * 
+ * @author utybo
+ *
+ */
 public interface NextNodeDefiner
 {
+    /**
+     * Determine the next node.
+     * 
+     * @return The next node
+     * @throws BSTException
+     *             If an exception occurs during the process
+     */
     public int getNextNode() throws BSTException;
 }

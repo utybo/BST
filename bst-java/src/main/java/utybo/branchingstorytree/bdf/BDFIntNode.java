@@ -10,18 +10,24 @@ package utybo.branchingstorytree.bdf;
 
 import utybo.branchingstorytree.api.script.VariableRegistry;
 
+/**
+ * A BDFNode that represents an integer value
+ * 
+ * @author utybo
+ *
+ */
 public class BDFIntNode extends BDFNode
 {
-    private int value;
+    private final int value;
 
-    public BDFIntNode(String name, int i)
+    public BDFIntNode(final String name, final int i)
     {
         super(name);
-        this.value = i;
+        value = i;
     }
 
     @Override
-    public void applyTo(VariableRegistry registry, String prefix)
+    public void applyTo(final VariableRegistry registry, final String prefix)
     {
         registry.put(prefix + getName(), value);
     }

@@ -19,7 +19,7 @@ public class MarkupUtils
 {
     public static int solveMarkup(final BranchingStory story, final TextNode textNode)
     {
-        if(story.hasTag("markup") || (textNode != null && textNode.hasTag("markup")))
+        if(story.hasTag("markup") || textNode != null && textNode.hasTag("markup"))
         {
             if(textNode != null && textNode.hasTag("markup"))
             {
@@ -49,7 +49,7 @@ public class MarkupUtils
         return 0;
     }
 
-    public static String translateMarkup(int markupLanguage, String input)
+    public static String translateMarkup(final int markupLanguage, final String input)
     {
         switch(markupLanguage)
         {

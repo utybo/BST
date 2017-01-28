@@ -9,8 +9,27 @@
 package utybo.branchingstorytree.api.story.logicalnode;
 
 import utybo.branchingstorytree.api.BSTException;
+import utybo.branchingstorytree.api.story.LogicalNode;
 
+/**
+ * An instruction is a bit of the {@link LogicalNode} (typically a line) that is
+ * executed. The contract is that instructions are executed in the order of
+ * their declaration in the BST file.
+ * 
+ * @author utybo
+ *
+ */
 public abstract class LNInstruction
 {
+    /**
+     * Execute this instruction
+     * 
+     * @return The next node if this instruction is supposed to get the story
+     *         forward to another node, or -1 if the execution of the
+     *         {@link LogicalNode} should continue
+     * @throws BSTException
+     *             If an exception occurs during the execution of this
+     *             instruction
+     */
     public abstract int execute() throws BSTException;
 }
