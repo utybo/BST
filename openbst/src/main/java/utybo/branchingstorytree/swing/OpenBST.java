@@ -120,7 +120,6 @@ public class OpenBST extends JFrame
         {
             version = "<unknown version>";
         }
-        LOG.error("Error example", new RuntimeException("incredible"));
         LOG.info("OpenBST version " + version + ", part of the BST project");
         LOG.trace("[ INIT ]");
 
@@ -132,7 +131,7 @@ public class OpenBST extends JFrame
         try
         {
             UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
-            LOG.trace("=> GTKLookAndFeel");
+            LOG.trace("GTKLookAndFeel");
 
             // If GTKLookAndFeel was successfully loaded, apply Gnome Shell fix
             try
@@ -154,11 +153,11 @@ public class OpenBST extends JFrame
             try
             {
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-                LOG.trace("=> System LookAndFeel");
+                LOG.trace("System LookAndFeel");
             }
             catch(final Exception e1)
             {
-                LOG.trace("=> No LookAndFeel compatible. Using default", e1);
+                LOG.trace("No LookAndFeel compatible. Using default", e1);
             }
         }
 
@@ -179,14 +178,14 @@ public class OpenBST extends JFrame
         jfc.setVisible(true);
         if(jfc.getFile() != null)
         {
-            LOG.trace("=> File selected");
+            LOG.trace("File selected");
             final File file = new File(jfc.getDirectory() + jfc.getFile());
             LOG.debug("[ LAUNCHING ]");
             return file;
         }
         else
         {
-            LOG.trace("=> No file selected.");
+            LOG.trace("No file selected.");
             return null;
         }
     }
@@ -210,13 +209,13 @@ public class OpenBST extends JFrame
         }
         catch(final IOException e)
         {
-            LOG.error("=! IOException caught", e);
+            LOG.error("IOException caught", e);
             JOptionPane.showMessageDialog(instance, Lang.get("file.error").replace("$e", e.getClass().getSimpleName()).replace("$m", e.getMessage()), Lang.get("error"), JOptionPane.ERROR_MESSAGE);
             return null;
         }
         catch(final BSTException e)
         {
-            LOG.error("=! BSTException caught", e);
+            LOG.error("BSTException caught", e);
             String s = Lang.get("file.bsterror.1");
             s += Lang.get("file.bsterror.2");
             s += Lang.get("file.bsterror.3").replace("$l", "" + e.getWhere());
@@ -235,7 +234,7 @@ public class OpenBST extends JFrame
         }
         catch(final Exception e)
         {
-            LOG.error("=! Random exception caught", e);
+            LOG.error("Random exception caught", e);
             JOptionPane.showMessageDialog(instance, Lang.get("file.crash"), Lang.get("error"), JOptionPane.ERROR_MESSAGE);
             return null;
         }
@@ -321,7 +320,7 @@ public class OpenBST extends JFrame
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         try
         {
-            LOG.trace("=> Loading icons");
+            LOG.trace("Loading icons");
             activeDirectoryImage = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/Active Directory.png"));
             setIconImage(activeDirectoryImage);
             blogImage = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/Blog.png"));
@@ -366,7 +365,7 @@ public class OpenBST extends JFrame
         }
         catch(final IOException e1)
         {
-            LOG.warn("=! IOException caught when loading icon", e1);
+            LOG.warn("IOException caught when loading icon", e1);
         }
         getContentPane().setLayout(new BorderLayout());
         container = new JTabbedPane();
