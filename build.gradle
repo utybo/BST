@@ -29,3 +29,11 @@ subprojects {
     dependencies {
     }
 }
+
+
+// A cool task to convert the ODT documentation file into a PDF
+// Requires LibreOffice installed. Only works on Linux.
+task ('generatePdf', type:Exec) {
+  workingDir = './bst'
+  commandLine = './generate_pdf.sh'
+}
