@@ -9,6 +9,7 @@ baseurl: "/BST" # the subpath of your site, e.g. /blog/
 url: "http://utybo.github.io" # the base hostname & protocol for your site
 # twitter_username: 
 github_username:  utybo
+timezone: "Europe/Paris"
 # google_play: ''
 # google_plus_com: ''  # Community link
 # google_plus_per: '+'  #Personal link
@@ -18,7 +19,7 @@ github_username:  utybo
 header_type: default  # values [ drawer, default ]
 post_type: default    # values [ highlight, default ]
 pagination_type: default  # values [ ops, default ]
-color1: brown
+color1: indigo
 color2: amber
 
 more_vert:
