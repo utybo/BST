@@ -8,6 +8,8 @@
  */
 package utybo.branchingstorytree.swing;
 
+import static utybo.branchingstorytree.swing.OpenBST.LOG;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dialog.ModalityType;
@@ -149,14 +151,14 @@ public class StoryPanel extends JPanel
      */
     public StoryPanel(final BranchingStory story, final OpenBST parentWindow, final File f, final TabClient client)
     {
-        log("=> Initial setup");
+        LOG.trace("=> Initial setup");
         bstFile = f;
         client.setStoryPanel(this);
         this.story = story;
         this.parentWindow = parentWindow;
         this.client = client;
 
-        log("=> Creating visual elements");
+        LOG.trace("=> Creating visual elements");
         setLayout(new MigLayout("hidemode 3", "[grow]", ""));
 
         createToolbar();
@@ -249,7 +251,7 @@ public class StoryPanel extends JPanel
                             }
                             catch(final IOException e1)
                             {
-                                e1.printStackTrace();
+                                LOG.error("Had an IOException while exporting Save State", e1);
                                 JOptionPane.showMessageDialog(parentWindow, Lang.get("story.exportss.error").replace("$m", e1.getMessage()).replace("$e", e1.getClass().getSimpleName()));
                             }
                         }
@@ -280,7 +282,7 @@ public class StoryPanel extends JPanel
                             }
                             catch(final IOException e1)
                             {
-                                e1.printStackTrace();
+                                LOG.error("Had an IOException while importing Save State", e1);
                                 JOptionPane.showMessageDialog(parentWindow, Lang.get("story.exportss.error").replace("$m", e1.getMessage()).replace("$e", e1.getClass().getSimpleName()));
                             }
                         }
@@ -578,7 +580,7 @@ public class StoryPanel extends JPanel
         catch(final BSTException e)
         {
             // TODO Indicate this exception happened
-            e.printStackTrace();
+            LOG.error("Error on UIB restore attempt", e);
         }
     }
 
@@ -587,7 +589,7 @@ public class StoryPanel extends JPanel
      */
     private void setupStory()
     {
-        log("=> Analyzing options and deducing maximum option amount");
+        LOG.trace("=> Analyzing options and deducing maximum option amount");
         // Quick analysis of all the nodes to get the maximum amount of options
         int maxOptions = 0;
         for(final StoryNode sn : story.getAllNodes())
@@ -624,7 +626,7 @@ public class StoryPanel extends JPanel
                 }
                 catch(final BSTException e)
                 {
-                    e.printStackTrace();
+                    LOG.error("Encountered an error while triggering option", e);
                     JOptionPane.showMessageDialog(this, Lang.get("story.error").replace("$n", "" + currentNode.getId()).replace("$m", e.getMessage()), Lang.get("error"), JOptionPane.ERROR_MESSAGE);
                 }
             });
@@ -633,7 +635,7 @@ public class StoryPanel extends JPanel
             button.setEnabled(false);
         }
 
-        log("Displaying first node");
+        LOG.trace("Displaying first node");
         showNode(story.getInitialNode());
     }
 
@@ -658,10 +660,10 @@ public class StoryPanel extends JPanel
         if(storyNode == null)
         {
             // The node does not exist
-            log("=! Node launched does not exist");
+            LOG.error("Node launched does not exist");
             if(currentNode == null)
             {
-                log("=! It was the initial node");
+                LOG.debug("=> It was the initial node");
                 JOptionPane.showMessageDialog(this, Lang.get("story.missinginitial"), Lang.get("error"), JOptionPane.ERROR_MESSAGE);
                 return;
             }
@@ -672,7 +674,7 @@ public class StoryPanel extends JPanel
             }
         }
 
-        log("=> Trying to show node : " + storyNode.getId());
+        LOG.trace("=> Trying to show node : " + storyNode.getId());
 
         currentNode = storyNode;
         if(nodeIdLabel != null)
@@ -685,9 +687,9 @@ public class StoryPanel extends JPanel
             // If this is a LogicalNode, we need to solve it.
             if(storyNode instanceof LogicalNode)
             {
-                log("=> Solving logical node");
+                LOG.trace("=> Solving logical node");
                 final int i = ((LogicalNode)storyNode).solve();
-                log("=> Logical node result : " + i);
+                LOG.trace("=> Logical node result : " + i);
                 // TODO Throw a nicer exception when an invalid value is returned
                 showNode(story.getNode(i));
             }
@@ -695,19 +697,19 @@ public class StoryPanel extends JPanel
             // This is supposed to be executed when the StoryNode is a TextNode
             if(storyNode instanceof TextNode)
             {
-                log("=> Text node detected");
+                LOG.trace("=> Text node detected");
                 final TextNode textNode = (TextNode)storyNode;
 
-                log("=> Applying text");
+                LOG.trace("=> Applying text");
                 nodePanel.applyNode(story, textNode);
 
-                log("Resetting options");
+                LOG.trace("Resetting options");
                 resetOptions();
 
-                log("Applying options for node : " + textNode.getId());
+                LOG.trace("Applying options for node : " + textNode.getId());
                 showOptions(textNode);
 
-                log("Updating UIB if necessary");
+                LOG.trace("Updating UIB if necessary");
                 client.getUIBarHandler().updateUIB();
 
                 backgroundButton.setEnabled(client.getIMGHandler().getCurrentBackground() != null);
@@ -715,13 +717,13 @@ public class StoryPanel extends JPanel
         }
         catch(final BSTException e)
         {
-            e.printStackTrace();
+            LOG.error("Encountered a BST exception while trying to show a node", e);
             final String s = Lang.get("story.error2").replace("$n", "" + currentNode.getId()).replace("$m", e.getMessage()).replace("$l", e.getWhere() + "");
             JOptionPane.showMessageDialog(this, s, Lang.get("error"), JOptionPane.ERROR_MESSAGE);
         }
         catch(final Exception e)
         {
-            e.printStackTrace();
+            LOG.error("Encountered a generic exception while trying to show a node", e);
             JOptionPane.showMessageDialog(this, Lang.get("story.error").replace("$n", "" + currentNode.getId()).replace("$m", e.getMessage()), Lang.get("error"), JOptionPane.ERROR_MESSAGE);
         }
     }
@@ -734,7 +736,7 @@ public class StoryPanel extends JPanel
      */
     private void showOptions(final TextNode textNode) throws BSTException
     {
-        log("=> Filtering valid options");
+        LOG.trace("=> Filtering valid options");
         final ArrayList<NodeOption> validOptions = new ArrayList<>();
         for(final NodeOption no : textNode.getOptions())
         {
@@ -745,8 +747,8 @@ public class StoryPanel extends JPanel
         }
         if(validOptions.size() > 0)
         {
-            log("=> Valid options found (" + validOptions.size() + " valid on " + textNode.getOptions().size() + " total)");
-            log("=> Processing options");
+            LOG.trace("=> Valid options found (" + validOptions.size() + " valid on " + textNode.getOptions().size() + " total)");
+            LOG.trace("=> Processing options");
             for(int i = 0; i < validOptions.size(); i++)
             {
                 final NodeOption option = validOptions.get(i);
@@ -773,8 +775,7 @@ public class StoryPanel extends JPanel
                         }
                         catch(IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e)
                         {
-                            System.err.println("COLOR DOES NOT EXIST : " + color);
-                            e.printStackTrace();
+                            LOG.warn("Color does not exist : " + color, e);
                         }
                     }
                     if(c != null)
@@ -787,8 +788,8 @@ public class StoryPanel extends JPanel
         }
         else
         {
-            log("=> No valid options found (" + validOptions.size() + " total");
-            log("=> Shwoing ending");
+            LOG.trace("=> No valid options found (" + validOptions.size() + " total");
+            LOG.trace("=> Showing ending");
             optionsButton[0].setText(Lang.get("story.final.end"));
             optionsButton[1].setText(Lang.get("story.final.node").replace("$n", "" + textNode.getId()));
             optionsButton[2].setText(Lang.get("story.final.restart"));
@@ -806,7 +807,7 @@ public class StoryPanel extends JPanel
                 @Override
                 public void actionPerformed(final ActionEvent e)
                 {
-                    log("Resetting story");
+                    LOG.trace("Resetting story");
                     for(final ActionListener al : original)
                     {
                         optionsButton[2].addActionListener(al);
@@ -836,7 +837,7 @@ public class StoryPanel extends JPanel
      */
     private void reset()
     {
-        log("=> Performing internal reset");
+        LOG.trace("=> Performing internal reset");
         story.reset();
 
         client.getUIBarHandler().resetUib();
@@ -844,7 +845,7 @@ public class StoryPanel extends JPanel
         client.getSSBHandler().reset();
         client.getBDFHandler().reset();
 
-        log("=> Processing initial node again");
+        LOG.trace("=> Processing initial node again");
         showNode(story.getInitialNode());
     }
 
@@ -881,18 +882,6 @@ public class StoryPanel extends JPanel
     }
 
     /**
-     * Log a message
-     *
-     * @param message
-     *            the message to log
-     */
-    public static void log(final String message)
-    {
-        // TODO Add a better logging system
-        System.out.println(message);
-    }
-
-    /**
      * Get the title of this story, used to get the title for the tab
      *
      * @return
@@ -911,12 +900,12 @@ public class StoryPanel extends JPanel
      */
     public boolean postCreation()
     {
-        log("Issuing NSFW warning");
+        LOG.trace("NSFW warning check");
         if(story.hasTag("nsfw"))
         {
             if(JOptionPane.showConfirmDialog(parentWindow, Lang.get("story.nsfw"), Lang.get("story.nsfw.title"), JOptionPane.WARNING_MESSAGE) != JOptionPane.OK_OPTION)
             {
-                log("=> Close");
+                LOG.trace("=> Close");
                 return false;
             }
             else if(nodeIdLabel != null)

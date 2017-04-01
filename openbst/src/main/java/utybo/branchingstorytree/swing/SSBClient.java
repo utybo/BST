@@ -47,7 +47,6 @@ public class SSBClient implements SSBHandler
     @Override
     public void ambient(final String name)
     {
-        System.out.println("Playing " + name);
         if(currentAmbient != null)
         {
             currentAmbient.stop();

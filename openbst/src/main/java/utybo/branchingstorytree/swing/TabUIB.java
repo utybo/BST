@@ -347,7 +347,7 @@ public class TabUIB implements UIBarHandler
     {
         if(uibInitialized || tab.uibPanel != null)
         {
-            StoryPanel.log("=> Performing UIB Reset");
+            OpenBST.LOG.trace("=> Performing UIB Reset");
             tab.uibPanel.removeAll();
             tab.uibPanel.revalidate();
             tab.uibPanel.repaint();

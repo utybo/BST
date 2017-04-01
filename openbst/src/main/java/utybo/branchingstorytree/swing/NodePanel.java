@@ -86,7 +86,6 @@ public class NodePanel extends JScrollablePanel
         {
             imageClient.setBackground(null);
         }
-        System.out.println(textNode.getTagMap());
     }
 
     public void setText(final String text)
@@ -110,8 +109,7 @@ public class NodePanel extends JScrollablePanel
             catch(IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e)
             {
                 // TODO add a warning?
-                System.err.println("COLOR DOES NOT EXIST : " + color);
-                e.printStackTrace();
+                OpenBST.LOG.warn("Color does not exist : " + color, e);
             }
         }
         if(c != null)
