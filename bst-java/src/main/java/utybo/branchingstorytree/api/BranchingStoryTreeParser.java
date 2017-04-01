@@ -364,7 +364,7 @@ public class BranchingStoryTreeParser
         }
         catch(final Exception e)
         {
-            throw new BSTException(lineNumber, "An error was detected while trying to understand your file. Please check the line : " + line, e);
+            throw new BSTException(lineNumber, "An error was detected while trying to understand your file. Please check the line : " + (line.length() > 25 ? line.substring(0, 25) + "[...]" : line), e);
         }
         return story;
     }
