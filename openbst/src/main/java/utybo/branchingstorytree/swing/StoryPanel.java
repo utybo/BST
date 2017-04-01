@@ -9,6 +9,7 @@
 package utybo.branchingstorytree.swing;
 
 import static utybo.branchingstorytree.swing.OpenBST.LOG;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dialog.ModalityType;
