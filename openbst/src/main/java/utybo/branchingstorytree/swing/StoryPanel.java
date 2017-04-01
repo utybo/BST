@@ -482,7 +482,7 @@ public class StoryPanel extends JPanel
                 dialog.setTitle(Lang.get("story.background"));
                 dialog.setModalityType(ModalityType.APPLICATION_MODAL);
                 dialog.setIconImage(OpenBST.pictureImage);
-                dialog.setSize(300, 300);
+                dialog.setSize(1280, 720);
                 dialog.setLocationRelativeTo(parentWindow);
                 dialog.setVisible(true);
             }
