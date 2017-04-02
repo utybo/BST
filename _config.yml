@@ -1,6 +1,6 @@
 # Site settings
 title: The BST & OpenBST Projects
-subtitle: 1.0 IS OUT! SPREAD THE WORD!
+subtitle: OpenBST 1.1 coming soon!
 email: utybodev@gmail.com
 description: > # this means to ignore newlines until "baseurl:"
   Create branching stories and small text-based games easily.
@@ -19,8 +19,8 @@ timezone: "Europe/Paris"
 header_type: default  # values [ drawer, default ]
 post_type: default    # values [ highlight, default ]
 pagination_type: default  # values [ ops, default ]
-color1: indigo
-color2: amber
+color1: blue
+color2: orange
 
 more_vert:
   option1:

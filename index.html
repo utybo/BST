@@ -66,19 +66,14 @@ layout: default
 </main>
 
 <script>
-// Only do this once the page is ready, or else
-// MDL won't have time to keep up
-$(document).ready(function(){
+hashUpdate = function(){
   if(window.location.hash.indexOf("#" != -1)) {
-    /*// remove all is-active classes from tabs
-    $('a.mdl-layout__tab').removeClass('is-active');
-    // activate desired tab
-    $('a[href="/BST/' + window.location.hash + '"]').addClass('is-active');
-    // remove all is-active classes from panels
-    $('.mdl-layout__tab-panel').removeClass('is-active');
-    // activate desired tab panel
-    $(window.location.hash).addClass('is-active');*/
-    $('a[href="' + window.location.hash + '"]').children()[0].click();
-  }
-});
+    toClick = $('a[id="tab' + window.location.hash + '"]');
+    if(toClick && toClick.children()[0])
+      toClick[0].click();
+  }};
+  
+$(document).ready(hashUpdate);
+window.onhashchange = hashUpdate;
+//}});
 </script>

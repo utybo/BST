@@ -1,0 +1,51 @@
+---
+layout: post
+title:  "OpenBST 1.1 is out!"
+date:   2017-04-02
+categories: main
+author: utybo
+highlight: true
+ccolor: "#08a579"
+published: false
+---
+
+Hello everyone! It's that time of the year where I get to write a lengthy changelog and tell you some stuff that happened. Read on if you're curious, I'll be giving a few tips here and there on how I made stuff for **OpenBST 1.1**.
+
+But maybe you just don't care about that, and that's fine. Maybe all you want is the changelog. That's what I'm going to give you! :)
+
+**IMPORTANT NOTE FOR LINUX USERS** : You have to use the Oracle JDK in order to be able to play sounds. I know this sucks, but unfortunately it is the only way to enable using MP3s which are lighter and just better than WAV files. Sorry.
+
+<button class="mdl-button mdl-button--raised mdl-button--colored mdl-js-button mdl-button--accent mdl-js-ripple-effect" onclick="location.href='{{ site.baseurl }}/#downloads'">Download OpenBST 1.1 here!</button> <button class="mdl-button mdl-button--raised mdl-js-button mdl-js-ripple-effect" onclick="window.open('https://reddit.com/r/BSTLang', '_blank').focus();">Check out the r/BSTLang subreddit!</button>
+
+### What's new in version 1.1?
+#### Changes that will affect all users
+TLDR : Cleaner mechanisms, better "show background" window and bug fixes.
+
+-  **BST subreddit!** It needs some work, but I made a subreddit some time ago for the BST project. **Come say hello at [r/BSTLang](https://reddit.com/r/BSTLang)!**
+-  **Changed the version mechanism** : As you may know, OpenBST displays its version in the title bar. This was largely improved : I previously had to specify the version by hand, and always forgot to change it when releasing new versions. This won't happen anymore!
+-  **Less garbage in the console** : The OpenBST project switched to the shiny log4j2 logging library, which makes it so that you won't have to see all this text pop up in the console. Everything is much cleaner now.
+-  **View background window is now bigger by default** : I like big images. Switched from 300*300 to 1280*720 (which is HD). The window is still resizable.
+-  **Bug fixes** : TONS OF BUGFIXES! Read on to the technical changes to know more about that.
+
+#### Changes that will affect story writers
+TLDR : New JSE module to use a JavaScript engine for pretty much everything, you can now use MP3s in SSB and bug fixes.
+
+-  **Added a JSE module**. You now have the possibility to perform calculations and other stuff using a JavaScript engine! This is much easier to use and faster than using regular actions. It is also available as a checker.
+-  **Crap tons of bug fixes**. All the actions and all the checkers work properly now.
+-  **You can now use MP3 files with SSB**. This was one of the main goals for this version, and it's reached.
+-  **Improved the documentations**. Typos were fixed, and clarifications were made.
+
+#### More techincal changes
+-  **Switched to a feature branch dev model**. This allows for cleaner development, and an always-stable master branch.
+-  **Switched to an automated and unified version system in OpenBST**. The only change needed is in the root build.gradle now.
+-  **Switched from JavaSound to JavaFX for sound**. While OpenBST will keep using the Swing UI stuff for its interface, the sound system migrated to JavaFX. Unfortunately, this makes SSB uncompatible with OpenJDK/OpenJFX for some reason, at least on Ubuntu derivates.
+-  **Unit testing and bug fixes**. bst-java (the BST engine backend for OpenBST) is now tested using JUnit. With it comes crap tons of bug fixes, stabilizing every action ever.
+- **Switched to log4j2 for logging**. Next goal will be log files and maybe an in-app log console, but this will be done later.
+- **Cleaner license checks**. Switched from using the license plugin's default blacklist model (analyze everything except...) to a whitelist model (only check...)
+- **Task and script for generating a PDF from the documentation**. This is just a fun little thing added to the build.gradle, using LibreOffice.
+- **Little but important fixes to the website**. Mostly to the main page, but I won't go into great details for that.
+
+### What's next?
+What's next for the BST project? Trying to get a userbase. I don't know how it will be done, but I'll try. The subreddit is a good starting point. **Please advertise OpenBST, write stories with it and share them. This is important.** I hate saying that, but meh :(
+
+On a side note, I'd also try to get OpenBST to additional countries through i18n (internationilzation, also known as "translate the app"). This could be a good thing. If you are able to help, you can check out the documentation [here](https://github.com/utybo/BST/blob/master/TRANSLATING.md), which got clarified.
