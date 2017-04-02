@@ -12,7 +12,7 @@ import utybo.branchingstorytree.api.script.VariableRegistry;
 
 /**
  * A {@link BDFFile} node that represetns a string value
- * 
+ *
  * @author utybo
  *
  */

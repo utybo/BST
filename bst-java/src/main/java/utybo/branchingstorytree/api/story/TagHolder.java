@@ -12,7 +12,7 @@ import java.util.HashMap;
 
 /**
  * A Tag Holder is an object that can, well... hold tags.
- * 
+ *
  * @author utybo
  *
  */

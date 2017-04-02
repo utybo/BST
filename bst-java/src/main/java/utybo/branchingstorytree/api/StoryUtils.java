@@ -18,7 +18,7 @@ import utybo.branchingstorytree.api.story.VirtualNode;
 
 /**
  * Utility methods that are useful when creating your implementation
- * 
+ *
  * @author utybo
  *
  */
@@ -27,7 +27,7 @@ public class StoryUtils
     /**
      * Replace all the variables placeholders from the virtual node by their
      * real value from the story.
-     * 
+     *
      * @param virtualNode
      *            The virtual node
      * @param story

@@ -34,29 +34,34 @@ public class JSESpeedBench
         // to operate, as this can slow the process down considerably
         new ScriptEngineManager().getEngineByName("JavaScript");
     }
+
     @Test
     public void nativeSpeedTest() throws Exception
     {
         testFile("native.bst", new JSETestClient());
     }
-    
+
     @Test
     public void jseSpeedTest() throws Exception
     {
         testFile("jse.bst", new JSETestClient());
     }
-    
-    public static void testFile(String path, BSTClient client) throws IOException, BSTException, InstantiationException, IllegalAccessException
+
+    public static void testFile(final String path, final BSTClient client) throws IOException, BSTException, InstantiationException, IllegalAccessException
     {
-        Dictionnary d = new Dictionnary();
-        BranchingStory story = new BranchingStoryTreeParser().parse(new BufferedReader(new InputStreamReader(ActionTesting.class.getResourceAsStream("/utybo/branchingstorytree/api/test/bench/jse/" + path))), d, client);
+        final Dictionnary d = new Dictionnary();
+        final BranchingStory story = new BranchingStoryTreeParser().parse(new BufferedReader(new InputStreamReader(ActionTesting.class.getResourceAsStream("/utybo/branchingstorytree/api/test/bench/jse/" + path))), d, client);
         StoryNode node = story.getInitialNode();
         while(node != null)
         {
             if(node instanceof LogicalNode)
+            {
                 node = story.getNode(((LogicalNode)node).solve());
+            }
             else
+            {
                 throw new BSTException(-1, node.getId() + " isn't a logical node");
+            }
         }
     }
 }

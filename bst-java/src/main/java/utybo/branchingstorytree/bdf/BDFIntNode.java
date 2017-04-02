@@ -12,7 +12,7 @@ import utybo.branchingstorytree.api.script.VariableRegistry;
 
 /**
  * A BDFNode that represents an integer value
- * 
+ *
  * @author utybo
  *
  */

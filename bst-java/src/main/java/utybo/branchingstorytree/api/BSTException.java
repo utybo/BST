@@ -15,7 +15,7 @@ package utybo.branchingstorytree.api;
  * <p>
  * The integer you will find in all the constructors is either the line where
  * the exception happened in the file, or -1 if it is unknown or N/A
- * 
+ *
  * @author utybo
  *
  */

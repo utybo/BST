@@ -26,22 +26,22 @@ public class StoryUtilsTesting
     @Test
     public void testVarSolve() throws BSTException
     {
-        BranchingStory story = new BranchingStory();
-        VariableRegistry vars = story.getRegistry();
+        final BranchingStory story = new BranchingStory();
+        final VariableRegistry vars = story.getRegistry();
         vars.put("test", 42);
-        String testDrive = "${test} ${>4} ${&5}";
+        final String testDrive = "${test} ${>4} ${&5}";
         // Prepare two nodes for testing
-        String testNode = "Test Complete";
-        VirtualNode vn = new VirtualNode(4);
+        final String testNode = "Test Complete";
+        final VirtualNode vn = new VirtualNode(4);
         vn.setText(testNode);
         story.addNode(vn);
-        LogicalNode ln = new LogicalNode(5);
+        final LogicalNode ln = new LogicalNode(5);
         story.addNode(ln);
         ln.addInstruction(new LNCondReturn(new StaticNextNode(4)));
         // Perform test
-        VirtualNode vn2 = new VirtualNode(555);
+        final VirtualNode vn2 = new VirtualNode(555);
         vn2.setText(testDrive);
-        String s = StoryUtils.solveVariables(vn2, story);
+        final String s = StoryUtils.solveVariables(vn2, story);
         assertEquals(s, "42 Test Complete Test Complete");
     }
 }

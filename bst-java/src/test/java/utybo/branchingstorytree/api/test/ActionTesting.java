@@ -56,49 +56,52 @@ public class ActionTesting
     {
         testFile("set.bst", null);
     }
-    
+
     @Test
     public void testCall() throws InstantiationException, IllegalAccessException, IOException, BSTException
     {
         testFile("call.bst", null);
     }
-    
+
     @Test
     public void testBound() throws InstantiationException, IllegalAccessException, IOException, BSTException
     {
         testFile("bound.bst", null);
     }
-    
+
     @Test
     public void testRand() throws InstantiationException, IllegalAccessException, IOException, BSTException
     {
         testFile("rand.bst", null);
     }
-    
+
     @Test
     public void testClone() throws InstantiationException, IllegalAccessException, IOException, BSTException
     {
         testFile("clone.bst", null);
     }
-    
+
     @Test
     public void testIncrDecr() throws InstantiationException, IllegalAccessException, IOException, BSTException
     {
         testFile("incrdecr.bst", null);
     }
 
-
-    public static void testFile(String path, BSTClient client) throws IOException, BSTException, InstantiationException, IllegalAccessException
+    public static void testFile(final String path, final BSTClient client) throws IOException, BSTException, InstantiationException, IllegalAccessException
     {
-        Dictionnary d = new Dictionnary();
-        BranchingStory story = new BranchingStoryTreeParser().parse(new BufferedReader(new InputStreamReader(ActionTesting.class.getResourceAsStream("/utybo/branchingstorytree/api/test/files/" + path))), d, client);
+        final Dictionnary d = new Dictionnary();
+        final BranchingStory story = new BranchingStoryTreeParser().parse(new BufferedReader(new InputStreamReader(ActionTesting.class.getResourceAsStream("/utybo/branchingstorytree/api/test/files/" + path))), d, client);
         StoryNode node = story.getInitialNode();
         while(node != null)
         {
             if(node instanceof LogicalNode)
+            {
                 node = story.getNode(((LogicalNode)node).solve());
+            }
             else
+            {
                 throw new BSTException(-1, node.getId() + " isn't a logical node");
+            }
         }
     }
 }

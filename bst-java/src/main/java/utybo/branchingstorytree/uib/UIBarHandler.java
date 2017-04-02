@@ -12,7 +12,7 @@ import utybo.branchingstorytree.api.BSTException;
 
 /**
  * Self explanatory methods here for the BST module
- * 
+ *
  * @author utybo
  *
  */

@@ -12,7 +12,7 @@ import utybo.branchingstorytree.api.BSTException;
 
 /**
  * Subinterface for module handlers that use BRM for resource handling
- * 
+ *
  * @author utybo
  *
  */

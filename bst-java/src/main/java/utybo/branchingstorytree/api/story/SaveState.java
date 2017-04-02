@@ -13,7 +13,7 @@ import utybo.branchingstorytree.api.script.VariableRegistry;
 /**
  * An implementation of a save state mechanism -- do note this is rather
  * incomplete and you should beware of applying save states to modules too
- * 
+ *
  * @author utybo
  *
  */
@@ -25,7 +25,7 @@ public class SaveState
     /**
      * Create a save state that will contain the given node id and a clone of
      * the given variable registry
-     * 
+     *
      * @param nodeId
      *            the node ID to be saved in the save state as the "current"
      *            node id
@@ -50,7 +50,7 @@ public class SaveState
     /**
      * Apply the registry saved in this save state to the given story. You will
      * still need to do separate actions for some modules
-     * 
+     *
      * @param bs
      *            the branching story to apply the save state on.
      */

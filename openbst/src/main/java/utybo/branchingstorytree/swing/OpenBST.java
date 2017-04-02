@@ -38,8 +38,8 @@ import javax.swing.WindowConstants;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
+import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 
 import com.google.gson.Gson;
@@ -71,11 +71,11 @@ public class OpenBST extends JFrame
     private static final long serialVersionUID = 1L;
 
     public static final Logger LOG = LogManager.getLogger("OpenBST");
-//    public static final Configuration CONFIG;
+    //    public static final Configuration CONFIG;
 
     static
     {
-        ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationFactory.newConfigurationBuilder();
+        final ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
         builder.setConfigurationName("OpenBST-default");
         builder.setStatusLevel(Level.INFO);
     }
@@ -126,7 +126,7 @@ public class OpenBST extends JFrame
         LOG.trace("Loading language files");
         Lang.mute();
         loadLang(args.length > 0 ? args[0] : null);
-        
+
         LOG.trace("Applying Look and Feel");
         try
         {

@@ -18,7 +18,7 @@ import utybo.branchingstorytree.api.story.BranchingStory;
 
 /**
  * Implementation of the rand action
- * 
+ *
  * @author utybo
  *
  */
@@ -47,7 +47,7 @@ public class RandomAction implements ScriptAction
         {
             throw new BSTException(line, "Incorrect syntax : rand:variabletoset,maximum OR rand:variabletoset,minimum,maximum");
         }
-        int range = max - min + 1; // +1 because nextInt is exclusive
+        final int range = max - min + 1; // +1 because nextInt is exclusive
         int value = new Random().nextInt(range);
         // Minimum bounds
         value += min;

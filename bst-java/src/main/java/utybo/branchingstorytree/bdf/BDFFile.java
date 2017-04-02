@@ -14,7 +14,7 @@ import utybo.branchingstorytree.api.script.VariableRegistry;
 
 /**
  * Implementation of a BDF file's internal structure
- * 
+ *
  * @author utybo
  *
  */

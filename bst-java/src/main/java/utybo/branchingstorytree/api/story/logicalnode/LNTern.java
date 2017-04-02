@@ -16,7 +16,7 @@ import utybo.branchingstorytree.api.script.CheckerDescriptor;
 
 /**
  * Instruction implementation of ternary statements (if-then-else)
- * 
+ *
  * @author utybo
  *
  */
@@ -27,7 +27,7 @@ public class LNTern extends LNInstruction
     private final ArrayList<CheckerDescriptor> checkers;
 
     /**
-     * 
+     *
      * @param checker
      *            The checkers to be checked. If there are multiple checkers,
      *            the ternary statement performs an "AND" operation.

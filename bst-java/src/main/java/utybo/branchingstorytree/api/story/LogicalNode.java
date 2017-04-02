@@ -16,7 +16,7 @@ import utybo.branchingstorytree.api.story.logicalnode.LNInstruction;
 /**
  * A logical node is a node that executes a list of {@link LNInstruction}s in
  * order, eventually returning a next node.
- * 
+ *
  * @author utybo
  *
  */
@@ -37,7 +37,7 @@ public class LogicalNode extends StoryNode
 
     /**
      * Create a logical node
-     * 
+     *
      * @param id
      *            the ID of the logical node
      */
@@ -48,7 +48,7 @@ public class LogicalNode extends StoryNode
 
     /**
      * Add an instruction at the bottom of the instruction stack
-     * 
+     *
      * @param instruction
      *            The instruction to add.
      */
@@ -59,7 +59,7 @@ public class LogicalNode extends StoryNode
 
     /**
      * Execute the logical node
-     * 
+     *
      * @return the next node. Can be -1 if no next node could be determined
      * @throws BSTException
      *             If an exception occurs during the execution of an instruction

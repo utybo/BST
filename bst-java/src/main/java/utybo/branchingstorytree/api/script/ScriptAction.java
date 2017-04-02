@@ -17,7 +17,7 @@ import utybo.branchingstorytree.api.story.BranchingStory;
 /**
  * A BST Action. A ScriptAction can cover more than one action (see
  * {@link #getName()}
- * 
+ *
  * @author utybo
  *
  */
@@ -26,7 +26,7 @@ public interface ScriptAction
 {
     /**
      * Execute this action
-     * 
+     *
      * @param head
      *            The name of the action, which is always one of the names from
      *            {@link #getName()}
@@ -48,7 +48,7 @@ public interface ScriptAction
 
     /**
      * Gets the different names this ScriptAction represents.
-     * 
+     *
      * @return an array of all the names of the actions this implementation
      *         covers
      */

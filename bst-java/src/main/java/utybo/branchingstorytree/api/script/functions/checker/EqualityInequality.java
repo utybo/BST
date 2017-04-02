@@ -16,7 +16,7 @@ import utybo.branchingstorytree.api.story.BranchingStory;
 
 /**
  * Implementation of the equ and not checkers
- * 
+ *
  * @author utybo
  *
  */

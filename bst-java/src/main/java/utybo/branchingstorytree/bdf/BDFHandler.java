@@ -12,7 +12,7 @@ import utybo.branchingstorytree.brm.BRMResourceConsumer;
 
 /**
  * Handler for the BDF module
- * 
+ *
  * @author utybo
  *
  */
@@ -21,7 +21,7 @@ public interface BDFHandler extends BRMResourceConsumer
     /**
      * Get an instance of BDFFile with the file name (being the name without the
      * extension) of name
-     * 
+     *
      * @param name
      * @return
      */

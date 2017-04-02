@@ -13,7 +13,7 @@ import utybo.branchingstorytree.api.BSTException;
 /**
  * A {@link NextNodeDefiner} which returns either one node or another depending
  * on the outcome of a checker
- * 
+ *
  * @author utybo
  *
  */
@@ -25,7 +25,7 @@ public class IfNextNodeDefiner implements NextNodeDefiner
     /**
      * Create an If-NND that will return either the node one if the checker is
      * true, or the node two otherwise.
-     * 
+     *
      * @param one
      *            The node returned if the checker returns true
      * @param two
