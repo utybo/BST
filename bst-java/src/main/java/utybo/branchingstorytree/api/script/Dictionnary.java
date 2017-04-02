@@ -19,7 +19,7 @@ import utybo.branchingstorytree.api.BSTException;
  * checkers and their implementation. It detects them using the class-index
  * library, which creates lists of of implementations of {@link ScriptAction}
  * and {@link ScriptChecker} at compile time.
- * 
+ *
  * @author utybo
  *
  */
@@ -36,7 +36,7 @@ public class Dictionnary
 
     /**
      * Creates a simple dictionary using all the implementations known.
-     * 
+     *
      * @throws InstantiationException
      * @throws IllegalAccessException
      */

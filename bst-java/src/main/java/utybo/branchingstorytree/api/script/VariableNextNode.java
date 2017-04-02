@@ -14,7 +14,7 @@ import utybo.branchingstorytree.api.story.BranchingStory;
 /**
  * A Next Node Definer that defines the next node based on the value of a
  * variable : said value is the next node.
- * 
+ *
  * @author utybo
  *
  */
@@ -25,7 +25,7 @@ public class VariableNextNode implements NextNodeDefiner
 
     /**
      * Creates a {@link VariableNextNode}
-     * 
+     *
      * @param story
      *            The story from which to get the variable
      * @param nextNodeDefiner

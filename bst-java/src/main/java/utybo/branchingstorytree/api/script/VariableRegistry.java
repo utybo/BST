@@ -13,7 +13,7 @@ import java.util.HashMap;
 /**
  * A registry of all the variables. The contract is that there cannot be
  * multiple variables with the same name.
- * 
+ *
  * @author utybo
  *
  */

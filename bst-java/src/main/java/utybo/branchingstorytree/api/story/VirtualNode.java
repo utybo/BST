@@ -10,7 +10,7 @@ package utybo.branchingstorytree.api.story;
 
 /**
  * A node that holds text.
- * 
+ *
  * @author utybo
  *
  */
@@ -20,7 +20,7 @@ public class VirtualNode extends StoryNode
 
     /**
      * Create a virtual node with the given ID
-     * 
+     *
      * @param id
      *            the ID of the node to create
      */
@@ -39,7 +39,7 @@ public class VirtualNode extends StoryNode
 
     /**
      * Set this node's text
-     * 
+     *
      * @param text
      *            this node's new text
      */
@@ -50,7 +50,7 @@ public class VirtualNode extends StoryNode
 
     /**
      * Add a string at the end of this node's text
-     * 
+     *
      * @param toAppend
      *            the string to append
      */

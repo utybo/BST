@@ -19,7 +19,7 @@ import utybo.branchingstorytree.api.story.BranchingStory;
 
 /**
  * Implementation of UIB related actions
- * 
+ *
  * @author utybo
  *
  */

@@ -17,7 +17,7 @@ import utybo.branchingstorytree.api.story.BranchingStory;
 /**
  * A BST Checker. A ScriptChecker can cover more than one checker (see
  * {@link #getName()}
- * 
+ *
  * @author utybo
  *
  */
@@ -26,7 +26,7 @@ public interface ScriptChecker
 {
     /**
      * Execute the check
-     * 
+     *
      * @param head
      *            The name of the check, which is always one of the names from
      *            {@link #getName()}
@@ -48,7 +48,7 @@ public interface ScriptChecker
 
     /**
      * Gets the different names this ScriptChecker represents.
-     * 
+     *
      * @return an array of all the names of the checkers this implementation
      *         covers
      */

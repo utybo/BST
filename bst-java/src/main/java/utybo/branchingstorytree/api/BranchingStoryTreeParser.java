@@ -37,7 +37,7 @@ import utybo.branchingstorytree.api.story.logicalnode.LNTern;
 /**
  * A parser that turns an input from a {@link BufferedReader} to a
  * {@link BranchingStory}
- * 
+ *
  * @author utybo
  *
  */
@@ -63,7 +63,7 @@ public class BranchingStoryTreeParser
     /**
      * Parse the input from the {@link BufferedReader} into a
      * {@link BranchingStory}
-     * 
+     *
      * @param br
      *            the BufferedReader to use
      * @param dictionnary
@@ -364,7 +364,7 @@ public class BranchingStoryTreeParser
         }
         catch(final Exception e)
         {
-            throw new BSTException(lineNumber, "An error was detected while trying to understand your file. Please check the line : " + line, e);
+            throw new BSTException(lineNumber, "An error was detected while trying to understand your file. Please check the line : " + (line.length() > 25 ? line.substring(0, 25) + "[...]" : line), e);
         }
         return story;
     }

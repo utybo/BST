@@ -21,7 +21,7 @@ import utybo.branchingstorytree.uib.UIBarHandler;
  * <p>
  * Module handlers return null by default to indicate that they are not
  * supported.
- * 
+ *
  * @author utybo
  *
  */
@@ -30,7 +30,7 @@ public interface BSTClient
 
     /**
      * Ask the user for input
-     * 
+     *
      * @param message
      *            the message to be shown to them.
      * @return the input. CANNOT BE NULL.
@@ -81,7 +81,7 @@ public interface BSTClient
     {
         return null;
     }
-    
+
     public default JSEHandler getJSEHandler()
     {
         return null;

@@ -14,7 +14,7 @@ import utybo.branchingstorytree.api.story.BranchingStory;
 
 /**
  * The equivalent of an {@link ActionDescriptor} but for checkers.
- * 
+ *
  * @author utybo
  *
  */
@@ -54,7 +54,7 @@ public class CheckerDescriptor
 
     /**
      * Creates a {@link CheckerDescriptor} using the given arguments.
-     * 
+     *
      * @param checker
      *            The action described by this descriptor
      * @param head
@@ -87,7 +87,7 @@ public class CheckerDescriptor
     /**
      * Executes the underlying checker, returning a boolean from the checker's
      * output
-     * 
+     *
      * @throws BSTException
      *             If the underlying checker throws a BSTException
      * @return the result of the checker

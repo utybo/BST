@@ -13,7 +13,7 @@ import utybo.branchingstorytree.api.script.ActionDescriptor;
 
 /**
  * An instruction that executes an action
- * 
+ *
  * @author utybo
  *
  */
@@ -23,7 +23,7 @@ public class LNExec extends LNInstruction
 
     /**
      * Create an LNExec
-     * 
+     *
      * @param action
      *            The action to be wrapped
      */

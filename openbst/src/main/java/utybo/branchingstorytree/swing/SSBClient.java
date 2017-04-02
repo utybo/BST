@@ -33,7 +33,7 @@ public class SSBClient implements SSBHandler
     @Override
     public void load(final String pathToResource, final String name) throws BSTException
     {
-        Media m = new Media(new File(pathToResource).toURI().toString());
+        final Media m = new Media(new File(pathToResource).toURI().toString());
         resources.put(name, new MediaPlayer(m));
     }
 
@@ -47,7 +47,6 @@ public class SSBClient implements SSBHandler
     @Override
     public void ambient(final String name)
     {
-        System.out.println("Playing " + name);
         if(currentAmbient != null)
         {
             currentAmbient.stop();

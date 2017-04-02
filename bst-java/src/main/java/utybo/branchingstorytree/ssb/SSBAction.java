@@ -15,7 +15,7 @@ import utybo.branchingstorytree.api.story.BranchingStory;
 
 /**
  * Implementation of SSB related actions
- * 
+ *
  * @author utybo
  *
  */

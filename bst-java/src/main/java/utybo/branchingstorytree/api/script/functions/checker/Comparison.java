@@ -17,7 +17,7 @@ import utybo.branchingstorytree.api.story.BranchingStory;
 /**
  * Implementation of some comparison checkers : greater, greaterequ, less and
  * lessequ
- * 
+ *
  * @author utybo
  *
  */

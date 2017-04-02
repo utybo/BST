@@ -15,7 +15,7 @@ import utybo.branchingstorytree.api.story.LogicalNode;
 /**
  * A return statement in a {@link LogicalNode} that determines the next node
  * depending on a {@link NextNodeDefiner}
- * 
+ *
  * @author utybo
  *
  */
@@ -25,7 +25,7 @@ public class LNCondReturn extends LNInstruction
 
     /**
      * Create an LNCondReturn
-     * 
+     *
      * @param innd
      *            The NextNodeDefiner to use
      */

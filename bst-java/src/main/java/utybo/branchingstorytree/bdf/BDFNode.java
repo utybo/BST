@@ -12,7 +12,7 @@ import utybo.branchingstorytree.api.script.VariableRegistry;
 
 /**
  * A node inside a {@link BDFFile}
- * 
+ *
  * @author utybo
  *
  */

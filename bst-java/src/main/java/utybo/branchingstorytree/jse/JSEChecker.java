@@ -24,33 +24,35 @@ public class JSEChecker implements ScriptChecker
 {
 
     @Override
-    public boolean check(String head, String desc, int line, BranchingStory story, BSTClient client) throws BSTException
+    public boolean check(final String head, final String desc, final int line, final BranchingStory story, final BSTClient client) throws BSTException
     {
-        JSEHandler handler = client.getJSEHandler();
-        VariableRegistry registry = story.getRegistry();
+        final JSEHandler handler = client.getJSEHandler();
+        final VariableRegistry registry = story.getRegistry();
         if(handler.getEngine() == null || !registry.get("__jse__auto", "true").toString().equalsIgnoreCase("false"))
         {
             handler.setEngine(new ScriptEngineManager().getEngineByName("JavaScript"));
         }
-        ScriptEngine engine = handler.getEngine();
+        final ScriptEngine engine = handler.getEngine();
         checkReg(engine, registry, line);
         try
         {
-            Object result = engine.eval(desc);
+            final Object result = engine.eval(desc);
             if(result instanceof Boolean)
             {
                 return (Boolean)result;
             }
             else if(result instanceof Number)
             {
-                int i = ((Number)result).intValue();
+                final int i = ((Number)result).intValue();
                 System.out.println(desc + " ==> " + i);
                 if(i <= 0)
                 {
                     return false;
                 }
                 else
+                {
                     return true;
+                }
             }
             else if(result == null)
             {
@@ -61,7 +63,7 @@ public class JSEChecker implements ScriptChecker
                 throw new BSTException(line, "Unknown value type : " + result.getClass().getName());
             }
         }
-        catch(ScriptException e)
+        catch(final ScriptException e)
         {
             throw new BSTException(line, "Error during script execution : " + e.getMessage(), e);
         }

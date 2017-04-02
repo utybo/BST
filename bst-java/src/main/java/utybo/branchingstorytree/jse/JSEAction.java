@@ -22,7 +22,7 @@ import utybo.branchingstorytree.api.story.BranchingStory;
 
 /**
  * Implementation of the JSE module's action
- * 
+ *
  * @author utybo
  *
  */
@@ -32,7 +32,7 @@ public class JSEAction implements ScriptAction
     @Override
     public void exec(final String head, final String desc, final int line, final BranchingStory story, final BSTClient client) throws BSTException
     {
-        JSEHandler handler = client.getJSEHandler();
+        final JSEHandler handler = client.getJSEHandler();
 
         if(head.equals("jse_reset"))
         {
@@ -47,9 +47,11 @@ public class JSEAction implements ScriptAction
             handler.setEngine(new ScriptEngineManager().getEngineByName("JavaScript"));
         }
 
-        ScriptEngine engine = handler.getEngine();
+        final ScriptEngine engine = handler.getEngine();
         if(engine == null)
+        {
             throw new Error("Well this doesn't make any sense");
+        }
         switch(head)
         {
         case "jse_eval":
@@ -92,20 +94,26 @@ public class JSEAction implements ScriptAction
         {
             try
             {
-                for(String varName : desc.split(","))
+                for(final String varName : desc.split(","))
                 {
-                    Class<?> type = registry.typeOf(varName);
+                    final Class<?> type = registry.typeOf(varName);
 
                     if(type.equals(Integer.class))
+                    {
                         engine.eval(varName + " = " + registry.get(varName, ""));
+                    }
                     else if(type.equals(String.class))
+                    {
                         engine.eval(varName + " = \"" + registry.get(varName, ""));
+                    }
                     else
+                    {
                         throw new BSTException(line, "Unknown variable : " + varName);
+                    }
 
                 }
             }
-            catch(ScriptException e)
+            catch(final ScriptException e)
             {
                 throw new BSTException(line, "Internal error", e);
             }
@@ -123,7 +131,7 @@ public class JSEAction implements ScriptAction
         return new String[] {"jse_eval", "jse_reset", "jse_autoimport", "jse_import"};
     }
 
-    public static void checkReg(ScriptEngine engine, VariableRegistry registry, int line) throws BSTException
+    public static void checkReg(final ScriptEngine engine, final VariableRegistry registry, final int line) throws BSTException
     {
         if(!registry.get("__jse__auto", "true").toString().equalsIgnoreCase("false"))
         {

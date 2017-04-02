@@ -16,7 +16,7 @@ import utybo.branchingstorytree.api.story.BranchingStory;
  * ActionDescriptor acts as a bridge between higher-level elements and
  * {@link ScriptAction}. It makes execution of actions fairly easy, as it
  * provides a handy wrapper around them that holds all the required values
- * 
+ *
  * @author utybo
  *
  */
@@ -56,7 +56,7 @@ public class ActionDescriptor
 
     /**
      * Creates an {@link ActionDescriptor} using the given arguments.
-     * 
+     *
      * @param action
      *            The action described by this descriptor
      * @param head
@@ -89,7 +89,7 @@ public class ActionDescriptor
     /**
      * Executes the wrapped action, passing all the arguments required stored in
      * this descriptor
-     * 
+     *
      * @throws BSTException
      *             If the underlying action throws a BSTException
      */

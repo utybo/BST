@@ -10,7 +10,7 @@ package utybo.branchingstorytree.api.story;
 
 /**
  * An empty node that does not do anything
- * 
+ *
  * @author utybo
  * @see LogicalNode
  * @see TextNode
@@ -27,7 +27,7 @@ public class StoryNode extends TagHolder
 
     /**
      * Create a node with the given ID
-     * 
+     *
      * @param id
      *            the id to use
      */

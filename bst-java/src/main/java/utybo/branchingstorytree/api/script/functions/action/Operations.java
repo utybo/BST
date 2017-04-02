@@ -17,7 +17,7 @@ import utybo.branchingstorytree.api.story.BranchingStory;
 /**
  * Implementation of operation related actions : add (addition), sub
  * (substraction), mul (multiplication), div (division), mod (modulo)
- * 
+ *
  * @author utybo
  *
  */

@@ -14,7 +14,7 @@ import utybo.branchingstorytree.api.story.BranchingStory;
 
 /**
  * A {@link ScriptChecker} that always returns true
- * 
+ *
  * @author utybo
  *
  */

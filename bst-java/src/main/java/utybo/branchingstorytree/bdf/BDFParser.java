@@ -17,7 +17,7 @@ import utybo.branchingstorytree.api.BSTException;
 
 /**
  * Utility class for parsing {@link BDFFile} objects from BDF-formatted files
- * 
+ *
  * @author utybo
  *
  */
@@ -32,11 +32,9 @@ public class BDFParser
 
         String line;
         BDFNode node = null;
-        int lineNumber = 0;
         int emptyLinesToAdd = 0;
         while((line = br.readLine()) != null)
         {
-            lineNumber++;
             if(line.startsWith("#"))
             {
                 continue;

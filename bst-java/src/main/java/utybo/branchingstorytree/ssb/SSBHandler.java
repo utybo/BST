@@ -13,7 +13,7 @@ import utybo.branchingstorytree.brm.BRMResourceConsumer;
 /**
  * Handler for SSB related tasks (most of these are called from
  * {@link SSBAction})
- * 
+ *
  * @author utybo
  *
  */
@@ -21,7 +21,7 @@ public interface SSBHandler extends BRMResourceConsumer
 {
     /**
      * Play a sound denoted by the name
-     * 
+     *
      * @param name
      */
     public void play(String name);
@@ -29,7 +29,7 @@ public interface SSBHandler extends BRMResourceConsumer
     /**
      * Loop an ambient sound. There can only be one ambient sound at a time :
      * replace any currently playing ambient sound.
-     * 
+     *
      * @param name
      */
     public void ambient(String name);

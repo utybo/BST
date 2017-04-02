@@ -16,7 +16,7 @@ import utybo.branchingstorytree.api.story.LogicalNode;
 
 /**
  * Implementation of the call action
- * 
+ *
  * @author utybo
  *
  */

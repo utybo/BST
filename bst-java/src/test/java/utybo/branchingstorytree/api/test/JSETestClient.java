@@ -24,13 +24,13 @@ public class JSETestClient implements BSTClient, JSEHandler
     }
 
     @Override
-    public void setEngine(ScriptEngine engine)
+    public void setEngine(final ScriptEngine engine)
     {
         this.engine = engine;
     }
 
     @Override
-    public String askInput(String message)
+    public String askInput(final String message)
     {
         return "";
     }

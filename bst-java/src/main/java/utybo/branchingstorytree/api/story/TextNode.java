@@ -13,7 +13,7 @@ import java.util.List;
 
 /**
  * A Text Node is a {@link VirtualNode} with options
- * 
+ *
  * @author utybo
  *
  */
@@ -23,7 +23,7 @@ public class TextNode extends VirtualNode
 
     /**
      * Create a Text Node with the given ID
-     * 
+     *
      * @param id
      *            the ID of this text node
      */
@@ -42,7 +42,7 @@ public class TextNode extends VirtualNode
 
     /**
      * Set the options of this text node
-     * 
+     *
      * @param options
      *            the options
      */
@@ -53,7 +53,7 @@ public class TextNode extends VirtualNode
 
     /**
      * Add an option to this text node.
-     * 
+     *
      * @param option
      *            the option to add
      */

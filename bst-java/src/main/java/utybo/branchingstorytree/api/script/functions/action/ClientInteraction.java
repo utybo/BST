@@ -16,7 +16,7 @@ import utybo.branchingstorytree.api.story.BranchingStory;
 /**
  * Implementation of multiple actions related to interaction with
  * {@link BSTClient} objects : input and exit.
- * 
+ *
  * @author utybo
  *
  */

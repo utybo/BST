@@ -15,7 +15,7 @@ import utybo.branchingstorytree.api.story.BranchingStory;
 
 /**
  * Implementation of BDF's bdf_apply
- * 
+ *
  * @author utybo
  *
  */

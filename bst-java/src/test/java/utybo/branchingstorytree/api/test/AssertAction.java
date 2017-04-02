@@ -23,32 +23,34 @@ public class AssertAction implements ScriptAction
     private static Dictionnary dict;
 
     @Override
-    public void exec(String head, String desc, int line, BranchingStory story, BSTClient client) throws BSTException
+    public void exec(final String head, final String desc, final int line, final BranchingStory story, final BSTClient client) throws BSTException
     {
         try
         {
             if(dict == null)
+            {
                 dict = new Dictionnary();
+            }
         }
         catch(InstantiationException | IllegalAccessException e)
         {
             throw new BSTException(line, "Could not create dictionary", e);
         }
 
-        Pattern p = Pattern.compile("([\\w_]+?):(.*)");
-        Matcher m = p.matcher(desc);
+        final Pattern p = Pattern.compile("([\\w_]+?):(.*)");
+        final Matcher m = p.matcher(desc);
         if(!m.matches())
         {
             throw new BSTException(line, "Incorrect checker");
         }
-        String h = m.group(1);
-        String d = m.group(2);
+        final String h = m.group(1);
+        final String d = m.group(2);
         try
         {
-            CheckerDescriptor cd = new CheckerDescriptor(dict.getChecker(h), h, d, line, story, client);
+            final CheckerDescriptor cd = new CheckerDescriptor(dict.getChecker(h), h, d, line, story, client);
             assert cd.check() == true;
         }
-        catch(AssertionError error)
+        catch(final AssertionError error)
         {
             throw new AssertionError("Assertion " + desc + " failed. (Registry dumb : " + story.getRegistry().dump(), error);
         }

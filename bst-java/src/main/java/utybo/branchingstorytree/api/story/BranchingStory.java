@@ -15,7 +15,7 @@ import utybo.branchingstorytree.api.script.VariableRegistry;
 
 /**
  * A BST Story
- * 
+ *
  * @author utybo
  *
  */
@@ -53,7 +53,7 @@ public class BranchingStory extends TagHolder
     /**
      * Set the default initial node. This can be overriden by the tag
      * initialnode
-     * 
+     *
      * @param initialNode
      *            the new default initial node
      */
@@ -75,7 +75,7 @@ public class BranchingStory extends TagHolder
 
     /**
      * Add a node to the story. There cannot be multiple nodes with the same ID
-     * 
+     *
      * @param node
      *            the node to add
      * @throws IllegalArgumentException
@@ -90,7 +90,7 @@ public class BranchingStory extends TagHolder
     }
 
     /**
-     * 
+     *
      * @return an id that is likely to be empty.
      * @deprecated This method relies on the possibility that all the nodes have
      *             IDs that are continuous, which is almost never the case.
@@ -113,7 +113,7 @@ public class BranchingStory extends TagHolder
     /**
      * Replace the current registry by the current one. This can have
      * potentially dangerous effects if the story is currently being ran.
-     * 
+     *
      * @param registry
      *            the new registry to use.
      */
@@ -124,7 +124,7 @@ public class BranchingStory extends TagHolder
 
     /**
      * Get all the nodes from this story.
-     * 
+     *
      * @return a collection of all the existing nodes
      */
     public Collection<StoryNode> getAllNodes()

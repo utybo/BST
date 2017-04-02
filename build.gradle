@@ -18,16 +18,8 @@ subprojects {
     version = "1.1"
     license { 
         header = rootProject.file('HEADER') 
-        // Language list file
-        exclude "**/*.json"
-        // Icons
-        exclude "**/*.png"
-        // Language files
-        exclude "**/*.lang"
-        // Bundled icons license
-        exclude "**/ICONSLICENSE"
-        // BST test cases
-        exclude "**/test/**/*.bst"
+        // Only test on Java files
+        include "**/*.java"
     }
 
     repositories {
@@ -36,4 +28,12 @@ subprojects {
     
     dependencies {
     }
+}
+
+
+// A cool task to convert the ODT documentation file into a PDF
+// Requires LibreOffice installed. Only works on Linux.
+task ('generatePdf', type:Exec) {
+  workingDir = './bst'
+  commandLine = './generate_pdf.sh'
 }

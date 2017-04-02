@@ -35,6 +35,13 @@ import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
+import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
+import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -62,6 +69,16 @@ public class OpenBST extends JFrame
      */
     public static String version;
     private static final long serialVersionUID = 1L;
+
+    public static final Logger LOG = LogManager.getLogger("OpenBST");
+    //    public static final Configuration CONFIG;
+
+    static
+    {
+        final ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
+        builder.setConfigurationName("OpenBST-default");
+        builder.setStatusLevel(Level.INFO);
+    }
 
     /**
      * The parser that will be reused throughout the entire session.
@@ -103,18 +120,18 @@ public class OpenBST extends JFrame
         {
             version = "<unknown version>";
         }
+        LOG.info("OpenBST version " + version + ", part of the BST project");
+        LOG.trace("[ INIT ]");
 
-        log("OpenBST version " + version + ", part of the BST project");
-        log("[ INIT ]");
-
-        log("Loading language files");
-
+        LOG.trace("Loading language files");
+        Lang.mute();
         loadLang(args.length > 0 ? args[0] : null);
-        log("Applying Look and Feel");
+
+        LOG.trace("Applying Look and Feel");
         try
         {
             UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
-            log("=> GTKLookAndFeel");
+            LOG.trace("GTKLookAndFeel");
 
             // If GTKLookAndFeel was successfully loaded, apply Gnome Shell fix
             try
@@ -126,8 +143,7 @@ public class OpenBST extends JFrame
             }
             catch(final Exception e)
             {
-                log("=! Could not apply X fix");
-                e.printStackTrace();
+                LOG.warn("Could not apply X fix", e);
             }
 
         }
@@ -137,12 +153,11 @@ public class OpenBST extends JFrame
             try
             {
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-                log("=> System LookAndFeel");
+                LOG.trace("System LookAndFeel");
             }
             catch(final Exception e1)
             {
-                e1.printStackTrace();
-                log("=> No LookAndFeel compatible. Using default");
+                LOG.trace("No LookAndFeel compatible. Using default", e1);
             }
         }
 
@@ -163,14 +178,14 @@ public class OpenBST extends JFrame
         jfc.setVisible(true);
         if(jfc.getFile() != null)
         {
-            log("=> File selected");
+            LOG.trace("File selected");
             final File file = new File(jfc.getDirectory() + jfc.getFile());
-            log("[ LAUNCHING ]");
+            LOG.debug("[ LAUNCHING ]");
             return file;
         }
         else
         {
-            log("=> No file selected.");
+            LOG.trace("No file selected.");
             return null;
         }
     }
@@ -189,20 +204,18 @@ public class OpenBST extends JFrame
     {
         try
         {
-            log("Parsing story");
+            LOG.trace("Parsing story");
             return parser.parse(new BufferedReader(new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8"))), new Dictionnary(), client);
         }
         catch(final IOException e)
         {
-            log("=! IOException caught");
-            e.printStackTrace();
+            LOG.error("IOException caught", e);
             JOptionPane.showMessageDialog(instance, Lang.get("file.error").replace("$e", e.getClass().getSimpleName()).replace("$m", e.getMessage()), Lang.get("error"), JOptionPane.ERROR_MESSAGE);
             return null;
         }
         catch(final BSTException e)
         {
-            log("=! BSTException caught");
-            e.printStackTrace();
+            LOG.error("BSTException caught", e);
             String s = Lang.get("file.bsterror.1");
             s += Lang.get("file.bsterror.2");
             s += Lang.get("file.bsterror.3").replace("$l", "" + e.getWhere());
@@ -214,26 +227,27 @@ public class OpenBST extends JFrame
             s += Lang.get("file.bsterror.6");
             if(JOptionPane.showConfirmDialog(instance, s, Lang.get("bsterror"), JOptionPane.ERROR_MESSAGE, JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
             {
-                log("Reloading");
+                LOG.debug("Reloading");
                 return loadFile(file, client);
             }
             return null;
         }
         catch(final Exception e)
         {
-            log("=! Random exception caught");
-            e.printStackTrace();
+            LOG.error("Random exception caught", e);
             JOptionPane.showMessageDialog(instance, Lang.get("file.crash"), Lang.get("error"), JOptionPane.ERROR_MESSAGE);
             return null;
         }
     }
 
     /**
-     * Load a specific language. This avoid RAM usage blowing up by loading all
-     * the languages
+     * Load the default language (which should be English) as well as the user's
+     * language.. We avoid loading all the langauge files to avoid having our
+     * RAM usage blowing up
      *
      * @param userCustomLanguage
-     *            The language to use, as defined in the langs.json file
+     *            The language to use in the application, which must be one
+     *            defined in the langs.json file
      */
     private static void loadLang(final String userCustomLanguage)
     {
@@ -245,7 +259,7 @@ public class OpenBST extends JFrame
         }
         catch(final Exception e)
         {
-            e.printStackTrace();
+            LOG.warn("Exception while loading language file : " + languages.get("default"), e);
         }
         if(userCustomLanguage != null)
         {
@@ -262,7 +276,7 @@ public class OpenBST extends JFrame
                 }
                 catch(final Exception e)
                 {
-                    e.printStackTrace();
+                    LOG.warn("Exception while loading language file : " + v, e);
                 }
             }
         });
@@ -282,7 +296,7 @@ public class OpenBST extends JFrame
      */
     private StoryPanel addStory(final BranchingStory story, final File file, final TabClient client)
     {
-        log("Creating tab");
+        LOG.trace("Creating tab");
         final StoryPanel sp = new StoryPanel(story, this, file, client);
         container.addTab(sp.getTitle(), null, sp, null);
         container.setSelectedIndex(container.getTabCount() - 1);
@@ -306,7 +320,7 @@ public class OpenBST extends JFrame
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         try
         {
-            log("=> Loading icons");
+            LOG.trace("Loading icons");
             activeDirectoryImage = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/Active Directory.png"));
             setIconImage(activeDirectoryImage);
             blogImage = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/Blog.png"));
@@ -351,8 +365,7 @@ public class OpenBST extends JFrame
         }
         catch(final IOException e1)
         {
-            log("=! IOException caught when loading icon");
-            e1.printStackTrace();
+            LOG.warn("IOException caught when loading icon", e1);
         }
         getContentPane().setLayout(new BorderLayout());
         container = new JTabbedPane();
@@ -436,18 +449,6 @@ public class OpenBST extends JFrame
         setSize(830, 480);
         setLocationRelativeTo(null);
         setVisible(true);
-    }
-
-    /**
-     * Log a message
-     *
-     * @param message
-     *            the message to be logged
-     */
-    public static void log(final String message)
-    {
-        // TODO Add a better logging system
-        System.out.println(message);
     }
 
     /**

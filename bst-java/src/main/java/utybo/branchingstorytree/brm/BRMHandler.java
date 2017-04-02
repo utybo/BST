@@ -12,7 +12,7 @@ import utybo.branchingstorytree.api.BSTException;
 
 /**
  * Handler for the BRM module, required by many other modules
- * 
+ *
  * @author utybo
  *
  */
@@ -22,7 +22,7 @@ public interface BRMHandler
      * Load the files in folder resources/<module name> and use the module
      * handlers' implementation of
      * {@link BRMResourceConsumer#load(String, String)}
-     * 
+     *
      * @throws BSTException
      */
     public void loadAuto() throws BSTException;

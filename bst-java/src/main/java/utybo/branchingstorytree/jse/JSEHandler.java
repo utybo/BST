@@ -13,6 +13,6 @@ import javax.script.ScriptEngine;
 public interface JSEHandler
 {
     public ScriptEngine getEngine();
-    
+
     public void setEngine(ScriptEngine engine);
 }
