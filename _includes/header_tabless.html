@@ -1,9 +1,11 @@
   <header class="mdl-layout__header">
     <div class="mdl-layout__header-row">
       <!-- Title -->
-      <span class="mdl-layout-title mdl-js-ripple-effect" onclick="location.href='{{ site.baseurl }}/'" style="cursor:pointer">{{ site.title }}</span>
+      <span class="mdl-layout-title" onclick="location.href='{{ site.baseurl }}/'" style="cursor:pointer">{{ site.title }}</span>
       
+      {% if site.subtitle %}
       <span style="padding-left: 20px;">[ {{ site.subtitle }} ]</span>
+      {% endif %}
       
       <!-- Add spacer, to align navigation to the right -->
       <div class="mdl-layout-spacer"></div>
@@ -17,7 +19,7 @@
         {% endfor %}
         {% for option in site.more_vert %}
         <div style="width: 20px;"></div>
-        <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised mdl-button--accent" onclick="location.href='{{ option[1].link }}'">{{ option[1].name }}</button>
+        <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised mdl-button--colored {% if option[1].accent %} mdl-button--accent {% endif %}" onclick="location.href='{{ option[1].link }}'">{{ option[1].name }}</button>
         {% endfor %}
       </nav>      
      </div>

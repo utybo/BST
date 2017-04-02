@@ -1,6 +1,5 @@
 # Site settings
 title: The BST & OpenBST Projects
-subtitle: OpenBST 1.1 coming soon!
 email: utybodev@gmail.com
 description: > # this means to ignore newlines until "baseurl:"
   Create branching stories and small text-based games easily.
@@ -26,6 +25,10 @@ more_vert:
   option1:
     name: GitHub
     link: https://github.com/utybo/BST
+    accent: true
+  option2:
+    name: r/BSTLang on Reddit
+    link: https://reddit.com/r/BSTLang
 
 disqus: false
 # disqus_shortname: ''
@@ -35,6 +38,12 @@ markdown: kramdown
 
 # Versions
 versions:
+- name: 1.1
+  devtag: v1.1
+  blogpost: /main/2017/04/03/1.1-is-out.html
+  stable: true
+  jar: https://github.com/utybo/BST/releases/download/v1.1/openbst-1.1-full.jar
+  tutorial: https://github.com/utybo/BST/releases/download/v1.1/The.BST.Tutorial.pdf
 - name: 1.0
   devtag: v1.0
   blogpost: /main/2016/12/26/1.0-is-coming.html
