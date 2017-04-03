@@ -10,8 +10,8 @@ layout: default
       <div class="mdl-grid">
         {% for post in site.posts %}
 
-        <div class="mdl-card mdl-shadow--2dp mdl-cell mdl-cell--4-col mdl-cell--4-col-desktop mdl-cell--4-col-tablet  mdl-cell--12-col-phone">
-          <div class="mdl-card__title" style="background: {% if post.ccolor %} {{ post.ccolor }} {% else %} #000000 {% endif %} ; min-height: 64px; height: auto;">
+        <div class="mdl-card mdl-shadow--2dp mdl-cell mdl-cell--4-col mdl-cell--4-col-desktop mdl-cell--4-col-tablet  mdl-cell--12-col-phone" style="background-color: {{ post.ccolor }}; background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAJHpUWHRBdXRob3IAABjT800sKcnITC1V0IjKLypSVMgvz9cEAEwkBvZoATDRAAAAC0lEQVQI12P4/xoAAuwB6zYOeZoAAAAASUVORK5CYII=)">
+          <div class="mdl-card__title" style="background: {{ post.ccolor }}; min-height: 64px; height: auto;">
             <h2 class="mdl-card__title-text">{{ post.title }}</h2>
           </div>
           <div class="mdl-card__supporting-text" style="flex-grow: 1">
@@ -19,7 +19,7 @@ layout: default
             <p>{{ post.excerpt }}</p>
           </div>
           <div class="mdl-card__actions mdl-card--border">
-            <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" href="{{ post.url | prepend: site.baseurl }}">Read More</a>
+            <a class="mdl-button mdl-js-button mdl-js-ripple-effect" href="{{ post.url | prepend: site.baseurl }}" style="color: {{ post.ccolor }}">Read More</a>
             <!--<button id="post-share-{{ post.id }}" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect"><i class="material-icons">share</i></a>
             <ul class="mdl-menu mdl-js-menu mdl-menu--bottom-right" for="post-share-{{ post.id }}">
               <li><a href="https://www.facebook.com/dialog/share?app_id={{site.facebook_app_id}}&display=page&href={{ post.url | prepend: site.baseurl }}&redirect_uri={{ site.baseurl }}" class="mdl-menu__item">Facebook</a></li>

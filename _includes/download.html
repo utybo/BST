@@ -19,7 +19,7 @@
     </tr>
   </thead>
   <tbody>
-    {% for version in site.versions %}
+    {% for version in site.data.versions %}
     <tr {% if version.stable != true %} style="background-color: #ffeeee;" {% endif %}>
       <td class="mdl-data-table__cell--non-numeric">{{ version.name }}</td>
       

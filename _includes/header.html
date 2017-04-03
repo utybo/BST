@@ -1,15 +1,19 @@
   <header class="mdl-layout__header">
-    <div class="mdl-layout__header-row">
+    <div class="mdl-layout__header-row" style="padding-left: 40px">
       <!-- Title -->
-      <span class="mdl-layout-title" onclick="location.href='{{ site.baseurl }}/'" style="cursor:pointer">{{ site.title }}</span>
+      <img src="{{ site.baseurl }}/img/logo.png" style="cursor: pointer;" onclick="location.href='{{ site.baseurl }}/'"></img>
+      <div style="width: 16px;"></div>
+      <span class="mdl-layout-title" onclick="location.href='{{ site.baseurl }}/'" style="cursor:pointer">
+      {{ site.title }}</span>
       
       {% if site.subtitle %}
       <span style="padding-left: 20px;">[ {{ site.subtitle }} ]</span>
       {% endif %}
+
       <!-- Add spacer, to align navigation to the right -->
       <div class="mdl-layout-spacer"></div>
 
-      <nav class="mdl-navigation">
+      <nav class="mdl-navigation mdl-layout--large-screen-only">
         {% for page in site.pages %}
           {% if page.title %}
             <div style="width: 20px;"></div>

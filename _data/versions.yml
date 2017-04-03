@@ -1,0 +1,25 @@
+- name: 1.1
+  devtag: v1.1
+  blogpost: /main/2017/04/03/1.1-is-out.html
+  stable: true
+  jar: https://github.com/utybo/BST/releases/download/v1.1/openbst-1.1-full.jar
+  tutorial: https://github.com/utybo/BST/releases/download/v1.1/The.BST.Tutorial.pdf
+- name: 1.0
+  devtag: v1.0
+  blogpost: /main/2016/12/26/1.0-is-coming.html
+  stable: true
+  jar: https://github.com/utybo/BST/releases/download/v1.0/openbst-1.0-full.jar
+  tutorial: https://github.com/utybo/BST/releases/download/v1.0/The.BST.Tutorial.pdf
+- name: 0.3 RC1
+  devtag: v0.3-RC1
+  blogpost: /main/2016/12/06/0.3-rc1-released.html
+  stable: false
+  jar: https://github.com/utybo/BST/releases/download/v0.3-RC1/openbst-0.3-RC1-full.jar
+  tutorial: https://github.com/utybo/BST/releases/download/v0.3-RC1/The.BST.Tutorial.pdf
+- name: 0.2 RC1
+  devtag: v0.2-RC1
+  blogpost: /main/2016/11/16/0.2-rc1-released.html
+  stable: false
+  jar: https://github.com/utybo/BST/releases/download/v0.2-RC1/openbst-0.2-RC1-full.jar
+  tutorial: https://github.com/utybo/BST/releases/download/v0.2-RC1/The.BST.Tutorial.pdf
+  examples: https://github.com/utybo/BST/releases/download/v0.2-RC1/examples.zip
