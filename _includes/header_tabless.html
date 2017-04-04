@@ -17,12 +17,12 @@
         {% for page in site.pages %}
           {% if page.title %}
             <div style="width: 20px;"></div>
-            <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--accent" onclick="location.href='{{ page.url | prepend: site.baseurl }}'">{{ page.title }}</button>
+            <a class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--accent" href="{{ page.url | prepend: site.baseurl }}">{{ page.title }}</a>
           {% endif %}
         {% endfor %}
         {% for option in site.more_vert %}
         <div style="width: 20px;"></div>
-        <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised mdl-button--colored {% if option[1].accent %} mdl-button--accent {% endif %}" onclick="location.href='{{ option[1].link }}'">{{ option[1].name }}</button>
+        <a class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised mdl-button--colored {% if option[1].accent %} mdl-button--accent {% endif %}" href="{{ option[1].link }}">{{ option[1].name }}</a>
         {% endfor %}
       </nav>      
      </div>
