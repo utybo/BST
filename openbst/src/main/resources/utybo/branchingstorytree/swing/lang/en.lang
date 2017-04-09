@@ -56,7 +56,7 @@ story.final.close=Close
 story.title=$t, by $a
 story.missingtitle=<undefined>
 story.missingauthor=<unknown>
-story.nsfw=<html><b>WARNING</b><p>You are about to use a NSFW (Not Safe For Work) file. This file is not suitable for children.<p>Only click OK if you are OVER 18 YEARS OLD.
+story.nsfw=<html><b>WARNING</b><p>You are about to use a NSFW (Not Safe For Work) file. This file is not suitable for children.<p>Only click OK if you are OVER 18 YEARS OLD AND WILLING TO SEE THIS CONTENT.
 story.nsfw.title=NSFW WARNING
 
 
@@ -66,11 +66,8 @@ welcome.intro=Welcome to OpenBST. To get started, please open a file using the b
 welcome.open=Open a file...
 welcome.whatis=What is BST?
 welcome.about=<html>BST is a simple language that allows you to easily create a branching story.
-welcome.imagine=<html><body style='width: 100px; text-align: center;'><h1>Imagine it<p style='text-align: justify'>Create your own branching story inside your head, think about all the details and how to make it an unbelievable experience.
-welcome.write=<html><body style='width: 100px; text-align: center;'><h1>Write it<p style='text-align: justify'>Write it down, make it real. With BST's syntax, creating your branching story has never been easier! You can even make it even more dynamic with some scripting!
-welcome.play=<html><body style='width: 100px; text-align: center;'><h1>Play it<p style='text-align: justify'>After writing it all, enjoy your new, fun story and just do cool stuff with it! Or even play some little text based game that use the scripting system in BST!
-welcome.enjoy=<html><body style='width: 100px; text-align: center;'><h1>Enjoy it<p style='text-align: justify'>Write what you love, love what you write! Here, your imagination is the limit; go wild, create everything you want and make it a magnificent branching story. BST FTW!
+welcome.imagine=<html><body style='width: 125px; text-align: center;'><h1>Have ideas?<p style='text-align: justify'>Going from a simple idea to a full, playable story is super easy with BST. It is made to stand out of your way as much as possible, making everything easy.
+welcome.write=<html><body style='width: 125px; text-align: center;'><h1>Wanna write?<p style='text-align: justify'>The awesome thing with BST is that it's an extremely simple yet powerful language. Anyone can create BST stories in seconds! Even children!
+welcome.play=<html><body style='width: 125px; text-align: center;'><h1>Games?<p style='text-align: justify'>BST is so powerful it allows you to create text-based games! The scripting system is open to all and very simple to understand -- but of course, if you just want to add some more dynamic elements to your BST story, you can do that too!
+welcome.enjoy=<html><body style='width: 125px; text-align: center;'><h1>Just reading?<p style='text-align: justify'>If you're just a reader passing by, on his way to launch a good BST story or game, make yourself home! We've got cookies in the box if you want!
 welcome.icons=Icons by icons8.com, go check them out, they make awesome icons!
-
-
-

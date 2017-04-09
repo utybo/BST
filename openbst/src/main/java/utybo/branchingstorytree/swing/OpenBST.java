@@ -9,9 +9,14 @@
 package utybo.branchingstorytree.swing;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.FileDialog;
+import java.awt.FlowLayout;
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -22,12 +27,16 @@ import java.util.Locale;
 import java.util.Map;
 
 import javax.imageio.ImageIO;
+import javax.swing.AbstractAction;
 import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
@@ -41,6 +50,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
+import org.pushingpixels.trident.Timeline;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -90,22 +100,27 @@ public class OpenBST extends JFrame
      */
     private static OpenBST instance;
 
+    public static final Color OPENBST_BLUE = new Color(33, 150, 243);
+
     // --- IMAGES ---
     public static Image ideaImage;
     public static Image blogImage;
     public static Image controllerImage;
     public static Image inLoveImage;
-    public static Image activeDirectoryImage;
     public static Image openFolderImage;
     public static Image cancelImage, errorImage, aboutImage, renameImage;
     public static Image addonSearchImage, addonSearchMediumImage, closeImage, closeBigImage, jumpImage, jumpBigImage, exportImage;
     public static Image gearsImage, importImage, invisibleImage, muteImage, pictureImage, refreshImage, refreshBigImage, returnImage;
     public static Image returnBigImage, saveAsImage, speakerImage, synchronizeImage, synchronizeBigImage, undoImage, undoBigImage, visibleImage;
+    public static Image smallLogoWhite, bigLogoBlue;
+    
+    public static Image menuOpenFolder;
 
     /**
      * Container for all the tabs
      */
     private final JTabbedPane container;
+    private JPopupMenu shortMenu;
 
     /**
      * Launch OpenBST
@@ -173,8 +188,8 @@ public class OpenBST extends JFrame
     private File askForFile()
     {
         final FileDialog jfc = new FileDialog(instance);
-        jfc.setLocationRelativeTo(instance);
         jfc.setTitle(Lang.get("file.title"));
+        jfc.setLocationRelativeTo(instance);
         jfc.setVisible(true);
         if(jfc.getFile() != null)
         {
@@ -316,13 +331,9 @@ public class OpenBST extends JFrame
      */
     public OpenBST()
     {
-        setTitle("OpenBST " + version);
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         try
         {
             LOG.trace("Loading icons");
-            activeDirectoryImage = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/Active Directory.png"));
-            setIconImage(activeDirectoryImage);
             blogImage = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/Blog.png"));
             controllerImage = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/Controller.png"));
             ideaImage = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/Idea.png"));
@@ -356,6 +367,11 @@ public class OpenBST extends JFrame
             undoImage = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/toolbar/Undo.png"));
             undoBigImage = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/toolbar/Undo Big.png"));
             visibleImage = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/toolbar/Visible.png"));
+            
+            menuOpenFolder = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/menu/Open Folder.png"));
+
+            smallLogoWhite = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/logos/logo-small-white.png"));
+            bigLogoBlue = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/logos/logo-big-blue.png"));
 
             // Note : this does not work with GTKLookAndFeel
             UIManager.put("OptionPane.errorIcon", new ImageIcon(cancelImage));
@@ -367,88 +383,122 @@ public class OpenBST extends JFrame
         {
             LOG.warn("IOException caught when loading icon", e1);
         }
-        getContentPane().setLayout(new BorderLayout());
+
+        BorderLayout borderLayout = new BorderLayout();
+        borderLayout.setVgap(4);
+        getContentPane().setLayout(borderLayout);
+        setIconImage(bigLogoBlue);
+        setTitle("OpenBST " + version);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+
+        JPanel banner = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        Timeline tl = new Timeline(banner);
+        tl.setDuration(200L);
+        tl.addPropertyToInterpolate("background", OPENBST_BLUE, new Color(145, 145, 145));
+        banner.setBackground(OPENBST_BLUE);
+        banner.add(new JLabel(new ImageIcon(smallLogoWhite)));
+        JLabel openBST = new JLabel("OpenBST [Click me to open a shortcuts menu!]");
+        openBST.setForeground(Color.WHITE);
+        banner.add(openBST);
+        getContentPane().add(banner, BorderLayout.NORTH);
+        banner.addMouseListener(new MouseAdapter()
+        {
+            @Override
+            public void mouseClicked(MouseEvent e)
+            {
+                openBST.setText("OpenBST");
+                shortMenu.show(OpenBST.this, e.getX(), e.getY());
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e)
+            {
+                tl.play();
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e)
+            {
+                tl.playReverse();
+            }
+
+        });
+
         container = new JTabbedPane();
         getContentPane().add(container, BorderLayout.CENTER);
 
-        final JScrollablePanel welcomePanel = new JScrollablePanel();
-        welcomePanel.setScrollableHeight(ScrollableSizeHint.STRETCH);
-        welcomePanel.setScrollableWidth(ScrollableSizeHint.FIT);
-        welcomePanel.setLayout(new MigLayout("", "[grow,center]", "[][][][][][][][][]"));
-        container.add(new JScrollPane(welcomePanel));
+        final JScrollablePanel welcomeContentPanel = new JScrollablePanel();
+        welcomeContentPanel.setScrollableHeight(ScrollableSizeHint.STRETCH);
+        welcomeContentPanel.setScrollableWidth(ScrollableSizeHint.FIT);
+        welcomeContentPanel.setLayout(new MigLayout("", "[grow,center]", "[][][][][][][][][]"));
+        container.add(new JScrollPane(welcomeContentPanel));
         container.setTitleAt(0, Lang.get("welcome"));
 
         final JLabel lblOpenbst = new JLabel("<html><font size=32>" + Lang.get("title"));
-        lblOpenbst.setIcon(new ImageIcon(activeDirectoryImage));
-        welcomePanel.add(lblOpenbst, "cell 0 0");
+        lblOpenbst.setForeground(OPENBST_BLUE);
+        lblOpenbst.setIcon(new ImageIcon(bigLogoBlue));
+        welcomeContentPanel.add(lblOpenbst, "cell 0 0");
 
         final JLabel lblWelcomeToOpenbst = new JLabel(Lang.get("welcome.intro"));
-        welcomePanel.add(lblWelcomeToOpenbst, "cell 0 1");
+        welcomeContentPanel.add(lblWelcomeToOpenbst, "cell 0 1");
 
         final JButton btnOpenAFile = new JButton(Lang.get("welcome.open"));
         btnOpenAFile.setIcon(new ImageIcon(openFolderImage));
         btnOpenAFile.addActionListener(e ->
         {
-            final File f = askForFile();
-            if(f != null)
-            {
-                final TabClient client = new TabClient(instance);
-                final BranchingStory bs = loadFile(f, client);
-                if(bs != null)
-                {
-                    addStory(bs, f, client);
-                }
-            }
+            clickOpenStory();
         });
-        welcomePanel.add(btnOpenAFile, "cell 0 2");
+        welcomeContentPanel.add(btnOpenAFile, "cell 0 2");
 
         final JSeparator separator = new JSeparator();
-        welcomePanel.add(separator, "cell 0 3,growx");
+        welcomeContentPanel.add(separator, "cell 0 3,growx");
 
         final JLabel lblwhatIsBst = new JLabel(Lang.get("welcome.whatis"));
         lblwhatIsBst.setFont(lblwhatIsBst.getFont().deriveFont(28F));
-        welcomePanel.add(lblwhatIsBst, "cell 0 4");
+        welcomeContentPanel.add(lblwhatIsBst, "cell 0 4");
 
         final JLabel lblbstIsA = new JLabel(Lang.get("welcome.about"));
-        welcomePanel.add(lblbstIsA, "cell 0 5,alignx center,growy");
+        welcomeContentPanel.add(lblbstIsA, "cell 0 5,alignx center,growy");
 
         final JLabel lblimagineItcreate = new JLabel(Lang.get("welcome.imagine"));
         lblimagineItcreate.setVerticalTextPosition(SwingConstants.BOTTOM);
         lblimagineItcreate.setHorizontalTextPosition(SwingConstants.CENTER);
         lblimagineItcreate.setIcon(new ImageIcon(ideaImage));
-        welcomePanel.add(lblimagineItcreate, "flowx,cell 0 6,alignx center,aligny top");
+        welcomeContentPanel.add(lblimagineItcreate, "flowx,cell 0 6,alignx center,aligny top");
 
-        welcomePanel.add(Box.createHorizontalStrut(20), "cell 0 6");
+        welcomeContentPanel.add(Box.createHorizontalStrut(10), "cell 0 6");
 
         final JLabel lblwriteItwriteSaid = new JLabel(Lang.get("welcome.write"));
         lblwriteItwriteSaid.setVerticalTextPosition(SwingConstants.BOTTOM);
         lblwriteItwriteSaid.setHorizontalTextPosition(SwingConstants.CENTER);
         lblwriteItwriteSaid.setIcon(new ImageIcon(blogImage));
-        welcomePanel.add(lblwriteItwriteSaid, "cell 0 6,aligny top");
+        welcomeContentPanel.add(lblwriteItwriteSaid, "cell 0 6,aligny top");
 
-        welcomePanel.add(Box.createHorizontalStrut(20), "cell 0 6");
+        welcomeContentPanel.add(Box.createHorizontalStrut(10), "cell 0 6");
 
         final JLabel lblPlayIt = new JLabel(Lang.get("welcome.play"));
         lblPlayIt.setVerticalTextPosition(SwingConstants.BOTTOM);
         lblPlayIt.setHorizontalTextPosition(SwingConstants.CENTER);
         lblPlayIt.setIcon(new ImageIcon(controllerImage));
-        welcomePanel.add(lblPlayIt, "cell 0 6,aligny top");
+        welcomeContentPanel.add(lblPlayIt, "cell 0 6,aligny top");
 
-        welcomePanel.add(Box.createHorizontalStrut(20), "cell 0 6");
+        welcomeContentPanel.add(Box.createHorizontalStrut(10), "cell 0 6");
 
         final JLabel lblEnjoyIt = new JLabel(Lang.get("welcome.enjoy"));
         lblEnjoyIt.setVerticalTextPosition(SwingConstants.BOTTOM);
         lblEnjoyIt.setHorizontalTextPosition(SwingConstants.CENTER);
         lblEnjoyIt.setIcon(new ImageIcon(inLoveImage));
-        welcomePanel.add(lblEnjoyIt, "cell 0 6, aligny top");
+        welcomeContentPanel.add(lblEnjoyIt, "cell 0 6,aligny top");
 
         final JLabel lblIconsByIconscom = new JLabel(Lang.get("welcome.icons"));
         lblIconsByIconscom.setEnabled(false);
-        welcomePanel.add(lblIconsByIconscom, "cell 0 8,alignx left");
+        welcomeContentPanel.add(lblIconsByIconscom, "cell 0 8,alignx left");
 
         setSize(830, 480);
         setLocationRelativeTo(null);
         setVisible(true);
+        
+        createShortMenu();
     }
 
     /**
@@ -459,6 +509,38 @@ public class OpenBST extends JFrame
     public void removeStory(final StoryPanel storyPanel)
     {
         container.remove(storyPanel);
+    }
+
+    public void clickOpenStory()
+    {
+        final File f = askForFile();
+        if(f != null)
+        {
+            final TabClient client = new TabClient(instance);
+            final BranchingStory bs = loadFile(f, client);
+            if(bs != null)
+            {
+                addStory(bs, f, client);
+            }
+        }
+    }
+
+    @SuppressWarnings("serial")
+    public void createShortMenu()
+    {
+        shortMenu = new JPopupMenu();
+        JLabel label = new JLabel("OpenBST Menu");
+        label.setEnabled(false);
+        shortMenu.add(label);
+        shortMenu.addSeparator();
+        shortMenu.add(new JMenuItem(new AbstractAction("Open a file", new ImageIcon(menuOpenFolder))
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                clickOpenStory();
+            }
+        }));
     }
 
 }
