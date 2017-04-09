@@ -9,7 +9,12 @@
 package utybo.branchingstorytree.swing;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
+
+import org.apache.commons.io.IOUtils;
 
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.media.Media;
@@ -31,9 +36,27 @@ public class SSBClient implements SSBHandler
     }
 
     @Override
-    public void load(final String pathToResource, final String name) throws BSTException
+    public void load(final InputStream in, final String name) throws BSTException
     {
-        final Media m = new Media(new File(pathToResource).toURI().toString());
+        // Write the input stream in a temporary folder
+        try
+        {
+            File f = File.createTempFile("openbst" + name, "");
+            f.deleteOnExit();
+            IOUtils.copy(in, new FileOutputStream(f));
+            final Media m = new Media(f.toURI().toString());
+            resources.put(name, new MediaPlayer(m));
+        }
+        catch(IOException e)
+        {
+            throw new BSTException(-1, "Could not create temporary file", e);
+        }
+    }
+
+    @Override
+    public void load(final File file, final String name) throws BSTException
+    {
+        final Media m = new Media(file.toURI().toString());
         resources.put(name, new MediaPlayer(m));
     }
 

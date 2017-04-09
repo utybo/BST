@@ -20,7 +20,7 @@ public class TabClient implements BSTClient
     private final OpenBST instance;
     private StoryPanel tab;
     private TabUIB uibHandler;
-    private BRMClient brmClient;
+    private BRMHandler brmClient;
     private SSBClient ssbClient;
     private IMGClient imgClient;
     private final BDFClient bdfClient;
@@ -54,7 +54,6 @@ public class TabClient implements BSTClient
     {
         tab = sp;
         uibHandler = new TabUIB(tab);
-        brmClient = new BRMClient(tab.getBSTFile(), this);
         ssbClient = new SSBClient(tab);
         imgClient = new IMGClient(tab);
     }
@@ -95,4 +94,8 @@ public class TabClient implements BSTClient
         return jseClient;
     }
 
+    public void setBRMHandler(BRMHandler handler)
+    {
+        this.brmClient = handler;
+    }
 }

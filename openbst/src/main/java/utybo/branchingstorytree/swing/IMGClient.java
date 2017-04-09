@@ -9,8 +9,8 @@
 package utybo.branchingstorytree.swing;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 
 import javax.imageio.ImageIO;
@@ -30,11 +30,11 @@ public class IMGClient implements IMGHandler
     }
 
     @Override
-    public void load(final String pathToResource, final String name) throws BSTException
+    public void load(final InputStream in, final String name) throws BSTException
     {
         try
         {
-            images.put(name, ImageIO.read(new File(pathToResource)));
+            images.put(name, ImageIO.read(in));
         }
         catch(final IOException e)
         {

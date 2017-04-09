@@ -8,6 +8,12 @@
  */
 package utybo.branchingstorytree.brm;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+
 import utybo.branchingstorytree.api.BSTException;
 
 /**
@@ -18,5 +24,16 @@ import utybo.branchingstorytree.api.BSTException;
  */
 public interface BRMResourceConsumer
 {
-    public void load(String pathToResource, String name) throws BSTException;
+    @Deprecated
+    public default void load(String pathToResource, String name) throws BSTException, IOException
+    {
+        load(new FileInputStream(new File(pathToResource)), name);
+    }
+    
+    public default void load(File file, String name) throws BSTException, FileNotFoundException
+    {
+        load(new FileInputStream(file), name);
+    }
+    
+    public void load(InputStream in, String name) throws BSTException;
 }

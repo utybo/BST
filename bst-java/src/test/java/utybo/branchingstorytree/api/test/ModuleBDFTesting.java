@@ -10,6 +10,7 @@ package utybo.branchingstorytree.api.test;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 
@@ -37,6 +38,12 @@ public class ModuleBDFTesting
         public void loadAuto() throws BSTException
         {
             load("/utybo/branchingstorytree/api/test/files/resources/bdf.bdf", "bdf");
+        }
+        
+        @Override
+        public void load(InputStream in, String name) throws BSTException
+        {
+            // Useless
         }
 
         @Override

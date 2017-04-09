@@ -40,10 +40,12 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
+import javax.swing.ProgressMonitorInputStream;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -220,7 +222,21 @@ public class OpenBST extends JFrame
         try
         {
             LOG.trace("Parsing story");
-            return parser.parse(new BufferedReader(new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8"))), new Dictionnary(), client);
+            String ext = FilenameUtils.getExtension(file.getName());
+            if(ext.equals("bst"))
+            {
+                return parser.parse(new BufferedReader(new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8"))), new Dictionnary(), client);
+            }
+            else if(ext.equals("bsp"))
+            {
+                return BSTPackager.fromPackage(new ProgressMonitorInputStream(instance, "Opening " + file.getName() + "...", new FileInputStream(file)), client);
+            }
+            else
+            {
+                LOG.error("Unknown extension : " + ext);
+                JOptionPane.showMessageDialog(instance, "Unknown file extension : " + ext);
+                return null;
+            }
         }
         catch(final IOException e)
         {
