@@ -10,6 +10,7 @@ package utybo.branchingstorytree.api;
 
 import utybo.branchingstorytree.bdf.BDFHandler;
 import utybo.branchingstorytree.brm.BRMHandler;
+import utybo.branchingstorytree.brm.BRMResourceConsumer;
 import utybo.branchingstorytree.img.IMGHandler;
 import utybo.branchingstorytree.jse.JSEHandler;
 import utybo.branchingstorytree.ssb.SSBHandler;
@@ -85,5 +86,20 @@ public interface BSTClient
     public default JSEHandler getJSEHandler()
     {
         return null;
+    }
+    
+    public default BRMResourceConsumer getResourceHandler(String name)
+    {
+        switch(name)
+        {
+        case "ssb":
+            return getSSBHandler();
+        case "img":
+            return getIMGHandler();
+        case "bdf":
+            return getBDFHandler();
+        default:
+            return null;
+        }
     }
 }
