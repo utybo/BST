@@ -12,6 +12,8 @@ import java.io.ByteArrayInputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.io.FilenameUtils;
+
 import utybo.branchingstorytree.api.BSTClient;
 import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.brm.BRMHandler;
@@ -31,7 +33,7 @@ public class BRMVirtualFileClient implements BRMHandler
     @Override
     public void loadAuto() throws BSTException
     {
-        Pattern filePattern = Pattern.compile("resources/(.+?)/(.+)");
+        Pattern filePattern = Pattern.compile("resources\\/(.+?)\\/(.+)");
         for(VirtualFile vf : vfHolder)
         {
             Matcher m = filePattern.matcher(vf.getName());
@@ -41,7 +43,7 @@ public class BRMVirtualFileClient implements BRMHandler
                 String name = m.group(2);
                 BRMResourceConsumer consumer = client.getResourceHandler(module);
                 if(consumer != null)
-                    consumer.load(new ByteArrayInputStream(vf.getData()), name);
+                    consumer.load(new ByteArrayInputStream(vf.getData()), FilenameUtils.getBaseName(name));
             }
         }
     }

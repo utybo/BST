@@ -58,7 +58,6 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import net.miginfocom.swing.MigLayout;
-import utybo.branchingstorytree.api.BSTClient;
 import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.api.BranchingStoryTreeParser;
 import utybo.branchingstorytree.api.script.Dictionnary;
@@ -217,7 +216,7 @@ public class OpenBST extends JFrame
      *            The BST Client. This is required for parsing the file
      * @return
      */
-    public BranchingStory loadFile(final File file, final BSTClient client)
+    public BranchingStory loadFile(final File file, final TabClient client)
     {
         try
         {
@@ -225,6 +224,7 @@ public class OpenBST extends JFrame
             String ext = FilenameUtils.getExtension(file.getName());
             if(ext.equals("bst"))
             {
+                client.setBRMHandler(new BRMFileClient(file, client));
                 return parser.parse(new BufferedReader(new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8"))), new Dictionnary(), client);
             }
             else if(ext.equals("bsp"))

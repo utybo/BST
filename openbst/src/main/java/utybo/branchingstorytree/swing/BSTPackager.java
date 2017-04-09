@@ -32,11 +32,11 @@ import org.apache.commons.io.output.ByteArrayOutputStream;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import utybo.branchingstorytree.api.BSTClient;
 import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.api.BranchingStoryTreeParser;
 import utybo.branchingstorytree.api.script.Dictionnary;
 import utybo.branchingstorytree.api.story.BranchingStory;
+import utybo.branchingstorytree.swing.virtualfiles.BRMVirtualFileClient;
 import utybo.branchingstorytree.swing.virtualfiles.VirtualFile;
 import utybo.branchingstorytree.swing.virtualfiles.VirtualFileHolder;
 
@@ -46,6 +46,7 @@ public class BSTPackager
     {
         while(true)
         {
+            @SuppressWarnings("resource")
             Scanner sc = new Scanner(System.in);
 
             System.out.println("What do you wish to package today?");
@@ -124,7 +125,7 @@ public class BSTPackager
         }
     }
 
-    public static BranchingStory fromPackage(InputStream in, BSTClient client) throws IOException, BSTException, InstantiationException, IllegalAccessException
+    public static BranchingStory fromPackage(InputStream in, TabClient client) throws IOException, BSTException, InstantiationException, IllegalAccessException
     {
         TarArchiveInputStream tais = new TarArchiveInputStream(new GZIPInputStream(in));
         VirtualFileHolder vfh = new VirtualFileHolder();
@@ -141,7 +142,7 @@ public class BSTPackager
         System.out.println(meta.toString());
         BranchingStoryTreeParser parser = new BranchingStoryTreeParser();
         BranchingStory bs = parser.parse(new BufferedReader(new InputStreamReader(new ByteArrayInputStream(vfh.getFile(meta.get("mainFile")).getData()))), new Dictionnary(), client);
-
+        client.setBRMHandler(new BRMVirtualFileClient(vfh, client));
         return bs;
     }
 }
