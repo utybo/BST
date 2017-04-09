@@ -9,6 +9,7 @@
 package utybo.branchingstorytree.swing;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 
 import org.apache.commons.io.FilenameUtils;
 
@@ -17,12 +18,12 @@ import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.brm.BRMHandler;
 import utybo.branchingstorytree.brm.BRMResourceConsumer;
 
-public class BRMClient implements BRMHandler
+public class BRMFileClient implements BRMHandler
 {
     private final File bstFileLocation;
     private final BSTClient client;
 
-    public BRMClient(final File bstFile, final BSTClient client)
+    public BRMFileClient(final File bstFile, final BSTClient client)
     {
         bstFileLocation = bstFile;
         this.client = client;
@@ -44,30 +45,22 @@ public class BRMClient implements BRMHandler
                     continue;
                 }
                 final String module = moduleFolder.getName();
-                final BRMResourceConsumer handler = getHandler(module);
+                final BRMResourceConsumer handler = client.getResourceHandler(module);
                 if(handler != null)
                 {
                     for(final File file : moduleFolder.listFiles())
                     {
-                        handler.load(file.getAbsolutePath(), FilenameUtils.getBaseName(file.getName()));
+                        try
+                        {
+                            handler.load(file, FilenameUtils.getBaseName(file.getName()));
+                        }
+                        catch(FileNotFoundException e)
+                        {
+                            throw new Error("Impossible state", e);
+                        }
                     }
                 }
             }
-        }
-    }
-
-    private BRMResourceConsumer getHandler(final String module)
-    {
-        switch(module)
-        {
-        case "ssb":
-            return client.getSSBHandler();
-        case "img":
-            return client.getIMGHandler();
-        case "bdf":
-            return client.getBDFHandler();
-        default:
-            return null;
         }
     }
 }

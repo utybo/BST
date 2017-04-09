@@ -9,9 +9,8 @@
 package utybo.branchingstorytree.swing;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 
@@ -25,15 +24,15 @@ public class BDFClient implements BDFHandler
     private final HashMap<String, BDFFile> map = new HashMap<>();
 
     @Override
-    public void load(final String pathToResource, final String name) throws BSTException
+    public void load(final InputStream in, final String name) throws BSTException
     {
         try
         {
-            map.put(name, BDFParser.parse(new BufferedReader(new InputStreamReader(new FileInputStream(new File(pathToResource)))), name));
+            map.put(name, BDFParser.parse(new BufferedReader(new InputStreamReader(in)), name));
         }
         catch(final IOException e)
         {
-            throw new BSTException(-1, "Error when reading file " + pathToResource, e);
+            throw new BSTException(-1, "Error when reading file " + name, e);
         }
     }
 
