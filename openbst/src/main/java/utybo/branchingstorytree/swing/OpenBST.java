@@ -33,6 +33,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -113,9 +114,9 @@ public class OpenBST extends JFrame
     public static Image addonSearchImage, addonSearchMediumImage, closeImage, closeBigImage, jumpImage, jumpBigImage, exportImage;
     public static Image gearsImage, importImage, invisibleImage, muteImage, pictureImage, refreshImage, refreshBigImage, returnImage;
     public static Image returnBigImage, saveAsImage, speakerImage, synchronizeImage, synchronizeBigImage, undoImage, undoBigImage, visibleImage;
-    public static Image smallLogoWhite, bigLogoBlue;
-    
-    public static Image menuOpenFolder;
+    public static Image smallLogoWhite, bigLogoBlue, bigLogoWhite;
+
+    public static Image menuOpenFolder, menuOpenArchive, menuAbout;
 
     /**
      * Container for all the tabs
@@ -156,6 +157,7 @@ public class OpenBST extends JFrame
                 final java.lang.reflect.Field awtAppClassNameField = xToolkit.getClass().getDeclaredField("awtAppClassName");
                 awtAppClassNameField.setAccessible(true);
                 awtAppClassNameField.set(xToolkit, Lang.get("title"));
+                awtAppClassNameField.setAccessible(false);
             }
             catch(final Exception e)
             {
@@ -383,11 +385,14 @@ public class OpenBST extends JFrame
             undoImage = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/toolbar/Undo.png"));
             undoBigImage = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/toolbar/Undo Big.png"));
             visibleImage = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/toolbar/Visible.png"));
-            
+
             menuOpenFolder = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/menu/Open Folder.png"));
+            menuOpenArchive = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/menu/Open Archive.png"));
+            menuAbout = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/menu/About.png"));
 
             smallLogoWhite = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/logos/logo-small-white.png"));
             bigLogoBlue = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/logos/logo-big-blue.png"));
+            bigLogoWhite = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/logos/logo-big-white.png"));
 
             // Note : this does not work with GTKLookAndFeel
             UIManager.put("OptionPane.errorIcon", new ImageIcon(cancelImage));
@@ -413,7 +418,7 @@ public class OpenBST extends JFrame
         tl.addPropertyToInterpolate("background", OPENBST_BLUE, new Color(145, 145, 145));
         banner.setBackground(OPENBST_BLUE);
         banner.add(new JLabel(new ImageIcon(smallLogoWhite)));
-        JLabel openBST = new JLabel("OpenBST [Click me to open a shortcuts menu!]");
+        JLabel openBST = new JLabel(Lang.get("banner.titleextended"));
         openBST.setForeground(Color.WHITE);
         banner.add(openBST);
         getContentPane().add(banner, BorderLayout.NORTH);
@@ -422,7 +427,7 @@ public class OpenBST extends JFrame
             @Override
             public void mouseClicked(MouseEvent e)
             {
-                openBST.setText("OpenBST");
+                openBST.setText(Lang.get("banner.title"));
                 shortMenu.show(OpenBST.this, e.getX(), e.getY());
             }
 
@@ -513,7 +518,7 @@ public class OpenBST extends JFrame
         setSize(830, 480);
         setLocationRelativeTo(null);
         setVisible(true);
-        
+
         createShortMenu();
     }
 
@@ -545,11 +550,11 @@ public class OpenBST extends JFrame
     public void createShortMenu()
     {
         shortMenu = new JPopupMenu();
-        JLabel label = new JLabel("OpenBST Menu");
+        JLabel label = new JLabel(Lang.get("menu.title"));
         label.setEnabled(false);
         shortMenu.add(label);
         shortMenu.addSeparator();
-        shortMenu.add(new JMenuItem(new AbstractAction("Open a file", new ImageIcon(menuOpenFolder))
+        shortMenu.add(new JMenuItem(new AbstractAction(Lang.get("menu.open"), new ImageIcon(menuOpenFolder))
         {
             @Override
             public void actionPerformed(ActionEvent e)
@@ -557,6 +562,30 @@ public class OpenBST extends JFrame
                 clickOpenStory();
             }
         }));
-    }
 
+        shortMenu.addSeparator();
+
+        JMenu additionalMenu = new JMenu(Lang.get("menu.advanced"));
+        shortMenu.add(additionalMenu);
+
+        additionalMenu.add(new JMenuItem(new AbstractAction(Lang.get("menu.package"), new ImageIcon(menuOpenArchive))
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                new PackageDialog(instance).setVisible(true);
+            }
+        }));
+
+        shortMenu.addSeparator();
+
+        shortMenu.add(new JMenuItem(new AbstractAction(Lang.get("menu.about"), new ImageIcon(menuAbout))
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                new AboutDialog(instance).setVisible(true);
+            }
+        }));
+    }
 }

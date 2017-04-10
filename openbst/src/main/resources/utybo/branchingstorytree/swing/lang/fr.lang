@@ -1,11 +1,40 @@
 # French translation by utybo
 # Powered by Lang, based on MinkJ
 
+# TRANSLATORS, FEEL FREE TO PUT YOUR NAME HERE FOR CREDITS!
+author=Traduit en Français par utybo
+
 # General
 title=OpenBST
 error=Erreur
 bsterror=Erreur BST
 wait=Patientez...
+
+# Banner and menu
+banner.title=OpenBST
+banner.titleextended=OpenBST [Cliquez ici pour ouvrir le menu!]
+menu.title=Menu OpenBST
+menu.open=Ouvrir un fichier
+menu.advanced=Outils avancés
+menu.package=Empaqueter un fichier BST...
+menu.about=A propos d'OpenBST
+
+# Package tool
+pkg.title=Outil de création de paquets BST
+# MAKE SURE YOU KEEP A SPACE AT THE END OF THE TWO FOLLOWING LINES!
+pkg.in=Fichier à empaqueter : 
+pkg.out=Sortie : 
+pkg.select=Sélectionner...
+pkg.selin=Sélectionnez l'emplacement du fichier à empaqueter...
+pkg.selout=Où sauvegarder le paquet final?
+pkg.help=<html>Un paquet BST (BSP) est une archive qui contient tout ce dont votre histoire a besoin : ressources, le fichier .bst lui-même, et bien plus!<p><p>Empaqueter vos fichiers .bst vous évite d'avoir à mettre manuellement tous les fichiers nécessaire dans un ZIP. Cela vous permet de distribuer vos histoires BST facilement en un seul fichier.<p><p>Les fichiers BSP créés peuvent être facilement ouverts comme n'importe quel fichier BST classique.
+pkg.start=Empaqueter!
+pkg.cancel=Annuler
+pkg.inprogress=Empaquetage en cours, veuillez patienter...
+
+# About dialog
+about.title=A propos d'OpenBST
+about.version=Version : §v
 
 # Loading files
 file.title=Choisissez un fichier BST...

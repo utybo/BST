@@ -1,11 +1,42 @@
 # English translation by utybo
 # Powered by Lang, based on MinkJ
+# Please do not translate the comments
+# Comments start with a #
+
+# TRANSLATORS, FEEL FREE TO PUT YOUR NAME HERE FOR CREDITS!
+author=Translated in English by utybo
 
 # General
 title=OpenBST
 error=Error
 bsterror=BST Error
 wait=Please wait...
+
+# Banner and menu
+banner.title=OpenBST
+banner.titleextended=OpenBST [Click me to open a shortcuts menu!]
+menu.title=OpenBST Menu
+menu.open=Open a file
+menu.advanced=Advanced tools
+menu.package=Package a BST file...
+menu.about=About OpenBST
+
+# Package tool
+pkg.title=BST Package Craft Tool
+# MAKE SURE YOU KEEP A SPACE AT THE END OF THE TWO FOLLOWING LINES!
+pkg.in=File to package : 
+pkg.out=Output : 
+pkg.select=Select file...
+pkg.selin=Select the BST file that will be packaged...
+pkg.selout=Where should the file be saved?
+pkg.help=<html>A BST Package (BSP) is an archive that contains everything that your story needs : resources, the .bst file itself, and much more!<p><p>Package your .bst file to avoid having to manually zip all the resources. This allows you to distribute your BST stories in an easy way, with only one file.<p><p>The BSP file created can easily be opened like any regular BST file.
+pkg.start=Start packaging!
+pkg.cancel=Cancel
+pkg.inprogress=Packaging, please wait...
+
+# About dialog
+about.title=About OpenBST
+about.version=Version : §v
 
 # Loading files
 file.title=Choose a BST file...

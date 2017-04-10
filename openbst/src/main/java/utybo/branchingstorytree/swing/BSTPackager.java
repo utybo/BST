@@ -20,6 +20,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.HashMap;
 import java.util.Scanner;
+import java.util.function.Consumer;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -44,10 +45,9 @@ public class BSTPackager
 {
     public static void main(String[] args) throws Exception
     {
+        Scanner sc = new Scanner(System.in);
         while(true)
         {
-            @SuppressWarnings("resource")
-            Scanner sc = new Scanner(System.in);
 
             System.out.println("What do you wish to package today?");
             File f = new File(sc.nextLine());
@@ -60,22 +60,33 @@ public class BSTPackager
             outFile.delete();
             outFile.createNewFile();
             System.out.println("Packaging...");
-            toPackage(f, new FileOutputStream(outFile), new HashMap<>());
+            toPackage(f, new FileOutputStream(outFile), new HashMap<>(), s -> System.out.println(s));
             System.out.println("Done");
             break;
         }
+        sc.close();
     }
 
     public static void toPackage(File bstFile, OutputStream out, HashMap<String, String> meta) throws IOException
     {
+        toPackage(bstFile, out, meta, null);
+    }
+
+    public static void toPackage(File bstFile, OutputStream out, HashMap<String, String> meta, Consumer<String> cs) throws IOException
+    {
         TarArchiveOutputStream tar = new TarArchiveOutputStream(new GZIPOutputStream(out));
+
+        cs.accept("Packaging the main BST file");
         // Write the main BST file
         tarFile(bstFile, tar);
 
         // Write the resources folder
-        tarFolder(new File(bstFile.getParentFile(), "resources"), "resources", tar);
+        if(cs != null)
+            cs.accept("Packaging resources");
+        tarFolder(new File(bstFile.getParentFile(), "resources"), "resources", tar, cs);
 
         // Write the meta file
+        cs.accept("Writing meta information");
         meta.put("mainFile", bstFile.getName());
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         OutputStreamWriter osw = new OutputStreamWriter(baos, "UTF-8");
@@ -89,15 +100,19 @@ public class BSTPackager
         IOUtils.copy(bais, tar);
         tar.closeArchiveEntry();
         tar.close();
+        
+        cs.accept("Done");
     }
 
     private static void tarFile(File file, TarArchiveOutputStream tar) throws IOException
     {
-        tarFile(file, file.getName(), tar);
+        tarFile(file, file.getName(), tar, null);
     }
 
-    private static void tarFile(File file, String name, TarArchiveOutputStream tar) throws IOException
+    private static void tarFile(File file, String name, TarArchiveOutputStream tar, Consumer<String> cs) throws IOException
     {
+        if(cs != null)
+            cs.accept("Packaging " + file.getName());
         TarArchiveEntry entry = new TarArchiveEntry(name);
         entry.setSize(file.length());
         tar.putArchiveEntry(entry);
@@ -107,8 +122,10 @@ public class BSTPackager
         tar.closeArchiveEntry();
     }
 
-    private static void tarFolder(File folder, String base, TarArchiveOutputStream tar) throws IOException
+    private static void tarFolder(File folder, String base, TarArchiveOutputStream tar, Consumer<String> cs) throws IOException
     {
+        if(cs != null)
+            cs.accept("Packaging folder " + folder.getName());
         if(!folder.exists() || !folder.isDirectory())
             return;
         else
@@ -117,10 +134,10 @@ public class BSTPackager
             {
                 if(f.isDirectory())
                 {
-                    tarFolder(f, base + "/" + f.getName(), tar);
+                    tarFolder(f, base + "/" + f.getName(), tar, cs);
                     continue;
                 }
-                tarFile(f, base + "/" + f.getName(), tar);
+                tarFile(f, base + "/" + f.getName(), tar, cs);
             }
         }
     }
