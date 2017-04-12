@@ -54,6 +54,7 @@ public class BranchingStoryTreeParser
     private final Pattern scriptPattern = Pattern.compile("(\\{(.+?):(.*?)})|(\\[(.+?):(.*?)])");
     private final Pattern ifNextNodeDefiner = Pattern.compile("([-]?\\d+),([-]?\\d+)\\[(.+:.+)]");
     private final Pattern staticNodeDefiner = Pattern.compile("\\d+");
+    private final Pattern externalNodeDefiner = Pattern.compile("([\\w_]+?):(.*)");
 
     private final Pattern lnLineSubscript = Pattern.compile("([\\w_]+?):(.*)");
     private final Pattern lnTernary = Pattern.compile("((\\[.+?:.*?])+)\\?((\\{.+?:.*?})+)(:((\\{.+?:.*?})*))?");
@@ -78,7 +79,7 @@ public class BranchingStoryTreeParser
      * @throws BSTException
      *             if something is wrong with your input
      */
-    public synchronized BranchingStory parse(final BufferedReader br, final Dictionnary dictionnary, final BSTClient client) throws IOException, BSTException
+    public synchronized BranchingStory parse(final BufferedReader br, final Dictionnary dictionnary, final BSTClient client, String name) throws IOException, BSTException
     {
         final BranchingStory story = new BranchingStory();
 
@@ -125,13 +126,13 @@ public class BranchingStoryTreeParser
                     // Check if logical node
                     if(logicalNodePattern.matcher(line).matches())
                     {
-                        node = new LogicalNode(id);
+                        node = new LogicalNode(id, story);
                         nodeType = LOGICAL;
                         story.addNode(node);
                     }
                     else if(virtualNodePattern.matcher(line).matches())
                     {
-                        node = new VirtualNode(id);
+                        node = new VirtualNode(id, story);
                         nodeType = VIRTUAL;
                         story.addNode(node);
                         ((VirtualNode)node).setText(line.substring(line.indexOf(":") + 2));
@@ -139,7 +140,7 @@ public class BranchingStoryTreeParser
                     }
                     else
                     {
-                        node = new TextNode(id);
+                        node = new TextNode(id, story);
                         nodeType = NORMAL;
                         story.addNode(node);
                         ((TextNode)node).setText(line.substring(line.indexOf(":") + 1));
@@ -175,7 +176,7 @@ public class BranchingStoryTreeParser
                             ((TextNode)node).addOption(option);
 
                             final String nextNodeDefiner = bits[1];
-                            option.setNextNode(parseNND(nextNodeDefiner, dictionnary, lineNumber, story, client));
+                            option.setNextNode(parseNND(nextNodeDefiner, dictionnary, lineNumber, story, client, name));
 
                             Matcher matcher;
                             if(bits.length > 2)
@@ -202,7 +203,7 @@ public class BranchingStoryTreeParser
                                         }
                                         else
                                         {
-                                            throw new BSTException(lineNumber, "This checker or action does not exist : " + header);
+                                            throw new BSTException(lineNumber, "This checker or action does not exist : " + header, name);
                                         }
 
                                     }
@@ -249,7 +250,7 @@ public class BranchingStoryTreeParser
                     else if(nodeType == LOGICAL)
                     {
                         final String nextNodeDefiner = line.substring(1);
-                        ((LogicalNode)node).addInstruction(new LNCondReturn(parseNND(nextNodeDefiner, dictionnary, lineNumber, story, client)));
+                        ((LogicalNode)node).addInstruction(new LNCondReturn(parseNND(nextNodeDefiner, dictionnary, lineNumber, story, client, name)));
                     }
                 }
                 else if(node != null && !optionsStarted)
@@ -273,9 +274,9 @@ public class BranchingStoryTreeParser
                         final Matcher m = lnLineSubscript.matcher(line);
                         if(m.matches())
                         {
-                            final String name = m.group(1);
+                            final String head = m.group(1);
                             final String body = m.group(2);
-                            ln.addInstruction(new LNExec(new ActionDescriptor(dictionnary.getAction(name), name, body, lineNumber, story, client)));
+                            ln.addInstruction(new LNExec(new ActionDescriptor(dictionnary.getAction(head), head, body, lineNumber, story, client)));
                         }
                         else
                         {
@@ -364,15 +365,19 @@ public class BranchingStoryTreeParser
         }
         catch(final Exception e)
         {
-            throw new BSTException(lineNumber, "An error was detected while trying to understand your file. Please check the line : " + (line.length() > 25 ? line.substring(0, 25) + "[...]" : line), e);
+            throw new BSTException(lineNumber, "An error was detected while trying to understand your file. Please check the line : " + (line.length() > 25 ? line.substring(0, 25) + "[...]" : line), e, name);
         }
+
+        // Always add the story's name in the tag __sourcename, as it allows to get more traceability
+        story.putTag("__sourcename", name);
         return story;
     }
 
-    private NextNodeDefiner parseNND(final String nnd, final Dictionnary dictionnary, final int lineNumber, final BranchingStory story, final BSTClient client) throws BSTException
+    private NextNodeDefiner parseNND(final String nnd, final Dictionnary dictionnary, final int lineNumber, final BranchingStory story, final BSTClient client, String name) throws BSTException
     {
         final Matcher matcher = ifNextNodeDefiner.matcher(nnd);
         final Matcher matchStatic = staticNodeDefiner.matcher(nnd);
+        final Matcher matchExt = externalNodeDefiner.matcher(nnd);
         if(matcher.matches())
         {
             final int first = Integer.parseInt(matcher.group(1));
@@ -387,9 +392,13 @@ public class BranchingStoryTreeParser
         {
             return new StaticNextNode(Integer.parseInt(nnd));
         }
+        else if(matchExt.matches())
+        {
+            return dictionnary.getExtNND(matchExt.group(1), matchExt.group(2), client, lineNumber, name);
+        }
         else
         {
-            return new VariableNextNode(story, nnd);
+            return new VariableNextNode(nnd);
         }
 
     }

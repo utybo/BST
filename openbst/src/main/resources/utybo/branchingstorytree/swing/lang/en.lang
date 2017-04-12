@@ -36,14 +36,14 @@ pkg.inprogress=Packaging, please wait...
 
 # About dialog
 about.title=About OpenBST
-about.version=Version : §v
+about.version=Version : $v
 
 # Loading files
 file.title=Choose a BST file...
 file.error=<html>There was an error during file loading. Please try again and make sure your file is correct.<p>($e: $m)
 file.bsterror.1=<html><b>-- BST Error --</b><p>
 file.bsterror.2=Your file seems to have an error here :<p>
-file.bsterror.3=Line : $l<p>
+file.bsterror.3=Line : $l (from $f)<p>
 file.bsterror.4=Cause : $e ($m)<p>
 file.bsterror.5=Message : $m<p>
 file.bsterror.6=<p>Do you wish to reload the file?
@@ -79,7 +79,7 @@ story.close.confirm=<html><body style='width: 300px'>You are about to close this
 story.error=<html>Error on node $n :<p>$m
 story.error2=<html>Error on node $n (line $l) :<p>$m
 story.missinginitial=The initial node does not exist. Make sure you are using a correct BST file.
-story.missingnode=The node that was supposed to be opened does not exist. Current node : $n
+story.missingnode=The node $n that was supposed to be opened does not exist! (Alias : $a, from : $f)
 story.final.end=The End.
 story.final.node=Final node : $n
 story.final.restart=Restart

@@ -38,7 +38,7 @@ public class IMGClient implements IMGHandler
         }
         catch(final IOException e)
         {
-            throw new BSTException(-1, "Could not load image", e);
+            throw new BSTException(-1, "Could not load image", e, "<none>");
         }
     }
 

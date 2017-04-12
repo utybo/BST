@@ -49,7 +49,7 @@ public class SSBClient implements SSBHandler
         }
         catch(IOException e)
         {
-            throw new BSTException(-1, "Could not create temporary file", e);
+            throw new BSTException(-1, "Could not create temporary file", e, "<none>");
         }
     }
 

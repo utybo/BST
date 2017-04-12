@@ -49,9 +49,9 @@ public class NodeOption extends TagHolder
      * @throws BSTException
      *             if an exception occurs
      */
-    public int getNextNode() throws BSTException
+    public StoryNode getNextNode(BranchingStory story) throws BSTException
     {
-        return nextNode.getNextNode();
+        return nextNode.getNextNode(story);
     }
 
     /**

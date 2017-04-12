@@ -48,6 +48,7 @@ import com.google.gson.Gson;
 
 import net.miginfocom.swing.MigLayout;
 import utybo.branchingstorytree.api.BSTException;
+import utybo.branchingstorytree.api.NodeNotFoundException;
 import utybo.branchingstorytree.api.script.ActionDescriptor;
 import utybo.branchingstorytree.api.story.BranchingStory;
 import utybo.branchingstorytree.api.story.LogicalNode;
@@ -201,7 +202,7 @@ public class StoryPanel extends JPanel
                 @Override
                 public void actionPerformed(final ActionEvent e)
                 {
-                    latestSaveState = new SaveState(currentNode.getId(), story.getRegistry());
+                    latestSaveState = new SaveState(currentNode.getId(), story.getRegistry(), currentNode.getStory().getTag("__sourcename"));
                     restoreSaveStateButton.setEnabled(true);
                     if(exportSaveStateButton != null)
                     {
@@ -245,7 +246,7 @@ public class StoryPanel extends JPanel
                             {
                                 file.createNewFile();
                                 final FileWriter writer = new FileWriter(file);
-                                gson.toJson(new SaveState(currentNode.getId(), story.getRegistry()), writer);
+                                gson.toJson(new SaveState(currentNode.getId(), story.getRegistry(), currentNode.getStory().getTag("__sourcename")), writer);
                                 writer.flush();
                                 writer.close();
                             }
@@ -313,7 +314,7 @@ public class StoryPanel extends JPanel
                         {
                             if(JOptionPane.showConfirmDialog(parentWindow, Lang.get("story.sreload.confirm"), Lang.get("story.sreload.confirm.title"), JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, new ImageIcon(OpenBST.refreshBigImage)) == JOptionPane.YES_OPTION)
                             {
-                                final SaveState ss = new SaveState(currentNode.getId(), story.getRegistry());
+                                final SaveState ss = new SaveState(currentNode.getId(), story.getRegistry(), currentNode.getStory().getTag("__sourcename"));
                                 reset();
                                 reload();
                                 reset();
@@ -568,11 +569,20 @@ public class StoryPanel extends JPanel
      */
     protected void restoreSaveState(final SaveState ss)
     {
+        System.out.println("From " + ss.getFrom() + " id " + ss.getNodeId());
         ss.applySaveState(story);
-        showNode(story.getNode(ss.getNodeId()));
         // Also notify modules that need to restore their state
         client.getSSBHandler().restoreSaveState();
         client.getIMGHandler().restoreSaveState();
+        try
+        {
+            client.getBRMHandler().restoreSaveState();
+        }
+        catch(final BSTException e)
+        {
+            // TODO Indicate this happened
+            LOG.error("Error on BRM restore attempt", e);
+        }
         try
         {
             client.getUIBarHandler().restoreState();
@@ -581,6 +591,35 @@ public class StoryPanel extends JPanel
         {
             // TODO Indicate this exception happened
             LOG.error("Error on UIB restore attempt", e);
+        }
+        // TODO also load id from the correct story (XBF)
+        String from = ss.getFrom();
+        if(from == null || "<main>".equals(from))
+        {
+            showNode(story.getNode(ss.getNodeId()));
+        }
+        else
+        {
+            BranchingStory bs = client.getXBFHandler().getAdditionalStory(from);
+            if(bs == null)
+            {
+                LOG.error("Unknown story : " + from);
+                // TODO Indicate that this happened
+            }
+            else
+            {
+                StoryNode node = bs.getNode(ss.getNodeId());
+                if(node == null)
+                {
+                    LOG.error("Unknown node (id " + ss.getNodeId() + " from " + from);
+                    // TODO Indicate that this happened (maybe with a NodeNotFoundException)
+                }
+                else
+                {
+                    System.out.println("!!");
+                    showNode(node);
+                }
+            }
         }
     }
 
@@ -624,10 +663,26 @@ public class StoryPanel extends JPanel
                 {
                     optionSelected(options[optionId]);
                 }
+                catch(final NodeNotFoundException e)
+                {
+                    LOG.error("Node not found : " + e.getId());
+                    if(currentNode == null)
+                    {
+                        LOG.debug("=> It was the initial node");
+                        JOptionPane.showMessageDialog(this, Lang.get("story.missinginitial"), Lang.get("error"), JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                    else
+                    {
+                        // TODO finish the replaced stuff
+                        JOptionPane.showMessageDialog(this, Lang.get("story.missingnode").replace("$n", "" + e.getId()).replace("$f", "" + e.getSourceFile()).replace("$a", "<none>"), Lang.get("error"), JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                }
                 catch(final BSTException e)
                 {
                     LOG.error("Encountered an error while triggering option", e);
-                    JOptionPane.showMessageDialog(this, Lang.get("story.error").replace("$n", "" + currentNode.getId()).replace("$m", e.getMessage()), Lang.get("error"), JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, Lang.get("story.error").replace("$n", "" + currentNode.getId()).replace("$f", e.getSourceFile()).replace("$m", e.getMessage()), Lang.get("error"), JOptionPane.ERROR_MESSAGE);
                 }
             });
             optionPanel.add(button);
@@ -660,18 +715,21 @@ public class StoryPanel extends JPanel
         if(storyNode == null)
         {
             // The node does not exist
-            LOG.error("Node launched does not exist");
-            if(currentNode == null)
-            {
-                LOG.debug("=> It was the initial node");
-                JOptionPane.showMessageDialog(this, Lang.get("story.missinginitial"), Lang.get("error"), JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            else
-            {
-                JOptionPane.showMessageDialog(this, Lang.get("story.missingnode").replace("$n", "" + currentNode.getId()), Lang.get("error"), JOptionPane.ERROR_MESSAGE);
-                return;
-            }
+            // This should never happen
+            //            LOG.error("Node launched does not exist");
+            //            if(currentNode == null)
+            //            {
+            //                LOG.debug("=> It was the initial node");
+            //                JOptionPane.showMessageDialog(this, Lang.get("story.missinginitial"), Lang.get("error"), JOptionPane.ERROR_MESSAGE);
+            //                return;
+            //            }
+            //            else
+            //            {
+            //                JOptionPane.showMessageDialog(this, Lang.get("story.missingnode").replace("$n", "" + currentNode.getId()), Lang.get("error"), JOptionPane.ERROR_MESSAGE);
+            //                return;
+            //            }
+            return;
+            // TODO crash and show error
         }
 
         LOG.trace("=> Trying to show node : " + storyNode.getId());
@@ -688,10 +746,10 @@ public class StoryPanel extends JPanel
             if(storyNode instanceof LogicalNode)
             {
                 LOG.trace("=> Solving logical node");
-                final int i = ((LogicalNode)storyNode).solve();
-                LOG.trace("=> Logical node result : " + i);
+                StoryNode node = ((LogicalNode)storyNode).solve(story);
+                LOG.trace("=> Logical node result : " + (node == null ? "null" : node.getId()));
                 // TODO Throw a nicer exception when an invalid value is returned
-                showNode(story.getNode(i));
+                showNode(node);
             }
 
             // This is supposed to be executed when the StoryNode is a TextNode
@@ -718,13 +776,13 @@ public class StoryPanel extends JPanel
         catch(final BSTException e)
         {
             LOG.error("Encountered a BST exception while trying to show a node", e);
-            final String s = Lang.get("story.error2").replace("$n", "" + currentNode.getId()).replace("$m", e.getMessage()).replace("$l", e.getWhere() + "");
+            final String s = Lang.get("story.error2").replace("$n", "" + currentNode.getId()).replace("$f", e.getMessage()).replace("$m", e.getMessage()).replace("$l", e.getWhere() + "");
             JOptionPane.showMessageDialog(this, s, Lang.get("error"), JOptionPane.ERROR_MESSAGE);
         }
         catch(final Exception e)
         {
             LOG.error("Encountered a generic exception while trying to show a node", e);
-            JOptionPane.showMessageDialog(this, Lang.get("story.error").replace("$n", "" + currentNode.getId()).replace("$m", e.getMessage()), Lang.get("error"), JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, Lang.get("story.error").replace("$n", "" + currentNode.getId()).replace("$f", storyNode.getStory().getTag("__sourcename")).replace("$m", e.getMessage()), Lang.get("error"), JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -873,12 +931,12 @@ public class StoryPanel extends JPanel
      */
     private void optionSelected(final NodeOption nodeOption) throws BSTException
     {
-        final int nextNode = nodeOption.getNextNode();
+        final StoryNode nextNode = nodeOption.getNextNode(currentNode.getStory());
         for(final ActionDescriptor oa : nodeOption.getDoOnClickActions())
         {
             oa.exec();
         }
-        showNode(story.getNode(nextNode));
+        showNode(nextNode);
     }
 
     /**

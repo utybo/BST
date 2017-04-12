@@ -24,29 +24,34 @@ public class BSTException extends Exception
     private static final long serialVersionUID = 1L;
 
     private int where;
+    private String source;
 
-    public BSTException(final int where)
-    {
-        super();
-        this.where = where;
-    }
-
-    public BSTException(final int where, final String message, final Throwable cause)
+    public BSTException(final int where, final String message, final Throwable cause, String source)
     {
         super(message, cause);
         this.where = where;
+        this.source = source;
     }
 
-    public BSTException(final int where, final String message)
+    public BSTException(final int where, final String message, String source)
     {
         super(message);
         this.where = where;
+        this.source = source;
     }
 
-    public BSTException(final int where, final Throwable cause)
+    public BSTException(final int where, final Throwable cause, String source)
     {
         super(cause);
         this.where = where;
+        this.source = source;
+    }
+
+    public BSTException(int where, String source)
+    {
+        super();
+        this.where = where;
+        this.source = source;
     }
 
     public int getWhere()
@@ -59,4 +64,8 @@ public class BSTException extends Exception
         this.where = where;
     }
 
+    public String getSourceFile()
+    {
+        return source;
+    }
 }

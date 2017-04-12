@@ -10,6 +10,8 @@ package utybo.branchingstorytree.api.story.logicalnode;
 
 import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.api.script.ActionDescriptor;
+import utybo.branchingstorytree.api.story.BranchingStory;
+import utybo.branchingstorytree.api.story.StoryNode;
 
 /**
  * An instruction that executes an action
@@ -33,9 +35,9 @@ public class LNExec extends LNInstruction
     }
 
     @Override
-    public int execute() throws BSTException
+    public StoryNode execute(BranchingStory story) throws BSTException
     {
         action.exec();
-        return -1;
+        return null;
     }
 }

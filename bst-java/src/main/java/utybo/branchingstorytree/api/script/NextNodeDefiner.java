@@ -9,6 +9,9 @@
 package utybo.branchingstorytree.api.script;
 
 import utybo.branchingstorytree.api.BSTException;
+import utybo.branchingstorytree.api.NodeNotFoundException;
+import utybo.branchingstorytree.api.story.BranchingStory;
+import utybo.branchingstorytree.api.story.StoryNode;
 
 /**
  * A next node definer is used to guess which node should be next. Each NND
@@ -26,5 +29,5 @@ public interface NextNodeDefiner
      * @throws BSTException
      *             If an exception occurs during the process
      */
-    public int getNextNode() throws BSTException;
+    public StoryNode getNextNode(BranchingStory story) throws NodeNotFoundException, BSTException;
 }

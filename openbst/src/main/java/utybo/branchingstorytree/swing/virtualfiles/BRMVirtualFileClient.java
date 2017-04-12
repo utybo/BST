@@ -16,23 +16,29 @@ import org.apache.commons.io.FilenameUtils;
 
 import utybo.branchingstorytree.api.BSTClient;
 import utybo.branchingstorytree.api.BSTException;
-import utybo.branchingstorytree.brm.BRMHandler;
+import utybo.branchingstorytree.api.story.BranchingStory;
 import utybo.branchingstorytree.brm.BRMResourceConsumer;
+import utybo.branchingstorytree.swing.BRMRestorableHandler;
 
-public class BRMVirtualFileClient implements BRMHandler
+public class BRMVirtualFileClient implements BRMRestorableHandler
 {
     private final VirtualFileHolder vfHolder;
     private final BSTClient client;
+    private final BranchingStory origin;
+    private boolean initialized;
 
-    public BRMVirtualFileClient(final VirtualFileHolder vfHolder, final BSTClient client)
+    public BRMVirtualFileClient(final VirtualFileHolder vfHolder, final BSTClient client, final BranchingStory story)
     {
         this.vfHolder = vfHolder;
         this.client = client;
+        this.origin = story;
     }
 
     @Override
     public void loadAuto() throws BSTException
     {
+        initialized = true;
+        origin.getRegistry().put("__brm_initialized", 1);
         Pattern filePattern = Pattern.compile("resources\\/(.+?)\\/(.+)");
         for(VirtualFile vf : vfHolder)
         {
@@ -48,4 +54,12 @@ public class BRMVirtualFileClient implements BRMHandler
         }
     }
 
+    public void restoreSaveState() throws BSTException
+    {
+        Object o = origin.getRegistry().get("__brm_initialized", 0);
+        if(!initialized && o instanceof Integer && (Integer)o == 1)
+        {
+            loadAuto();
+        }
+    }
 }

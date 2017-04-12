@@ -12,6 +12,7 @@ import java.util.HashMap;
 
 import org.atteo.classindex.ClassIndex;
 
+import utybo.branchingstorytree.api.BSTClient;
 import utybo.branchingstorytree.api.BSTException;
 
 /**
@@ -33,6 +34,8 @@ public class Dictionnary
      * A HashMap with checker names as keys and script checkers as values
      */
     private final HashMap<String, ScriptChecker> checkers = new HashMap<>();
+
+    private final HashMap<String, ExtNNDFactory> nndFactories = new HashMap<>();
 
     /**
      * Creates a simple dictionary using all the implementations known.
@@ -66,7 +69,18 @@ public class Dictionnary
                 }
             }
         }
-
+        for(final Class<? extends ExtNNDFactory> jclass : ClassIndex.getSubclasses(ExtNNDFactory.class))
+        {
+            final ExtNNDFactory factory = jclass.newInstance();
+            final String[] names = factory.getNames();
+            if(names != null)
+            {
+                for(final String s : names)
+                {
+                    nndFactories.put(s, factory);
+                }
+            }
+        }
     }
 
     /**
@@ -89,5 +103,12 @@ public class Dictionnary
     public ScriptChecker getChecker(final String checker) throws BSTException
     {
         return checkers.get(checker);
+    }
+
+    public NextNodeDefiner getExtNND(String group, String group2, BSTClient client, int line, String sourceName) throws BSTException
+    {
+        if(nndFactories.get(group) == null)
+            throw new BSTException(line, "Unknown external next node definer : " + group, sourceName);
+        return nndFactories.get(group).createNND(group, group2, client);
     }
 }

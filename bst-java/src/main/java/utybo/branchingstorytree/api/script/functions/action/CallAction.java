@@ -27,7 +27,7 @@ public class CallAction implements ScriptAction
     public void exec(final String head, final String desc, final int line, final BranchingStory story, final BSTClient client) throws BSTException
     {
         final int i = Integer.parseInt(desc);
-        ((LogicalNode)story.getNode(i)).solve();
+        ((LogicalNode)story.getNode(i)).solve(story);
         // TODO add exception checking
     }
 

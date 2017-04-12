@@ -45,7 +45,7 @@ public class RandomAction implements ScriptAction
         }
         else
         {
-            throw new BSTException(line, "Incorrect syntax : rand:variabletoset,maximum OR rand:variabletoset,minimum,maximum");
+            throw new BSTException(line, "Incorrect syntax : rand:variabletoset,maximum OR rand:variabletoset,minimum,maximum", story.getTag("__sourcename"));
         }
         final int range = max - min + 1; // +1 because nextInt is exclusive
         int value = new Random().nextInt(range);

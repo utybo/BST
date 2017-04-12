@@ -9,7 +9,9 @@
 package utybo.branchingstorytree.api.script;
 
 import utybo.branchingstorytree.api.BSTException;
+import utybo.branchingstorytree.api.NodeNotFoundException;
 import utybo.branchingstorytree.api.story.BranchingStory;
+import utybo.branchingstorytree.api.story.StoryNode;
 
 /**
  * A Next Node Definer that defines the next node based on the value of a
@@ -20,7 +22,6 @@ import utybo.branchingstorytree.api.story.BranchingStory;
  */
 public class VariableNextNode implements NextNodeDefiner
 {
-    private final BranchingStory story;
     private final String variable;
 
     /**
@@ -31,23 +32,24 @@ public class VariableNextNode implements NextNodeDefiner
      * @param nextNodeDefiner
      *            The variable's name
      */
-    public VariableNextNode(final BranchingStory story, final String nextNodeDefiner)
+    public VariableNextNode(final String nextNodeDefiner)
     {
-        this.story = story;
         variable = nextNodeDefiner;
     }
 
     @Override
-    public int getNextNode() throws BSTException
+    public StoryNode getNextNode(BranchingStory story) throws BSTException
     {
         final Integer i = story.getRegistry().getAllInt().get(variable);
         if(i == null)
         {
-            throw new BSTException(-1, "Unknown or unset variable : " + i + " (note : it NEEDS to be an integer)");
+            throw new BSTException(-1, "Unknown or unset variable : " + i + " (note : it NEEDS to be an integer)", story.getTag("__sourcename"));
         }
         else
         {
-            return i;
+            if(story.getNode(i) == null)
+                throw new NodeNotFoundException(i, story.getTag("__sourcename"));
+            return story.getNode(i);
         }
     }
 

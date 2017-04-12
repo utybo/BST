@@ -32,7 +32,7 @@ public class BDFClient implements BDFHandler
         }
         catch(final IOException e)
         {
-            throw new BSTException(-1, "Error when reading file " + name, e);
+            throw new BSTException(-1, "Error when reading file " + name, e, "<none>");
         }
     }
 

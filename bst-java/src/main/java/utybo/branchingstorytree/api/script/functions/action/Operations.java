@@ -45,7 +45,7 @@ public class Operations implements ScriptAction
         }
         else
         {
-            throw new BSTException(line, "Invalid syntax : {" + head + ":a,b} for a + b with result in a or {add:a,b,c} for b + c with result in a");
+            throw new BSTException(line, "Invalid syntax : {" + head + ":a,b} for a + b with result in a or {add:a,b,c} for b + c with result in a", story.getTag("__sourcename"));
         }
 
         int ia, ib;

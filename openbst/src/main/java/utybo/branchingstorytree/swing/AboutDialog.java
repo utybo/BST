@@ -49,6 +49,7 @@ public class AboutDialog extends JDialog
 
         JLabel lblWebsite = new JLabel("https://utybo.github.io/BST/");
         Font f = lblWebsite.getFont();
+        @SuppressWarnings("rawtypes")
         Map attrs = f.getAttributes();
         attrs.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
         lblWebsite.setFont(f.deriveFont(attrs));
@@ -72,7 +73,7 @@ public class AboutDialog extends JDialog
         });
         pan.add(lblWebsite, "cell 0 0,alignx center");
 
-        JLabel lblVersion = new JLabel(Lang.get("about.version").replace("§v", OpenBST.version));
+        JLabel lblVersion = new JLabel(Lang.get("about.version").replace("$v", OpenBST.version));
         pan.add(lblVersion, "flowy,cell 0 1");
 
         JScrollPane scrollPane = new JScrollPane();

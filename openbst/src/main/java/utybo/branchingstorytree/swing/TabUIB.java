@@ -26,6 +26,7 @@ import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.api.StoryUtils;
 import utybo.branchingstorytree.api.script.VariableRegistry;
 import utybo.branchingstorytree.api.story.LogicalNode;
+import utybo.branchingstorytree.api.story.StoryNode;
 import utybo.branchingstorytree.api.story.VirtualNode;
 import utybo.branchingstorytree.uib.UIBarHandler;
 
@@ -257,11 +258,13 @@ public class TabUIB implements UIBarHandler
         {
             if(string.startsWith(">"))
             {
-                return computeText(Integer.valueOf(string.substring(1)), true);
+                // TODO Handle null values correctly
+                return computeText(tab.story.getNode(Integer.valueOf(string.substring(1))), true);
             }
             else if(string.startsWith("&"))
             {
-                return computeText(Integer.valueOf(string.substring(1)), false);
+                // TODO Handle null values correctly
+                return computeText(tab.story.getNode(Integer.valueOf(string.substring(1))), false);
             }
         }
         catch(final NumberFormatException e)
@@ -269,16 +272,16 @@ public class TabUIB implements UIBarHandler
         return string;
     }
 
-    private String computeText(final int i, final boolean isVirtual) throws BSTException
+    private String computeText(final StoryNode i, final boolean isVirtual) throws BSTException
     {
         if(isVirtual)
         {
-            return StoryUtils.solveVariables((VirtualNode)tab.story.getNode(i), tab.story);
+            return StoryUtils.solveVariables((VirtualNode)i, tab.story);
         }
         else
         {
-            final int j = ((LogicalNode)tab.story.getNode(i)).solve();
-            return computeText(j, tab.story.getNode(j) instanceof LogicalNode ? false : true);
+            final StoryNode j = ((LogicalNode)i).solve(tab.story);
+            return computeText(j, j instanceof LogicalNode ? false : true);
         }
     }
 

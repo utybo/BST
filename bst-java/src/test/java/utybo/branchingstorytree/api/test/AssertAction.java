@@ -34,7 +34,7 @@ public class AssertAction implements ScriptAction
         }
         catch(InstantiationException | IllegalAccessException e)
         {
-            throw new BSTException(line, "Could not create dictionary", e);
+            throw new BSTException(line, "Could not create dictionary", e, story.getTag("__sourcename"));
         }
 
         final Pattern p = Pattern.compile("([\\w_]+?):(.*)");

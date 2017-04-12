@@ -100,7 +100,7 @@ public class BSTPackager
         IOUtils.copy(bais, tar);
         tar.closeArchiveEntry();
         tar.close();
-        
+
         cs.accept("Done");
     }
 
@@ -158,8 +158,8 @@ public class BSTPackager
         {}.getType());
         System.out.println(meta.toString());
         BranchingStoryTreeParser parser = new BranchingStoryTreeParser();
-        BranchingStory bs = parser.parse(new BufferedReader(new InputStreamReader(new ByteArrayInputStream(vfh.getFile(meta.get("mainFile")).getData()))), new Dictionnary(), client);
-        client.setBRMHandler(new BRMVirtualFileClient(vfh, client));
+        BranchingStory bs = parser.parse(new BufferedReader(new InputStreamReader(new ByteArrayInputStream(vfh.getFile(meta.get("mainFile")).getData()))), new Dictionnary(), client, "<main>");
+        client.setBRMHandler(new BRMVirtualFileClient(vfh, client, bs));
         return bs;
     }
 }

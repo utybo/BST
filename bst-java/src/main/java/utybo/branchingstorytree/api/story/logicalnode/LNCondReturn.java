@@ -10,7 +10,9 @@ package utybo.branchingstorytree.api.story.logicalnode;
 
 import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.api.script.NextNodeDefiner;
+import utybo.branchingstorytree.api.story.BranchingStory;
 import utybo.branchingstorytree.api.story.LogicalNode;
+import utybo.branchingstorytree.api.story.StoryNode;
 
 /**
  * A return statement in a {@link LogicalNode} that determines the next node
@@ -35,8 +37,9 @@ public class LNCondReturn extends LNInstruction
     }
 
     @Override
-    public int execute() throws BSTException
+    public StoryNode execute(BranchingStory story) throws BSTException
     {
-        return innd.getNextNode();
+        StoryNode next = innd.getNextNode(story);
+        return next;
     }
 }

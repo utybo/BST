@@ -12,19 +12,20 @@ import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 import utybo.branchingstorytree.api.BSTClient;
-import utybo.branchingstorytree.brm.BRMHandler;
 import utybo.branchingstorytree.jse.JSEHandler;
+import utybo.branchingstorytree.xbf.XBFHandler;
 
 public class TabClient implements BSTClient
 {
     private final OpenBST instance;
     private StoryPanel tab;
     private TabUIB uibHandler;
-    private BRMHandler brmClient;
+    private BRMRestorableHandler brmClient;
     private SSBClient ssbClient;
     private IMGClient imgClient;
     private final BDFClient bdfClient;
     private final JSEClient jseClient;
+    private XBFClient xbfClient;
 
     public TabClient(final OpenBST instance)
     {
@@ -56,6 +57,7 @@ public class TabClient implements BSTClient
         uibHandler = new TabUIB(tab);
         ssbClient = new SSBClient(tab);
         imgClient = new IMGClient(tab);
+        xbfClient = new XBFClient(tab, this);
     }
 
     @Override
@@ -71,7 +73,7 @@ public class TabClient implements BSTClient
     }
 
     @Override
-    public BRMHandler getBRMHandler()
+    public BRMRestorableHandler getBRMHandler()
     {
         return brmClient;
     }
@@ -94,7 +96,13 @@ public class TabClient implements BSTClient
         return jseClient;
     }
 
-    public void setBRMHandler(BRMHandler handler)
+    @Override
+    public XBFHandler getXBFHandler()
+    {
+        return xbfClient;
+    }
+
+    public void setBRMHandler(BRMRestorableHandler handler)
     {
         this.brmClient = handler;
     }

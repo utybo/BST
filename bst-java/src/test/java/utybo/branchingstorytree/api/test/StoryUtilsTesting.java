@@ -32,14 +32,14 @@ public class StoryUtilsTesting
         final String testDrive = "${test} ${>4} ${&5}";
         // Prepare two nodes for testing
         final String testNode = "Test Complete";
-        final VirtualNode vn = new VirtualNode(4);
+        final VirtualNode vn = new VirtualNode(4, story);
         vn.setText(testNode);
         story.addNode(vn);
-        final LogicalNode ln = new LogicalNode(5);
+        final LogicalNode ln = new LogicalNode(5, story);
         story.addNode(ln);
         ln.addInstruction(new LNCondReturn(new StaticNextNode(4)));
         // Perform test
-        final VirtualNode vn2 = new VirtualNode(555);
+        final VirtualNode vn2 = new VirtualNode(555, story);
         vn2.setText(testDrive);
         final String s = StoryUtils.solveVariables(vn2, story);
         assertEquals(s, "42 Test Complete Test Complete");

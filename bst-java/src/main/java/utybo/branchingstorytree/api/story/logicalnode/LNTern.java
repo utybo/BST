@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.api.script.ActionDescriptor;
 import utybo.branchingstorytree.api.script.CheckerDescriptor;
+import utybo.branchingstorytree.api.story.BranchingStory;
+import utybo.branchingstorytree.api.story.StoryNode;
 
 /**
  * Instruction implementation of ternary statements (if-then-else)
@@ -45,7 +47,7 @@ public class LNTern extends LNInstruction
     }
 
     @Override
-    public int execute() throws BSTException
+    public StoryNode execute(BranchingStory story) throws BSTException
     {
         if(solveCheckers())
         {
@@ -55,7 +57,7 @@ public class LNTern extends LNInstruction
         {
             solve(falseActions);
         }
-        return -1;
+        return null;
     }
 
     private boolean solveCheckers() throws BSTException

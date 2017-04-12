@@ -37,11 +37,11 @@ public class IncrDecr implements ScriptAction
             incr = false;
             break;
         default:
-            throw new BSTException(line, "Internal error");
+            throw new BSTException(line, "Internal error", story.getTag("__sourcename"));
         }
         if(registry.typeOf(desc) != null && registry.typeOf(desc) != Integer.class)
         {
-            throw new BSTException(line, (incr ? "incr" : "decr") + " : The variable " + desc + " is not a number.");
+            throw new BSTException(line, (incr ? "incr" : "decr") + " : The variable " + desc + " is not a number.", story.getTag("__sourcename"));
         }
         registry.put(desc, (Integer)registry.get(desc, 0) + (incr ? 1 : -1));
 

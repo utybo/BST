@@ -24,9 +24,9 @@ public class VirtualNode extends StoryNode
      * @param id
      *            the ID of the node to create
      */
-    public VirtualNode(final int id)
+    public VirtualNode(final int id, BranchingStory story)
     {
-        super(id);
+        super(id, story);
     }
 
     /**

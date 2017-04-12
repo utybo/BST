@@ -34,14 +34,14 @@ pkg.inprogress=Empaquetage en cours, veuillez patienter...
 
 # About dialog
 about.title=A propos d'OpenBST
-about.version=Version : §v
+about.version=Version : $v
 
 # Loading files
 file.title=Choisissez un fichier BST...
 file.error=<html>Il y a eu une erreur durant le chargement du fichier. Veuillez réessayer en vérifiant la validité de votre fichier.<p>($e: $m)
 file.bsterror.1=<html><b>-- Erreur BST --</b><p>
 file.bsterror.2=Votre fichier semble être erroné ici :<p>
-file.bsterror.3=Ligne : $l<p>
+file.bsterror.3=Ligne : $l (depuis $f)<p>
 file.bsterror.4=Cause : $e ($m)<p>
 file.bsterror.5=Message : $m<p>
 file.bsterror.6=<p>Souhaitez vous recharger le fichier?
@@ -70,10 +70,10 @@ story.variablewatcher=Observation de variable...
 story.tip=Survolez une icône pour plus d'informations.
 story.close=Fermer l'onglet
 story.close.confirm=<html><body style='width: 300px'>Voulez vous vraiment fermer cet onglet? Toute progression non sauvegardée et exportée sera perdue.
-story.error=<html>Erreur sur la node $n :<p>$m
-story.error2=<html>Erreur sur la node $n (ligne $l) :<p>$m
+story.error=<html>Erreur sur la node $n (depuis $f) :<p>$m
+story.error2=<html>Erreur sur la node $n (ligne $l, depuis $f) :<p>$m
 story.missinginitial=La node initiale n'existe pas. Vérifiez votre fichier BST.
-story.missingnode=La node qui devait être ouverte n'existe pas. Node actuelle : $n
+story.missingnode=La node $n qui devait être ouverte n'existe pas! (Alias : $a, depuis : $f)
 story.backgroundvisible=Arrière-plan visible
 story.seebackground=Voir l'arrière-plan
 story.background=Arrière-plan

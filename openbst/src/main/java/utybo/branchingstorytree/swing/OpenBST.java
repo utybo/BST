@@ -226,8 +226,9 @@ public class OpenBST extends JFrame
             String ext = FilenameUtils.getExtension(file.getName());
             if(ext.equals("bst"))
             {
-                client.setBRMHandler(new BRMFileClient(file, client));
-                return parser.parse(new BufferedReader(new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8"))), new Dictionnary(), client);
+                BranchingStory bs = parser.parse(new BufferedReader(new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8"))), new Dictionnary(), client, "<main>");
+                client.setBRMHandler(new BRMFileClient(file, client, bs));
+                return bs;
             }
             else if(ext.equals("bsp"))
             {
@@ -251,7 +252,7 @@ public class OpenBST extends JFrame
             LOG.error("BSTException caught", e);
             String s = Lang.get("file.bsterror.1");
             s += Lang.get("file.bsterror.2");
-            s += Lang.get("file.bsterror.3").replace("$l", "" + e.getWhere());
+            s += Lang.get("file.bsterror.3").replace("$l", "" + e.getWhere()).replace("$f", "<main>");
             if(e.getCause() != null)
             {
                 s += Lang.get("file.bsterror.4").replace("$e", e.getCause().getClass().getSimpleName()).replace("$m", e.getCause().getMessage());

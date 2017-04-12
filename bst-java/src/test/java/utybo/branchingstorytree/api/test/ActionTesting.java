@@ -90,13 +90,13 @@ public class ActionTesting
     public static void testFile(final String path, final BSTClient client) throws IOException, BSTException, InstantiationException, IllegalAccessException
     {
         final Dictionnary d = new Dictionnary();
-        final BranchingStory story = new BranchingStoryTreeParser().parse(new BufferedReader(new InputStreamReader(ActionTesting.class.getResourceAsStream("/utybo/branchingstorytree/api/test/files/" + path))), d, client);
+        final BranchingStory story = new BranchingStoryTreeParser().parse(new BufferedReader(new InputStreamReader(ActionTesting.class.getResourceAsStream("/utybo/branchingstorytree/api/test/files/" + path))), d, client, path);
         StoryNode node = story.getInitialNode();
         while(node != null)
         {
             if(node instanceof LogicalNode)
             {
-                node = story.getNode(((LogicalNode)node).solve());
+                node = ((LogicalNode)node).solve(story);
             }
             else
             {

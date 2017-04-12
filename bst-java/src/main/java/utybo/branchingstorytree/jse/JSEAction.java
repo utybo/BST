@@ -56,7 +56,7 @@ public class JSEAction implements ScriptAction
         {
         case "jse_eval":
         {
-            checkReg(engine, registry, line);
+            checkReg(engine, registry, line, story);
 
             // Parse
             final String varName = desc.split(",")[0];
@@ -86,7 +86,7 @@ public class JSEAction implements ScriptAction
             }
             catch(final ScriptException e1)
             {
-                throw new BSTException(line, "Error during script execution : " + e1.getMessage(), e1);
+                throw new BSTException(line, "Error during script execution : " + e1.getMessage(), e1, story.getTag("__sourcename"));
             }
             break;
         }
@@ -115,7 +115,7 @@ public class JSEAction implements ScriptAction
             }
             catch(final ScriptException e)
             {
-                throw new BSTException(line, "Internal error", e);
+                throw new BSTException(line, "Internal error", e, story.getTag("__sourcename"));
             }
             break;
         }
@@ -131,7 +131,7 @@ public class JSEAction implements ScriptAction
         return new String[] {"jse_eval", "jse_reset", "jse_autoimport", "jse_import"};
     }
 
-    public static void checkReg(final ScriptEngine engine, final VariableRegistry registry, final int line) throws BSTException
+    public static void checkReg(final ScriptEngine engine, final VariableRegistry registry, final int line, BranchingStory story) throws BSTException
     {
         if(!registry.get("__jse__auto", "true").toString().equalsIgnoreCase("false"))
         {
@@ -144,7 +144,7 @@ public class JSEAction implements ScriptAction
                 }
                 catch(final ScriptException e1)
                 {
-                    throw new BSTException(line, "Error during JSE initialization (step INT) : " + e1.getMessage(), e1);
+                    throw new BSTException(line, "Error during JSE initialization (step INT) : " + e1.getMessage(), e1, story.getTag("__sourcename"));
                 }
             }
             final HashMap<String, String> strings = registry.getAllString();
@@ -156,7 +156,7 @@ public class JSEAction implements ScriptAction
                 }
                 catch(final ScriptException e1)
                 {
-                    throw new BSTException(line, "Error during JSE initialization (step STRING) : " + e1.getMessage(), e1);
+                    throw new BSTException(line, "Error during JSE initialization (step STRING) : " + e1.getMessage(), e1, story.getTag("__sourcename"));
                 }
             }
         }

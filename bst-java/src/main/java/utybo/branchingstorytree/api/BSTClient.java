@@ -15,6 +15,7 @@ import utybo.branchingstorytree.img.IMGHandler;
 import utybo.branchingstorytree.jse.JSEHandler;
 import utybo.branchingstorytree.ssb.SSBHandler;
 import utybo.branchingstorytree.uib.UIBarHandler;
+import utybo.branchingstorytree.xbf.XBFHandler;
 
 /**
  * A BSTClient is the core class to be used for interaction between the engine
@@ -87,7 +88,12 @@ public interface BSTClient
     {
         return null;
     }
-    
+
+    public default XBFHandler getXBFHandler()
+    {
+        return null;
+    }
+
     public default BRMResourceConsumer getResourceHandler(String name)
     {
         switch(name)
@@ -98,8 +104,11 @@ public interface BSTClient
             return getIMGHandler();
         case "bdf":
             return getBDFHandler();
+        case "xbf":
+            return getXBFHandler();
         default:
             return null;
         }
     }
+
 }

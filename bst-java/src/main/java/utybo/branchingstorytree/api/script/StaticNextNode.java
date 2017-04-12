@@ -8,6 +8,10 @@
  */
 package utybo.branchingstorytree.api.script;
 
+import utybo.branchingstorytree.api.NodeNotFoundException;
+import utybo.branchingstorytree.api.story.BranchingStory;
+import utybo.branchingstorytree.api.story.StoryNode;
+
 /**
  * A classic next node definer that does not change under any circumstance
  *
@@ -30,9 +34,11 @@ public class StaticNextNode implements NextNodeDefiner
     }
 
     @Override
-    public int getNextNode()
+    public StoryNode getNextNode(BranchingStory story) throws NodeNotFoundException
     {
-        return nextNode;
+        if(story.getNode(nextNode) == null)
+            throw new NodeNotFoundException(nextNode, story.getTag("__sourcename"));
+        return story.getNode(nextNode);
     }
 
 }

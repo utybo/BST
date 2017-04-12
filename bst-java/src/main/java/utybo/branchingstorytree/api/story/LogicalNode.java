@@ -41,9 +41,9 @@ public class LogicalNode extends StoryNode
      * @param id
      *            the ID of the logical node
      */
-    public LogicalNode(final int id)
+    public LogicalNode(final int id, BranchingStory story)
     {
-        super(id);
+        super(id, story);
     }
 
     /**
@@ -64,18 +64,18 @@ public class LogicalNode extends StoryNode
      * @throws BSTException
      *             If an exception occurs during the execution of an instruction
      */
-    public int solve() throws BSTException
+    public StoryNode solve(BranchingStory story) throws BSTException
     {
-        int i = -1;
+        StoryNode node = null;
         for(final LNInstruction instruction : instructionStack)
         {
-            final int j = instruction.execute();
-            if(j > -1)
+            final StoryNode j = instruction.execute(story);
+            if(j != null)
             {
-                i = j;
+                node = j;
                 break;
             }
         }
-        return i;
+        return node;
     }
 }

@@ -37,11 +37,11 @@ public class EqualityInequality implements ScriptChecker
             equ = false;
             break;
         default:
-            throw new BSTException(line, "Internal error");
+            throw new BSTException(line, "Internal error", story.getTag("__sourcename"));
         }
         if(desc.split(",").length != 2)
         {
-            throw new BSTException(line, "You need two arguments with any operation");
+            throw new BSTException(line, "You need two arguments with any operation", story.getTag("__sourcename"));
         }
         final String varName = desc.split(",")[0];
         final Object var = registry.get(varName, 0);

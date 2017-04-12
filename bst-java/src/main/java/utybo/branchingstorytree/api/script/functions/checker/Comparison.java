@@ -44,7 +44,7 @@ public class Comparison implements ScriptChecker
         case "lessequ":
             return var <= var2;
         default:
-            throw new BSTException(line, "Internal error");
+            throw new BSTException(line, "Internal error", story.getTag("__sourcename"));
         }
     }
 

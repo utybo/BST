@@ -29,11 +29,11 @@ public interface BRMResourceConsumer
     {
         load(new FileInputStream(new File(pathToResource)), name);
     }
-    
+
     public default void load(File file, String name) throws BSTException, FileNotFoundException
     {
         load(new FileInputStream(file), name);
     }
-    
+
     public void load(InputStream in, String name) throws BSTException;
 }

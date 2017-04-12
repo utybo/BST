@@ -24,3 +24,6 @@ node
 incr:a
 [equ:a,1]?{add:a,2}:{add:b,4}
 :56,-1[equ:a,3]
+
+
+56:Test

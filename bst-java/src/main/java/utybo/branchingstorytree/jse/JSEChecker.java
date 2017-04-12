@@ -33,7 +33,7 @@ public class JSEChecker implements ScriptChecker
             handler.setEngine(new ScriptEngineManager().getEngineByName("JavaScript"));
         }
         final ScriptEngine engine = handler.getEngine();
-        checkReg(engine, registry, line);
+        checkReg(engine, registry, line, story);
         try
         {
             final Object result = engine.eval(desc);
@@ -65,7 +65,7 @@ public class JSEChecker implements ScriptChecker
         }
         catch(final ScriptException e)
         {
-            throw new BSTException(line, "Error during script execution : " + e.getMessage(), e);
+            throw new BSTException(line, "Error during script execution : " + e.getMessage(), e, story.getTag("__sourcename"));
         }
     }
 
