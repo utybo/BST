@@ -596,7 +596,6 @@ public class StoryPanel extends JPanel
             // TODO Indicate this exception happened
             LOG.error("Error on UIB restore attempt", e);
         }
-        // TODO also load id from the correct story (XBF)
         String from = ss.getFrom();
         if(from == null || "<main>".equals(from))
         {
@@ -678,7 +677,6 @@ public class StoryPanel extends JPanel
                     }
                     else
                     {
-                        // TODO finish the replaced stuff
                         JOptionPane.showMessageDialog(this, Lang.get("story.missingnode").replace("$n", "" + e.getId()).replace("$f", "" + e.getSourceFile()).replace("$a", "<none>"), Lang.get("error"), JOptionPane.ERROR_MESSAGE);
                         return;
                     }
