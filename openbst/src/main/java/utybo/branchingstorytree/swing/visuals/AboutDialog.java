@@ -1,4 +1,4 @@
-package utybo.branchingstorytree.swing;
+package utybo.branchingstorytree.swing.visuals;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -25,6 +25,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 import net.miginfocom.swing.MigLayout;
+import utybo.branchingstorytree.swing.OpenBST;
+import utybo.branchingstorytree.swing.utils.Lang;
 
 @SuppressWarnings("serial")
 public class AboutDialog extends JDialog

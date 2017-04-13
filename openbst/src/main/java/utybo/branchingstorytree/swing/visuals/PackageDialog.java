@@ -1,4 +1,4 @@
-package utybo.branchingstorytree.swing;
+package utybo.branchingstorytree.swing.visuals;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
@@ -22,6 +22,9 @@ import javax.swing.JTextField;
 import javax.swing.SwingWorker;
 
 import net.miginfocom.swing.MigLayout;
+import utybo.branchingstorytree.swing.OpenBST;
+import utybo.branchingstorytree.swing.utils.BSTPackager;
+import utybo.branchingstorytree.swing.utils.Lang;
 
 public class PackageDialog extends JDialog
 {

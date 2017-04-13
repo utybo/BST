@@ -1,4 +1,4 @@
-package utybo.branchingstorytree.swing;
+package utybo.branchingstorytree.swing.impl;
 
 import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.brm.BRMHandler;

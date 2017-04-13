@@ -6,7 +6,7 @@
  * This Source Code Form is "Incompatible With Secondary Licenses", as
  * defined by the Mozilla Public License, v. 2.0.
  */
-package utybo.branchingstorytree.swing;
+package utybo.branchingstorytree.swing.visuals;
 
 import java.awt.Dimension;
 import java.awt.FlowLayout;

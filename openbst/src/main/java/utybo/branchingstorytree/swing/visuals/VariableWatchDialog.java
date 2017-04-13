@@ -6,7 +6,7 @@
  * This Source Code Form is "Incompatible With Secondary Licenses", as
  * defined by the Mozilla Public License, v. 2.0.
  */
-package utybo.branchingstorytree.swing;
+package utybo.branchingstorytree.swing.visuals;
 
 import java.awt.BorderLayout;
 import java.awt.event.WindowAdapter;
@@ -27,6 +27,7 @@ import javax.swing.table.DefaultTableModel;
 
 import net.miginfocom.swing.MigLayout;
 import utybo.branchingstorytree.api.script.VariableRegistry;
+import utybo.branchingstorytree.swing.OpenBST;
 
 public class VariableWatchDialog extends JDialog
 {

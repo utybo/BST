@@ -6,7 +6,7 @@
  * This Source Code Form is "Incompatible With Secondary Licenses", as
  * defined by the Mozilla Public License, v. 2.0.
  */
-package utybo.branchingstorytree.swing;
+package utybo.branchingstorytree.swing.visuals;
 
 import static utybo.branchingstorytree.swing.OpenBST.LOG;
 
@@ -56,7 +56,11 @@ import utybo.branchingstorytree.api.story.NodeOption;
 import utybo.branchingstorytree.api.story.SaveState;
 import utybo.branchingstorytree.api.story.StoryNode;
 import utybo.branchingstorytree.api.story.TextNode;
-import utybo.branchingstorytree.swing.JScrollablePanel.ScrollableSizeHint;
+import utybo.branchingstorytree.swing.OpenBST;
+import utybo.branchingstorytree.swing.impl.SSBClient;
+import utybo.branchingstorytree.swing.impl.TabClient;
+import utybo.branchingstorytree.swing.utils.Lang;
+import utybo.branchingstorytree.swing.visuals.JScrollablePanel.ScrollableSizeHint;
 
 public class StoryPanel extends JPanel
 {
@@ -994,5 +998,15 @@ public class StoryPanel extends JPanel
     public File getBSTFile()
     {
         return bstFile;
+    }
+
+    public BranchingStory getStory()
+    {
+        return story;
+    }
+    
+    public JPanel getUIBPanel()
+    {
+        return uibPanel;
     }
 }

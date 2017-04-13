@@ -6,13 +6,15 @@
  * This Source Code Form is "Incompatible With Secondary Licenses", as
  * defined by the Mozilla Public License, v. 2.0.
  */
-package utybo.branchingstorytree.swing;
+package utybo.branchingstorytree.swing.impl;
 
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 import utybo.branchingstorytree.api.BSTClient;
 import utybo.branchingstorytree.jse.JSEHandler;
+import utybo.branchingstorytree.swing.OpenBST;
+import utybo.branchingstorytree.swing.visuals.StoryPanel;
 import utybo.branchingstorytree.xbf.XBFHandler;
 
 public class TabClient implements BSTClient

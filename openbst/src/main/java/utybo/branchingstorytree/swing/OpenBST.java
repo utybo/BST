@@ -63,7 +63,15 @@ import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.api.BranchingStoryTreeParser;
 import utybo.branchingstorytree.api.script.Dictionnary;
 import utybo.branchingstorytree.api.story.BranchingStory;
-import utybo.branchingstorytree.swing.JScrollablePanel.ScrollableSizeHint;
+import utybo.branchingstorytree.swing.impl.BRMFileClient;
+import utybo.branchingstorytree.swing.impl.TabClient;
+import utybo.branchingstorytree.swing.utils.BSTPackager;
+import utybo.branchingstorytree.swing.utils.Lang;
+import utybo.branchingstorytree.swing.visuals.AboutDialog;
+import utybo.branchingstorytree.swing.visuals.JScrollablePanel;
+import utybo.branchingstorytree.swing.visuals.PackageDialog;
+import utybo.branchingstorytree.swing.visuals.StoryPanel;
+import utybo.branchingstorytree.swing.visuals.JScrollablePanel.ScrollableSizeHint;
 
 /**
  * OpenBST is an open source implementation of the BST language that aims to be

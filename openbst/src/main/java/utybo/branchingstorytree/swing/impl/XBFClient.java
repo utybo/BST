@@ -1,4 +1,4 @@
-package utybo.branchingstorytree.swing;
+package utybo.branchingstorytree.swing.impl;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,6 +11,7 @@ import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.api.BranchingStoryTreeParser;
 import utybo.branchingstorytree.api.script.Dictionnary;
 import utybo.branchingstorytree.api.story.BranchingStory;
+import utybo.branchingstorytree.swing.visuals.StoryPanel;
 import utybo.branchingstorytree.xbf.XBFHandler;
 
 public class XBFClient implements XBFHandler
@@ -38,7 +39,7 @@ public class XBFClient implements XBFHandler
             throw new BSTException(-1, "Unexpected exception", e, name);
         }
         stories.put(name, bs);
-        bind(sp.story, bs, name);
+        bind(sp.getStory(), bs, name);
     }
 
     @Override
@@ -50,6 +51,6 @@ public class XBFClient implements XBFHandler
     @Override
     public BranchingStory getMainStory()
     {
-        return sp.story;
+        return sp.getStory();
     }
 }

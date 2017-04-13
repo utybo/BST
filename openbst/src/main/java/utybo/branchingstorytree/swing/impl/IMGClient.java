@@ -6,7 +6,7 @@
  * This Source Code Form is "Incompatible With Secondary Licenses", as
  * defined by the Mozilla Public License, v. 2.0.
  */
-package utybo.branchingstorytree.swing;
+package utybo.branchingstorytree.swing.impl;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -17,6 +17,7 @@ import javax.imageio.ImageIO;
 
 import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.img.IMGHandler;
+import utybo.branchingstorytree.swing.visuals.StoryPanel;
 
 public class IMGClient implements IMGHandler
 {
@@ -45,7 +46,7 @@ public class IMGClient implements IMGHandler
     @Override
     public void setBackground(final String name)
     {
-        panel.story.getRegistry().put("__img__background", name);
+        panel.getStory().getRegistry().put("__img__background", name);
         if(name == null)
         {
             current = null;
@@ -71,7 +72,7 @@ public class IMGClient implements IMGHandler
     {
         try
         {
-            setBackground(panel.story.getRegistry().get("__img__background", null).toString());
+            setBackground(panel.getStory().getRegistry().get("__img__background", null).toString());
         }
         catch(final NullPointerException e)
         {}

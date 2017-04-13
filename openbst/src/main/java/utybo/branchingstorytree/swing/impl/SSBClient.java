@@ -6,7 +6,7 @@
  * This Source Code Form is "Incompatible With Secondary Licenses", as
  * defined by the Mozilla Public License, v. 2.0.
  */
-package utybo.branchingstorytree.swing;
+package utybo.branchingstorytree.swing.impl;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -22,6 +22,7 @@ import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
 import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.ssb.SSBHandler;
+import utybo.branchingstorytree.swing.visuals.StoryPanel;
 
 public class SSBClient implements SSBHandler
 {
@@ -74,7 +75,7 @@ public class SSBClient implements SSBHandler
         {
             currentAmbient.stop();
         }
-        panel.story.getRegistry().put("__ssb__ambient", name);
+        panel.getStory().getRegistry().put("__ssb__ambient", name);
         final MediaPlayer sound = resources.get(name);
         sound.setCycleCount(Integer.MAX_VALUE);
         sound.play();
@@ -86,7 +87,7 @@ public class SSBClient implements SSBHandler
     {
         currentAmbient.stop();
         currentAmbient = null;
-        panel.story.getRegistry().put("__ssb__ambient", "//null");
+        panel.getStory().getRegistry().put("__ssb__ambient", "//null");
     }
 
     public void shutdown()
@@ -119,7 +120,7 @@ public class SSBClient implements SSBHandler
     {
         try
         {
-            ambient(panel.story.getRegistry().get("__ssb__ambient", null).toString());
+            ambient(panel.getStory().getRegistry().get("__ssb__ambient", null).toString());
         }
         catch(final NullPointerException e)
         {

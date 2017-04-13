@@ -6,7 +6,7 @@
  * This Source Code Form is "Incompatible With Secondary Licenses", as
  * defined by the Mozilla Public License, v. 2.0.
  */
-package utybo.branchingstorytree.swing;
+package utybo.branchingstorytree.swing.visuals;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -24,6 +24,10 @@ import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.api.StoryUtils;
 import utybo.branchingstorytree.api.story.BranchingStory;
 import utybo.branchingstorytree.api.story.TextNode;
+import utybo.branchingstorytree.swing.OpenBST;
+import utybo.branchingstorytree.swing.impl.IMGClient;
+import utybo.branchingstorytree.swing.utils.Lang;
+import utybo.branchingstorytree.swing.utils.MarkupUtils;
 
 public class NodePanel extends JScrollablePanel
 {

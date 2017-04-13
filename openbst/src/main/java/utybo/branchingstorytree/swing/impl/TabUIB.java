@@ -6,7 +6,7 @@
  * This Source Code Form is "Incompatible With Secondary Licenses", as
  * defined by the Mozilla Public License, v. 2.0.
  */
-package utybo.branchingstorytree.swing;
+package utybo.branchingstorytree.swing.impl;
 
 import java.awt.Component;
 import java.util.HashMap;
@@ -28,6 +28,9 @@ import utybo.branchingstorytree.api.script.VariableRegistry;
 import utybo.branchingstorytree.api.story.LogicalNode;
 import utybo.branchingstorytree.api.story.StoryNode;
 import utybo.branchingstorytree.api.story.VirtualNode;
+import utybo.branchingstorytree.swing.OpenBST;
+import utybo.branchingstorytree.swing.utils.MarkupUtils;
+import utybo.branchingstorytree.swing.visuals.StoryPanel;
 import utybo.branchingstorytree.uib.UIBarHandler;
 
 public class TabUIB implements UIBarHandler
@@ -53,11 +56,11 @@ public class TabUIB implements UIBarHandler
     public void initialize() throws BSTException
     {
         uibInitialized = true;
-        tab.story.getRegistry().put("__uib__initialized", "true");
-        final boolean gridMode = tab.story.hasTag("uib_grid");
-        final String columnDef = tab.story.getTag("uib_grid");
-        final boolean advancedMode = Boolean.parseBoolean(tab.story.getTag("uib_advanced"));
-        tab.uibPanel.setLayout(new MigLayout((gridMode ? "" : "nogrid, ") + "fillx", columnDef));
+        tab.getStory().getRegistry().put("__uib__initialized", "true");
+        final boolean gridMode = tab.getStory().hasTag("uib_grid");
+        final String columnDef = tab.getStory().getTag("uib_grid");
+        final boolean advancedMode = Boolean.parseBoolean(tab.getStory().getTag("uib_advanced"));
+        tab.getUIBPanel().setLayout(new MigLayout((gridMode ? "" : "nogrid, ") + "fillx", columnDef));
         final String[] parts = layout.split(advancedMode ? ";" : "[,;]");
         boolean newLine = false;
         for(final String s : parts)
@@ -71,7 +74,7 @@ public class TabUIB implements UIBarHandler
             case "tb":
                 final JLabel t = new JLabel();
                 uibComponents.put(determineNext("t"), t);
-                tab.uibPanel.add(t, (newLine ? "newline" : "") + ", alignx right");
+                tab.getUIBPanel().add(t, (newLine ? "newline" : "") + ", alignx right");
                 newLine = false;
                 // $FALL-THROUGH$
             case "b":
@@ -82,7 +85,7 @@ public class TabUIB implements UIBarHandler
                 {
                     constraints += ", grow";
                 }
-                tab.uibPanel.add(jpb);
+                tab.getUIBPanel().add(jpb);
                 break;
             case "t":
                 final JLabel t1 = new JLabel();
@@ -113,9 +116,9 @@ public class TabUIB implements UIBarHandler
             {
                 constraints += ", newline";
             }
-            tab.uibPanel.add(toAdd, constraints);
+            tab.getUIBPanel().add(toAdd, constraints);
         }
-        tab.uibPanel.revalidate();
+        tab.getUIBPanel().revalidate();
     }
 
     private String determineNext(final String string)
@@ -145,7 +148,7 @@ public class TabUIB implements UIBarHandler
         final JComponent c = uibComponents.get(element);
         if(c != null)
         {
-            tab.story.getRegistry().put("__uib__" + element + "_value", "" + value);
+            tab.getStory().getRegistry().put("__uib__" + element + "_value", "" + value);
             updateComponent(element, c);
         }
     }
@@ -156,7 +159,7 @@ public class TabUIB implements UIBarHandler
         final JComponent c = uibComponents.get(element);
         if(c != null)
         {
-            tab.story.getRegistry().put("__uib__" + element + "_value", "" + value);
+            tab.getStory().getRegistry().put("__uib__" + element + "_value", "" + value);
             updateComponent(element, c);
         }
     }
@@ -167,7 +170,7 @@ public class TabUIB implements UIBarHandler
         final JComponent c = uibComponents.get(element);
         if(c instanceof JProgressBar)
         {
-            tab.story.getRegistry().put("__uib__" + element + "_max", "" + max);
+            tab.getStory().getRegistry().put("__uib__" + element + "_max", "" + max);
             ((JProgressBar)c).getModel().setMaximum(max);
         }
 
@@ -179,7 +182,7 @@ public class TabUIB implements UIBarHandler
         final JComponent c = uibComponents.get(element);
         if(c instanceof JProgressBar)
         {
-            tab.story.getRegistry().put("__uib__" + element + "_min", "" + min);
+            tab.getStory().getRegistry().put("__uib__" + element + "_min", "" + min);
             ((JProgressBar)c).getModel().setMinimum(min);
         }
 
@@ -195,8 +198,8 @@ public class TabUIB implements UIBarHandler
     @Override
     public void setUIBVisisble(final boolean parseBoolean)
     {
-        tab.uibPanel.setVisible(parseBoolean);
-        tab.story.getRegistry().put("__uib__visible", Boolean.toString(parseBoolean));
+        tab.getUIBPanel().setVisible(parseBoolean);
+        tab.getStory().getRegistry().put("__uib__visible", Boolean.toString(parseBoolean));
     }
 
     @Override
@@ -220,12 +223,12 @@ public class TabUIB implements UIBarHandler
     {
         if(c instanceof JLabel)
         {
-            final String s = MarkupUtils.translateMarkup(MarkupUtils.solveMarkup(tab.story, null), computeText(tab.story.getRegistry().get("__uib__" + element + "_value", "").toString()));
+            final String s = MarkupUtils.translateMarkup(MarkupUtils.solveMarkup(tab.getStory(), null), computeText(tab.getStory().getRegistry().get("__uib__" + element + "_value", "").toString()));
             ((JLabel)c).setText(s);
         }
         else if(c instanceof JProgressBar)
         {
-            ((JProgressBar)c).setValue(computeInt(tab.story.getRegistry().get("__uib__" + element + "_value", "0").toString()));
+            ((JProgressBar)c).setValue(computeInt(tab.getStory().getRegistry().get("__uib__" + element + "_value", "0").toString()));
         }
 
     }
@@ -237,7 +240,7 @@ public class TabUIB implements UIBarHandler
             return 0;
         }
 
-        final VariableRegistry registry = tab.story.getRegistry();
+        final VariableRegistry registry = tab.getStory().getRegistry();
         try
         {
             return registry.typeOf(value) == Integer.class ? (Integer)registry.get(value, 0) : Integer.parseInt(value);
@@ -259,12 +262,12 @@ public class TabUIB implements UIBarHandler
             if(string.startsWith(">"))
             {
                 // TODO Handle null values correctly
-                return computeText(tab.story.getNode(Integer.valueOf(string.substring(1))), true);
+                return computeText(tab.getStory().getNode(Integer.valueOf(string.substring(1))), true);
             }
             else if(string.startsWith("&"))
             {
                 // TODO Handle null values correctly
-                return computeText(tab.story.getNode(Integer.valueOf(string.substring(1))), false);
+                return computeText(tab.getStory().getNode(Integer.valueOf(string.substring(1))), false);
             }
         }
         catch(final NumberFormatException e)
@@ -276,11 +279,11 @@ public class TabUIB implements UIBarHandler
     {
         if(isVirtual)
         {
-            return StoryUtils.solveVariables((VirtualNode)i, tab.story);
+            return StoryUtils.solveVariables((VirtualNode)i, tab.getStory());
         }
         else
         {
-            final StoryNode j = ((LogicalNode)i).solve(tab.story);
+            final StoryNode j = ((LogicalNode)i).solve(tab.getStory());
             return computeText(j, j instanceof LogicalNode ? false : true);
         }
     }
@@ -293,7 +296,7 @@ public class TabUIB implements UIBarHandler
         // and make sure we build onto a clean UIB.
         resetUib();
 
-        if(Boolean.parseBoolean(tab.story.getRegistry().get("__uib__initialized", "false").toString()))
+        if(Boolean.parseBoolean(tab.getStory().getRegistry().get("__uib__initialized", "false").toString()))
         {
             // Initialize
             initialize();
@@ -322,13 +325,13 @@ public class TabUIB implements UIBarHandler
             }
 
             // Redefine if visible or not
-            if("true".equals(tab.story.getRegistry().get("__uib__visible", null)))
+            if("true".equals(tab.getStory().getRegistry().get("__uib__visible", null)))
             {
-                tab.uibPanel.setVisible(true);
+                tab.getUIBPanel().setVisible(true);
             }
             else
             {
-                tab.uibPanel.setVisible(false);
+                tab.getUIBPanel().setVisible(false);
             }
         }
     }
@@ -336,11 +339,11 @@ public class TabUIB implements UIBarHandler
     private Map<String, String> getUibInfo(final String element)
     {
         final HashMap<String, String> map = new HashMap<>();
-        for(final String varName : tab.story.getRegistry().getAllString().keySet())
+        for(final String varName : tab.getStory().getRegistry().getAllString().keySet())
         {
             if(varName.startsWith("__uib__" + element + "_"))
             {
-                map.put(varName.substring("__uib__".length() + element.length() + "_".length()), tab.story.getRegistry().getAllString().get(varName));
+                map.put(varName.substring("__uib__".length() + element.length() + "_".length()), tab.getStory().getRegistry().getAllString().get(varName));
             }
         }
         return map;
@@ -348,13 +351,13 @@ public class TabUIB implements UIBarHandler
 
     public void resetUib()
     {
-        if(uibInitialized || tab.uibPanel != null)
+        if(uibInitialized || tab.getUIBPanel() != null)
         {
             OpenBST.LOG.trace("=> Performing UIB Reset");
-            tab.uibPanel.removeAll();
-            tab.uibPanel.revalidate();
-            tab.uibPanel.repaint();
-            tab.uibPanel.setVisible(false);
+            tab.getUIBPanel().removeAll();
+            tab.getUIBPanel().revalidate();
+            tab.getUIBPanel().repaint();
+            tab.getUIBPanel().setVisible(false);
             uibComponents.clear();
             uibInitialized = false;
         }

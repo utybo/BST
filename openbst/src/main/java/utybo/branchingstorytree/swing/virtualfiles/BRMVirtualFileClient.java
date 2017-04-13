@@ -18,7 +18,7 @@ import utybo.branchingstorytree.api.BSTClient;
 import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.api.story.BranchingStory;
 import utybo.branchingstorytree.brm.BRMResourceConsumer;
-import utybo.branchingstorytree.swing.BRMRestorableHandler;
+import utybo.branchingstorytree.swing.impl.BRMRestorableHandler;
 
 public class BRMVirtualFileClient implements BRMRestorableHandler
 {

@@ -6,7 +6,7 @@
  * This Source Code Form is "Incompatible With Secondary Licenses", as
  * defined by the Mozilla Public License, v. 2.0.
  */
-package utybo.branchingstorytree.swing;
+package utybo.branchingstorytree.swing.utils;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -37,6 +37,7 @@ import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.api.BranchingStoryTreeParser;
 import utybo.branchingstorytree.api.script.Dictionnary;
 import utybo.branchingstorytree.api.story.BranchingStory;
+import utybo.branchingstorytree.swing.impl.TabClient;
 import utybo.branchingstorytree.swing.virtualfiles.BRMVirtualFileClient;
 import utybo.branchingstorytree.swing.virtualfiles.VirtualFile;
 import utybo.branchingstorytree.swing.virtualfiles.VirtualFileHolder;
