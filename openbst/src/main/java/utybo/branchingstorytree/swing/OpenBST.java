@@ -232,21 +232,16 @@ public class OpenBST extends JFrame
         {
             LOG.trace("Parsing story");
             String ext = FilenameUtils.getExtension(file.getName());
-            if(ext.equals("bst"))
-            {
-                BranchingStory bs = parser.parse(new BufferedReader(new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8"))), new Dictionnary(), client, "<main>");
-                client.setBRMHandler(new BRMFileClient(file, client, bs));
-                return bs;
-            }
-            else if(ext.equals("bsp"))
+            if(ext.equals("bsp"))
             {
                 return BSTPackager.fromPackage(new ProgressMonitorInputStream(instance, "Opening " + file.getName() + "...", new FileInputStream(file)), client);
             }
             else
             {
-                LOG.error("Unknown extension : " + ext);
-                JOptionPane.showMessageDialog(instance, "Unknown file extension : " + ext);
-                return null;
+                BranchingStory bs = parser.parse(new BufferedReader(new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8"))), new Dictionnary(), client, "<main>");
+                client.setBRMHandler(new BRMFileClient(file, client, bs));
+                return bs;
+
             }
         }
         catch(final IOException e)
