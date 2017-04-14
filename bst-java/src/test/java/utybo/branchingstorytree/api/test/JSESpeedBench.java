@@ -24,6 +24,7 @@ import utybo.branchingstorytree.api.script.Dictionnary;
 import utybo.branchingstorytree.api.story.BranchingStory;
 import utybo.branchingstorytree.api.story.LogicalNode;
 import utybo.branchingstorytree.api.story.StoryNode;
+import utybo.branchingstorytree.api.test.utils.JSETestClient;
 
 public class JSESpeedBench
 {

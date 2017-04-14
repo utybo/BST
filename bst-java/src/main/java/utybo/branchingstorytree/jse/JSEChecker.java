@@ -44,7 +44,6 @@ public class JSEChecker implements ScriptChecker
             else if(result instanceof Number)
             {
                 final int i = ((Number)result).intValue();
-                System.out.println(desc + " ==> " + i);
                 if(i <= 0)
                 {
                     return false;

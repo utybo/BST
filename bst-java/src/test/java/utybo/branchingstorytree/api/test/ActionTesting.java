@@ -24,6 +24,7 @@ import utybo.branchingstorytree.api.script.Dictionnary;
 import utybo.branchingstorytree.api.story.BranchingStory;
 import utybo.branchingstorytree.api.story.LogicalNode;
 import utybo.branchingstorytree.api.story.StoryNode;
+import utybo.branchingstorytree.api.test.utils.JSETestClient;
 
 public class ActionTesting
 {
@@ -87,7 +88,7 @@ public class ActionTesting
         testFile("incrdecr.bst", null);
     }
 
-    public static void testFile(final String path, final BSTClient client) throws IOException, BSTException, InstantiationException, IllegalAccessException
+    public static BranchingStory testFile(final String path, final BSTClient client) throws IOException, BSTException, InstantiationException, IllegalAccessException
     {
         final Dictionnary d = new Dictionnary();
         final BranchingStory story = new BranchingStoryTreeParser().parse(new BufferedReader(new InputStreamReader(ActionTesting.class.getResourceAsStream("/utybo/branchingstorytree/api/test/files/" + path))), d, client, path);
@@ -103,5 +104,6 @@ public class ActionTesting
                 throw new BSTException(-1, node.getId() + " isn't a logical node");
             }
         }
+        return story;
     }
 }

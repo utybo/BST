@@ -102,6 +102,16 @@ public class BranchingStory extends TagHolder
         return nodes.size();
     }
 
+    public int nextAvailableAuto()
+    {
+        for(int i = -2;; i--)
+        {
+            if(!nodes.containsKey(i))
+                return i;
+
+        }
+    }
+
     /**
      * @returns the registry used by this story
      */

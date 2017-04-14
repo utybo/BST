@@ -15,6 +15,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import utybo.branchingstorytree.api.script.ActionDescriptor;
+import utybo.branchingstorytree.api.script.AliasOrVariableNextNodeDefiner;
 import utybo.branchingstorytree.api.script.CheckerDescriptor;
 import utybo.branchingstorytree.api.script.Dictionnary;
 import utybo.branchingstorytree.api.script.IfNextNodeDefiner;
@@ -22,7 +23,6 @@ import utybo.branchingstorytree.api.script.NextNodeDefiner;
 import utybo.branchingstorytree.api.script.ScriptAction;
 import utybo.branchingstorytree.api.script.ScriptChecker;
 import utybo.branchingstorytree.api.script.StaticNextNode;
-import utybo.branchingstorytree.api.script.VariableNextNode;
 import utybo.branchingstorytree.api.story.BranchingStory;
 import utybo.branchingstorytree.api.story.LogicalNode;
 import utybo.branchingstorytree.api.story.NodeOption;
@@ -48,11 +48,11 @@ public class BranchingStoryTreeParser
      */
     private static final int NORMAL = 0, VIRTUAL = 1, LOGICAL = 2;
 
-    private final Pattern beginningOfNodePattern = Pattern.compile("^\\d+:.+$");
-    private final Pattern logicalNodePattern = Pattern.compile("^\\d+:&$");
-    private final Pattern virtualNodePattern = Pattern.compile("\\d+:>.+$");
+    private final Pattern beginningOfNodePattern = Pattern.compile("(^\\d+|\\*):.+$");
+    private final Pattern logicalNodePattern = Pattern.compile("(^\\d+|\\*):&$");
+    private final Pattern virtualNodePattern = Pattern.compile("(^\\d+|\\*):>.+$");
     private final Pattern scriptPattern = Pattern.compile("(\\{(.+?):(.*?)})|(\\[(.+?):(.*?)])");
-    private final Pattern ifNextNodeDefiner = Pattern.compile("([-]?\\d+),([-]?\\d+)\\[(.+:.+)]");
+    private final Pattern ifNextNodeDefiner = Pattern.compile("([-]?\\d+|[\\w_]+?),([-]?\\d+|[\\w_]+?)\\[(.+:.+)]");
     private final Pattern staticNodeDefiner = Pattern.compile("\\d+");
     private final Pattern externalNodeDefiner = Pattern.compile("([\\w_]+?):(.*)");
 
@@ -121,7 +121,10 @@ public class BranchingStoryTreeParser
                 if(beginningOfNodePattern.matcher(line).matches())
                 {
                     // This is a new node
-                    final int id = Integer.parseInt(line.split("\\:")[0]);
+                    String sid = line.split("\\:")[0];
+                    boolean autoNode = sid.equals("*");
+
+                    final int id = autoNode ? story.nextAvailableAuto() : Integer.parseInt(line.split("\\:")[0]);
 
                     // Check if logical node
                     if(logicalNodePattern.matcher(line).matches())
@@ -158,16 +161,19 @@ public class BranchingStoryTreeParser
 
                 else if(firstChar == ':')
                 {
-                    if(nodeType == NORMAL)
+                    if(line.startsWith("::"))
                     {
-                        if(line.startsWith("::"))
+                        if(nodeType == -1)
+                            throw new BSTException(lineNumber, "Cannot define node tag when no nodes were started");
+                        final String s = line.substring(2);
+                        final String[] bits = s.split("\\=");
+                        latestHolder.putTag(bits[0], bits[1]);
+                    }
+                    else
+                    {
+                        if(nodeType == NORMAL)
                         {
-                            final String s = line.substring(2);
-                            final String[] bits = s.split("\\=");
-                            latestHolder.putTag(bits[0], bits[1]);
-                        }
-                        else
-                        {
+
                             final String s = line.substring(1);
                             final String[] bits = s.split("\\|");
                             final String text = bits[0];
@@ -246,11 +252,11 @@ public class BranchingStoryTreeParser
                                 }
                             }
                         }
-                    }
-                    else if(nodeType == LOGICAL)
-                    {
-                        final String nextNodeDefiner = line.substring(1);
-                        ((LogicalNode)node).addInstruction(new LNCondReturn(parseNND(nextNodeDefiner, dictionnary, lineNumber, story, client, name)));
+                        else if(nodeType == LOGICAL)
+                        {
+                            final String nextNodeDefiner = line.substring(1);
+                            ((LogicalNode)node).addInstruction(new LNCondReturn(parseNND(nextNodeDefiner, dictionnary, lineNumber, story, client, name)));
+                        }
                     }
                 }
                 else if(node != null && !optionsStarted)
@@ -354,7 +360,9 @@ public class BranchingStoryTreeParser
 
             }
         }
-        catch(final IOException e)
+        catch(
+
+        final IOException e)
         {
             throw e;
         }
@@ -378,15 +386,16 @@ public class BranchingStoryTreeParser
         final Matcher matcher = ifNextNodeDefiner.matcher(nnd);
         final Matcher matchStatic = staticNodeDefiner.matcher(nnd);
         final Matcher matchExt = externalNodeDefiner.matcher(nnd);
+
         if(matcher.matches())
         {
-            final int first = Integer.parseInt(matcher.group(1));
-            final int second = Integer.parseInt(matcher.group(2));
+            String one = matcher.group(1);
+            String two = matcher.group(2);
             final String script = matcher.group(3);
             final String command = script.substring(0, script.indexOf(':'));
             final String desc = script.substring(script.indexOf(':') + 1);
             final CheckerDescriptor oc = new CheckerDescriptor(dictionnary.getChecker(command), command, desc, lineNumber, story, client);
-            return new IfNextNodeDefiner(first, second, oc);
+            return new IfNextNodeDefiner(one, two, oc);
         }
         else if(matchStatic.matches())
         {
@@ -398,7 +407,7 @@ public class BranchingStoryTreeParser
         }
         else
         {
-            return new VariableNextNode(nnd);
+            return new AliasOrVariableNextNodeDefiner(nnd);
         }
 
     }

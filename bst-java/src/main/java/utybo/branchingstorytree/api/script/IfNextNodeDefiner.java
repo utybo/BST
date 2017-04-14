@@ -8,6 +8,10 @@
  */
 package utybo.branchingstorytree.api.script;
 
+import java.util.Collection;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.api.NodeNotFoundException;
 import utybo.branchingstorytree.api.story.BranchingStory;
@@ -22,7 +26,7 @@ import utybo.branchingstorytree.api.story.StoryNode;
  */
 public class IfNextNodeDefiner implements NextNodeDefiner
 {
-    private final int one, two;
+    private String one, two;
     private final CheckerDescriptor checker;
 
     /**
@@ -36,7 +40,7 @@ public class IfNextNodeDefiner implements NextNodeDefiner
      * @param checker
      *            The checker to use to determine the next node
      */
-    public IfNextNodeDefiner(final int one, final int two, final CheckerDescriptor checker)
+    public IfNextNodeDefiner(final String one, final String two, final CheckerDescriptor checker)
     {
         this.one = one;
         this.two = two;
@@ -52,11 +56,38 @@ public class IfNextNodeDefiner implements NextNodeDefiner
     @Override
     public StoryNode getNextNode(BranchingStory story) throws NodeNotFoundException, BSTException
     {
-        if(story.getNode(one) == null && one != -1)
-            throw new NodeNotFoundException(one, story.getTag("__sourcename"));
-        if(story.getNode(two) == null && two != -1)
-            throw new NodeNotFoundException(two, story.getTag("__sourcename"));
-        return checker.check() ? story.getNode(one) : story.getNode(two);
-    }
+        StoryNode snOne, snTwo;
+        Pattern detectInteger = Pattern.compile("-?\\d+");
+        Collection<StoryNode> nodes = story.getAllNodes();
 
+        snOne = parseNode(one, story, nodes, detectInteger);
+        snTwo = parseNode(two, story, nodes, detectInteger);
+        
+        return checker.check() ? snOne : snTwo;
+    }
+    
+    public StoryNode parseNode(String toParse, BranchingStory story, Collection<StoryNode> nodes, Pattern detectInteger) throws BSTException
+    {
+        StoryNode sn = null;
+        Matcher m = detectInteger.matcher(toParse);
+        if(m.matches())
+        {
+            int i = Integer.parseInt(toParse);
+            sn = story.getNode(i);
+            if(sn == null && i != -1)
+                throw new NodeNotFoundException(i, story.getTag("__sourcename"));
+        }
+        else
+        {
+            for(StoryNode node : nodes)
+            {
+                String aliasTag = node.getTag("alias");
+                if(toParse.equals(aliasTag))
+                    sn = node;
+            }
+            if(sn == null)
+                throw new BSTException(-1, "Unknown alias : " + one);
+        }
+        return sn;
+    }
 }
