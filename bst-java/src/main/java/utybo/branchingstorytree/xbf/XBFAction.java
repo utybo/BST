@@ -11,6 +11,7 @@ package utybo.branchingstorytree.xbf;
 import utybo.branchingstorytree.api.BSTClient;
 import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.api.NodeNotFoundException;
+import utybo.branchingstorytree.api.StoryUtils;
 import utybo.branchingstorytree.api.script.ScriptAction;
 import utybo.branchingstorytree.api.story.BranchingStory;
 import utybo.branchingstorytree.api.story.LogicalNode;
@@ -30,13 +31,10 @@ public class XBFAction implements ScriptAction
         {
             String from = args[0];
             String id = args[1];
-            Integer intId = Integer.parseInt(id);
             BranchingStory story2 = xbf.getAdditionalStory(from);
             if(story2 == null)
                 throw new BSTException(line, story2 + " doesn't exist");
-            StoryNode node = story2.getNode(intId);
-            if(node == null)
-                throw new NodeNotFoundException(intId, from);
+            StoryNode node = StoryUtils.parseNode(id, story2);
             if(!(node instanceof LogicalNode))
                 throw new BSTException(line, "Node " + id + " from " + from + " is not a logical node and thus cannot be called");
             LogicalNode lnode = (LogicalNode)node;

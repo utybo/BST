@@ -14,7 +14,7 @@ import org.junit.Test;
 
 import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.api.StoryUtils;
-import utybo.branchingstorytree.api.script.StaticNextNode;
+import utybo.branchingstorytree.api.script.SimpleNextNodeDefiner;
 import utybo.branchingstorytree.api.script.VariableRegistry;
 import utybo.branchingstorytree.api.story.BranchingStory;
 import utybo.branchingstorytree.api.story.LogicalNode;
@@ -37,7 +37,7 @@ public class StoryUtilsTesting
         story.addNode(vn);
         final LogicalNode ln = new LogicalNode(5, story);
         story.addNode(ln);
-        ln.addInstruction(new LNCondReturn(new StaticNextNode(4)));
+        ln.addInstruction(new LNCondReturn(new SimpleNextNodeDefiner("4")));
         // Perform test
         final VirtualNode vn2 = new VirtualNode(555, story);
         vn2.setText(testDrive);

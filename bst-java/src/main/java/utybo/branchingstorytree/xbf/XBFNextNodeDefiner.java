@@ -8,12 +8,9 @@
  */
 package utybo.branchingstorytree.xbf;
 
-import java.util.Collection;
-import java.util.regex.Pattern;
-
 import utybo.branchingstorytree.api.BSTClient;
 import utybo.branchingstorytree.api.BSTException;
-import utybo.branchingstorytree.api.NodeNotFoundException;
+import utybo.branchingstorytree.api.StoryUtils;
 import utybo.branchingstorytree.api.script.NextNodeDefiner;
 import utybo.branchingstorytree.api.story.BranchingStory;
 import utybo.branchingstorytree.api.story.StoryNode;
@@ -42,46 +39,21 @@ public class XBFNextNodeDefiner implements NextNodeDefiner
         {
             String from = args[0];
             String id = args[1];
-            StoryNode node = null;
-            if(Pattern.compile("\\d+").matcher(id).matches())
-            {
-                Integer intId = Integer.parseInt(id);
-                BranchingStory story2 = xbf.getAdditionalStory(from);
-                if(story2 == null)
-                    throw new BSTException(-1, story2 + " doesn't exist");
-                node = story2.getNode(intId);
-                if(node == null)
-                    throw new NodeNotFoundException(intId, from);
-            }
-            else
-            {
-                // Assume id is an alias
-                Collection<StoryNode> nodes = bs.getAllNodes();
-                for(StoryNode node2 : nodes)
-                {
-                    if(id.equals(node2.getTag("alias")))
-                        node = node2;
-                }
-                if(node == null)
-                    throw new BSTException(-1, "Unknown alias : " + id + ", from " + from);
-            }
-            if(node instanceof VirtualNode && !(node instanceof TextNode)) 
-                // Check if it's just a virtualnode and not a textnode
-                // This trick is required as TextNodes are a subset of VirtualNodes
-                throw new BSTException(-1, "Node " + id + " from " + from + " is a virtual node and thus cannot be the next node");
-            return node;
+            BranchingStory story2 = xbf.getAdditionalStory(from);
+            StoryNode node = StoryUtils.parseNode(id, story2);
+            if(node instanceof VirtualNode && !(node instanceof TextNode))  
+                // Check if it's just a virtualnode and not a textnode 
+                // This trick is required as TextNodes are a subset of VirtualNodes 
+                throw new BSTException(-1, "Node " + id + " from " + from + " is a virtual node and thus cannot be the next node"); 
+            return node; 
         }
         else if(args.length == 1)
         {
-            Integer id = Integer.parseInt(args[0]);
-            StoryNode node = xbf.getMainStory().getNode(id);
-            if(node == null)
-                throw new NodeNotFoundException(id, "<main>");
+            StoryNode node = StoryUtils.parseNode(args[0], xbf.getMainStory());
             if(node instanceof VirtualNode && !(node instanceof TextNode)) 
                 // Check if it's just a virtualnode and not a textnode
                 // This trick is required as TextNodes are a subset of VirtualNodes
-                throw new BSTException(-1, "Node " + id + " from <main> is a virtual node and thus cannot be the next node");
-
+                throw new BSTException(-1, "Node " + args[0] + " from <main> is a virtual node and thus cannot be the next node");
             return node;
         }
         else

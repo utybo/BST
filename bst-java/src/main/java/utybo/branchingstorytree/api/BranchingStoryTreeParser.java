@@ -15,14 +15,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import utybo.branchingstorytree.api.script.ActionDescriptor;
-import utybo.branchingstorytree.api.script.AliasOrVariableNextNodeDefiner;
 import utybo.branchingstorytree.api.script.CheckerDescriptor;
 import utybo.branchingstorytree.api.script.Dictionnary;
 import utybo.branchingstorytree.api.script.IfNextNodeDefiner;
 import utybo.branchingstorytree.api.script.NextNodeDefiner;
 import utybo.branchingstorytree.api.script.ScriptAction;
 import utybo.branchingstorytree.api.script.ScriptChecker;
-import utybo.branchingstorytree.api.script.StaticNextNode;
+import utybo.branchingstorytree.api.script.SimpleNextNodeDefiner;
 import utybo.branchingstorytree.api.story.BranchingStory;
 import utybo.branchingstorytree.api.story.LogicalNode;
 import utybo.branchingstorytree.api.story.NodeOption;
@@ -53,7 +52,6 @@ public class BranchingStoryTreeParser
     private final Pattern virtualNodePattern = Pattern.compile("(^\\d+|\\*):>.+$");
     private final Pattern scriptPattern = Pattern.compile("(\\{(.+?):(.*?)})|(\\[(.+?):(.*?)])");
     private final Pattern ifNextNodeDefiner = Pattern.compile("([-]?\\d+|[\\w_]+?),([-]?\\d+|[\\w_]+?)\\[(.+:.+)]");
-    private final Pattern staticNodeDefiner = Pattern.compile("\\d+");
     private final Pattern externalNodeDefiner = Pattern.compile("([\\w_]+?):(.*)");
 
     private final Pattern lnLineSubscript = Pattern.compile("([\\w_]+?):(.*)");
@@ -384,7 +382,6 @@ public class BranchingStoryTreeParser
     private NextNodeDefiner parseNND(final String nnd, final Dictionnary dictionnary, final int lineNumber, final BranchingStory story, final BSTClient client, String name) throws BSTException
     {
         final Matcher matcher = ifNextNodeDefiner.matcher(nnd);
-        final Matcher matchStatic = staticNodeDefiner.matcher(nnd);
         final Matcher matchExt = externalNodeDefiner.matcher(nnd);
 
         if(matcher.matches())
@@ -397,17 +394,13 @@ public class BranchingStoryTreeParser
             final CheckerDescriptor oc = new CheckerDescriptor(dictionnary.getChecker(command), command, desc, lineNumber, story, client);
             return new IfNextNodeDefiner(one, two, oc);
         }
-        else if(matchStatic.matches())
-        {
-            return new StaticNextNode(Integer.parseInt(nnd));
-        }
         else if(matchExt.matches())
         {
             return dictionnary.getExtNND(matchExt.group(1), matchExt.group(2), client, lineNumber, name);
         }
         else
         {
-            return new AliasOrVariableNextNodeDefiner(nnd);
+            return new SimpleNextNodeDefiner(nnd);
         }
 
     }

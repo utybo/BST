@@ -8,12 +8,9 @@
  */
 package utybo.branchingstorytree.api.script;
 
-import java.util.Collection;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.api.NodeNotFoundException;
+import utybo.branchingstorytree.api.StoryUtils;
 import utybo.branchingstorytree.api.story.BranchingStory;
 import utybo.branchingstorytree.api.story.StoryNode;
 
@@ -57,37 +54,13 @@ public class IfNextNodeDefiner implements NextNodeDefiner
     public StoryNode getNextNode(BranchingStory story) throws NodeNotFoundException, BSTException
     {
         StoryNode snOne, snTwo;
-        Pattern detectInteger = Pattern.compile("-?\\d+");
-        Collection<StoryNode> nodes = story.getAllNodes();
-
-        snOne = parseNode(one, story, nodes, detectInteger);
-        snTwo = parseNode(two, story, nodes, detectInteger);
+        System.out.println("one:" + one);
+        System.out.println("two:" + two);
+        snOne = StoryUtils.parseNode(one, story);
+        snTwo = StoryUtils.parseNode(two, story);
         
         return checker.check() ? snOne : snTwo;
     }
     
-    public StoryNode parseNode(String toParse, BranchingStory story, Collection<StoryNode> nodes, Pattern detectInteger) throws BSTException
-    {
-        StoryNode sn = null;
-        Matcher m = detectInteger.matcher(toParse);
-        if(m.matches())
-        {
-            int i = Integer.parseInt(toParse);
-            sn = story.getNode(i);
-            if(sn == null && i != -1)
-                throw new NodeNotFoundException(i, story.getTag("__sourcename"));
-        }
-        else
-        {
-            for(StoryNode node : nodes)
-            {
-                String aliasTag = node.getTag("alias");
-                if(toParse.equals(aliasTag))
-                    sn = node;
-            }
-            if(sn == null)
-                throw new BSTException(-1, "Unknown alias : " + one);
-        }
-        return sn;
-    }
+                
 }
