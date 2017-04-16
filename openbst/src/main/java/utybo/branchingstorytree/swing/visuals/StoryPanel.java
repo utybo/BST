@@ -730,6 +730,7 @@ public class StoryPanel extends JPanel
             //                JOptionPane.showMessageDialog(this, Lang.get("story.missingnode").replace("$n", "" + currentNode.getId()), Lang.get("error"), JOptionPane.ERROR_MESSAGE);
             //                return;
             //            }
+            LOG.error("Tried to show a null node!");
             return;
             // TODO crash and show error
         }
