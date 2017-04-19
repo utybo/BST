@@ -9,83 +9,110 @@
 package utybo.branchingstorytree.swing.impl;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.HashMap;
 
-import org.apache.commons.io.IOUtils;
-
-import javafx.embed.swing.JFXPanel;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
-import javafx.util.Duration;
+import javazoom.jlgui.basicplayer.BasicPlayer;
+import javazoom.jlgui.basicplayer.BasicPlayerException;
 import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.ssb.SSBHandler;
 import utybo.branchingstorytree.swing.visuals.StoryPanel;
 
 public class SSBClient implements SSBHandler
 {
-    private final HashMap<String, MediaPlayer> resources = new HashMap<>();
-    private MediaPlayer currentAmbient;
+    private final HashMap<String, BasicPlayer> resources = new HashMap<>();
+    private BasicPlayer currentAmbient;
     private final StoryPanel panel;
 
     public SSBClient(final StoryPanel panel)
     {
-        new JFXPanel(); // Init JavaFX
         this.panel = panel;
     }
 
     @Override
     public void load(final InputStream in, final String name) throws BSTException
     {
-        // Write the input stream in a temporary folder
+        BasicPlayer bp = new BasicPlayer();
         try
         {
-            File f = File.createTempFile("openbst" + name, "");
-            f.deleteOnExit();
-            IOUtils.copy(in, new FileOutputStream(f));
-            final Media m = new Media(f.toURI().toString());
-            resources.put(name, new MediaPlayer(m));
+            bp.open(in);
         }
-        catch(IOException e)
+        catch(BasicPlayerException e)
         {
-            throw new BSTException(-1, "Could not create temporary file", e, "<none>");
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
+        resources.put(name, bp);
+
     }
+    
+    
 
     @Override
-    public void load(final File file, final String name) throws BSTException
+    public void load(File file, String name) throws BSTException, FileNotFoundException
     {
-        final Media m = new Media(file.toURI().toString());
-        resources.put(name, new MediaPlayer(m));
+        BasicPlayer bp = new BasicPlayer();
+        try
+        {
+            bp.open(file);
+        }
+        catch(BasicPlayerException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        resources.put(name, bp);
     }
 
     @Override
     public void play(final String name)
     {
-        resources.get(name).seek(new Duration(0));
-        resources.get(name).play();
+        try
+        {
+            resources.get(name).stop();
+            resources.get(name).play();
+        }
+        catch(BasicPlayerException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void ambient(final String name)
     {
-        if(currentAmbient != null)
+        try
         {
-            currentAmbient.stop();
+            if(currentAmbient != null)
+            {
+                currentAmbient.stop();
+            }
+            panel.getStory().getRegistry().put("__ssb__ambient", name);
+            BasicPlayer bp = resources.get(name);
+            bp.play();
+            currentAmbient = bp;
         }
-        panel.getStory().getRegistry().put("__ssb__ambient", name);
-        final MediaPlayer sound = resources.get(name);
-        sound.setCycleCount(Integer.MAX_VALUE);
-        sound.play();
-        currentAmbient = sound;
+        catch(BasicPlayerException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void stop()
     {
-        currentAmbient.stop();
+        try
+        {
+            System.out.println("1");
+            currentAmbient.pause();
+            currentAmbient.stop();
+            System.out.println("2");
+        }
+        catch(BasicPlayerException e)
+        {
+            e.printStackTrace();
+        }
         currentAmbient = null;
         panel.getStory().getRegistry().put("__ssb__ambient", "//null");
     }
@@ -94,7 +121,14 @@ public class SSBClient implements SSBHandler
     {
         resources.forEach((id, clip) ->
         {
-            clip.stop();
+            try
+            {
+                clip.stop();
+            }
+            catch(BasicPlayerException e)
+            {
+                e.printStackTrace();
+            }
         });
     }
 
@@ -102,7 +136,15 @@ public class SSBClient implements SSBHandler
     {
         resources.forEach((id, sound) ->
         {
-            sound.setMute(muted);
+            try
+            {
+                sound.setGain(muted ? 0F : 0.5F);
+            }
+            catch(BasicPlayerException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         });
     }
 
@@ -110,8 +152,15 @@ public class SSBClient implements SSBHandler
     {
         resources.forEach((id, clip) ->
         {
-            clip.stop();
-            clip.dispose();
+            try
+            {
+                clip.stop();
+            }
+            catch(BasicPlayerException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         });
         resources.clear();
     }
