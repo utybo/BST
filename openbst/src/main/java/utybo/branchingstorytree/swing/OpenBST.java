@@ -52,12 +52,11 @@ import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 
 import org.apache.commons.io.FilenameUtils;
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
-import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
-import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
+import org.pushingpixels.substance.api.SubstanceLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceAutumnLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceGraphiteGoldLookAndFeel;
 import org.pushingpixels.trident.Timeline;
 
 import com.google.gson.Gson;
@@ -150,41 +149,59 @@ public class OpenBST extends JFrame
         loadLang(args.length > 0 ? args[0] : null);
 
         LOG.trace("Applying Look and Feel");
-        try
+        invokeSwingAndWait(() ->
         {
-            UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
-            LOG.trace("GTKLookAndFeel");
-
-            // If GTKLookAndFeel was successfully loaded, apply Gnome Shell fix
             try
             {
-                final Toolkit xToolkit = Toolkit.getDefaultToolkit();
-                final java.lang.reflect.Field awtAppClassNameField = xToolkit.getClass().getDeclaredField("awtAppClassName");
-                awtAppClassNameField.setAccessible(true);
-                awtAppClassNameField.set(xToolkit, Lang.get("title"));
-                awtAppClassNameField.setAccessible(false);
+                UIManager.setLookAndFeel(new SubstanceAutumnLookAndFeel());
+                UIManager.getDefaults().put(SubstanceLookAndFeel.COLORIZATION_FACTOR, new Double(1.0D));
+                UIManager.setLookAndFeel(new SubstanceGraphiteGoldLookAndFeel());
+
+                if(System.getProperty("os.name").toLowerCase().equals("linux"))
+                {
+                    // Try to apply GNOME Shell fix
+                    try
+                    {
+                        final Toolkit xToolkit = Toolkit.getDefaultToolkit();
+                        final java.lang.reflect.Field awtAppClassNameField = xToolkit.getClass().getDeclaredField("awtAppClassName");
+                        awtAppClassNameField.setAccessible(true);
+                        awtAppClassNameField.set(xToolkit, Lang.get("title"));
+                        awtAppClassNameField.setAccessible(false);
+                    }
+                    catch(final Exception e)
+                    {
+                        LOG.warn("Could not apply X fix", e);
+                    }
+                }
+
             }
             catch(final Exception e)
             {
-                LOG.warn("Could not apply X fix", e);
+                LOG.warn("Could not apply Substance LaF, falling back to system LaF", e);
+                try
+                {
+                    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+                }
+                catch(final Exception e1)
+                {
+                    LOG.warn("Failed to load System LaF as well, falling back to keeping the default LaF", e1);
+                }
             }
 
-        }
-        catch(final Exception e)
+            instance = new OpenBST();
+        });
+    }
+
+    private static void invokeSwingAndWait(Runnable r)
+    {
+        try
         {
-            // Do not print as an exception is thrown in most cases
-            try
-            {
-                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-                LOG.trace("System LookAndFeel");
-            }
-            catch(final Exception e1)
-            {
-                LOG.trace("No LookAndFeel compatible. Using default", e1);
-            }
+            SwingUtilities.invokeAndWait(r);
         }
-
-        instance = new OpenBST();
+        catch(InvocationTargetException | InterruptedException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -453,6 +470,7 @@ public class OpenBST extends JFrame
         openBST.setForeground(Color.WHITE);
         banner.add(openBST);
         getContentPane().add(banner, BorderLayout.NORTH);
+
         banner.addMouseListener(new MouseAdapter()
         {
             @Override
@@ -486,7 +504,8 @@ public class OpenBST extends JFrame
         container.add(new JScrollPane(welcomeContentPanel));
         container.setTitleAt(0, Lang.get("welcome"));
 
-        final JLabel lblOpenbst = new JLabel("<html><font size=32>" + Lang.get("title"));
+        final JLabel lblOpenbst = new JLabel(Lang.get("title"));
+        lblOpenbst.setFont(lblOpenbst.getFont().deriveFont(32F));
         lblOpenbst.setForeground(OPENBST_BLUE);
         lblOpenbst.setIcon(new ImageIcon(bigLogoBlue));
         welcomeContentPanel.add(lblOpenbst, "cell 0 0");
@@ -506,7 +525,7 @@ public class OpenBST extends JFrame
         welcomeContentPanel.add(separator, "cell 0 3,growx");
 
         final JLabel lblwhatIsBst = new JLabel(Lang.get("welcome.whatis"));
-        lblwhatIsBst.setFont(lblwhatIsBst.getFont().deriveFont(28F));
+        lblwhatIsBst.setFont(lblwhatIsBst.getFont().deriveFont(32F));
         welcomeContentPanel.add(lblwhatIsBst, "cell 0 4");
 
         final JLabel lblbstIsA = new JLabel(Lang.get("welcome.about"));
@@ -614,7 +633,7 @@ public class OpenBST extends JFrame
     public void createShortMenu()
     {
         shortMenu = new JPopupMenu();
-        JLabel label = new JLabel(Lang.get("menu.title"));
+        JMenuItem label = new JMenuItem(Lang.get("menu.title"));
         label.setEnabled(false);
         shortMenu.add(label);
         shortMenu.addSeparator();

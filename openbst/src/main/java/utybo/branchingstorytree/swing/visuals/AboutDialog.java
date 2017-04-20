@@ -23,6 +23,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.border.LineBorder;
 
 import net.miginfocom.swing.MigLayout;
 import utybo.branchingstorytree.swing.OpenBST;
@@ -34,6 +35,7 @@ public class AboutDialog extends JDialog
     @SuppressWarnings("unchecked")
     public AboutDialog(OpenBST parent)
     {
+        super(parent);
         setTitle(Lang.get("about.title"));
         setModalityType(ModalityType.APPLICATION_MODAL);
 
@@ -79,6 +81,7 @@ public class AboutDialog extends JDialog
         pan.add(lblVersion, "flowy,cell 0 1");
 
         JScrollPane scrollPane = new JScrollPane();
+        scrollPane.setBorder(new LineBorder(pan.getBackground().darker(), 1, true));
         pan.add(scrollPane, "cell 0 2,grow");
 
         JTextArea textArea = new JTextArea();
