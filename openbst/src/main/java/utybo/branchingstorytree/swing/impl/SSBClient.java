@@ -85,9 +85,12 @@ public class SSBClient implements SSBHandler
     @Override
     public void stop()
     {
-        currentAmbient.stop();
-        currentAmbient = null;
-        panel.getStory().getRegistry().put("__ssb__ambient", "//null");
+        if(currentAmbient != null)
+        {
+            currentAmbient.stop();
+            currentAmbient = null;
+            panel.getStory().getRegistry().put("__ssb__ambient", "//null");
+        }
     }
 
     public void shutdown()
