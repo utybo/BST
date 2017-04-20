@@ -18,6 +18,9 @@ menu.open=Ouvrir un fichier
 menu.advanced=Outils avancés
 menu.package=Empaqueter un fichier BST...
 menu.about=A propos d'OpenBST
+menu.themes=Thèmes
+menu.themes.dark=Thème sombre
+menu.themes.light=Thème lumineux
 
 # Package tool
 pkg.title=Outil de création de paquets BST

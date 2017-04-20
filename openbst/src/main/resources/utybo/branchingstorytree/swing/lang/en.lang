@@ -20,6 +20,9 @@ menu.open=Open a file
 menu.advanced=Advanced tools
 menu.package=Package a BST file...
 menu.about=About OpenBST
+menu.themes=Themes
+menu.themes.dark=Dark theme
+menu.themes.light=Light theme
 
 # Package tool
 pkg.title=BST Package Craft Tool

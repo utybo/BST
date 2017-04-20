@@ -194,6 +194,8 @@ public class StoryPanel extends JPanel
     {
         final int toolbarLevel = readToolbarLevel();
         final JToolBar toolBar = new JToolBar();
+        
+        toolBar.setBorder(null);
         toolBar.setFloatable(false);
         if(toolbarLevel > 0)
         {
@@ -416,7 +418,7 @@ public class StoryPanel extends JPanel
             public void actionPerformed(final ActionEvent e)
             {
                 final JDialog dialog = new JDialog(parentWindow);
-                dialog.add(new JPanel()
+                dialog.getContentPane().add(new JPanel()
                 {
                     /**
                      *

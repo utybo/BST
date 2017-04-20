@@ -16,7 +16,6 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 
 import javax.swing.JLabel;
-import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 

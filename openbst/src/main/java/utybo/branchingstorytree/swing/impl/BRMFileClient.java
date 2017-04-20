@@ -10,8 +10,11 @@ package utybo.branchingstorytree.swing.impl;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 
 import javax.swing.ProgressMonitor;
+import javax.swing.SwingUtilities;
 
 import org.apache.commons.io.FilenameUtils;
 
@@ -20,6 +23,7 @@ import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.api.story.BranchingStory;
 import utybo.branchingstorytree.brm.BRMResourceConsumer;
 import utybo.branchingstorytree.swing.OpenBST;
+import utybo.branchingstorytree.swing.visuals.AccumulativeRunnable;
 
 public class BRMFileClient implements BRMAdvancedHandler
 {
@@ -34,6 +38,8 @@ public class BRMFileClient implements BRMAdvancedHandler
         this.client = client;
         this.origin = origin;
     }
+    
+    private ProgressMonitor pm;
 
     public void load() throws BSTException
     {
@@ -47,8 +53,15 @@ public class BRMFileClient implements BRMAdvancedHandler
         {
             int total = countFiles(resources);
             int current = 0;
-            ProgressMonitor pm = new ProgressMonitor(OpenBST.getInstance(), "Loading resources...", "Initializing...", 0, total);
-
+            invokeAndWait(() -> pm = new ProgressMonitor(OpenBST.getInstance(), "Loading resources...", "Initializing...", 0, total));
+            AccumulativeRunnable<Integer> r = new AccumulativeRunnable<Integer>()
+            {
+                @Override
+                public void run(List<Integer> ints)
+                {
+                    pm.setProgress(ints.get(ints.size() -1));
+                }
+            };
             System.out.println("1");
             // Analysis of module directories list
             for(final File moduleFolder : resources.listFiles())
@@ -69,7 +82,7 @@ public class BRMFileClient implements BRMAdvancedHandler
                         System.out.println("4");
                         try
                         {
-                            pm.setProgress(current++);
+                            r.add(current++);
                             handler.load(file, FilenameUtils.getBaseName(file.getName()));
                         }
                         catch(FileNotFoundException e)
@@ -79,6 +92,18 @@ public class BRMFileClient implements BRMAdvancedHandler
                     }
                 }
             }
+        }
+    }
+
+    private void invokeAndWait(Runnable r)
+    {
+        try
+        {
+            SwingUtilities.invokeAndWait(r);
+        }
+        catch(InvocationTargetException | InterruptedException e)
+        {
+            e.printStackTrace();
         }
     }
 

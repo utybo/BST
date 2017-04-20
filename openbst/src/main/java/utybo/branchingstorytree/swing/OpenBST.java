@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -32,6 +33,7 @@ import java.util.function.Consumer;
 import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
 import javax.swing.Box;
+import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -41,21 +43,27 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
+import javax.swing.LookAndFeel;
 import javax.swing.ProgressMonitorInputStream;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.pushingpixels.substance.api.DecorationAreaType;
 import org.pushingpixels.substance.api.SubstanceLookAndFeel;
-import org.pushingpixels.substance.api.skin.SubstanceAutumnLookAndFeel;
+import org.pushingpixels.substance.api.SubstanceSkin;
+import org.pushingpixels.substance.api.painter.overlay.SubstanceOverlayPainter;
+import org.pushingpixels.substance.api.skin.BusinessSkin;
 import org.pushingpixels.substance.api.skin.SubstanceGraphiteGoldLookAndFeel;
 import org.pushingpixels.trident.Timeline;
 
@@ -108,6 +116,22 @@ public class OpenBST extends JFrame
 
     public static final Color OPENBST_BLUE = new Color(33, 150, 243);
 
+    public static final SubstanceLookAndFeel DARK_THEME = new SubstanceGraphiteGoldLookAndFeel();
+    public static final SubstanceLookAndFeel LIGHT_THEME;
+
+    static
+    {
+        SubstanceSkin skin = new BusinessSkin();
+        for(SubstanceOverlayPainter op : new ArrayList<>(skin.getOverlayPainters(DecorationAreaType.TOOLBAR)))
+        {
+            skin.removeOverlayPainter(op, DecorationAreaType.TOOLBAR);
+        }
+        LIGHT_THEME = new SubstanceLookAndFeel(skin)
+        {
+            private static final long serialVersionUID = 1L;
+        };
+    }
+
     // --- IMAGES ---
     public static Image ideaImage;
     public static Image blogImage;
@@ -120,13 +144,14 @@ public class OpenBST extends JFrame
     public static Image returnBigImage, saveAsImage, speakerImage, synchronizeImage, synchronizeBigImage, undoImage, undoBigImage, visibleImage;
     public static Image smallLogoWhite, bigLogoBlue, bigLogoWhite;
 
-    public static Image menuOpenFolder, menuOpenArchive, menuAbout;
+    public static Image menuOpenFolder, menuOpenArchive, menuAbout, menuColorDropper;
 
     /**
      * Container for all the tabs
      */
     private final JTabbedPane container;
-    private JPopupMenu shortMenu;
+
+    private int selectedTheme = 0;
 
     /**
      * Launch OpenBST
@@ -153,7 +178,7 @@ public class OpenBST extends JFrame
         {
             try
             {
-                UIManager.setLookAndFeel(new SubstanceGraphiteGoldLookAndFeel());
+                UIManager.setLookAndFeel(DARK_THEME);
                 UIManager.getDefaults().put(SubstanceLookAndFeel.COLORIZATION_FACTOR, new Double(1.0D));
 
                 if(System.getProperty("os.name").toLowerCase().equals("linux"))
@@ -436,6 +461,7 @@ public class OpenBST extends JFrame
             menuOpenFolder = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/menu/Open Folder.png"));
             menuOpenArchive = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/menu/Open Archive.png"));
             menuAbout = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/menu/About.png"));
+            menuColorDropper = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/menu/Color Dropper.png"));
 
             smallLogoWhite = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/logos/logo-small-white.png"));
             bigLogoBlue = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/logos/logo-big-blue.png"));
@@ -449,7 +475,7 @@ public class OpenBST extends JFrame
         }
         catch(final IOException e1)
         {
-            LOG.warn("IOException caught when loading icon", e1);
+            LOG.warn("IOException caught when loading resource", e1);
         }
 
         BorderLayout borderLayout = new BorderLayout();
@@ -476,7 +502,7 @@ public class OpenBST extends JFrame
             public void mouseClicked(MouseEvent e)
             {
                 openBST.setText(Lang.get("banner.title"));
-                shortMenu.show(OpenBST.this, e.getX(), e.getY());
+                createShortMenu().show(OpenBST.this, e.getX(), e.getY());
             }
 
             @Override
@@ -645,9 +671,9 @@ public class OpenBST extends JFrame
     }
 
     @SuppressWarnings("serial")
-    public void createShortMenu()
+    public JPopupMenu createShortMenu()
     {
-        shortMenu = new JPopupMenu();
+        JPopupMenu shortMenu = new JPopupMenu();
         JMenuItem label = new JMenuItem(Lang.get("menu.title"));
         label.setEnabled(false);
         shortMenu.add(label);
@@ -677,6 +703,26 @@ public class OpenBST extends JFrame
 
         shortMenu.addSeparator();
 
+        JMenu themesMenu = new JMenu(Lang.get("menu.themes"));
+        shortMenu.add(themesMenu);
+        themesMenu.setIcon(new ImageIcon(menuColorDropper));
+        ButtonGroup themesGroup = new ButtonGroup();
+        JRadioButtonMenuItem jrbmi;
+
+        jrbmi = new JRadioButtonMenuItem(Lang.get("menu.themes.dark"));
+        if(0 == selectedTheme)
+            jrbmi.setSelected(true);
+        jrbmi.addActionListener(e -> switchLaF(0, DARK_THEME));
+        themesMenu.add(jrbmi);
+        themesGroup.add(jrbmi);
+
+        jrbmi = new JRadioButtonMenuItem(Lang.get("menu.themes.light"));
+        if(1 == selectedTheme)
+            jrbmi.setSelected(true);
+        jrbmi.addActionListener(e -> switchLaF(1, LIGHT_THEME));
+        themesMenu.add(jrbmi);
+        themesGroup.add(jrbmi);
+
         shortMenu.add(new JMenuItem(new AbstractAction(Lang.get("menu.about"), new ImageIcon(menuAbout))
         {
             @Override
@@ -685,6 +731,22 @@ public class OpenBST extends JFrame
                 new AboutDialog(instance).setVisible(true);
             }
         }));
+
+        return shortMenu;
+    }
+
+    private void switchLaF(int id, LookAndFeel laf)
+    {
+        try
+        {
+            UIManager.setLookAndFeel(laf);
+            SwingUtilities.updateComponentTreeUI(instance);
+            selectedTheme = id;
+        }
+        catch(UnsupportedLookAndFeelException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     public static OpenBST getInstance()
