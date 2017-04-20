@@ -77,9 +77,9 @@ public class SSBClient implements SSBHandler
         }
         panel.getStory().getRegistry().put("__ssb__ambient", name);
         final MediaPlayer sound = resources.get(name);
+        currentAmbient = sound;
         sound.setCycleCount(Integer.MAX_VALUE);
         sound.play();
-        currentAmbient = sound;
     }
 
     @Override
