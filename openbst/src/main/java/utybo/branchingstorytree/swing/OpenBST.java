@@ -96,14 +96,6 @@ public class OpenBST extends JFrame
     private static final long serialVersionUID = 1L;
 
     public static final Logger LOG = LogManager.getLogger("OpenBST");
-    //    public static final Configuration CONFIG;
-
-    static
-    {
-        final ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
-        builder.setConfigurationName("OpenBST-default");
-        builder.setStatusLevel(Level.INFO);
-    }
 
     /**
      * The parser that will be reused throughout the entire session.
