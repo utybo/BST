@@ -151,7 +151,7 @@ public class OpenBST extends JFrame
      */
     private final JTabbedPane container;
 
-    private int selectedTheme = 0;
+    private int selectedTheme = 1;
 
     /**
      * Launch OpenBST
@@ -178,7 +178,7 @@ public class OpenBST extends JFrame
         {
             try
             {
-                UIManager.setLookAndFeel(DARK_THEME);
+                UIManager.setLookAndFeel(LIGHT_THEME);
                 UIManager.getDefaults().put(SubstanceLookAndFeel.COLORIZATION_FACTOR, new Double(1.0D));
 
                 if(System.getProperty("os.name").toLowerCase().equals("linux"))

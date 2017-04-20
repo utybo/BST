@@ -42,7 +42,8 @@ public class AboutDialog extends JDialog
         JPanel banner = new JPanel(new FlowLayout(FlowLayout.CENTER));
         banner.setBackground(OpenBST.OPENBST_BLUE);
         JLabel lblOpenbst = new JLabel(new ImageIcon(OpenBST.bigLogoWhite));
-        lblOpenbst.setText("<html><font size=32>" + Lang.get("title"));
+        lblOpenbst.setText(Lang.get("title"));
+        lblOpenbst.setFont(lblOpenbst.getFont().deriveFont(32F));
         lblOpenbst.setForeground(Color.WHITE);
         banner.add(lblOpenbst, "flowx,cell 0 0,alignx center");
         getContentPane().add(banner, BorderLayout.NORTH);
