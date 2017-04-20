@@ -22,9 +22,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.function.Consumer;
 
 import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
@@ -43,6 +46,8 @@ import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
 import javax.swing.ProgressMonitorInputStream;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 
@@ -69,9 +74,9 @@ import utybo.branchingstorytree.swing.utils.BSTPackager;
 import utybo.branchingstorytree.swing.utils.Lang;
 import utybo.branchingstorytree.swing.visuals.AboutDialog;
 import utybo.branchingstorytree.swing.visuals.JScrollablePanel;
+import utybo.branchingstorytree.swing.visuals.JScrollablePanel.ScrollableSizeHint;
 import utybo.branchingstorytree.swing.visuals.PackageDialog;
 import utybo.branchingstorytree.swing.visuals.StoryPanel;
-import utybo.branchingstorytree.swing.visuals.JScrollablePanel.ScrollableSizeHint;
 
 /**
  * OpenBST is an open source implementation of the BST language that aims to be
@@ -226,55 +231,85 @@ public class OpenBST extends JFrame
      *            The BST Client. This is required for parsing the file
      * @return
      */
-    public BranchingStory loadFile(final File file, final TabClient client)
+    public void loadFile(final File file, final TabClient client, Consumer<BranchingStory> callback)
     {
-        try
+        SwingWorker<BranchingStory, Object> worker = new SwingWorker<BranchingStory, Object>()
         {
-            LOG.trace("Parsing story");
-            String ext = FilenameUtils.getExtension(file.getName());
-            if(ext.equals("bsp"))
+            @Override
+            protected BranchingStory doInBackground() throws Exception
             {
-                return BSTPackager.fromPackage(new ProgressMonitorInputStream(instance, "Opening " + file.getName() + "...", new FileInputStream(file)), client);
-            }
-            else
-            {
-                BranchingStory bs = parser.parse(new BufferedReader(new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8"))), new Dictionnary(), client, "<main>");
-                client.setBRMHandler(new BRMFileClient(file, client, bs));
-                return bs;
+                try
+                {
+                    LOG.trace("Parsing story");
+                    String ext = FilenameUtils.getExtension(file.getName());
+                    BranchingStory bs = null;
+                    if(ext.equals("bsp"))
+                    {
+                        bs = BSTPackager.fromPackage(new ProgressMonitorInputStream(instance, "Opening " + file.getName() + "...", new FileInputStream(file)), client);
+                    }
+                    else
+                    {
+                        bs = parser.parse(new BufferedReader(new InputStreamReader(new ProgressMonitorInputStream(instance, "Opening " + file.getName() + "...", new FileInputStream(file)), Charset.forName("UTF-8"))), new Dictionnary(), client, "<main>");
+                        client.setBRMHandler(new BRMFileClient(file, client, bs));
+                    }
+                    callback.accept(bs);
+                    return bs;
+                }
+                catch(final IOException e)
+                {
+                    LOG.error("IOException caught", e);
+                    JOptionPane.showMessageDialog(instance, Lang.get("file.error").replace("$e", e.getClass().getSimpleName()).replace("$m", e.getMessage()), Lang.get("error"), JOptionPane.ERROR_MESSAGE);
+                    return null;
+                }
+                catch(final BSTException e)
+                {
+                    LOG.error("BSTException caught", e);
+                    String s = Lang.get("file.bsterror.1");
+                    s += Lang.get("file.bsterror.2");
+                    s += Lang.get("file.bsterror.3").replace("$l", "" + e.getWhere()).replace("$f", "<main>");
+                    if(e.getCause() != null)
+                    {
+                        s += Lang.get("file.bsterror.4").replace("$e", e.getCause().getClass().getSimpleName()).replace("$m", e.getCause().getMessage());
+                    }
+                    s += Lang.get("file.bsterror.5").replace("$m", e.getMessage());
+                    s += Lang.get("file.bsterror.6");
+                    if(JOptionPane.showConfirmDialog(instance, s, Lang.get("bsterror"), JOptionPane.ERROR_MESSAGE, JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
+                    {
+                        LOG.debug("Reloading");
+                        return doInBackground();
+                    }
+                    return null;
+                }
+                catch(final Exception e)
+                {
+                    LOG.error("Random exception caught", e);
+                    JOptionPane.showMessageDialog(instance, Lang.get("file.crash"), Lang.get("error"), JOptionPane.ERROR_MESSAGE);
+                    return null;
+                }
 
             }
-        }
-        catch(final IOException e)
-        {
-            LOG.error("IOException caught", e);
-            JOptionPane.showMessageDialog(instance, Lang.get("file.error").replace("$e", e.getClass().getSimpleName()).replace("$m", e.getMessage()), Lang.get("error"), JOptionPane.ERROR_MESSAGE);
-            return null;
-        }
-        catch(final BSTException e)
-        {
-            LOG.error("BSTException caught", e);
-            String s = Lang.get("file.bsterror.1");
-            s += Lang.get("file.bsterror.2");
-            s += Lang.get("file.bsterror.3").replace("$l", "" + e.getWhere()).replace("$f", "<main>");
-            if(e.getCause() != null)
+
+            @Override
+            protected void done()
             {
-                s += Lang.get("file.bsterror.4").replace("$e", e.getCause().getClass().getSimpleName()).replace("$m", e.getCause().getMessage());
+                try
+                {
+                    get();
+                }
+                catch(InterruptedException e)
+                {
+                    // Shouldn't happen
+                    e.printStackTrace();
+                }
+                catch(ExecutionException e)
+                {
+                    LOG.error("Random exception caught", e);
+                    JOptionPane.showMessageDialog(instance, Lang.get("file.crash"), Lang.get("error"), JOptionPane.ERROR_MESSAGE);
+                    e.printStackTrace();
+                }
             }
-            s += Lang.get("file.bsterror.5").replace("$m", e.getMessage());
-            s += Lang.get("file.bsterror.6");
-            if(JOptionPane.showConfirmDialog(instance, s, Lang.get("bsterror"), JOptionPane.ERROR_MESSAGE, JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
-            {
-                LOG.debug("Reloading");
-                return loadFile(file, client);
-            }
-            return null;
-        }
-        catch(final Exception e)
-        {
-            LOG.error("Random exception caught", e);
-            JOptionPane.showMessageDialog(instance, Lang.get("file.crash"), Lang.get("error"), JOptionPane.ERROR_MESSAGE);
-            return null;
-        }
+        };
+        worker.execute();
     }
 
     /**
@@ -542,11 +577,44 @@ public class OpenBST extends JFrame
         if(f != null)
         {
             final TabClient client = new TabClient(instance);
-            final BranchingStory bs = loadFile(f, client);
-            if(bs != null)
+            loadFile(f, client, new Consumer<BranchingStory>()
             {
-                addStory(bs, f, client);
-            }
+                private StoryPanel sp;
+
+                public void accept(BranchingStory bs)
+                {
+                    if(bs != null)
+                    {
+                        try
+                        {
+                            SwingUtilities.invokeAndWait(() -> sp = addStory(bs, f, client));
+                            if(sp != null)
+                            {
+                                try
+                                {
+                                    client.getBRMHandler().load();
+                                }
+                                catch(BSTException e)
+                                {
+                                    // TODO Report error
+                                    e.printStackTrace();
+                                }
+                                SwingUtilities.invokeAndWait(() -> sp.setupStory());
+                            }
+                        }
+                        catch(InvocationTargetException e)
+                        {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+                        catch(InterruptedException e)
+                        {
+                            LOG.warn(e);
+                        }
+
+                    }
+                }
+            });
         }
     }
 
@@ -591,5 +659,10 @@ public class OpenBST extends JFrame
                 new AboutDialog(instance).setVisible(true);
             }
         }));
+    }
+
+    public static OpenBST getInstance()
+    {
+        return instance;
     }
 }

@@ -16,22 +16,18 @@ import utybo.branchingstorytree.api.story.BranchingStory;
 /**
  * Implementation of actions related to BRM
  *
+ * @deprecated this used to be for loading resources manually, but this is done
+ *             automatically now
  * @author utybo
  *
  */
+@Deprecated
 public class BRMAction implements ScriptAction
 {
 
     @Override
     public void exec(final String head, final String desc, final int line, final BranchingStory story, final BSTClient client) throws BSTException
-    {
-        final BRMHandler brm = client.getBRMHandler();
-        if(brm == null)
-        {
-            throw new BSTException(line, "brm not supported");
-        }
-        brm.loadAuto();
-    }
+    {}
 
     @Override
     public String[] getName()

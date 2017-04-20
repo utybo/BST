@@ -18,9 +18,9 @@ import utybo.branchingstorytree.api.BSTClient;
 import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.api.story.BranchingStory;
 import utybo.branchingstorytree.brm.BRMResourceConsumer;
-import utybo.branchingstorytree.swing.impl.BRMRestorableHandler;
+import utybo.branchingstorytree.swing.impl.BRMAdvancedHandler;
 
-public class BRMVirtualFileClient implements BRMRestorableHandler
+public class BRMVirtualFileClient implements BRMAdvancedHandler
 {
     private final VirtualFileHolder vfHolder;
     private final BSTClient client;
@@ -34,8 +34,7 @@ public class BRMVirtualFileClient implements BRMRestorableHandler
         this.origin = story;
     }
 
-    @Override
-    public void loadAuto() throws BSTException
+    public void load() throws BSTException
     {
         initialized = true;
         origin.getRegistry().put("__brm_initialized", 1);
@@ -59,7 +58,7 @@ public class BRMVirtualFileClient implements BRMRestorableHandler
         Object o = origin.getRegistry().get("__brm_initialized", 0);
         if(!initialized && o instanceof Integer && (Integer)o == 1)
         {
-            loadAuto();
+            load();
         }
     }
 }

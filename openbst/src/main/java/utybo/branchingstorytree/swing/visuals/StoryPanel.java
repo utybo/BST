@@ -185,8 +185,6 @@ public class StoryPanel extends JPanel
         scrollPane.setViewportView(nodePanel);
 
         add(optionPanel, "growx");
-
-        setupStory();
     }
 
     /**
@@ -321,7 +319,6 @@ public class StoryPanel extends JPanel
                                 final SaveState ss = new SaveState(currentNode.getId(), story.getRegistry(), currentNode.getStory().getTag("__sourcename"));
                                 reset();
                                 reload();
-                                reset();
                                 restoreSaveState(ss);
                             }
                         }
@@ -337,7 +334,6 @@ public class StoryPanel extends JPanel
                             {
                                 reset();
                                 reload();
-                                reset();
                             }
                         }
                     });
@@ -629,7 +625,7 @@ public class StoryPanel extends JPanel
     /**
      * Setup of the story. This can be ran again if the story changed
      */
-    private void setupStory()
+    public void setupStory()
     {
         LOG.trace("=> Analyzing options and deducing maximum option amount");
         // Quick analysis of all the nodes to get the maximum amount of options
@@ -702,8 +698,20 @@ public class StoryPanel extends JPanel
      */
     protected void reload()
     {
-        story = parentWindow.loadFile(bstFile, client);
-        setupStory();
+        parentWindow.loadFile(bstFile, client, bs ->
+        {
+            story = bs;
+            try
+            {
+                client.getBRMHandler().load();
+            }
+            catch(BSTException e)
+            {
+                // TODO Report error
+                e.printStackTrace();
+            }
+            setupStory();
+        });
     }
 
     /**
@@ -1003,7 +1011,7 @@ public class StoryPanel extends JPanel
     {
         return story;
     }
-    
+
     public JPanel getUIBPanel()
     {
         return uibPanel;

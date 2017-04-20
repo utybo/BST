@@ -22,8 +22,12 @@ public interface BRMHandler
      * Load the files in folder resources/<module name> and use the module
      * handlers' implementation of
      * {@link BRMResourceConsumer#load(String, String)}
+     * <p>
+     * The loading process should be called on file load. As such, this method is useless.
      *
      * @throws BSTException
      */
-    public void loadAuto() throws BSTException;
+    @Deprecated
+    public default void loadAuto() throws BSTException
+    {}
 }

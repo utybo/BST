@@ -22,7 +22,7 @@ public class TabClient implements BSTClient
     private final OpenBST instance;
     private StoryPanel tab;
     private TabUIB uibHandler;
-    private BRMRestorableHandler brmClient;
+    private BRMAdvancedHandler brmClient;
     private SSBClient ssbClient;
     private IMGClient imgClient;
     private final BDFClient bdfClient;
@@ -75,7 +75,7 @@ public class TabClient implements BSTClient
     }
 
     @Override
-    public BRMRestorableHandler getBRMHandler()
+    public BRMAdvancedHandler getBRMHandler()
     {
         return brmClient;
     }
@@ -104,7 +104,7 @@ public class TabClient implements BSTClient
         return xbfClient;
     }
 
-    public void setBRMHandler(BRMRestorableHandler handler)
+    public void setBRMHandler(BRMAdvancedHandler handler)
     {
         this.brmClient = handler;
     }
