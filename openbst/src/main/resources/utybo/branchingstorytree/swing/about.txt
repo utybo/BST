@@ -40,4 +40,8 @@ As with almost all programs, OpenBST is powered by awesome third-party libraries
   https://github.com/kirill-grouchnikov/trident
   Universal (and awesome) animation library
 
-OpenBST relies on bst-java, a library made to read and understand BST files. bst-java relies on ClassIndex
+- Substance
+  https://github.com/kirill-grouchnikov/substance
+  Awesome themes for Java Swing apps
+
+OpenBST relies on bst-java, a library made to read and understand BST files. bst-java relies on ClassIndex.
