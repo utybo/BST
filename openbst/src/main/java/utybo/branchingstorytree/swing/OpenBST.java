@@ -153,9 +153,8 @@ public class OpenBST extends JFrame
         {
             try
             {
-                UIManager.setLookAndFeel(new SubstanceAutumnLookAndFeel());
-                UIManager.getDefaults().put(SubstanceLookAndFeel.COLORIZATION_FACTOR, new Double(1.0D));
                 UIManager.setLookAndFeel(new SubstanceGraphiteGoldLookAndFeel());
+                UIManager.getDefaults().put(SubstanceLookAndFeel.COLORIZATION_FACTOR, new Double(1.0D));
 
                 if(System.getProperty("os.name").toLowerCase().equals("linux"))
                 {
@@ -267,7 +266,7 @@ public class OpenBST extends JFrame
                 catch(final IOException e)
                 {
                     LOG.error("IOException caught", e);
-                    JOptionPane.showMessageDialog(instance, Lang.get("file.error").replace("$e", e.getClass().getSimpleName()).replace("$m", e.getMessage()), Lang.get("error"), JOptionPane.ERROR_MESSAGE);
+                    showMessageDialog(instance, Lang.get("file.error").replace("$e", e.getClass().getSimpleName()).replace("$m", e.getMessage()), Lang.get("error"), JOptionPane.ERROR_MESSAGE);
                     return null;
                 }
                 catch(final BSTException e)
@@ -292,7 +291,7 @@ public class OpenBST extends JFrame
                 catch(final Exception e)
                 {
                     LOG.error("Random exception caught", e);
-                    JOptionPane.showMessageDialog(instance, Lang.get("file.crash"), Lang.get("error"), JOptionPane.ERROR_MESSAGE);
+                    showMessageDialog(instance, Lang.get("file.crash"), Lang.get("error"), JOptionPane.ERROR_MESSAGE);
                     return null;
                 }
 
@@ -607,8 +606,8 @@ public class OpenBST extends JFrame
                                 }
                                 catch(BSTException e)
                                 {
-                                    // TODO Report error
-                                    e.printStackTrace();
+                                    LOG.error("Exception caught while loading resources", e);
+                                    showMessageDialog(instance, Lang.get("file.resourceerror").replace("$e", whichCause(e)).replace("$m", whichMessage(e)), Lang.get("error"), JOptionPane.ERROR_MESSAGE);
                                 }
                                 SwingUtilities.invokeAndWait(() -> sp.setupStory());
                             }
@@ -624,6 +623,22 @@ public class OpenBST extends JFrame
                         }
 
                     }
+                }
+
+                private String whichMessage(BSTException e)
+                {
+                    if(e.getCause() != null)
+                        return e.getCause().getMessage();
+                    else
+                        return e.getMessage();
+                }
+
+                private String whichCause(BSTException e)
+                {
+                    if(e.getCause() != null)
+                        return e.getCause().getClass().getSimpleName();
+                    else
+                        return e.getClass().getSimpleName();
                 }
             });
         }
@@ -675,5 +690,10 @@ public class OpenBST extends JFrame
     public static OpenBST getInstance()
     {
         return instance;
+    }
+
+    protected void showMessageDialog(OpenBST obst, String msg, String head, int type)
+    {
+        invokeSwingAndWait(() -> JOptionPane.showMessageDialog(obst, msg, head, type));
     }
 }

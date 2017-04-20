@@ -41,6 +41,7 @@ about.version=Version : $v
 # Loading files
 file.title=Choose a BST file...
 file.error=<html>There was an error during file loading. Please try again and make sure your file is correct.<p>($e: $m)
+file.resourceerror=<html>There was an error during resource loading. Please try again and make sure everything is alright.<p>($e: $m)
 file.bsterror.1=<html><b>-- BST Error --</b><p>
 file.bsterror.2=Your file seems to have an error here :<p>
 file.bsterror.3=Line : $l (from $f)<p>

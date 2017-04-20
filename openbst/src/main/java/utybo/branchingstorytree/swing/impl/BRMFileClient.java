@@ -43,11 +43,12 @@ public class BRMFileClient implements BRMAdvancedHandler
         final File parent = bstFileLocation.getParentFile();
         final File resources = new File(parent, "resources");
         System.out.println(resources.getAbsolutePath());
-        int total = countFiles(resources);
-        int current = 0;
-        ProgressMonitor pm = new ProgressMonitor(OpenBST.getInstance(), "Loading resources...", "Initializing...", 0, total);
         if(resources.exists() && resources.isDirectory())
         {
+            int total = countFiles(resources);
+            int current = 0;
+            ProgressMonitor pm = new ProgressMonitor(OpenBST.getInstance(), "Loading resources...", "Initializing...", 0, total);
+
             System.out.println("1");
             // Analysis of module directories list
             for(final File moduleFolder : resources.listFiles())

@@ -39,6 +39,7 @@ about.version=Version : $v
 # Loading files
 file.title=Choisissez un fichier BST...
 file.error=<html>Il y a eu une erreur durant le chargement du fichier. Veuillez réessayer en vérifiant la validité de votre fichier.<p>($e: $m)
+file.resourceerror=<html>Il y a eu une erreur lors du chargement des ressources. Veuillez réessayer en vérifiant que tout aille bien.<p>($e: $m)
 file.bsterror.1=<html><b>-- Erreur BST --</b><p>
 file.bsterror.2=Votre fichier semble être erroné ici :<p>
 file.bsterror.3=Ligne : $l (depuis $f)<p>

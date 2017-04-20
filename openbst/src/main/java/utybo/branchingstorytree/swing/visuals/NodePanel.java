@@ -52,7 +52,6 @@ public class NodePanel extends JScrollablePanel
 
         textLabel = new JLabel(Lang.get("story.problem"));
         textLabel.setVerticalAlignment(SwingConstants.TOP);
-        textLabel.setFont(new JTextArea().getFont());
         textLabel.setForeground(Color.BLACK);
         textLabel.setBorder(new EmptyBorder(10, 10, 10, 10));
         add(textLabel, BorderLayout.CENTER);

@@ -92,7 +92,6 @@ public class StoryUtils
         // Is it a number? If yes, return the appropriate node
         if(m.matches())
         {
-            System.out.println("Test");
             int i = Integer.parseInt(toParse);
             sn = story.getNode(i);
             if(sn == null && i != -1)
@@ -100,7 +99,6 @@ public class StoryUtils
         }
         else
         {
-            System.out.println("Test");
             Collection<StoryNode> nodes = story.getAllNodes();
             // Is it an alias? Try to find an alias
             for(StoryNode node : nodes)
