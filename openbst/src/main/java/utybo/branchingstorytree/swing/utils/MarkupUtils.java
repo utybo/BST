@@ -54,12 +54,12 @@ public class MarkupUtils
         switch(markupLanguage)
         {
         case 1:
-            return "<html>" + Processor.process(input).replaceAll("<p>", "<p><p>").substring(3); // MD to HTML
+            return Processor.process(input); // MD to HTML
         // TODO Test to see if HTML characters are escaped
         case 2:
-            return "<html>" + input; // HTML to HTML
+            return input; // HTML to HTML
         default:
-            return "<html>" + StringEscapeUtils.escapeHtml(input).replace("\n", "<br>"); // Plain text to HTML
+            return StringEscapeUtils.escapeHtml(input).replace("\n", "<br>"); // Plain text to HTML
         }
     }
 }

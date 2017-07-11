@@ -175,14 +175,15 @@ public class StoryPanel extends JPanel
             uibPanel.setVisible(false);
         }
 
-        final JScrollPane scrollPane = new JScrollPane();
-        scrollPane.setBackground(Color.WHITE);
-        add(scrollPane, "grow, pushy, wrap");
+//        final JScrollPane scrollPane = new JScrollPane();
+//        scrollPane.setBackground(Color.RED);
+//        add(scrollPane, "grow, pushy, wrap");
 
         nodePanel = new NodePanel(client.getIMGHandler());
         nodePanel.setScrollableWidth(ScrollableSizeHint.FIT);
         nodePanel.setScrollableHeight(ScrollableSizeHint.STRETCH);
-        scrollPane.setViewportView(nodePanel);
+//        scrollPane.setViewportView(nodePanel);
+        add(nodePanel, "grow, pushy, wrap");
 
         add(optionPanel, "growx");
     }
