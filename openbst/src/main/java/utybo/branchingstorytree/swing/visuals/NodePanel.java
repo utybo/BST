@@ -15,7 +15,9 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Base64;
 import java.util.concurrent.CountDownLatch;
 
@@ -39,6 +41,14 @@ import utybo.branchingstorytree.swing.utils.MarkupUtils;
 
 public class NodePanel extends JScrollablePanel
 {
+    private static final String STYLE = "@font-face {"
+            + "font-family: 'alegreya';"
+            + "src: url(" + NodePanel.class.getResource("/utybo/branchingstorytree/swing/font/Alegreya-Regular.otf").toExternalForm() + ");"
+            + "font-weight: normal;" 
+            + "font-style: normal;"
+            + "}"
+            + "html {"
+            + "font-family: 'alegreya'";
     /**
      *
      */
@@ -48,10 +58,6 @@ public class NodePanel extends JScrollablePanel
     private Color textColor;
     private boolean backgroundVisible = true;
     private WebView view;
-    private Dimension previousBounds; 
-    private Image previousScaledImage; 
-    private BufferedImage previousImage; 
-    private int imageX, imageY; 
 
     public NodePanel(final IMGClient imageClient)
     {
@@ -59,18 +65,14 @@ public class NodePanel extends JScrollablePanel
         setLayout(new BorderLayout());
 
         JFXPanel panel = new JFXPanel();
-        panel.setBackground(new Color(0,0,0,0));
         add(panel, BorderLayout.CENTER);
 
         CountDownLatch cdl = new CountDownLatch(1);
         Platform.runLater(() ->
         {
             view = new WebView();
-            BorderPane bp = new BorderPane(view);
-            bp.setBackground(Background.EMPTY);
-            Scene sc = new Scene(bp);
-            view.setFontSmoothingType(FontSmoothingType.LCD);
-            view.getEngine().loadContent("<head></head><body>" + Lang.get("story.problem") + "</body>");
+            Scene sc = new Scene(view);
+            view.getEngine().loadContent("<head><style type='text/css'>"+ STYLE +"</style></head><body>" + Lang.get("story.problem") + "</body>");
             sc.setFill(javafx.scene.paint.Color.TRANSPARENT);
             panel.setScene(sc);
             cdl.countDown();
@@ -127,13 +129,34 @@ public class NodePanel extends JScrollablePanel
 
     private void build()
     {
-        String base = "<head></head><body style='background-color: rgba(0,0,0,0)'>"+text+"</body>";
+        String base = "<head><meta charset=\"utf-8\"/><style type='text/css'>" + STYLE + "</style></head><body style=\"margin:10px;padding:0px;$BG\"><div style=\"margin:-10px;padding:10px;$ADDITIONAL;width: 100%; height:100%\"><div style=\"font-size:14px\">"+text+"</div></div></body>";
+        String bg, additional;
+        if(imageClient.getCurrentBackground() != null && backgroundVisible) {
+            bg = "background-image:url('data:image/png;base64," + b64bg() + "'); background-size:cover; background-position:center; background-attachment:fixed";
+            additional = "background-color:rgba(255,255,255,0.5)";
+        }
+        else
+        {
+            bg = "";
+            additional = "";
+        }
+        String s = base.replace("$BG", bg).replace("$ADDITIONAL", additional);
+        File f = new File("/home/chrx/test.html");
+        f.delete();
+        try
+        {
+            Files.write(f.toPath(), s.getBytes());
+        }
+        catch(IOException e1)
+        {
+            e1.printStackTrace();
+        }
         try
         {
             jfxRunAndWait(() -> {
-                view.getEngine().loadContent(base);
-                final com.sun.webkit.WebPage webPage = com.sun.javafx.webkit.Accessor.getPageFor(view.getEngine());
-                webPage.setBackgroundColor(0);
+                view.getEngine().loadContent(s);
+//                final com.sun.webkit.WebPage webPage = com.sun.javafx.webkit.Accessor.getPageFor(view.getEngine());
+//                webPage.setBackgroundColor(0);
             });
         }
         catch(InterruptedException e)
@@ -153,7 +176,7 @@ public class NodePanel extends JScrollablePanel
         {
             e.printStackTrace();
         }
-        return Base64.getMimeEncoder().encodeToString(baos.toByteArray());
+        return Base64.getMimeEncoder().encodeToString(baos.toByteArray()).replaceAll("[\n\r]", "");
     }
 
     private void jfxRunAndWait(Runnable runnable) throws InterruptedException
@@ -163,7 +186,8 @@ public class NodePanel extends JScrollablePanel
         else
         {
             CountDownLatch latch = new CountDownLatch(1);
-            Platform.runLater(() -> {
+            Platform.runLater(() ->
+            {
                 runnable.run();
                 latch.countDown();
             });
@@ -205,71 +229,6 @@ public class NodePanel extends JScrollablePanel
             textColor = null;
         }
     }
-
-    @Override 
-    protected void paintComponent(final Graphics g) 
-    { 
-        super.paintComponent(g); 
-        if(imageClient != null && imageClient.getCurrentBackground() != null && backgroundVisible) 
-        { 
-            Image image; 
-            final int width = getWidth() - 1; 
-            final int height = getHeight() - 1; 
-            if(previousBounds != null && previousScaledImage != null && getParent().getSize().equals(previousBounds) && imageClient.getCurrentBackground() == previousImage) 
-            { 
-                image = previousScaledImage; 
-            } 
-            else 
-            { 
-                final BufferedImage bi = imageClient.getCurrentBackground(); 
-                double scaleFactor = 1d; 
-                if(bi.getWidth() > bi.getHeight()) 
-                { 
-                    scaleFactor = getScaleFactorToFill(new Dimension(bi.getWidth(), bi.getHeight()), getParent().getSize()); 
-                } 
-                else if(bi.getHeight() > bi.getWidth()) 
-                { 
-                    scaleFactor = getScaleFactorToFill(new Dimension(bi.getWidth(), bi.getHeight()), getParent().getSize()); 
-                } 
-                final int scaleWidth = (int)Math.round(bi.getWidth() * scaleFactor); 
-                final int scaleHeight = (int)Math.round(bi.getHeight() * scaleFactor); 
- 
-                image = bi.getScaledInstance(scaleWidth, scaleHeight, Image.SCALE_FAST); 
- 
-                previousBounds = getParent().getSize(); 
-                previousScaledImage = image; 
-                previousImage = bi; 
-                imageX = (width - image.getWidth(this)) / 2; 
-                imageY = (height - image.getHeight(this)) / 2; 
-            } 
- 
-            g.drawImage(image, imageX, imageY, this); 
-            g.setColor(new Color(255, 255, 255, 200)); 
-            g.fillRect(0, 0, width + 1, height + 1); 
-        } 
-    } 
- 
-    private double getScaleFactorToFill(final Dimension masterSize, final Dimension targetSize) 
-    { 
-        final double dScaleWidth = getScaleFactor(masterSize.width, targetSize.width); 
-        final double dScaleHeight = getScaleFactor(masterSize.height, targetSize.height); 
-        final double dScale = Math.max(dScaleHeight, dScaleWidth); 
-        return dScale; 
-    } 
- 
-    private double getScaleFactor(final int iMasterSize, final int iTargetSize) 
-    { 
-        double dScale = 1; 
-        if(iMasterSize > iTargetSize) 
-        { 
-            dScale = (double)iTargetSize / (double)iMasterSize;  
-        } 
-        else 
-        { 
-            dScale = (double)iTargetSize / (double)iMasterSize; 
-        } 
-        return dScale; 
-    } 
 
     public void setBackgroundVisible(final boolean selected)
     {
