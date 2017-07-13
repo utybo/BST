@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -43,6 +44,7 @@ import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 
 import com.google.gson.Gson;
 
@@ -713,7 +715,14 @@ public class StoryPanel extends JPanel
                 // TODO Report error
                 e.printStackTrace();
             }
-            setupStory();
+            try
+            {
+                SwingUtilities.invokeAndWait(() -> setupStory());
+            }
+            catch(Exception e)
+            {
+                e.printStackTrace();
+            }
         });
     }
 

@@ -10,24 +10,19 @@ package utybo.branchingstorytree.swing.visuals;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Image;
-import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.concurrent.CountDownLatch;
 
 import javax.imageio.ImageIO;
 
+import org.apache.commons.io.IOUtils;
+
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Scene;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.text.FontSmoothingType;
 import javafx.scene.web.WebView;
 import utybo.branchingstorytree.api.BSTException;
@@ -41,14 +36,7 @@ import utybo.branchingstorytree.swing.utils.MarkupUtils;
 
 public class NodePanel extends JScrollablePanel
 {
-    private static final String STYLE = "@font-face {"
-            + "font-family: 'alegreya';"
-            + "src: url(" + NodePanel.class.getResource("/utybo/branchingstorytree/swing/font/Alegreya-Regular.otf").toExternalForm() + ");"
-            + "font-weight: normal;" 
-            + "font-style: normal;"
-            + "}"
-            + "html {"
-            + "font-family: 'alegreya'";
+    private static final String STYLE = "@font-face {" + "font-family: 'alegreya';" + "src: url(" + NodePanel.class.getResource("/utybo/branchingstorytree/swing/font/Alegreya-Regular.otf").toExternalForm() + ");" + "font-weight: normal;" + "font-style: normal;" + "}" + "html {" + "font-family: 'alegreya'";
     /**
      *
      */
@@ -70,12 +58,25 @@ public class NodePanel extends JScrollablePanel
         CountDownLatch cdl = new CountDownLatch(1);
         Platform.runLater(() ->
         {
-            view = new WebView();
-            Scene sc = new Scene(view);
-            view.getEngine().loadContent("<head><style type='text/css'>"+ STYLE +"</style></head><body>" + Lang.get("story.problem") + "</body>");
-            sc.setFill(javafx.scene.paint.Color.TRANSPARENT);
-            panel.setScene(sc);
-            cdl.countDown();
+            try
+            {
+                view = new WebView();
+                Scene sc = new Scene(view);
+                view.setFontSmoothingType(FontSmoothingType.LCD);
+                try
+                {
+                    view.getEngine().loadContent(IOUtils.toString(NodePanel.class.getResourceAsStream("/utybo/branchingstorytree/swing/html/error.html"), StandardCharsets.UTF_8).replace("$MSG", Lang.get("story.problem")).replace("$STYLE", STYLE));
+                }
+                catch(IOException e)
+                {
+                    e.printStackTrace();
+                }
+                panel.setScene(sc);
+            }
+            finally
+            {
+                cdl.countDown();
+            }
         });
         try
         {
@@ -85,11 +86,6 @@ public class NodePanel extends JScrollablePanel
         {
             e.printStackTrace();
         }
-        //        textLabel = new JLabel(Lang.get("story.problem"));
-        //        textLabel.setVerticalAlignment(SwingConstants.TOP);
-        //        textLabel.setForeground(Color.BLACK);
-        //        textLabel.setBorder(new EmptyBorder(10, 10, 10, 10));
-        //        add(textLabel, BorderLayout.CENTER);
     }
 
     public void applyNode(final BranchingStory story, final TextNode textNode) throws BSTException
@@ -129,9 +125,10 @@ public class NodePanel extends JScrollablePanel
 
     private void build()
     {
-        String base = "<head><meta charset=\"utf-8\"/><style type='text/css'>" + STYLE + "</style></head><body style=\"margin:10px;padding:0px;$BG\"><div style=\"margin:-10px;padding:10px;$ADDITIONAL;width: 100%; height:100%\"><div style=\"font-size:14px\">"+text+"</div></div></body>";
-        String bg, additional;
-        if(imageClient.getCurrentBackground() != null && backgroundVisible) {
+        String base = "<head><meta charset=\"utf-8\"/><style type='text/css'>" + STYLE + "</style></head><body style=\"margin:10px;padding:0px;$BG\"><div style=\"margin:-10px;padding:10px;$ADDITIONAL;width: 100%; height:100%\"><div style=\"$COLOR\">" + text + "</div></div></body>";
+        String bg, additional, c;
+        if(imageClient.getCurrentBackground() != null && backgroundVisible)
+        {
             bg = "background-image:url('data:image/png;base64," + b64bg() + "'); background-size:cover; background-position:center; background-attachment:fixed";
             additional = "background-color:rgba(255,255,255,0.5)";
         }
@@ -140,23 +137,20 @@ public class NodePanel extends JScrollablePanel
             bg = "";
             additional = "";
         }
-        String s = base.replace("$BG", bg).replace("$ADDITIONAL", additional);
-        File f = new File("/home/chrx/test.html");
-        f.delete();
+        if(textColor != null)
+        {
+            c = "color: " + MarkupUtils.toHex(textColor.getRed(), textColor.getGreen(), textColor.getBlue());
+        }
+        else
+        {
+            c = "";
+        }
+        String s = base.replace("$BG", bg).replace("$ADDITIONAL", additional).replace("$COLOR", c);
         try
         {
-            Files.write(f.toPath(), s.getBytes());
-        }
-        catch(IOException e1)
-        {
-            e1.printStackTrace();
-        }
-        try
-        {
-            jfxRunAndWait(() -> {
+            jfxRunAndWait(() ->
+            {
                 view.getEngine().loadContent(s);
-//                final com.sun.webkit.WebPage webPage = com.sun.javafx.webkit.Accessor.getPageFor(view.getEngine());
-//                webPage.setBackgroundColor(0);
             });
         }
         catch(InterruptedException e)
@@ -188,8 +182,14 @@ public class NodePanel extends JScrollablePanel
             CountDownLatch latch = new CountDownLatch(1);
             Platform.runLater(() ->
             {
-                runnable.run();
-                latch.countDown();
+                try
+                {
+                    runnable.run();
+                }
+                finally
+                {
+                    latch.countDown();
+                }
             });
             latch.await();
         }

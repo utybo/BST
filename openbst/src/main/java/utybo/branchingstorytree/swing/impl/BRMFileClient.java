@@ -45,10 +45,8 @@ public class BRMFileClient implements BRMAdvancedHandler
     {
         initialized = true;
         origin.getRegistry().put("__brm_initialized", 1);
-        System.out.println(bstFileLocation.getAbsolutePath());
         final File parent = bstFileLocation.getParentFile();
         final File resources = new File(parent, "resources");
-        System.out.println(resources.getAbsolutePath());
         if(resources.exists() && resources.isDirectory())
         {
             int total = countFiles(resources);
@@ -62,11 +60,9 @@ public class BRMFileClient implements BRMAdvancedHandler
                     pm.setProgress(ints.get(ints.size() -1));
                 }
             };
-            System.out.println("1");
             // Analysis of module directories list
             for(final File moduleFolder : resources.listFiles())
             {
-                System.out.println("2");
                 // Analysis of module directory
                 if(!moduleFolder.isDirectory())
                 {
@@ -76,10 +72,8 @@ public class BRMFileClient implements BRMAdvancedHandler
                 final BRMResourceConsumer handler = client.getResourceHandler(module);
                 if(handler != null)
                 {
-                    System.out.println("3");
                     for(final File file : moduleFolder.listFiles())
                     {
-                        System.out.println("4");
                         try
                         {
                             r.add(current++);

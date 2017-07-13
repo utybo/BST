@@ -59,6 +59,8 @@ import javax.swing.WindowConstants;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.pushingpixels.lafwidget.animation.AnimationConfigurationManager;
+import org.pushingpixels.lafwidget.animation.AnimationFacet;
 import org.pushingpixels.substance.api.DecorationAreaType;
 import org.pushingpixels.substance.api.SubstanceLookAndFeel;
 import org.pushingpixels.substance.api.SubstanceSkin;
@@ -70,6 +72,8 @@ import org.pushingpixels.trident.Timeline;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import javafx.application.Platform;
+import javafx.embed.swing.JFXPanel;
 import net.miginfocom.swing.MigLayout;
 import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.api.BranchingStoryTreeParser;
@@ -173,6 +177,12 @@ public class OpenBST extends JFrame
         Lang.mute();
         loadLang(args.length > 0 ? args[0] : null);
 
+        LOG.trace("Initializing JavaFX");
+        new JFXPanel();
+        Platform.setImplicitExit(false);
+        // Necessary - because we are killing Scenes all the time with WebViews in NodePanels,
+        // JFX may think we just ended our application.
+        // OpenBST exits with a dirty System.exit() anyway.
         LOG.trace("Applying Look and Feel");
         invokeSwingAndWait(() ->
         {
@@ -214,6 +224,7 @@ public class OpenBST extends JFrame
 
             instance = new OpenBST();
         });
+        
     }
 
     private static void invokeSwingAndWait(Runnable r)
