@@ -26,7 +26,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -38,7 +37,6 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
@@ -177,14 +175,14 @@ public class StoryPanel extends JPanel
             uibPanel.setVisible(false);
         }
 
-//        final JScrollPane scrollPane = new JScrollPane();
-//        scrollPane.setBackground(Color.RED);
-//        add(scrollPane, "grow, pushy, wrap");
+        //        final JScrollPane scrollPane = new JScrollPane();
+        //        scrollPane.setBackground(Color.RED);
+        //        add(scrollPane, "grow, pushy, wrap");
 
-        nodePanel = new NodePanel(client.getIMGHandler());
+        nodePanel = new NodePanel(story, client.getIMGHandler());
         nodePanel.setScrollableWidth(ScrollableSizeHint.FIT);
         nodePanel.setScrollableHeight(ScrollableSizeHint.STRETCH);
-//        scrollPane.setViewportView(nodePanel);
+        //        scrollPane.setViewportView(nodePanel);
         add(nodePanel, "grow, pushy, wrap");
 
         add(optionPanel, "growx");
@@ -197,7 +195,7 @@ public class StoryPanel extends JPanel
     {
         final int toolbarLevel = readToolbarLevel();
         final JToolBar toolBar = new JToolBar();
-        
+
         toolBar.setBorder(null);
         toolBar.setFloatable(false);
         if(toolbarLevel > 0)
@@ -409,6 +407,7 @@ public class StoryPanel extends JPanel
 
         backgroundButton = toolBar.add(new AbstractAction(Lang.get("story.seebackground"), new ImageIcon(OpenBST.pictureImage))
         {
+
             /**
              *
              */
@@ -533,6 +532,7 @@ public class StoryPanel extends JPanel
                 ((JButton)component).setText("");
             }
         }
+
         add(toolBar, "growx, wrap");
     }
 
@@ -579,15 +579,22 @@ public class StoryPanel extends JPanel
         // Also notify modules that need to restore their state
         client.getSSBHandler().restoreSaveState();
         client.getIMGHandler().restoreSaveState();
-        try
+        new Thread(() ->
         {
-            client.getBRMHandler().restoreSaveState();
-        }
-        catch(final BSTException e)
-        {
-            // TODO Indicate this happened
-            LOG.error("Error on BRM restore attempt", e);
-        }
+            try
+            {
+                // BRM needs to be reset on anything but the EDT, thus we need
+                // to launch it in a separate thread.
+                // Fear not, its progress monitor blocks interaction with the application
+                client.getBRMHandler().restoreSaveState();
+            }
+            catch(final BSTException e)
+            {
+                // TODO Indicate this happened
+                LOG.error("Error on BRM restore attempt", e);
+            }
+        }).start();;
+
         try
         {
             client.getUIBarHandler().restoreState();

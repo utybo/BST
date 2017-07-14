@@ -11,8 +11,11 @@ package utybo.branchingstorytree.swing.visuals;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.Base64;
 import java.util.concurrent.CountDownLatch;
 
@@ -36,7 +39,23 @@ import utybo.branchingstorytree.swing.utils.MarkupUtils;
 
 public class NodePanel extends JScrollablePanel
 {
-    private static final String STYLE = "@font-face {" + "font-family: 'alegreya';" + "src: url(" + NodePanel.class.getResource("/utybo/branchingstorytree/swing/font/Alegreya-Regular.otf").toExternalForm() + ");" + "font-weight: normal;" + "font-style: normal;" + "}" + "html {" + "font-family: 'alegreya'";
+    private static final String STYLE;
+    
+    static
+    {
+        String s;
+        try
+        {
+            s = IOUtils.toString(NodePanel.class.getResourceAsStream("/utybo/branchingstorytree/swing/font/fonts.css"), StandardCharsets.UTF_8);
+        }
+        catch(IOException e)
+        {
+            e.printStackTrace();
+            s = "";
+        }
+       
+        STYLE = s;
+    }
     /**
      *
      */
@@ -46,14 +65,21 @@ public class NodePanel extends JScrollablePanel
     private Color textColor;
     private boolean backgroundVisible = true;
     private WebView view;
+    private String storyFont;
 
-    public NodePanel(final IMGClient imageClient)
+    public NodePanel(BranchingStory story, final IMGClient imageClient)
     {
         this.imageClient = imageClient;
         setLayout(new BorderLayout());
 
         JFXPanel panel = new JFXPanel();
         add(panel, BorderLayout.CENTER);
+        
+        if(story.hasTag("font")) {
+            storyFont = story.getTag("font");
+        } else {
+            storyFont = "libre_baskerville";
+        }
 
         CountDownLatch cdl = new CountDownLatch(1);
         Platform.runLater(() ->
@@ -120,17 +146,19 @@ public class NodePanel extends JScrollablePanel
         {
             imageClient.setBackground(null);
         }
+        
         build();
     }
 
     private void build()
     {
-        String base = "<head><meta charset=\"utf-8\"/><style type='text/css'>" + STYLE + "</style></head><body style=\"margin:10px;padding:0px;$BG\"><div style=\"margin:-10px;padding:10px;$ADDITIONAL;width: 100%; height:100%\"><div style=\"$COLOR\">" + text + "</div></div></body>";
+        String base = "<head><meta charset=\"utf-8\"/><style type='text/css'>" + STYLE + " body {font-family: " + storyFont + "}</style></head><body style=\"margin:10px;padding:0px;$BG\"><div style=\"margin:-10px;padding:10px;$ADDITIONAL;width: 100%; height:100%\">" + "<div style=\"$COLOR\">" + text + "</div></div></body>";
         String bg, additional, c;
+        
         if(imageClient.getCurrentBackground() != null && backgroundVisible)
         {
             bg = "background-image:url('data:image/png;base64," + b64bg() + "'); background-size:cover; background-position:center; background-attachment:fixed";
-            additional = "background-color:rgba(255,255,255,0.5)";
+            additional = "background-color:rgba(255,255,255,0.66)";
         }
         else
         {

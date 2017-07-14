@@ -25,8 +25,8 @@ public abstract class AccumulativeRunnable<T> implements Runnable
         return l;
     }
 
-    @SuppressWarnings("unchecked")
-    public synchronized void add(T... obj)
+    @SafeVarargs
+    public final synchronized void add(T... obj)
     {
         boolean requirePush = false;
         if(objects == null)
