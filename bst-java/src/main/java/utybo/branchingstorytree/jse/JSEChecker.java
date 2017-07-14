@@ -55,16 +55,16 @@ public class JSEChecker implements ScriptChecker
             }
             else if(result == null)
             {
-                throw new BSTException(line, "No returned value");
+                throw new BSTException(line, "No returned value", story);
             }
             else
             {
-                throw new BSTException(line, "Unknown value type : " + result.getClass().getName());
+                throw new BSTException(line, "Unknown value type : " + result.getClass().getName(), story);
             }
         }
         catch(final ScriptException e)
         {
-            throw new BSTException(line, "Error during script execution : " + e.getMessage(), e, story.getTag("__sourcename"));
+            throw new BSTException(line, "Error during script execution : " + e.getMessage(), e, story);
         }
     }
 

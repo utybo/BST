@@ -15,7 +15,7 @@ public class NodeNotFoundException extends BSTException
 
     public NodeNotFoundException(int id, String sourceFile)
     {
-        super(-1, sourceFile);
+        super(-1, (String)null, sourceFile);
         this.id = id;
     }
 

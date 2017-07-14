@@ -53,7 +53,7 @@ public class StoryUtils
                 final String s = varName.substring(1);
                 StoryNode node = parseNode(s, story);
                 if(!(node instanceof VirtualNode))  
-                    throw new BSTException(-1, "Node is not a virtual node : " + node.getId());
+                    throw new BSTException(-1, "Node is not a virtual node : " + node.getId(), story);
                 text = text.replace(toReplace, ((VirtualNode)node).getText());
             }
             else if(varName.startsWith("&"))
@@ -61,7 +61,7 @@ public class StoryUtils
                 final String s = varName.substring(1);
                 StoryNode i = parseNode(s, story);
                 if(!(i instanceof LogicalNode))
-                    throw new BSTException(-1, "Node " + i.getId() + " (alias : " + i.getTag("alias") + ") is not a logical node");
+                    throw new BSTException(-1, "Node " + i.getId() + " (alias : " + i.getTag("alias") + ") is not a logical node", story);
                 final LogicalNode ln = (LogicalNode)i;
                 i = ln.solve(story);
                 while(i instanceof LogicalNode)
@@ -71,7 +71,7 @@ public class StoryUtils
                 if(i == null)
                 {
                     // Should already be covered, but let's crash anyway, who knows what can happen?
-                    throw new BSTException(-1, "Node does not exist");
+                    throw new BSTException(-1, "Node does not exist", story);
                 }
                 text = text.replace(toReplace, ((VirtualNode)i).getText());
             }
@@ -114,7 +114,7 @@ public class StoryUtils
                 if(obj == null)
                 {
                     // Not a variable either. Throw an exception
-                    throw new BSTException(-1, "Unknown alias or variable : " + toParse);
+                    throw new BSTException(-1, "Unknown alias or variable : " + toParse, story);
                 }
 
                 if(obj instanceof Integer)
@@ -134,7 +134,7 @@ public class StoryUtils
                         if(s.equals(node.getTag("alias")))
                             return node;
                     }
-                    throw new BSTException(-1, "Unknown alias : " + s);
+                    throw new BSTException(-1, "Unknown alias : " + s, story);
                 }
 
             }

@@ -28,7 +28,7 @@ public class SSBAction implements ScriptAction
         final SSBHandler ssb = client.getSSBHandler();
         if(ssb == null)
         {
-            throw new BSTException(line, "ssb not supported");
+            throw new BSTException(line, "SSB not supported", story);
         }
         final String action = head.substring(4);
         switch(action)

@@ -86,7 +86,7 @@ public class JSEAction implements ScriptAction
             }
             catch(final ScriptException e1)
             {
-                throw new BSTException(line, "Error during script execution : " + e1.getMessage(), e1, story.getTag("__sourcename"));
+                throw new BSTException(line, "Error during script execution : " + e1.getMessage(), e1, story);
             }
             break;
         }
@@ -108,14 +108,14 @@ public class JSEAction implements ScriptAction
                     }
                     else
                     {
-                        throw new BSTException(line, "Unknown variable : " + varName);
+                        throw new BSTException(line, "Unknown variable : " + varName, story);
                     }
 
                 }
             }
             catch(final ScriptException e)
             {
-                throw new BSTException(line, "Internal error", e, story.getTag("__sourcename"));
+                throw new BSTException(line, "Internal error", e, story);
             }
             break;
         }
@@ -144,7 +144,7 @@ public class JSEAction implements ScriptAction
                 }
                 catch(final ScriptException e1)
                 {
-                    throw new BSTException(line, "Error during JSE initialization (step INT) : " + e1.getMessage(), e1, story.getTag("__sourcename"));
+                    throw new BSTException(line, "Error during JSE initialization (step INT) : " + e1.getMessage(), e1, story);
                 }
             }
             final HashMap<String, String> strings = registry.getAllString();
@@ -156,7 +156,7 @@ public class JSEAction implements ScriptAction
                 }
                 catch(final ScriptException e1)
                 {
-                    throw new BSTException(line, "Error during JSE initialization (step STRING) : " + e1.getMessage(), e1, story.getTag("__sourcename"));
+                    throw new BSTException(line, "Error during JSE initialization (step STRING) : " + e1.getMessage(), e1, story);
                 }
             }
         }

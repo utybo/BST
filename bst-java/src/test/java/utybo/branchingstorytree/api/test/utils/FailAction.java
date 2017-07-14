@@ -18,7 +18,7 @@ public class FailAction implements ScriptAction
     @Override
     public void exec(String head, String desc, int line, BranchingStory story, BSTClient client) throws BSTException
     {
-        throw new BSTException(-1, desc);
+        throw new BSTException(-1, desc, story);
     }
 
     @Override

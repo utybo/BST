@@ -30,11 +30,11 @@ public class CloneAction implements ScriptAction
         final VariableRegistry registry = story.getRegistry();
         if(opt.length != 2)
         {
-            throw new BSTException(line, "Invalid syntax : clone:<to clone>,<clone into>", story.getTag("__sourcename"));
+            throw new BSTException(line, "Invalid syntax : clone:<to clone>,<clone into>", story);
         }
         if(registry.typeOf(opt[0]) == null)
         {
-            throw new BSTException(line, "Unknown variable : " + opt[0], story.getTag("__sourcename"));
+            throw new BSTException(line, "Unknown variable : " + opt[0], story);
         }
         try
         {

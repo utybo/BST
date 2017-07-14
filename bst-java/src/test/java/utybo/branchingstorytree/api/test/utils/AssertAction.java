@@ -34,14 +34,14 @@ public class AssertAction implements ScriptAction
         }
         catch(InstantiationException | IllegalAccessException e)
         {
-            throw new BSTException(line, "Could not create dictionary", e, story.getTag("__sourcename"));
+            throw new BSTException(line, "Could not create dictionary", e, story);
         }
 
         final Pattern p = Pattern.compile("([\\w_]+?):(.*)");
         final Matcher m = p.matcher(desc);
         if(!m.matches())
         {
-            throw new BSTException(line, "Incorrect checker");
+            throw new BSTException(line, "Incorrect checker", story);
         }
         final String h = m.group(1);
         final String d = m.group(2);

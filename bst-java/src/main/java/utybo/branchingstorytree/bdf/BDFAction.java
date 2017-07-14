@@ -28,12 +28,12 @@ public class BDFAction implements ScriptAction
         final BDFHandler bdf = client.getBDFHandler();
         if(bdf == null)
         {
-            throw new BSTException(line, "BDF not supported");
+            throw new BSTException(line, "BDF not supported", story);
         }
         final String[] bits = desc.split(",");
         if(bits.length > 2)
         {
-            throw new BSTException(line, "Invalid syntax : bdf_apply:name OR bdf_apply:name,prefix");
+            throw new BSTException(line, "Invalid syntax : bdf_apply:name OR bdf_apply:name,prefix", story);
         }
         String name = bits[0];
         if(name.startsWith("!"))
@@ -43,7 +43,7 @@ public class BDFAction implements ScriptAction
         final String prefix = bits.length == 2 ? bits[1] : "";
         if(bdf.getBDFFile(name) == null)
         {
-            throw new BSTException(line, "Unknown BDF file : " + name);
+            throw new BSTException(line, "Unknown BDF file : " + name, story);
         }
         bdf.getBDFFile(name).applyTo(story.getRegistry(), prefix);
     }

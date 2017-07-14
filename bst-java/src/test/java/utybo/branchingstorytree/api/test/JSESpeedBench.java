@@ -61,7 +61,7 @@ public class JSESpeedBench
             }
             else
             {
-                throw new BSTException(-1, node.getId() + " isn't a logical node");
+                throw new BSTException(-1, node.getId() + " isn't a logical node", story);
             }
         }
     }

@@ -25,7 +25,7 @@ public class XBFAction implements ScriptAction
     {
         XBFHandler xbf = client.getXBFHandler();
         if(xbf == null)
-            throw new BSTException(line, "XBF not supported");
+            throw new BSTException(line, "XBF not supported", story);
         String[] args = desc.split(",");
         if(args.length == 2)
         {
@@ -33,10 +33,10 @@ public class XBFAction implements ScriptAction
             String id = args[1];
             BranchingStory story2 = xbf.getAdditionalStory(from);
             if(story2 == null)
-                throw new BSTException(line, story2 + " doesn't exist");
+                throw new BSTException(line, story2 + " doesn't exist", story);
             StoryNode node = StoryUtils.parseNode(id, story2);
             if(!(node instanceof LogicalNode))
-                throw new BSTException(line, "Node " + id + " from " + from + " is not a logical node and thus cannot be called");
+                throw new BSTException(line, "Node " + id + " from " + from + " is not a logical node and thus cannot be called", story);
             LogicalNode lnode = (LogicalNode)node;
             lnode.solve(story); // TODO check if referencing the story in the errors should be done or not
         }
@@ -47,12 +47,12 @@ public class XBFAction implements ScriptAction
             if(node == null)
                 throw new NodeNotFoundException(id, "<main>");
             if(!(node instanceof LogicalNode))
-                throw new BSTException(line, "Node " + id + " from the main file is not a logical node and thus cannot be called");
+                throw new BSTException(line, "Node " + id + " from the main file is not a logical node and thus cannot be called", story);
             ((LogicalNode)node).solve(story);
         }
         else
         {
-            throw new BSTException(-1, "Incorrect syntax : xbf_call:fromfile,node OR to call a node from the main BST file xbf_call:id");
+            throw new BSTException(-1, "Incorrect syntax : xbf_call:fromfile,node OR to call a node from the main BST file xbf_call:id", story);
         }
     }
 

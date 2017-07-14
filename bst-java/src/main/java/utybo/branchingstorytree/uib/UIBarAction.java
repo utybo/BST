@@ -37,19 +37,19 @@ public class UIBarAction implements ScriptAction
             final Matcher m = setPropPattern.matcher(desc);
             if(!m.matches())
             {
-                throw new BSTException(line, "incorrect syntax : uib_set:element,id,value");
+                throw new BSTException(line, "incorrect syntax : uib_set:element,id,value",story);
             }
             final String element = m.group(1);
-            elementCheck(element, line, handler);
+            elementCheck(element, line, handler,story);
             final String id = m.group(2);
             final String value = m.group(3);
             switch(id)
             {
             case "min":
-                handler.setElementMin(element, intIfPossible(value, line, story.getRegistry()));
+                handler.setElementMin(element, intIfPossible(value, line, story.getRegistry(), story));
                 break;
             case "max":
-                handler.setElementMax(element, intIfPossible(value, line, story.getRegistry()));
+                handler.setElementMax(element, intIfPossible(value, line, story.getRegistry(), story));
                 break;
             }
         }
@@ -58,10 +58,10 @@ public class UIBarAction implements ScriptAction
             final Matcher m = setPattern.matcher(desc);
             if(!m.matches())
             {
-                throw new BSTException(line, "incorrect syntax : uib_set:element,id,value");
+                throw new BSTException(line, "incorrect syntax : uib_set:element,id,value",story);
             }
             final String element = m.group(1);
-            elementCheck(element, line, handler);
+            elementCheck(element, line, handler,story);
             final String value = m.group(2);
             if(handler.isElementValueTypeInteger(element))
             {
@@ -78,7 +78,7 @@ public class UIBarAction implements ScriptAction
                     }
                     else
                     {
-                        throw new BSTException(line, "Invalid value : '" + value + "' for element " + element);
+                        throw new BSTException(line, "Invalid value : '" + value + "' for element " + element,story);
                     }
                 }
             }
@@ -98,15 +98,15 @@ public class UIBarAction implements ScriptAction
         }
     }
 
-    private void elementCheck(final String element, final int line, final UIBarHandler handler) throws BSTException
+    private void elementCheck(final String element, final int line, final UIBarHandler handler, BranchingStory story) throws BSTException
     {
         if(!handler.elementExists(element))
         {
-            throw new BSTException(line, "Unknown component : " + element);
+            throw new BSTException(line, "Unknown component : " + element,story);
         }
     }
 
-    private int intIfPossible(final String value, final int line, final VariableRegistry registry) throws BSTException
+    private int intIfPossible(final String value, final int line, final VariableRegistry registry, BranchingStory story) throws BSTException
     {
         try
         {
@@ -114,7 +114,7 @@ public class UIBarAction implements ScriptAction
         }
         catch(final NumberFormatException e)
         {
-            throw new BSTException(line, "invalid value : " + value);
+            throw new BSTException(line, "invalid value : " + value,story);
         }
     }
 

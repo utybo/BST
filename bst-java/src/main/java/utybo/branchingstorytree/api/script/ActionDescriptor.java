@@ -76,7 +76,7 @@ public class ActionDescriptor
     {
         if(action == null)
         {
-            throw new BSTException(debugLine, "Action " + head + " does not exist", story.getTag("__sourcename"));
+            throw new BSTException(debugLine, "Action " + head + " does not exist", story);
         }
         this.action = action;
         this.head = head;

@@ -74,7 +74,7 @@ public class CheckerDescriptor
     {
         if(checker == null)
         {
-            throw new BSTException(-1, "Checker " + head + " does not exist", story.getTag("__sourcename"));
+            throw new BSTException(-1, "Checker " + head + " does not exist", story);
         }
         this.checker = checker;
         this.head = head;

@@ -110,7 +110,7 @@ public class TabUIB implements UIBarHandler
                 toAdd = Box.createHorizontalStrut(5);
                 break;
             default:
-                throw new BSTException(-1, "Unknown component : '" + comp + "'");
+                throw new BSTException(-1, "Unknown component : '" + comp + "'", "<none>");
             }
             if(newLine)
             {
