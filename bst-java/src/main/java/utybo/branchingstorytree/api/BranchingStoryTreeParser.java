@@ -379,7 +379,7 @@ public class BranchingStoryTreeParser
         return story;
     }
 
-    private NextNodeDefiner parseNND(final String nnd, final Dictionnary dictionnary, final int lineNumber, final BranchingStory story, final BSTClient client, String name) throws BSTException
+    public NextNodeDefiner parseNND(final String nnd, final Dictionnary dictionnary, final int lineNumber, final BranchingStory story, final BSTClient client, String name) throws BSTException
     {
         final Matcher matcher = ifNextNodeDefiner.matcher(nnd);
         final Matcher matchExt = externalNodeDefiner.matcher(nnd);

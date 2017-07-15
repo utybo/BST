@@ -141,6 +141,7 @@ public class StoryPanel extends JPanel
     protected JToggleButton variableWatcherButton;
     protected VariableWatchDialog variableWatcher;
     private JButton backgroundButton;
+    private JButton jsHint, hrefHint;
 
     /**
      * Initialize the story panel
@@ -175,11 +176,8 @@ public class StoryPanel extends JPanel
             uibPanel.setVisible(false);
         }
 
-        //        final JScrollPane scrollPane = new JScrollPane();
-        //        scrollPane.setBackground(Color.RED);
-        //        add(scrollPane, "grow, pushy, wrap");
-
-        nodePanel = new NodePanel(story, client.getIMGHandler());
+        nodePanel = new NodePanel(story, this, client.getIMGHandler());
+        client.setNodePanel(nodePanel);
         nodePanel.setScrollableWidth(ScrollableSizeHint.FIT);
         nodePanel.setScrollableHeight(ScrollableSizeHint.STRETCH);
         //        scrollPane.setViewportView(nodePanel);
@@ -395,6 +393,17 @@ public class StoryPanel extends JPanel
         toolBar.add(Box.createHorizontalGlue());
 
         toolBar.addSeparator();
+        
+        hrefHint = new JButton("");
+        hrefHint.setEnabled(false);
+        hrefHint.setVisible(false);
+        toolBar.add(hrefHint);
+        
+        jsHint = new JButton("");
+        jsHint.setEnabled(false);
+        jsHint.setVisible(false);
+        toolBar.add(jsHint);
+        
         final JToggleButton seeBackgroundButton = new JToggleButton("", new ImageIcon(OpenBST.visibleImage));
         seeBackgroundButton.addActionListener(e ->
         {
@@ -806,13 +815,13 @@ public class StoryPanel extends JPanel
         catch(final BSTException e)
         {
             LOG.error("Encountered a BST exception while trying to show a node", e);
-            final String s = Lang.get("story.error2").replace("$n", "" + currentNode.getId()).replace("$f", e.getMessage()).replace("$m", e.getMessage()).replace("$l", e.getWhere() + "");
+            final String s = Lang.get("story.error2").replace("$n", "" + currentNode.getId()).replace("$m", e.getMessage()).replace("$l", e.getWhere() + "");
             JOptionPane.showMessageDialog(this, s, Lang.get("error"), JOptionPane.ERROR_MESSAGE);
         }
         catch(final Exception e)
         {
             LOG.error("Encountered a generic exception while trying to show a node", e);
-            JOptionPane.showMessageDialog(this, Lang.get("story.error").replace("$n", "" + currentNode.getId()).replace("$f", storyNode.getStory().getTag("__sourcename")).replace("$m", e.getMessage()), Lang.get("error"), JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, Lang.get("story.error").replace("$n", "" + currentNode.getId()).replace("$f", storyNode.getStory().getTag("__sourcename")).replace("$m", e.getMessage() == null ? "N/A" : e.getMessage()), Lang.get("error"), JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -1034,5 +1043,15 @@ public class StoryPanel extends JPanel
     public JPanel getUIBPanel()
     {
         return uibPanel;
+    }
+    
+    public JButton getJSHint()
+    {
+        return jsHint;
+    }
+    
+    public JButton getHrefHint()
+    {
+        return hrefHint;
     }
 }

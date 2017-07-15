@@ -106,3 +106,12 @@ welcome.write=<html><body style='width: 125px; text-align: center;'><h1>Wanna wr
 welcome.play=<html><body style='width: 125px; text-align: center;'><h1>Games?<p style='text-align: justify'>BST is so powerful it allows you to create text-based games! The scripting system is open to all and very simple to understand -- but of course, if you just want to add some more dynamic elements to your BST story, you can do that too!
 welcome.enjoy=<html><body style='width: 125px; text-align: center;'><h1>Just reading?<p style='text-align: justify'>If you're just a reader passing by, on his way to launch a good BST story or game, make yourself home! We've got cookies in the box if you want!
 welcome.icons=Icons by icons8.com, go check them out, they make awesome icons!
+
+
+# HTML Security related
+html.jsrequest=<b>This BST file wishes to use embedded JavaScript!</b><p>You should only accept this request if you fully trust the file. JavaScript may harm your computer and cannot be securely controlled by OpenBST. Use at your own risk.<p><p>Do you accept to enable JavaScript?
+html.hrefrequest=<b>This BST file wishes to use embedded HTML anchors!</b><p>You should only accept this request if you fully trust the file. HTML anchors may mislead you into clicking into a dangerous place, and may break OpenBST completely. Use at your own risk.<p><p>Do you accept to enable HTML anchors?
+html.jsblock=JS blocked
+html.hrefblock=HTML anchors blocked
+html.jsenabled=JS enabled
+html.hrefenabled=HTML anchors enabled

@@ -11,19 +11,25 @@ package utybo.branchingstorytree.swing.visuals;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.util.Base64;
 import java.util.concurrent.CountDownLatch;
 
 import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 import org.apache.commons.io.IOUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.events.EventTarget;
+import org.w3c.dom.html.HTMLAnchorElement;
 
 import javafx.application.Platform;
+import javafx.concurrent.Worker.State;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Scene;
 import javafx.scene.text.FontSmoothingType;
@@ -40,7 +46,7 @@ import utybo.branchingstorytree.swing.utils.MarkupUtils;
 public class NodePanel extends JScrollablePanel
 {
     private static final String STYLE;
-    
+
     static
     {
         String s;
@@ -53,7 +59,7 @@ public class NodePanel extends JScrollablePanel
             e.printStackTrace();
             s = "";
         }
-       
+
         STYLE = s;
     }
     /**
@@ -66,18 +72,24 @@ public class NodePanel extends JScrollablePanel
     private boolean backgroundVisible = true;
     private WebView view;
     private String storyFont;
+    private boolean hrefEnabled;
+    private StoryPanel parent;
 
-    public NodePanel(BranchingStory story, final IMGClient imageClient)
+    public NodePanel(BranchingStory story, StoryPanel parent, final IMGClient imageClient)
     {
+        this.parent = parent;
         this.imageClient = imageClient;
         setLayout(new BorderLayout());
 
         JFXPanel panel = new JFXPanel();
         add(panel, BorderLayout.CENTER);
-        
-        if(story.hasTag("font")) {
+
+        if(story.hasTag("font"))
+        {
             storyFont = story.getTag("font");
-        } else {
+        }
+        else
+        {
             storyFont = "libre_baskerville";
         }
 
@@ -87,6 +99,30 @@ public class NodePanel extends JScrollablePanel
             try
             {
                 view = new WebView();
+                view.getEngine().setOnAlert(e -> SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(OpenBST.getInstance(), e.getData())));
+                view.getEngine().getLoadWorker().stateProperty().addListener((obs, oldState, newState) ->
+                {
+                    if(newState == State.SUCCEEDED)
+                    {
+                        // TODO Determine if this is safe
+                        Document doc = view.getEngine().getDocument();
+                        NodeList nl = doc.getElementsByTagName("a");
+                        for(int i = 0; i < nl.getLength(); i++)
+                        {
+                            Node n = nl.item(i);
+                            HTMLAnchorElement a = (HTMLAnchorElement)n;
+                            if(a.getHref() != null)
+                                ((EventTarget)a).addEventListener("click", ev ->
+                                {
+                                    if(!hrefEnabled)
+                                    {
+                                        ev.preventDefault();
+                                    }
+                                }, false);
+                        }
+                    }
+                });
+
                 Scene sc = new Scene(view);
                 view.setFontSmoothingType(FontSmoothingType.LCD);
                 try
@@ -146,7 +182,7 @@ public class NodePanel extends JScrollablePanel
         {
             imageClient.setBackground(null);
         }
-        
+
         build();
     }
 
@@ -154,7 +190,7 @@ public class NodePanel extends JScrollablePanel
     {
         String base = "<head><meta charset=\"utf-8\"/><style type='text/css'>" + STYLE + " body {font-family: " + storyFont + "}</style></head><body style=\"margin:10px;padding:0px;$BG\"><div style=\"margin:-10px;padding:10px;$ADDITIONAL;width: 100%; height:100%\">" + "<div style=\"$COLOR\">" + text + "</div></div></body>";
         String bg, additional, c;
-        
+
         if(imageClient.getCurrentBackground() != null && backgroundVisible)
         {
             bg = "background-image:url('data:image/png;base64," + b64bg() + "'); background-size:cover; background-position:center; background-attachment:fixed";
@@ -262,5 +298,23 @@ public class NodePanel extends JScrollablePanel
     {
         backgroundVisible = selected;
         repaint();
+    }
+
+    public void setJSEnabled(boolean b)
+    {
+        view.getEngine().setJavaScriptEnabled(b);
+        parent.getJSHint().setToolTipText(Lang.get("html.js" + (b ? "enabled" : "blocked")));
+        parent.getJSHint().setIcon(new ImageIcon(b ? OpenBST.jsEnabled : OpenBST.jsBlocked));
+        parent.getJSHint().setDisabledIcon(new ImageIcon(b ? OpenBST.jsEnabled : OpenBST.jsBlocked));
+        parent.getJSHint().setVisible(true);
+    }
+
+    public void setHrefEnabled(boolean b)
+    {
+        hrefEnabled = b;
+        parent.getHrefHint().setToolTipText(Lang.get("html.href" + (b ? "enabled" : "blocked")));
+        parent.getHrefHint().setIcon(new ImageIcon(b ? OpenBST.hrefEnabled : OpenBST.hrefBlocked));
+        parent.getHrefHint().setDisabledIcon(new ImageIcon(b ? OpenBST.hrefEnabled : OpenBST.hrefBlocked));
+        parent.getHrefHint().setVisible(true);
     }
 }

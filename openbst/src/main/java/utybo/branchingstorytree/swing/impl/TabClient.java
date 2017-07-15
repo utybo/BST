@@ -12,8 +12,10 @@ import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 import utybo.branchingstorytree.api.BSTClient;
+import utybo.branchingstorytree.htb.HTBHandler;
 import utybo.branchingstorytree.jse.JSEHandler;
 import utybo.branchingstorytree.swing.OpenBST;
+import utybo.branchingstorytree.swing.visuals.NodePanel;
 import utybo.branchingstorytree.swing.visuals.StoryPanel;
 import utybo.branchingstorytree.xbf.XBFHandler;
 
@@ -28,6 +30,7 @@ public class TabClient implements BSTClient
     private final BDFClient bdfClient;
     private final JSEClient jseClient;
     private XBFClient xbfClient;
+    private HTBClient htbClient;
 
     public TabClient(final OpenBST instance)
     {
@@ -60,6 +63,11 @@ public class TabClient implements BSTClient
         ssbClient = new SSBClient(tab);
         imgClient = new IMGClient(tab);
         xbfClient = new XBFClient(tab, this);
+    }
+
+    public void setNodePanel(final NodePanel np)
+    {
+        htbClient = new HTBClient(np);
     }
 
     @Override
@@ -102,6 +110,12 @@ public class TabClient implements BSTClient
     public XBFHandler getXBFHandler()
     {
         return xbfClient;
+    }
+
+    @Override
+    public HTBHandler getHTBHandler()
+    {
+        return htbClient;
     }
 
     public void setBRMHandler(BRMAdvancedHandler handler)

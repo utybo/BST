@@ -29,6 +29,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
@@ -146,6 +147,8 @@ public class OpenBST extends JFrame
     public static Image returnBigImage, saveAsImage, speakerImage, synchronizeImage, synchronizeBigImage, undoImage, undoBigImage, visibleImage;
     public static Image smallLogoWhite, bigLogoBlue, bigLogoWhite;
 
+    public static Image jsAlert, hrefAlert, jsBlocked, jsEnabled, hrefBlocked, hrefEnabled;
+
     public static Image menuOpenFolder, menuOpenArchive, menuAbout, menuColorDropper;
 
     /**
@@ -222,7 +225,7 @@ public class OpenBST extends JFrame
 
             instance = new OpenBST();
         });
-        
+
     }
 
     private static void invokeSwingAndWait(Runnable r)
@@ -315,7 +318,8 @@ public class OpenBST extends JFrame
                     }
                     s += Lang.get("file.bsterror.5").replace("$m", e.getMessage());
                     s += Lang.get("file.bsterror.6");
-                    if(JOptionPane.showConfirmDialog(instance, s, Lang.get("bsterror"), JOptionPane.ERROR_MESSAGE, JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
+                    String s2 = s;
+                    if(doAndReturn(() -> JOptionPane.showConfirmDialog(instance, s2, Lang.get("bsterror"), JOptionPane.ERROR_MESSAGE, JOptionPane.YES_NO_OPTION)) == JOptionPane.YES_OPTION)
                     {
                         LOG.debug("Reloading");
                         return doInBackground();
@@ -329,6 +333,23 @@ public class OpenBST extends JFrame
                     return null;
                 }
 
+            }
+
+            private <T> T doAndReturn(Supplier<T> supplier)
+            {
+                ArrayList<T> l = new ArrayList<>();
+                try
+                {
+                    SwingUtilities.invokeAndWait(() ->
+                    {
+                        l.add(supplier.get());
+                    });
+                }
+                catch(InvocationTargetException | InterruptedException e)
+                {
+                    e.printStackTrace();
+                }
+                return l.size() == 0 ? null : l.get(0);
             }
 
             @Override
@@ -475,6 +496,13 @@ public class OpenBST extends JFrame
             smallLogoWhite = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/logos/logo-small-white.png"));
             bigLogoBlue = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/logos/logo-big-blue.png"));
             bigLogoWhite = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/logos/logo-big-white.png"));
+
+            jsAlert = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/JSAlert.png"));
+            hrefAlert = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/Hyperlink Alert.png"));
+            jsEnabled = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/toolbar/JS Enabled.png"));
+            jsBlocked = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/toolbar/JS Blocked.png"));
+            hrefEnabled = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/toolbar/Href Enabled.png"));
+            hrefBlocked = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/toolbar/Href Blocked.png"));
 
             // Note : this does not work with GTKLookAndFeel
             UIManager.put("OptionPane.errorIcon", new ImageIcon(cancelImage));
