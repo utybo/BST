@@ -186,6 +186,10 @@ public class Lang
 
     }
 
+    public static Map<Locale, Map<String, String>> getMap()
+    {
+        return map;
+    }
     private static void log(final String str, final boolean error)
     {
         if(!muted)

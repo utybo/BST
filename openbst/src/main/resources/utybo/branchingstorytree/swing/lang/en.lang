@@ -115,3 +115,8 @@ html.jsblock=JS blocked
 html.hrefblock=HTML anchors blocked
 html.jsenabled=JS enabled
 html.hrefenabled=HTML anchors enabled
+
+# Langcheck
+langcheck=Lang Completeness Checker
+langcheck.choose=Compare English (en) language file to
+langcheck.result=<html>Here are the strings present in the English language file but missing in the one you chose.

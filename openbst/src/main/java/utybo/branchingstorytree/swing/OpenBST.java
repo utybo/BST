@@ -10,6 +10,7 @@ package utybo.branchingstorytree.swing;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dialog.ModalityType;
 import java.awt.FileDialog;
 import java.awt.FlowLayout;
 import java.awt.Image;
@@ -25,18 +26,23 @@ import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Vector;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -48,8 +54,10 @@ import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
 import javax.swing.LookAndFeel;
 import javax.swing.ProgressMonitorInputStream;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
@@ -82,6 +90,7 @@ import utybo.branchingstorytree.swing.impl.BRMFileClient;
 import utybo.branchingstorytree.swing.impl.TabClient;
 import utybo.branchingstorytree.swing.utils.BSTPackager;
 import utybo.branchingstorytree.swing.utils.Lang;
+import utybo.branchingstorytree.swing.utils.Lang.UnrespectedModelException;
 import utybo.branchingstorytree.swing.visuals.AboutDialog;
 import utybo.branchingstorytree.swing.visuals.JScrollablePanel;
 import utybo.branchingstorytree.swing.visuals.JScrollablePanel.ScrollableSizeHint;
@@ -735,6 +744,61 @@ public class OpenBST extends JFrame
             public void actionPerformed(ActionEvent e)
             {
                 new PackageDialog(instance).setVisible(true);
+            }
+        }));
+        additionalMenu.add(new JMenuItem(new AbstractAction(Lang.get("langcheck"))
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                final Map<String, String> languages = new Gson().fromJson(new InputStreamReader(OpenBST.class.getResourceAsStream("/utybo/branchingstorytree/swing/lang/langs.json")), new TypeToken<Map<String, String>>()
+                {}.getType());
+                languages.remove("en");
+                languages.remove("default");
+                JComboBox<String> jcb = new JComboBox<>(new Vector<String>(languages.keySet()));
+                JPanel panel = new JPanel();
+                panel.add(new JLabel(Lang.get("langcheck.choose")));
+                panel.add(jcb);
+                int result = JOptionPane.showOptionDialog(OpenBST.this, panel, Lang.get("langcheck"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+                if(result == JOptionPane.OK_OPTION)
+                {
+                    Locale selected = new Locale((String)jcb.getSelectedItem());
+                    if(!Lang.getMap().keySet().contains(selected))
+                    {
+                        try
+                        {
+                            Lang.loadTranslationsFromFile(selected, OpenBST.class.getResourceAsStream("/utybo/branchingstorytree/swing/lang/" + languages.get(jcb.getSelectedItem().toString())));
+                        }
+                        catch(UnrespectedModelException | IOException e1)
+                        {
+                            e1.printStackTrace();
+                        }
+                    }
+                    ArrayList<String> list = new ArrayList<>();
+                    Lang.getLocaleMap(Locale.ENGLISH).forEach((k, v) -> {
+                        if(!Lang.getLocaleMap(selected).containsKey(k))
+                            list.add(k + "\n");
+                    });
+                    StringBuilder sb = new StringBuilder();
+                    Collections.sort(list);
+                    list.forEach(s -> sb.append(s));
+                    JDialog dialog = new JDialog(OpenBST.this, Lang.get("langcheck"));
+                    dialog.setLayout(new MigLayout());
+                    dialog.add(new JLabel(Lang.get("langcheck.result")), "pushx, growx, wrap");
+                    JTextArea area = new JTextArea();
+                    area.setLineWrap(true);
+                    area.setWrapStyleWord(true);
+                    area.setText(sb.toString());
+                    area.setEditable(false);
+                    area.setBorder(BorderFactory.createLoweredBevelBorder());
+                    JScrollPane jsp = new JScrollPane(area);
+                    jsp.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+                    dialog.add(jsp, "pushx, pushy, growx, growy");
+                    dialog.setSize(300, 300);
+                    dialog.setLocationRelativeTo(OpenBST.this);
+                    dialog.setModalityType(ModalityType.APPLICATION_MODAL);
+                    dialog.setVisible(true);
+                }
             }
         }));
 
