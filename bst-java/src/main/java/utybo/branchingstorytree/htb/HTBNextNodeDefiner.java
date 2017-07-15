@@ -25,7 +25,7 @@ public class HTBNextNodeDefiner implements NextNodeDefiner
     public StoryNode getNextNode(BranchingStory story) throws NodeNotFoundException, BSTException
     {
         if(client.getHTBHandler() == null)
-            throw new BSTException(-1, "HTB is not supported");
+            throw new BSTException(-1, "HTB is not supported", story);
         switch(head) {
         case "htb_requestjs":
         {
