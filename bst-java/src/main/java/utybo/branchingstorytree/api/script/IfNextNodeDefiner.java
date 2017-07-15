@@ -54,8 +54,6 @@ public class IfNextNodeDefiner implements NextNodeDefiner
     public StoryNode getNextNode(BranchingStory story) throws NodeNotFoundException, BSTException
     {
         StoryNode snOne, snTwo;
-        System.out.println("one:" + one);
-        System.out.println("two:" + two);
         snOne = StoryUtils.parseNode(one, story);
         snTwo = StoryUtils.parseNode(two, story);
         

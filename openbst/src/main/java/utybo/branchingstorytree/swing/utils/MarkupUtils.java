@@ -54,12 +54,28 @@ public class MarkupUtils
         switch(markupLanguage)
         {
         case 1:
-            return "<html>" + Processor.process(input).replaceAll("<p>", "<p><p>").substring(3); // MD to HTML
+            return Processor.process(input).substring("<p>".length()); // MD to HTML (strip the <p>)
         // TODO Test to see if HTML characters are escaped
         case 2:
-            return "<html>" + input; // HTML to HTML
+            return input; // HTML to HTML
         default:
-            return "<html>" + StringEscapeUtils.escapeHtml(input).replace("\n", "<br>"); // Plain text to HTML
+            return StringEscapeUtils.escapeHtml(input).replace("\n", "<p>"); // Plain text to HTML
         }
     }
+
+    public static String toHex(int r, int g, int b)
+    {
+        return "#" + toBrowserHexValue(r) + toBrowserHexValue(g) + toBrowserHexValue(b);
+    }
+
+    private static String toBrowserHexValue(int number)
+    {
+        StringBuilder builder = new StringBuilder(Integer.toHexString(number & 0xff));
+        while(builder.length() < 2)
+        {
+            builder.append("0");
+        }
+        return builder.toString().toUpperCase();
+    }
+
 }

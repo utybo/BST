@@ -37,12 +37,12 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 
 import com.google.gson.Gson;
 
@@ -141,6 +141,7 @@ public class StoryPanel extends JPanel
     protected JToggleButton variableWatcherButton;
     protected VariableWatchDialog variableWatcher;
     private JButton backgroundButton;
+    private JButton jsHint, hrefHint;
 
     /**
      * Initialize the story panel
@@ -175,14 +176,12 @@ public class StoryPanel extends JPanel
             uibPanel.setVisible(false);
         }
 
-        final JScrollPane scrollPane = new JScrollPane();
-        scrollPane.setBackground(Color.WHITE);
-        add(scrollPane, "grow, pushy, wrap");
-
-        nodePanel = new NodePanel(client.getIMGHandler());
+        nodePanel = new NodePanel(story, this, client.getIMGHandler());
+        client.setNodePanel(nodePanel);
         nodePanel.setScrollableWidth(ScrollableSizeHint.FIT);
         nodePanel.setScrollableHeight(ScrollableSizeHint.STRETCH);
-        scrollPane.setViewportView(nodePanel);
+        //        scrollPane.setViewportView(nodePanel);
+        add(nodePanel, "grow, pushy, wrap");
 
         add(optionPanel, "growx");
     }
@@ -194,7 +193,7 @@ public class StoryPanel extends JPanel
     {
         final int toolbarLevel = readToolbarLevel();
         final JToolBar toolBar = new JToolBar();
-        
+
         toolBar.setBorder(null);
         toolBar.setFloatable(false);
         if(toolbarLevel > 0)
@@ -394,6 +393,17 @@ public class StoryPanel extends JPanel
         toolBar.add(Box.createHorizontalGlue());
 
         toolBar.addSeparator();
+        
+        hrefHint = new JButton("");
+        hrefHint.setEnabled(false);
+        hrefHint.setVisible(false);
+        toolBar.add(hrefHint);
+        
+        jsHint = new JButton("");
+        jsHint.setEnabled(false);
+        jsHint.setVisible(false);
+        toolBar.add(jsHint);
+        
         final JToggleButton seeBackgroundButton = new JToggleButton("", new ImageIcon(OpenBST.visibleImage));
         seeBackgroundButton.addActionListener(e ->
         {
@@ -406,6 +416,7 @@ public class StoryPanel extends JPanel
 
         backgroundButton = toolBar.add(new AbstractAction(Lang.get("story.seebackground"), new ImageIcon(OpenBST.pictureImage))
         {
+
             /**
              *
              */
@@ -530,6 +541,7 @@ public class StoryPanel extends JPanel
                 ((JButton)component).setText("");
             }
         }
+
         add(toolBar, "growx, wrap");
     }
 
@@ -576,15 +588,22 @@ public class StoryPanel extends JPanel
         // Also notify modules that need to restore their state
         client.getSSBHandler().restoreSaveState();
         client.getIMGHandler().restoreSaveState();
-        try
+        new Thread(() ->
         {
-            client.getBRMHandler().restoreSaveState();
-        }
-        catch(final BSTException e)
-        {
-            // TODO Indicate this happened
-            LOG.error("Error on BRM restore attempt", e);
-        }
+            try
+            {
+                // BRM needs to be reset on anything but the EDT, thus we need
+                // to launch it in a separate thread.
+                // Fear not, its progress monitor blocks interaction with the application
+                client.getBRMHandler().restoreSaveState();
+            }
+            catch(final BSTException e)
+            {
+                // TODO Indicate this happened
+                LOG.error("Error on BRM restore attempt", e);
+            }
+        }).start();;
+
         try
         {
             client.getUIBarHandler().restoreState();
@@ -712,7 +731,14 @@ public class StoryPanel extends JPanel
                 // TODO Report error
                 e.printStackTrace();
             }
-            setupStory();
+            try
+            {
+                SwingUtilities.invokeAndWait(() -> setupStory());
+            }
+            catch(Exception e)
+            {
+                e.printStackTrace();
+            }
         });
     }
 
@@ -789,13 +815,13 @@ public class StoryPanel extends JPanel
         catch(final BSTException e)
         {
             LOG.error("Encountered a BST exception while trying to show a node", e);
-            final String s = Lang.get("story.error2").replace("$n", "" + currentNode.getId()).replace("$f", e.getMessage()).replace("$m", e.getMessage()).replace("$l", e.getWhere() + "");
+            final String s = Lang.get("story.error2").replace("$n", "" + currentNode.getId()).replace("$m", e.getMessage()).replace("$l", e.getWhere() + "");
             JOptionPane.showMessageDialog(this, s, Lang.get("error"), JOptionPane.ERROR_MESSAGE);
         }
         catch(final Exception e)
         {
             LOG.error("Encountered a generic exception while trying to show a node", e);
-            JOptionPane.showMessageDialog(this, Lang.get("story.error").replace("$n", "" + currentNode.getId()).replace("$f", storyNode.getStory().getTag("__sourcename")).replace("$m", e.getMessage()), Lang.get("error"), JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, Lang.get("story.error").replace("$n", "" + currentNode.getId()).replace("$f", storyNode.getStory().getTag("__sourcename")).replace("$m", e.getMessage() == null ? "N/A" : e.getMessage()), Lang.get("error"), JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -1017,5 +1043,15 @@ public class StoryPanel extends JPanel
     public JPanel getUIBPanel()
     {
         return uibPanel;
+    }
+    
+    public JButton getJSHint()
+    {
+        return jsHint;
+    }
+    
+    public JButton getHrefHint()
+    {
+        return hrefHint;
     }
 }

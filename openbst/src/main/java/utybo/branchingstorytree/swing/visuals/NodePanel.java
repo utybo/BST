@@ -10,15 +10,30 @@ package utybo.branchingstorytree.swing.visuals;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Image;
-import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+import java.util.concurrent.CountDownLatch;
 
-import javax.swing.JLabel;
-import javax.swing.SwingConstants;
-import javax.swing.border.EmptyBorder;
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
+import org.apache.commons.io.IOUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.events.EventTarget;
+import org.w3c.dom.html.HTMLAnchorElement;
+
+import javafx.application.Platform;
+import javafx.concurrent.Worker.State;
+import javafx.embed.swing.JFXPanel;
+import javafx.scene.Scene;
+import javafx.scene.text.FontSmoothingType;
+import javafx.scene.web.WebView;
 import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.api.StoryUtils;
 import utybo.branchingstorytree.api.story.BranchingStory;
@@ -30,30 +45,109 @@ import utybo.branchingstorytree.swing.utils.MarkupUtils;
 
 public class NodePanel extends JScrollablePanel
 {
+    private static final String STYLE;
+
+    static
+    {
+        String s;
+        try
+        {
+            s = IOUtils.toString(NodePanel.class.getResourceAsStream("/utybo/branchingstorytree/swing/font/fonts.css"), StandardCharsets.UTF_8);
+        }
+        catch(IOException e)
+        {
+            e.printStackTrace();
+            s = "";
+        }
+
+        STYLE = s;
+    }
     /**
      *
      */
     private static final long serialVersionUID = 1L;
-    private final JLabel textLabel;
     private final IMGClient imageClient;
+    private String text;
+    private Color textColor;
     private boolean backgroundVisible = true;
+    private WebView view;
+    private String storyFont;
+    private boolean hrefEnabled;
+    private StoryPanel parent;
 
-    private Dimension previousBounds;
-    private Image previousScaledImage;
-    private BufferedImage previousImage;
-    private int imageX, imageY;
-
-    public NodePanel(final IMGClient imageClient)
+    public NodePanel(BranchingStory story, StoryPanel parent, final IMGClient imageClient)
     {
+        this.parent = parent;
         this.imageClient = imageClient;
         setLayout(new BorderLayout());
-        setBackground(Color.WHITE);
 
-        textLabel = new JLabel(Lang.get("story.problem"));
-        textLabel.setVerticalAlignment(SwingConstants.TOP);
-        textLabel.setForeground(Color.BLACK);
-        textLabel.setBorder(new EmptyBorder(10, 10, 10, 10));
-        add(textLabel, BorderLayout.CENTER);
+        JFXPanel panel = new JFXPanel();
+        add(panel, BorderLayout.CENTER);
+
+        if(story.hasTag("font"))
+        {
+            storyFont = story.getTag("font");
+        }
+        else
+        {
+            storyFont = "libre_baskerville";
+        }
+
+        CountDownLatch cdl = new CountDownLatch(1);
+        Platform.runLater(() ->
+        {
+            try
+            {
+                view = new WebView();
+                view.getEngine().setOnAlert(e -> SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(OpenBST.getInstance(), e.getData())));
+                view.getEngine().getLoadWorker().stateProperty().addListener((obs, oldState, newState) ->
+                {
+                    if(newState == State.SUCCEEDED)
+                    {
+                        // TODO Determine if this is safe
+                        Document doc = view.getEngine().getDocument();
+                        NodeList nl = doc.getElementsByTagName("a");
+                        for(int i = 0; i < nl.getLength(); i++)
+                        {
+                            Node n = nl.item(i);
+                            HTMLAnchorElement a = (HTMLAnchorElement)n;
+                            if(a.getHref() != null)
+                                ((EventTarget)a).addEventListener("click", ev ->
+                                {
+                                    if(!hrefEnabled)
+                                    {
+                                        ev.preventDefault();
+                                    }
+                                }, false);
+                        }
+                    }
+                });
+
+                Scene sc = new Scene(view);
+                view.setFontSmoothingType(FontSmoothingType.LCD);
+                try
+                {
+                    view.getEngine().loadContent(IOUtils.toString(NodePanel.class.getResourceAsStream("/utybo/branchingstorytree/swing/html/error.html"), StandardCharsets.UTF_8).replace("$MSG", Lang.get("story.problem")).replace("$STYLE", STYLE));
+                }
+                catch(IOException e)
+                {
+                    e.printStackTrace();
+                }
+                panel.setScene(sc);
+            }
+            finally
+            {
+                cdl.countDown();
+            }
+        });
+        try
+        {
+            cdl.await();
+        }
+        catch(InterruptedException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     public void applyNode(final BranchingStory story, final TextNode textNode) throws BSTException
@@ -69,7 +163,7 @@ public class NodePanel extends JScrollablePanel
         }
         else
         {
-            setTextColor(Color.BLACK);
+            textColor = null;
         }
 
         if(textNode.hasTag("img_background"))
@@ -88,11 +182,87 @@ public class NodePanel extends JScrollablePanel
         {
             imageClient.setBackground(null);
         }
+
+        build();
+    }
+
+    private void build()
+    {
+        String base = "<head><meta charset=\"utf-8\"/><style type='text/css'>" + STYLE + " body {font-family: " + storyFont + "}</style></head><body style=\"margin:10px;padding:0px;$BG\"><div style=\"margin:-10px;padding:10px;$ADDITIONAL;width: 100%; height:100%\">" + "<div style=\"$COLOR\">" + text + "</div></div></body>";
+        String bg, additional, c;
+
+        if(imageClient.getCurrentBackground() != null && backgroundVisible)
+        {
+            bg = "background-image:url('data:image/png;base64," + b64bg() + "'); background-size:cover; background-position:center; background-attachment:fixed";
+            additional = "background-color:rgba(255,255,255,0.66)";
+        }
+        else
+        {
+            bg = "";
+            additional = "";
+        }
+        if(textColor != null)
+        {
+            c = "color: " + MarkupUtils.toHex(textColor.getRed(), textColor.getGreen(), textColor.getBlue());
+        }
+        else
+        {
+            c = "";
+        }
+        String s = base.replace("$BG", bg).replace("$ADDITIONAL", additional).replace("$COLOR", c);
+        try
+        {
+            jfxRunAndWait(() ->
+            {
+                view.getEngine().loadContent(s);
+            });
+        }
+        catch(InterruptedException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    private String b64bg()
+    {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try
+        {
+            ImageIO.write(imageClient.getCurrentBackground(), "PNG", baos);
+        }
+        catch(IOException e)
+        {
+            e.printStackTrace();
+        }
+        return Base64.getMimeEncoder().encodeToString(baos.toByteArray()).replaceAll("[\n\r]", "");
+    }
+
+    private void jfxRunAndWait(Runnable runnable) throws InterruptedException
+    {
+        if(Platform.isFxApplicationThread())
+            Platform.runLater(runnable);
+        else
+        {
+            CountDownLatch latch = new CountDownLatch(1);
+            Platform.runLater(() ->
+            {
+                try
+                {
+                    runnable.run();
+                }
+                finally
+                {
+                    latch.countDown();
+                }
+            });
+            latch.await();
+        }
+
     }
 
     public void setText(final String text)
     {
-        textLabel.setText(text);
+        this.text = text;
     }
 
     public void setTextColor(final String color)
@@ -116,87 +286,35 @@ public class NodePanel extends JScrollablePanel
         }
         if(c != null)
         {
-            textLabel.setForeground(c);
+            textColor = c;
         }
         else
         {
-            textLabel.setForeground(Color.BLACK);
+            textColor = null;
         }
-    }
-
-    public void setTextColor(final Color color)
-    {
-        textLabel.setForeground(color);
-    }
-
-    @Override
-    protected void paintComponent(final Graphics g)
-    {
-        super.paintComponent(g);
-        if(imageClient != null && imageClient.getCurrentBackground() != null && backgroundVisible)
-        {
-            Image image;
-            final int width = getWidth() - 1;
-            final int height = getHeight() - 1;
-            if(previousBounds != null && previousScaledImage != null && getParent().getSize().equals(previousBounds) && imageClient.getCurrentBackground() == previousImage)
-            {
-                image = previousScaledImage;
-            }
-            else
-            {
-                final BufferedImage bi = imageClient.getCurrentBackground();
-                double scaleFactor = 1d;
-                if(bi.getWidth() > bi.getHeight())
-                {
-                    scaleFactor = getScaleFactorToFill(new Dimension(bi.getWidth(), bi.getHeight()), getParent().getSize());
-                }
-                else if(bi.getHeight() > bi.getWidth())
-                {
-                    scaleFactor = getScaleFactorToFill(new Dimension(bi.getWidth(), bi.getHeight()), getParent().getSize());
-                }
-                final int scaleWidth = (int)Math.round(bi.getWidth() * scaleFactor);
-                final int scaleHeight = (int)Math.round(bi.getHeight() * scaleFactor);
-
-                image = bi.getScaledInstance(scaleWidth, scaleHeight, Image.SCALE_FAST);
-
-                previousBounds = getParent().getSize();
-                previousScaledImage = image;
-                previousImage = bi;
-                imageX = (width - image.getWidth(this)) / 2;
-                imageY = (height - image.getHeight(this)) / 2;
-            }
-
-            g.drawImage(image, imageX, imageY, this);
-            g.setColor(new Color(255, 255, 255, 200));
-            g.fillRect(0, 0, width + 1, height + 1);
-        }
-    }
-
-    private double getScaleFactorToFill(final Dimension masterSize, final Dimension targetSize)
-    {
-        final double dScaleWidth = getScaleFactor(masterSize.width, targetSize.width);
-        final double dScaleHeight = getScaleFactor(masterSize.height, targetSize.height);
-        final double dScale = Math.max(dScaleHeight, dScaleWidth);
-        return dScale;
-    }
-
-    private double getScaleFactor(final int iMasterSize, final int iTargetSize)
-    {
-        double dScale = 1;
-        if(iMasterSize > iTargetSize)
-        {
-            dScale = (double)iTargetSize / (double)iMasterSize;
-        }
-        else
-        {
-            dScale = (double)iTargetSize / (double)iMasterSize;
-        }
-        return dScale;
     }
 
     public void setBackgroundVisible(final boolean selected)
     {
         backgroundVisible = selected;
         repaint();
+    }
+
+    public void setJSEnabled(boolean b)
+    {
+        view.getEngine().setJavaScriptEnabled(b);
+        parent.getJSHint().setToolTipText(Lang.get("html.js" + (b ? "enabled" : "blocked")));
+        parent.getJSHint().setIcon(new ImageIcon(b ? OpenBST.jsEnabled : OpenBST.jsBlocked));
+        parent.getJSHint().setDisabledIcon(new ImageIcon(b ? OpenBST.jsEnabled : OpenBST.jsBlocked));
+        parent.getJSHint().setVisible(true);
+    }
+
+    public void setHrefEnabled(boolean b)
+    {
+        hrefEnabled = b;
+        parent.getHrefHint().setToolTipText(Lang.get("html.href" + (b ? "enabled" : "blocked")));
+        parent.getHrefHint().setIcon(new ImageIcon(b ? OpenBST.hrefEnabled : OpenBST.hrefBlocked));
+        parent.getHrefHint().setDisabledIcon(new ImageIcon(b ? OpenBST.hrefEnabled : OpenBST.hrefBlocked));
+        parent.getHrefHint().setVisible(true);
     }
 }
