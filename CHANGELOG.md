@@ -4,9 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-Major changes and highlights are in **bold**. Other changes that impact users. Changes impacting only developers are in *italics*.
-
-Changes impacting
+Major changes and highlights are in **bold**. Other changes that impact users are in plain. Changes impacting only developers are in *italics*.
 
 ## [Unreleased]
 ### Added
