@@ -9,7 +9,7 @@
 package utybo.branchingstorytree.swing.impl;
 
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
@@ -68,7 +68,9 @@ public class BRMFileClient implements BRMAdvancedHandler
                 }
             };
             // Analysis of module directories list
-            for(final File moduleFolder : resources.listFiles())
+            File[] fl = resources.listFiles();
+            assert fl != null;
+            for(final File moduleFolder : fl)
             {
                 // Analysis of module directory
                 if(!moduleFolder.isDirectory())
@@ -79,16 +81,18 @@ public class BRMFileClient implements BRMAdvancedHandler
                 final BRMResourceConsumer handler = client.getResourceHandler(module);
                 if(handler != null)
                 {
-                    for(final File file : moduleFolder.listFiles())
+                    File[] fl2 = moduleFolder.listFiles();
+                    assert fl2 != null;
+                    for(final File file : fl2)
                     {
                         try
                         {
                             handler.load(file, FilenameUtils.getBaseName(file.getName()));
                             r.add(new Pair<>(current++, "Loading " + file.getName() + " for module " + module));
                         }
-                        catch(FileNotFoundException e)
+                        catch(IOException e)
                         {
-                            throw new Error("Impossible state", e);
+                            throw new BSTException(-1, "Failed to load " + file.getName(), e, "<none>");
                         }
                     }
                 }
@@ -112,7 +116,9 @@ public class BRMFileClient implements BRMAdvancedHandler
     public int countFiles(File folder)
     {
         int i = 0;
-        for(File f : folder.listFiles())
+        File[] fl = folder.listFiles();
+        assert fl != null;
+        for(File f : fl)
         {
             if(f.isDirectory())
                 i += countFiles(f);

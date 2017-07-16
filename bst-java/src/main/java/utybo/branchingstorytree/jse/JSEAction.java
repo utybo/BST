@@ -9,6 +9,7 @@
 package utybo.branchingstorytree.jse;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -121,6 +122,10 @@ public class JSEAction implements ScriptAction
         }
         case "jse_autoimport":
             registry.put("__jse__auto", desc);
+            break;
+        default:
+            // Cannot happen
+            break;
         }
 
     }
@@ -136,11 +141,11 @@ public class JSEAction implements ScriptAction
         if(!registry.get("__jse__auto", "true").toString().equalsIgnoreCase("false"))
         {
             final HashMap<String, Integer> ints = registry.getAllInt();
-            for(final String name : ints.keySet())
+            for(final Map.Entry<String, Integer> entry : ints.entrySet())
             {
                 try
                 {
-                    engine.eval(name + " = " + ints.get(name));
+                    engine.eval(entry.getKey() + " = " + entry.getValue());
                 }
                 catch(final ScriptException e1)
                 {
@@ -148,11 +153,11 @@ public class JSEAction implements ScriptAction
                 }
             }
             final HashMap<String, String> strings = registry.getAllString();
-            for(final String name : strings.keySet())
+            for(final Map.Entry<String, String> entry : strings.entrySet())
             {
                 try
                 {
-                    engine.eval(name + " = \"" + strings.get(name) + "\"");
+                    engine.eval(entry.getKey() + " = \"" + entry.getValue() + "\"");
                 }
                 catch(final ScriptException e1)
                 {

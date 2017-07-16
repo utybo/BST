@@ -53,7 +53,7 @@ public class EqualityInequality implements ScriptChecker
             {
                 return var.toString().equals(registry.get(isEqualWith, 0).toString());
             }
-            final int i = Integer.valueOf(isEqualWith);
+            final int i = Integer.parseInt(isEqualWith);
             if(var.getClass() == Integer.class)
             {
 

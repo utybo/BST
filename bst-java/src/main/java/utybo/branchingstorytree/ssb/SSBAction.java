@@ -42,6 +42,9 @@ public class SSBAction implements ScriptAction
         case "stop":
             ssb.stop();
             break;
+        default:
+            // Cannot happen
+            break;
         }
     }
 

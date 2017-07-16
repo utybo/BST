@@ -23,9 +23,12 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -244,14 +247,18 @@ public class StoryPanel extends JPanel
                         {
                             final File file = new File(jfc.getFile().endsWith(".bss") ? jfc.getDirectory() + jfc.getFile() : jfc.getDirectory() + jfc.getFile() + ".bss");
                             final Gson gson = new Gson();
-                            file.delete();
+                            if(file.exists())
+                                if(!file.delete())
+                                    LOG.warn("Failed to delete file");
                             try
                             {
-                                file.createNewFile();
-                                final FileWriter writer = new FileWriter(file);
-                                gson.toJson(new SaveState(currentNode.getId(), story.getRegistry(), currentNode.getStory().getTag("__sourcename")), writer);
-                                writer.flush();
-                                writer.close();
+                                if(!file.createNewFile())
+                                    LOG.warn("Failed to create file");
+                                try(OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8);)
+                                {
+                                    gson.toJson(new SaveState(currentNode.getId(), story.getRegistry(), currentNode.getStory().getTag("__sourcename")), writer);
+                                    writer.flush();
+                                }
                             }
                             catch(final IOException e1)
                             {
@@ -279,7 +286,7 @@ public class StoryPanel extends JPanel
                             final Gson gson = new Gson();
                             try
                             {
-                                final FileReader reader = new FileReader(file);
+                                final InputStreamReader reader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8);
                                 latestSaveState = gson.fromJson(reader, SaveState.class);
                                 reader.close();
                                 restoreSaveState(latestSaveState);
@@ -393,17 +400,17 @@ public class StoryPanel extends JPanel
         toolBar.add(Box.createHorizontalGlue());
 
         toolBar.addSeparator();
-        
+
         hrefHint = new JButton("");
         hrefHint.setEnabled(false);
         hrefHint.setVisible(false);
         toolBar.add(hrefHint);
-        
+
         jsHint = new JButton("");
         jsHint.setEnabled(false);
         jsHint.setVisible(false);
         toolBar.add(jsHint);
-        
+
         final JToggleButton seeBackgroundButton = new JToggleButton("", new ImageIcon(OpenBST.visibleImage));
         seeBackgroundButton.addActionListener(e ->
         {
@@ -484,14 +491,7 @@ public class StoryPanel extends JPanel
                     private double getScaleFactor(final int iMasterSize, final int iTargetSize)
                     {
                         double dScale = 1;
-                        if(iMasterSize > iTargetSize)
-                        {
-                            dScale = (double)iTargetSize / (double)iMasterSize;
-                        }
-                        else
-                        {
-                            dScale = (double)iTargetSize / (double)iMasterSize;
-                        }
+                        dScale = (double)iTargetSize / (double)iMasterSize;
                         return dScale;
                     }
                 });
@@ -664,7 +664,7 @@ public class StoryPanel extends JPanel
         }
         int rows = maxOptions / 2;
         // Make sure the options are always a multiple of 2
-        if(maxOptions % 2 == 1)
+        if(maxOptions % 2 != 0)
         {
             rows++;
         }
@@ -1044,12 +1044,12 @@ public class StoryPanel extends JPanel
     {
         return uibPanel;
     }
-    
+
     public JButton getJSHint()
     {
         return jsHint;
     }
-    
+
     public JButton getHrefHint()
     {
         return hrefHint;

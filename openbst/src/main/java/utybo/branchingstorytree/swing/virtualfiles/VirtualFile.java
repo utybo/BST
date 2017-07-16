@@ -16,13 +16,13 @@ public class VirtualFile
     public VirtualFile(byte[] data, String name)
     {
         super();
-        this.data = data;
+        this.data = data.clone();
         this.name = name;
     }
 
     public byte[] getData()
     {
-        return data;
+        return data.clone();
     }
 
     public String getName()

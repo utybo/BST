@@ -33,7 +33,7 @@ public class XBFAction implements ScriptAction
             String id = args[1];
             BranchingStory story2 = xbf.getAdditionalStory(from);
             if(story2 == null)
-                throw new BSTException(line, story2 + " doesn't exist", story);
+                throw new BSTException(line, from + " doesn't exist", story);
             StoryNode node = StoryUtils.parseNode(id, story2);
             if(!(node instanceof LogicalNode))
                 throw new BSTException(line, "Node " + id + " from " + from + " is not a logical node and thus cannot be called", story);

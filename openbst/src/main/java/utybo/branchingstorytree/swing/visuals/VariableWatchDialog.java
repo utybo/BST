@@ -11,6 +11,7 @@ package utybo.branchingstorytree.swing.visuals;
 import java.awt.BorderLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.Vector;
 
@@ -112,11 +113,11 @@ public class VariableWatchDialog extends JDialog
     {
         final Vector<Vector<String>> finalVector = new Vector<>();
         final TreeMap<String, String> map = generateFullMap();
-        for(final String varName : map.keySet())
+        for(final Entry<String, String> entry : map.entrySet())
         {
             final Vector<String> v = new Vector<>();
-            v.add(varName);
-            v.add(map.get(varName));
+            v.add(entry.getKey());
+            v.add(entry.getValue());
             finalVector.add(v);
         }
         final Vector<String> columnsName = new Vector<>();

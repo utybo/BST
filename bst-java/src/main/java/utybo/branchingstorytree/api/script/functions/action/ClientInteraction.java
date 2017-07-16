@@ -36,6 +36,9 @@ public class ClientInteraction implements ScriptAction
         case "exit":
             client.exit();
             break;
+        default:
+            // Can't happen
+            break;
         }
     }
 

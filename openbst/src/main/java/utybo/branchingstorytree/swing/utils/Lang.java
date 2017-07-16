@@ -10,11 +10,12 @@ package utybo.branchingstorytree.swing.utils;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -42,10 +43,7 @@ public class Lang
 
     public static synchronized void mergeMapWithLocaleMap(final Map<String, String> toMerge, final Locale locale)
     {
-        for(final String s : toMerge.keySet())
-        {
-            map.get(locale).put(s, toMerge.get(s));
-        }
+        map.get(locale).putAll(toMerge);
     }
 
     public static Map<String, String> getLocaleMap(final Locale locale)
@@ -99,7 +97,7 @@ public class Lang
             map.put(locale, new HashMap<String, String>());
         }
 
-        loadTranslationFromBufferedReader(new BufferedReader(new FileReader(file)), locale, file.getName());
+        loadTranslationFromBufferedReader(new BufferedReader(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8)), locale, file.getName());
 
     }
 
@@ -110,7 +108,7 @@ public class Lang
             map.put(locale, new HashMap<String, String>());
         }
 
-        loadTranslationFromBufferedReader(new BufferedReader(new InputStreamReader(input, "UTF-8")), locale, input.toString());
+        loadTranslationFromBufferedReader(new BufferedReader(new InputStreamReader(input, StandardCharsets.UTF_8)), locale, input.toString());
     }
 
     private synchronized static void loadTranslationFromBufferedReader(final BufferedReader br, final Locale locale, final String fileName) throws IOException, UnrespectedModelException

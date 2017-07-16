@@ -51,6 +51,8 @@ public class UIBarAction implements ScriptAction
             case "max":
                 handler.setElementMax(element, intIfPossible(value, line, story.getRegistry(), story));
                 break;
+            default:
+                throw new BSTException(line, "Unknown value id " + id, story);
             }
         }
         else if("uib_set".equals(head))

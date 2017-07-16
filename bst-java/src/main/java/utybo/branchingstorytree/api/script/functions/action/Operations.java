@@ -85,6 +85,9 @@ public class Operations implements ScriptAction
         case "mod":
             registry.put(putIn, ia % ib);
             break;
+        default:
+            // Cannot happen
+            break;
         }
 
     }

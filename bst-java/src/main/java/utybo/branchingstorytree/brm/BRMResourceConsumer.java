@@ -10,7 +10,6 @@ package utybo.branchingstorytree.brm;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -27,13 +26,27 @@ public interface BRMResourceConsumer
     @Deprecated
     public default void load(String pathToResource, String name) throws BSTException, IOException
     {
-        load(new FileInputStream(new File(pathToResource)), name);
+        try(FileInputStream fis = new FileInputStream(new File(pathToResource));)
+        {
+            load(fis, name);
+        }
     }
 
-    public default void load(File file, String name) throws BSTException, FileNotFoundException
+    public default void load(File file, String name) throws BSTException, IOException
     {
-        load(new FileInputStream(file), name);
+        try(FileInputStream fis = new FileInputStream(file);)
+        {
+            load(fis, name);
+        }
     }
 
+    /**
+     * Load the resource from the given InputStream. Implementations do not
+     * necessarily have to close the given input stream.
+     * 
+     * @param in
+     * @param name
+     * @throws BSTException
+     */
     public void load(InputStream in, String name) throws BSTException;
 }

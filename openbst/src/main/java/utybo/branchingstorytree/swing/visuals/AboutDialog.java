@@ -10,11 +10,11 @@ import java.awt.Insets;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.font.TextAttribute;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 import javax.swing.ImageIcon;
@@ -24,6 +24,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.border.LineBorder;
+
+import org.apache.commons.io.IOUtils;
 
 import net.miginfocom.swing.MigLayout;
 import utybo.branchingstorytree.swing.OpenBST;
@@ -90,16 +92,10 @@ public class AboutDialog extends JDialog
         textArea.setLineWrap(true);
         textArea.setWrapStyleWord(true);
         textArea.setFont(new Font("Monospace", Font.PLAIN, 11));
-        try
+        
+        try(InputStream in = getClass().getResourceAsStream("/utybo/branchingstorytree/swing/about.txt");)
         {
-            BufferedReader br = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/about.txt"), "UTF-8"));
-            String s = "";
-            String line;
-            while((line = br.readLine()) != null)
-            {
-                s += line + "\n";
-            }
-            textArea.setText(s);
+            textArea.setText(IOUtils.toString(in, StandardCharsets.UTF_8));
         }
         catch(IOException ex)
         {

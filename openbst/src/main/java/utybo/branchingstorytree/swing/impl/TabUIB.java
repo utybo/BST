@@ -11,6 +11,7 @@ package utybo.branchingstorytree.swing.impl;
 import java.awt.Component;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
 
@@ -21,6 +22,7 @@ import javax.swing.JProgressBar;
 import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import net.miginfocom.swing.MigLayout;
 import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.api.StoryUtils;
@@ -53,6 +55,7 @@ public class TabUIB implements UIBarHandler
     }
 
     @Override
+    @SuppressFBWarnings("SF_SWITCH_FALLTHROUGH")
     public void initialize() throws BSTException
     {
         uibInitialized = true;
@@ -212,9 +215,9 @@ public class TabUIB implements UIBarHandler
     {
         if(uibInitialized)
         {
-            for(final String element : uibComponents.keySet())
+            for(final Entry<String, JComponent> entry : uibComponents.entrySet())
             {
-                updateComponent(element, uibComponents.get(element));
+                updateComponent(entry.getKey(), entry.getValue());
             }
         }
     }
@@ -262,12 +265,12 @@ public class TabUIB implements UIBarHandler
             if(string.startsWith(">"))
             {
                 // TODO Handle null values correctly
-                return computeText(tab.getStory().getNode(Integer.valueOf(string.substring(1))), true);
+                return computeText(tab.getStory().getNode(Integer.parseInt(string.substring(1))), true);
             }
             else if(string.startsWith("&"))
             {
                 // TODO Handle null values correctly
-                return computeText(tab.getStory().getNode(Integer.valueOf(string.substring(1))), false);
+                return computeText(tab.getStory().getNode(Integer.parseInt(string.substring(1))), false);
             }
         }
         catch(final NumberFormatException e)
@@ -306,10 +309,10 @@ public class TabUIB implements UIBarHandler
             {
                 final Map<String, String> componentInfo = getUibInfo(element);
 
-                for(final String varName : componentInfo.keySet())
+                for(final Entry<String, String> entry : componentInfo.entrySet())
                 {
-                    final String value = componentInfo.get(varName);
-                    switch(varName)
+                    final String value = entry.getValue();
+                    switch(entry.getKey())
                     {
                     case "max":
                         setElementMax(element, Integer.parseInt(value));
@@ -319,6 +322,9 @@ public class TabUIB implements UIBarHandler
                         break;
                     case "value":
                         setElementValue(element, value);
+                        break;
+                    default:
+                        // Just ignore weird values
                         break;
                     }
                 }

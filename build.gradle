@@ -6,6 +6,7 @@ buildscript {
   }
   dependencies {
     classpath "gradle.plugin.nl.javadude.gradle.plugins:license-gradle-plugin:0.13.1"
+    //classpath "gradle.plugin.com.github.spotbugs:gradlePlugin:1.1"
   }
 }
 
@@ -14,6 +15,8 @@ subprojects {
     apply plugin: "java"
     apply plugin: "eclipse"
     apply plugin: "com.github.hierynomus.license"
+    //apply plugin: "com.github.spotbugs"
+    apply plugin: "findbugs"
 
     version = "2.0-SNAPSHOT"
     license { 
@@ -27,7 +30,20 @@ subprojects {
     }
     
     dependencies {
+        compile 'com.google.code.findbugs:findbugs-annotations:3.0.1'
     }
+    
+    //spotbugs {
+    //    toolVersion = "3.1.0-RC3"
+    //}
+    
+    tasks.withType(FindBugs) {
+    reports {
+        xml.enabled = false
+        html.enabled = true
+    }
+}
+    
 }
 
 

@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Locale;
@@ -111,7 +112,18 @@ public class OpenBST extends JFrame
     /**
      * Version number of OpenBST
      */
-    public static String version;
+    public static final String version;
+    static {
+        String s = OpenBST.class.getPackage().getImplementationVersion();
+        if(s == null)
+        {
+            version = "<unknown version>";
+        }
+        else
+        {
+            version = s;
+        }
+    }
     private static final long serialVersionUID = 1L;
 
     public static final Logger LOG = LogManager.getLogger("OpenBST");
@@ -145,20 +157,54 @@ public class OpenBST extends JFrame
     }
 
     // --- IMAGES ---
-    public static Image ideaImage;
-    public static Image blogImage;
-    public static Image controllerImage;
-    public static Image inLoveImage;
-    public static Image openFolderImage;
-    public static Image cancelImage, errorImage, aboutImage, renameImage;
-    public static Image addonSearchImage, addonSearchMediumImage, closeImage, closeBigImage, jumpImage, jumpBigImage, exportImage;
-    public static Image gearsImage, importImage, invisibleImage, muteImage, pictureImage, refreshImage, refreshBigImage, returnImage;
-    public static Image returnBigImage, saveAsImage, speakerImage, synchronizeImage, synchronizeBigImage, undoImage, undoBigImage, visibleImage;
-    public static Image smallLogoWhite, bigLogoBlue, bigLogoWhite;
+    public final static Image ideaImage = loadImage("icons/Idea.png");
+    public final static Image blogImage = loadImage("icons/Blog.png");
+    public final static Image controllerImage = loadImage("icons/Controller.png");
+    public final static Image inLoveImage = loadImage("icons/In Love.png");
+    public final static Image openFolderImage = loadImage("icons/Open Folder.png");
+    public final static Image cancelImage = loadImage("icons/Cancel.png");
+    public final static Image errorImage = loadImage("icons/error.png");
+    public final static Image aboutImage = loadImage("icons/About.png");
+    public final static Image renameImage = loadImage("icons/Rename.png");
+    public final static Image addonSearchImage = loadImage("icons/toolbar/Addon Search.png");
+    public final static Image addonSearchMediumImage = loadImage("icons/toolbar/Addon Search Medium.png");
+    public final static Image closeImage = loadImage("icons/toolbar/Close.png");
 
-    public static Image jsAlert, hrefAlert, jsBlocked, jsEnabled, hrefBlocked, hrefEnabled;
+    public final static Image closeBigImage = loadImage("icons/toolbar/Close Big.png");
+    public final static Image jumpImage = loadImage("icons/toolbar/Jump.png");
+    public final static Image jumpBigImage = loadImage("icons/toolbar/Jump Big.png");
+    public final static Image exportImage = loadImage("icons/toolbar/Export.png");
+    public final static Image gearsImage = loadImage("icons/toolbar/Gears.png");
+    public final static Image importImage = loadImage("icons/toolbar/Import.png");
+    public final static Image invisibleImage = loadImage("icons/toolbar/Invisible.png");
+    public final static Image muteImage = loadImage("icons/toolbar/Mute.png");
+    public final static Image pictureImage = loadImage("icons/toolbar/Picture.png");
+    public final static Image refreshImage = loadImage("icons/toolbar/Refresh.png");
+    public final static Image refreshBigImage = loadImage("icons/toolbar/Refresh Big.png");
+    public final static Image returnImage = loadImage("icons/toolbar/Return.png");
+    public final static Image returnBigImage = loadImage("icons/toolbar/Return Big.png");
+    public final static Image saveAsImage = loadImage("icons/toolbar/Save as.png");
+    public final static Image speakerImage = loadImage("icons/toolbar/Speaker.png");
+    public final static Image synchronizeImage = loadImage("icons/toolbar/Synchronize.png");
+    public final static Image synchronizeBigImage = loadImage("icons/toolbar/Synchronize Big.png");
+    public final static Image undoImage = loadImage("icons/toolbar/Undo.png");
+    public final static Image undoBigImage = loadImage("icons/toolbar/Undo Big.png");
+    public final static Image visibleImage = loadImage("icons/toolbar/Visible.png");
+    public final static Image smallLogoWhite = loadImage("logos/logo-small-white.png");
+    public final static Image bigLogoBlue = loadImage("logos/logo-big-blue.png");
+    public final static Image bigLogoWhite = loadImage("logos/logo-big-white.png");
 
-    public static Image menuOpenFolder, menuOpenArchive, menuAbout, menuColorDropper;
+    public final static Image jsAlert = loadImage("icons/JSAlert.png");
+    public final static Image hrefAlert = loadImage("icons/Hyperlink Alert.png");
+    public final static Image jsBlocked = loadImage("icons/toolbar/JS Blocked.png");
+    public final static Image jsEnabled = loadImage("icons/toolbar/JS Enabled.png");
+    public final static Image hrefBlocked = loadImage("icons/toolbar/Href Blocked.png");
+    public final static Image hrefEnabled = loadImage("icons/toolbar/Href Enabled.png");
+
+    public final static Image menuOpenFolder = loadImage("icons/menu/Open Folder.png");
+    public final static Image menuOpenArchive = loadImage("icons/menu/Open Archive.png");
+    public final static Image menuAbout = loadImage("icons/menu/About.png");
+    public final static Image menuColorDropper = loadImage("icons/menu/Color Dropper.png");
 
     /**
      * Container for all the tabs
@@ -175,11 +221,6 @@ public class OpenBST extends JFrame
      */
     public static void main(final String[] args)
     {
-        version = OpenBST.class.getPackage().getImplementationVersion();
-        if(version == null)
-        {
-            version = "<unknown version>";
-        }
         LOG.info("OpenBST version " + version + ", part of the BST project");
         LOG.trace("[ INIT ]");
 
@@ -395,7 +436,7 @@ public class OpenBST extends JFrame
      */
     private static void loadLang(final String userCustomLanguage)
     {
-        final Map<String, String> languages = new Gson().fromJson(new InputStreamReader(OpenBST.class.getResourceAsStream("/utybo/branchingstorytree/swing/lang/langs.json")), new TypeToken<Map<String, String>>()
+        final Map<String, String> languages = new Gson().fromJson(new InputStreamReader(OpenBST.class.getResourceAsStream("/utybo/branchingstorytree/swing/lang/langs.json"), StandardCharsets.UTF_8), new TypeToken<Map<String, String>>()
         {}.getType());
         try
         {
@@ -424,6 +465,19 @@ public class OpenBST extends JFrame
                 }
             }
         });
+    }
+
+    private static Image loadImage(String path)
+    {
+        try
+        {
+            return ImageIO.read(OpenBST.class.getResourceAsStream("/utybo/branchingstorytree/swing/" + path));
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     /**
@@ -460,69 +514,11 @@ public class OpenBST extends JFrame
      */
     public OpenBST()
     {
-        try
-        {
-            LOG.trace("Loading icons");
-            blogImage = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/Blog.png"));
-            controllerImage = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/Controller.png"));
-            ideaImage = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/Idea.png"));
-            inLoveImage = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/In Love.png"));
-            openFolderImage = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/Open Folder.png"));
-            cancelImage = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/Cancel.png"));
-            errorImage = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/Error.png"));
-            aboutImage = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/About.png"));
-            renameImage = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/Rename.png"));
-
-            addonSearchImage = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/toolbar/Addon Search.png"));
-            addonSearchMediumImage = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/toolbar/Addon Search Medium.png"));
-            closeImage = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/toolbar/Close.png"));
-            closeBigImage = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/toolbar/Close Big.png"));
-            invisibleImage = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/toolbar/Invisible.png"));
-            exportImage = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/toolbar/Export.png"));
-            gearsImage = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/toolbar/Gears.png"));
-            importImage = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/toolbar/Import.png"));
-            jumpImage = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/toolbar/Jump.png"));
-            jumpBigImage = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/toolbar/Jump Big.png"));
-            muteImage = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/toolbar/Mute.png"));
-            pictureImage = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/toolbar/Picture.png"));
-            refreshImage = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/toolbar/Refresh.png"));
-            refreshBigImage = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/toolbar/Refresh Big.png"));
-            returnImage = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/toolbar/Return.png"));
-            returnBigImage = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/toolbar/Return Big.png"));
-            saveAsImage = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/toolbar/Save as.png"));
-            speakerImage = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/toolbar/Speaker.png"));
-            synchronizeImage = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/toolbar/Synchronize.png"));
-            synchronizeBigImage = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/toolbar/Synchronize Big.png"));
-            undoImage = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/toolbar/Undo.png"));
-            undoBigImage = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/toolbar/Undo Big.png"));
-            visibleImage = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/toolbar/Visible.png"));
-
-            menuOpenFolder = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/menu/Open Folder.png"));
-            menuOpenArchive = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/menu/Open Archive.png"));
-            menuAbout = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/menu/About.png"));
-            menuColorDropper = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/menu/Color Dropper.png"));
-
-            smallLogoWhite = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/logos/logo-small-white.png"));
-            bigLogoBlue = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/logos/logo-big-blue.png"));
-            bigLogoWhite = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/logos/logo-big-white.png"));
-
-            jsAlert = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/JSAlert.png"));
-            hrefAlert = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/Hyperlink Alert.png"));
-            jsEnabled = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/toolbar/JS Enabled.png"));
-            jsBlocked = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/toolbar/JS Blocked.png"));
-            hrefEnabled = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/toolbar/Href Enabled.png"));
-            hrefBlocked = ImageIO.read(getClass().getResourceAsStream("/utybo/branchingstorytree/swing/icons/toolbar/Href Blocked.png"));
-
-            // Note : this does not work with GTKLookAndFeel
-            UIManager.put("OptionPane.errorIcon", new ImageIcon(cancelImage));
-            UIManager.put("OptionPane.informationIcon", new ImageIcon(aboutImage));
-            UIManager.put("OptionPane.questionIcon", new ImageIcon(renameImage));
-            UIManager.put("OptionPane.warningIcon", new ImageIcon(errorImage));
-        }
-        catch(final IOException e1)
-        {
-            LOG.warn("IOException caught when loading resource", e1);
-        }
+        // Note : this does not work with GTKLookAndFeel
+        UIManager.put("OptionPane.errorIcon", new ImageIcon(cancelImage));
+        UIManager.put("OptionPane.informationIcon", new ImageIcon(aboutImage));
+        UIManager.put("OptionPane.questionIcon", new ImageIcon(renameImage));
+        UIManager.put("OptionPane.warningIcon", new ImageIcon(errorImage));
 
         BorderLayout borderLayout = new BorderLayout();
         borderLayout.setVgap(4);
@@ -751,7 +747,7 @@ public class OpenBST extends JFrame
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                final Map<String, String> languages = new Gson().fromJson(new InputStreamReader(OpenBST.class.getResourceAsStream("/utybo/branchingstorytree/swing/lang/langs.json")), new TypeToken<Map<String, String>>()
+                final Map<String, String> languages = new Gson().fromJson(new InputStreamReader(OpenBST.class.getResourceAsStream("/utybo/branchingstorytree/swing/lang/langs.json"), StandardCharsets.UTF_8), new TypeToken<Map<String, String>>()
                 {}.getType());
                 languages.remove("en");
                 languages.remove("default");
@@ -775,7 +771,8 @@ public class OpenBST extends JFrame
                         }
                     }
                     ArrayList<String> list = new ArrayList<>();
-                    Lang.getLocaleMap(Locale.ENGLISH).forEach((k, v) -> {
+                    Lang.getLocaleMap(Locale.ENGLISH).forEach((k, v) ->
+                    {
                         if(!Lang.getLocaleMap(selected).containsKey(k))
                             list.add(k + "\n");
                     });

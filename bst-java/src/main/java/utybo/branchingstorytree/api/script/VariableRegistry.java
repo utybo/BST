@@ -17,7 +17,7 @@ import java.util.HashMap;
  * @author utybo
  *
  */
-public class VariableRegistry
+public class VariableRegistry implements Cloneable
 {
     private final HashMap<String, Integer> variables = new HashMap<>();
     private final HashMap<String, String> strVar = new HashMap<>();
@@ -93,10 +93,16 @@ public class VariableRegistry
     @Override
     public VariableRegistry clone()
     {
-        final VariableRegistry vr = new VariableRegistry();
-        vr.strVar.putAll(strVar);
-        vr.variables.putAll(variables);
-        return vr;
+        try
+        {
+            return (VariableRegistry)super.clone();
+        }
+        catch(CloneNotSupportedException e)
+        {
+            // Cannot happen
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public int getSize()
