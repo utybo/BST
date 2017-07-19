@@ -97,7 +97,10 @@ story.missingtitle=<undefined>
 story.missingauthor=<unknown>
 story.nsfw=<html><b>WARNING</b><p>You are about to use a NSFW (Not Safe For Work) file. This file is not suitable for children.<p>Only click OK if you are OVER 18 YEARS OLD AND WILLING TO SEE THIS CONTENT.
 story.nsfw.title=NSFW WARNING
-
+story.nullnode=Woops, the node that is supposed to be here could not be resolved, and I don't know why... :(
+story.unknowncolor=Unknown color : $c
+story.modulerestorefail=Failed to restore the following module : $m
+story.logicalnodedeadend=The logical node (id $n from $f with alias $a) failed to provide a node to go to
 
 # Welcome screen
 welcome=Welcome

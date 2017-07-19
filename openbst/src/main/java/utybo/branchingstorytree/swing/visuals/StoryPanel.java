@@ -599,8 +599,8 @@ public class StoryPanel extends JPanel
             }
             catch(final BSTException e)
             {
-                // TODO Indicate this happened
                 LOG.error("Error on BRM restore attempt", e);
+                SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(OpenBST.getInstance(), Lang.get("story.modulerestorefail").replace("$m", "BRM"), Lang.get("error"), JOptionPane.ERROR_MESSAGE));
             }
         }).start();;
 
@@ -610,8 +610,8 @@ public class StoryPanel extends JPanel
         }
         catch(final BSTException e)
         {
-            // TODO Indicate this exception happened
             LOG.error("Error on UIB restore attempt", e);
+            SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(OpenBST.getInstance(), Lang.get("story.modulerestorefail").replace("$m", "UIB"), Lang.get("error"), JOptionPane.ERROR_MESSAGE));
         }
         String from = ss.getFrom();
         if(from == null || "<main>".equals(from))
@@ -624,15 +624,15 @@ public class StoryPanel extends JPanel
             if(bs == null)
             {
                 LOG.error("Unknown story : " + from);
-                // TODO Indicate that this happened
+                JOptionPane.showMessageDialog(OpenBST.getInstance(), Lang.get("story.unknownstory").replace("$s", from), Lang.get("error"), JOptionPane.ERROR_MESSAGE);
             }
             else
             {
                 StoryNode node = bs.getNode(ss.getNodeId());
                 if(node == null)
                 {
-                    LOG.error("Unknown node (id " + ss.getNodeId() + " from " + from);
-                    // TODO Indicate that this happened (maybe with a NodeNotFoundException)
+                    LOG.error("Unknown node (id " + ss.getNodeId() + " from " + from + ")");
+                    JOptionPane.showMessageDialog(OpenBST.getInstance(), Lang.get("story.missingnode").replace("$n", "" + ss.getNodeId()).replace("$a", "?").replace("$f", from), Lang.get("error"), JOptionPane.ERROR_MESSAGE);
                 }
                 else
                 {
@@ -728,8 +728,7 @@ public class StoryPanel extends JPanel
             }
             catch(BSTException e)
             {
-                // TODO Report error
-                e.printStackTrace();
+                OpenBST.LOG.error("Failed to reload resources", e);
             }
             try
             {
@@ -737,7 +736,7 @@ public class StoryPanel extends JPanel
             }
             catch(Exception e)
             {
-                e.printStackTrace();
+                OpenBST.LOG.error("Failed to setup story", e);
             }
         });
     }
@@ -766,9 +765,10 @@ public class StoryPanel extends JPanel
             //                JOptionPane.showMessageDialog(this, Lang.get("story.missingnode").replace("$n", "" + currentNode.getId()), Lang.get("error"), JOptionPane.ERROR_MESSAGE);
             //                return;
             //            }
+
             LOG.error("Tried to show a null node!");
+            JOptionPane.showMessageDialog(OpenBST.getInstance(), Lang.get("story.nullnode"), Lang.get("error"), JOptionPane.ERROR_MESSAGE);
             return;
-            // TODO crash and show error
         }
 
         LOG.trace("=> Trying to show node : " + storyNode.getId());
@@ -787,8 +787,14 @@ public class StoryPanel extends JPanel
                 LOG.trace("=> Solving logical node");
                 StoryNode node = ((LogicalNode)storyNode).solve(story);
                 LOG.trace("=> Logical node result : " + (node == null ? "null" : node.getId()));
-                // TODO Throw a nicer exception when an invalid value is returned
-                showNode(node);
+                if(node == null)
+                {
+                    JOptionPane.showMessageDialog(OpenBST.getInstance(), Lang.get("story.logicalnodedeadend").replace("$n", "" + storyNode.getId()).replace("$f", storyNode.getStory().getTag("__sourcename")).replace("$a", storyNode.getTag("alias")));
+                }
+                else
+                {
+                    showNode(node);
+                }
             }
 
             // This is supposed to be executed when the StoryNode is a TextNode

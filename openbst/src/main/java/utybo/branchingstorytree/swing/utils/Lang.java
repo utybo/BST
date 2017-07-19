@@ -20,6 +20,8 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import utybo.branchingstorytree.swing.OpenBST;
+
 /**
  * Adapted from MinkJ -- Originally licensed under the MIT license
  *
@@ -31,7 +33,6 @@ public class Lang
     private static transient Map<Locale, Map<String, String>> map = new HashMap<>();
     private static Locale defaultLanguage = Locale.ENGLISH;
     private static Locale selectedLanguage = new Locale(System.getProperty("user.language"));
-    private static boolean muted = false;
 
     private Lang()
     {}
@@ -128,7 +129,7 @@ public class Lang
                         {
                             log(translation[i] + "          @ index " + i, true);
                         }
-                        throw new UnrespectedModelException(line);
+                        continue;
                     }
                     if(map.get(locale).containsKey(translation[0]))
                     {
@@ -169,37 +170,28 @@ public class Lang
 
     public static boolean isTranslated(final String key, final Locale locale)
     {
-        return map.containsKey(locale) && map.get(locale).containsKey(key);
-    }
-
-    public static void mute()
-    {
-        muted = true;
-
-    }
-
-    public static void unmute()
-    {
-        muted = false;
-
+        boolean b = map.containsKey(locale) && map.get(locale).containsKey(key);
+        if(!b)
+        {
+            OpenBST.LOG.warn("Missing translation : '" + key + "' in locale " + locale.getLanguage());
+        }
+        return b;
     }
 
     public static Map<Locale, Map<String, String>> getMap()
     {
         return map;
     }
+
     private static void log(final String str, final boolean error)
     {
-        if(!muted)
+        if(error)
         {
-            if(error)
-            {
-                System.err.println(str);
-            }
-            if(!error)
-            {
-                System.out.println(str);
-            }
+            OpenBST.LOG.warn(str);
+        }
+        if(!error)
+        {
+            OpenBST.LOG.info(str);
         }
     }
 

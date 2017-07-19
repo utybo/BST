@@ -25,6 +25,7 @@ import javax.swing.SwingConstants;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import net.miginfocom.swing.MigLayout;
 import utybo.branchingstorytree.api.BSTException;
+import utybo.branchingstorytree.api.NodeNotFoundException;
 import utybo.branchingstorytree.api.StoryUtils;
 import utybo.branchingstorytree.api.script.VariableRegistry;
 import utybo.branchingstorytree.api.story.LogicalNode;
@@ -262,15 +263,17 @@ public class TabUIB implements UIBarHandler
         }
         try
         {
+            int i = Integer.parseInt(string.substring(1));
+            StoryNode sn = tab.getStory().getNode(i);
+            if(sn == null)
+                throw new NodeNotFoundException(i, tab.getStory().getTag("__sourcename"));
             if(string.startsWith(">"))
             {
-                // TODO Handle null values correctly
-                return computeText(tab.getStory().getNode(Integer.parseInt(string.substring(1))), true);
+                return computeText(sn, true);
             }
             else if(string.startsWith("&"))
             {
-                // TODO Handle null values correctly
-                return computeText(tab.getStory().getNode(Integer.parseInt(string.substring(1))), false);
+                return computeText(sn, false);
             }
         }
         catch(final NumberFormatException e)

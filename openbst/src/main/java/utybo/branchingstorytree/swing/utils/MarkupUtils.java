@@ -55,7 +55,6 @@ public class MarkupUtils
         {
         case 1:
             return Processor.process(input).substring("<p>".length()); // MD to HTML (strip the <p>)
-        // TODO Test to see if HTML characters are escaped
         case 2:
             return input; // HTML to HTML
         default:

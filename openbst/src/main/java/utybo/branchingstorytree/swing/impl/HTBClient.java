@@ -88,8 +88,7 @@ public class HTBClient implements HTBHandler
     @Override
     public boolean hasResource(String resource)
     {
-        // TODO Auto-generated method stub
-        return false;
+        return map.containsKey(resource);
     }
 
 }

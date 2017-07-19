@@ -56,7 +56,7 @@ public class NodePanel extends JScrollablePanel
         }
         catch(IOException e)
         {
-            e.printStackTrace();
+            OpenBST.LOG.warn("Failed to load fonts CSS file", e);
             s = "";
         }
 
@@ -104,7 +104,6 @@ public class NodePanel extends JScrollablePanel
                 {
                     if(newState == State.SUCCEEDED)
                     {
-                        // TODO Determine if this is safe
                         Document doc = view.getEngine().getDocument();
                         NodeList nl = doc.getElementsByTagName("a");
                         for(int i = 0; i < nl.getLength(); i++)
@@ -131,7 +130,7 @@ public class NodePanel extends JScrollablePanel
                 }
                 catch(IOException e)
                 {
-                    e.printStackTrace();
+                    OpenBST.LOG.warn("Error on trying to load error HTML file", e);
                 }
                 panel.setScene(sc);
             }
@@ -146,7 +145,7 @@ public class NodePanel extends JScrollablePanel
         }
         catch(InterruptedException e)
         {
-            e.printStackTrace();
+            OpenBST.LOG.warn("Synchronization failed", e);
         }
     }
 
@@ -219,7 +218,7 @@ public class NodePanel extends JScrollablePanel
         }
         catch(InterruptedException e)
         {
-            e.printStackTrace();
+            OpenBST.LOG.warn("Failed to synchronize", e);
         }
     }
 
@@ -232,7 +231,7 @@ public class NodePanel extends JScrollablePanel
         }
         catch(IOException e)
         {
-            e.printStackTrace();
+            OpenBST.LOG.warn("Failed to create Base64 background", e);
         }
         return Base64.getMimeEncoder().encodeToString(baos.toByteArray()).replaceAll("[\n\r]", "");
     }
@@ -280,8 +279,8 @@ public class NodePanel extends JScrollablePanel
             }
             catch(IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e)
             {
-                // TODO add a warning?
                 OpenBST.LOG.warn("Color does not exist : " + color, e);
+                SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(OpenBST.getInstance(), Lang.get("story.unknowncolor").replace("$c", color), Lang.get("error"), JOptionPane.ERROR_MESSAGE));
             }
         }
         if(c != null)

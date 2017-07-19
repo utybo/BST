@@ -74,7 +74,7 @@ public class AboutDialog extends JDialog
                     }
                     catch(IOException | URISyntaxException e1)
                     {
-                        e1.printStackTrace();
+                       OpenBST.LOG.warn("Exception when trying to open website", e1);
                     }
             }
         });

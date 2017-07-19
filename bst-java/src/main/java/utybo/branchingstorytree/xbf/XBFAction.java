@@ -38,7 +38,7 @@ public class XBFAction implements ScriptAction
             if(!(node instanceof LogicalNode))
                 throw new BSTException(line, "Node " + id + " from " + from + " is not a logical node and thus cannot be called", story);
             LogicalNode lnode = (LogicalNode)node;
-            lnode.solve(story); // TODO check if referencing the story in the errors should be done or not
+            lnode.solve(story);
         }
         else if(args.length == 1)
         {

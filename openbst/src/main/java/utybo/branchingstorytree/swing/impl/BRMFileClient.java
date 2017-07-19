@@ -109,7 +109,7 @@ public class BRMFileClient implements BRMAdvancedHandler
         }
         catch(InvocationTargetException | InterruptedException e)
         {
-            e.printStackTrace();
+            OpenBST.LOG.warn("Failed Swing invoke", e);
         }
     }
 

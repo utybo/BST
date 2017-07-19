@@ -113,7 +113,8 @@ public class OpenBST extends JFrame
      * Version number of OpenBST
      */
     public static final String version;
-    static {
+    static
+    {
         String s = OpenBST.class.getPackage().getImplementationVersion();
         if(s == null)
         {
@@ -225,7 +226,6 @@ public class OpenBST extends JFrame
         LOG.trace("[ INIT ]");
 
         LOG.trace("Loading language files");
-        Lang.mute();
         loadLang(args.length > 0 ? args[0] : null);
 
         LOG.trace("Initializing JavaFX");
@@ -286,7 +286,7 @@ public class OpenBST extends JFrame
         }
         catch(InvocationTargetException | InterruptedException e)
         {
-            e.printStackTrace();
+            LOG.warn("Swing invocation failed", e);
         }
     }
 
@@ -388,17 +388,10 @@ public class OpenBST extends JFrame
             private <T> T doAndReturn(Supplier<T> supplier)
             {
                 ArrayList<T> l = new ArrayList<>();
-                try
+                invokeSwingAndWait(() ->
                 {
-                    SwingUtilities.invokeAndWait(() ->
-                    {
-                        l.add(supplier.get());
-                    });
-                }
-                catch(InvocationTargetException | InterruptedException e)
-                {
-                    e.printStackTrace();
-                }
+                    l.add(supplier.get());
+                });
                 return l.size() == 0 ? null : l.get(0);
             }
 
@@ -412,13 +405,11 @@ public class OpenBST extends JFrame
                 catch(InterruptedException e)
                 {
                     // Shouldn't happen
-                    e.printStackTrace();
                 }
                 catch(ExecutionException e)
                 {
                     LOG.error("Random exception caught", e);
                     JOptionPane.showMessageDialog(instance, Lang.get("file.crash"), Lang.get("error"), JOptionPane.ERROR_MESSAGE);
-                    e.printStackTrace();
                 }
             }
         };
@@ -475,7 +466,7 @@ public class OpenBST extends JFrame
         }
         catch(Exception e)
         {
-            e.printStackTrace();
+            LOG.warn("Failed to load image at path " + path, e);
             return null;
         }
     }
@@ -680,14 +671,9 @@ public class OpenBST extends JFrame
                                 SwingUtilities.invokeAndWait(() -> sp.setupStory());
                             }
                         }
-                        catch(InvocationTargetException e)
+                        catch(InvocationTargetException | InterruptedException e)
                         {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        }
-                        catch(InterruptedException e)
-                        {
-                            LOG.warn(e);
+                            LOG.warn("Swing invocation exception", e);
                         }
 
                     }
@@ -767,7 +753,7 @@ public class OpenBST extends JFrame
                         }
                         catch(UnrespectedModelException | IOException e1)
                         {
-                            e1.printStackTrace();
+                            LOG.warn("Failed to load translation file", e1);
                         }
                     }
                     ArrayList<String> list = new ArrayList<>();
@@ -843,7 +829,7 @@ public class OpenBST extends JFrame
         }
         catch(UnsupportedLookAndFeelException e)
         {
-            e.printStackTrace();
+            LOG.warn("Unsupported LaF", e);
         }
     }
 
