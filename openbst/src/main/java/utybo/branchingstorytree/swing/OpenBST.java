@@ -10,23 +10,25 @@ package utybo.branchingstorytree.swing;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Desktop;
 import java.awt.Dialog.ModalityType;
+import java.awt.Dimension;
 import java.awt.FileDialog;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -97,8 +99,7 @@ import utybo.branchingstorytree.swing.utils.BSTPackager;
 import utybo.branchingstorytree.swing.utils.Lang;
 import utybo.branchingstorytree.swing.utils.Lang.UnrespectedModelException;
 import utybo.branchingstorytree.swing.visuals.AboutDialog;
-import utybo.branchingstorytree.swing.visuals.JScrollablePanel;
-import utybo.branchingstorytree.swing.visuals.JScrollablePanel.ScrollableSizeHint;
+import utybo.branchingstorytree.swing.visuals.JBackgroundPanel;
 import utybo.branchingstorytree.swing.visuals.PackageDialog;
 import utybo.branchingstorytree.swing.visuals.StoryPanel;
 
@@ -210,13 +211,17 @@ public class OpenBST extends JFrame
     public final static Image menuOpenArchive = loadImage("icons/menu/Open Archive.png");
     public final static Image menuAbout = loadImage("icons/menu/About.png");
     public final static Image menuColorDropper = loadImage("icons/menu/Color Dropper.png");
-    
+
     public final static Image discordIcon = loadImage("icons/Discord.png");
+    
+    public final static BufferedImage bgImage = loadImage("images/bg.jpg");
 
     /**
      * Container for all the tabs
      */
     private final JTabbedPane container;
+    
+    private JBackgroundPanel background;
 
     private int selectedTheme = 1;
 
@@ -464,7 +469,7 @@ public class OpenBST extends JFrame
         });
     }
 
-    private static Image loadImage(String path)
+    private static BufferedImage loadImage(String path)
     {
         try
         {
@@ -561,26 +566,28 @@ public class OpenBST extends JFrame
         container = new JTabbedPane();
         getContentPane().add(container, BorderLayout.CENTER);
 
-        final JScrollablePanel welcomeContentPanel = new JScrollablePanel();
-        welcomeContentPanel.setScrollableHeight(ScrollableSizeHint.STRETCH);
-        welcomeContentPanel.setScrollableWidth(ScrollableSizeHint.FIT);
-        welcomeContentPanel.setLayout(new MigLayout("hidemode 2", "[grow,center]", "[][][][][][][][][][]"));
-        container.add(new JScrollPane(welcomeContentPanel));
+        final JBackgroundPanel welcomeContentPanel = new JBackgroundPanel(bgImage, Image.SCALE_FAST);
+        background = welcomeContentPanel;
+
+        welcomeContentPanel.setLayout(new MigLayout("hidemode 2", "[grow,center]", "[][grow][]"));
+        container.add(welcomeContentPanel);
         container.setTitleAt(0, Lang.get("welcome"));
-        
+
         JPanel panel_1 = new JPanel();
-        panel_1.setBackground(new Color(114, 137, 218).brighter());
+        panel_1.setBackground(new Color(114, 137, 218, 200).brighter());
         welcomeContentPanel.add(panel_1, "cell 0 0,grow");
         panel_1.setLayout(new MigLayout("gap 10px", "[][grow][]", "[]"));
-        
+
         JLabel label = new JLabel(new ImageIcon(discordIcon));
         panel_1.add(label, "cell 0 0");
-        
+
         JLabel lblNewLabel = new JLabel("<html>" + Lang.get("openbst.discord"));
+        lblNewLabel.setForeground(Color.BLACK); // HAs to be forced due to shitty look in dark mode
         panel_1.add(lblNewLabel, "cell 1 0,aligny top");
-        
+
         JButton btnJoinDiscord = new JButton(Lang.get("openbst.discordjoin"));
-        btnJoinDiscord.addActionListener(e -> {
+        btnJoinDiscord.addActionListener(e ->
+        {
             try
             {
                 Desktop.getDesktop().browse(new URL("https://discord.gg/6SVDCMM").toURI());
@@ -591,71 +598,47 @@ public class OpenBST extends JFrame
             }
         });
         panel_1.add(btnJoinDiscord, "flowy,cell 2 0,alignx trailing");
-        
+
         JButton btnHide = new JButton(Lang.get("hide"));
         btnHide.addActionListener(e -> panel_1.setVisible(false));
         panel_1.add(btnHide, "cell 2 0,alignx center");
 
+        final JLabel lblIconsByIconscom = new JLabel(Lang.get("welcome.icons"));
+        lblIconsByIconscom.setEnabled(false);
+        welcomeContentPanel.add(lblIconsByIconscom, "cell 0 2,alignx left");
+
+        JPanel panel = new JPanel();
+        panel.setBackground(new Color(0,0,0,0));
+        welcomeContentPanel.add(panel, "flowx,cell 0 1,growx,aligny center");
+        panel.setLayout(new MigLayout("", "[40%][][][][60%,growprio 50]", "[][grow]"));
+
         final JLabel lblOpenbst = new JLabel(Lang.get("title"));
-        lblOpenbst.setFont(lblOpenbst.getFont().deriveFont(32F));
+        panel.add(lblOpenbst, "flowx,cell 0 0 1 2,alignx trailing,aligny center");
+        lblOpenbst.setFont(lblOpenbst.getFont().deriveFont(Font.BOLD, 32F));
         lblOpenbst.setForeground(OPENBST_BLUE);
         lblOpenbst.setIcon(new ImageIcon(bigLogoBlue));
-        welcomeContentPanel.add(lblOpenbst, "cell 0 1");
 
-        final JLabel lblWelcomeToOpenbst = new JLabel(Lang.get("welcome.intro"));
-        welcomeContentPanel.add(lblWelcomeToOpenbst, "cell 0 2");
+        JSeparator separator = new JSeparator();
+        separator.setOrientation(SwingConstants.VERTICAL);
+        panel.add(separator, "cell 2 0 1 2,growy");
+
+        final JLabel lblWelcomeToOpenbst = new JLabel("<html>" + Lang.get("welcome.intro"));
+        lblWelcomeToOpenbst.setMaximumSize(new Dimension(350, 999999));
+        panel.add(lblWelcomeToOpenbst, "cell 4 0");
+
+        Component horizontalStrut = Box.createHorizontalStrut(10);
+        panel.add(horizontalStrut, "cell 1 1");
+
+        Component horizontalStrut_1 = Box.createHorizontalStrut(10);
+        panel.add(horizontalStrut_1, "cell 3 1");
 
         final JButton btnOpenAFile = new JButton(Lang.get("welcome.open"));
+        panel.add(btnOpenAFile, "cell 4 1");
         btnOpenAFile.setIcon(new ImageIcon(openFolderImage));
         btnOpenAFile.addActionListener(e ->
         {
             clickOpenStory();
         });
-        welcomeContentPanel.add(btnOpenAFile, "cell 0 3");
-
-        final JSeparator separator = new JSeparator();
-        welcomeContentPanel.add(separator, "cell 0 4,growx");
-
-        final JLabel lblwhatIsBst = new JLabel(Lang.get("welcome.whatis"));
-        lblwhatIsBst.setFont(lblwhatIsBst.getFont().deriveFont(32F));
-        welcomeContentPanel.add(lblwhatIsBst, "cell 0 5");
-
-        final JLabel lblbstIsA = new JLabel(Lang.get("welcome.about"));
-        welcomeContentPanel.add(lblbstIsA, "cell 0 6,alignx center,growy");
-
-        final JLabel lblimagineItcreate = new JLabel(Lang.get("welcome.imagine"));
-        lblimagineItcreate.setVerticalTextPosition(SwingConstants.BOTTOM);
-        lblimagineItcreate.setHorizontalTextPosition(SwingConstants.CENTER);
-        lblimagineItcreate.setIcon(new ImageIcon(ideaImage));
-        welcomeContentPanel.add(lblimagineItcreate, "flowx,cell 0 7,alignx center,aligny top");
-
-        welcomeContentPanel.add(Box.createHorizontalStrut(10), "cell 0 7");
-
-        final JLabel lblwriteItwriteSaid = new JLabel(Lang.get("welcome.write"));
-        lblwriteItwriteSaid.setVerticalTextPosition(SwingConstants.BOTTOM);
-        lblwriteItwriteSaid.setHorizontalTextPosition(SwingConstants.CENTER);
-        lblwriteItwriteSaid.setIcon(new ImageIcon(blogImage));
-        welcomeContentPanel.add(lblwriteItwriteSaid, "cell 0 7,aligny top");
-
-        welcomeContentPanel.add(Box.createHorizontalStrut(10), "cell 0 7");
-
-        final JLabel lblPlayIt = new JLabel(Lang.get("welcome.play"));
-        lblPlayIt.setVerticalTextPosition(SwingConstants.BOTTOM);
-        lblPlayIt.setHorizontalTextPosition(SwingConstants.CENTER);
-        lblPlayIt.setIcon(new ImageIcon(controllerImage));
-        welcomeContentPanel.add(lblPlayIt, "cell 0 7,aligny top");
-
-        welcomeContentPanel.add(Box.createHorizontalStrut(10), "cell 0 7");
-
-        final JLabel lblEnjoyIt = new JLabel(Lang.get("welcome.enjoy"));
-        lblEnjoyIt.setVerticalTextPosition(SwingConstants.BOTTOM);
-        lblEnjoyIt.setHorizontalTextPosition(SwingConstants.CENTER);
-        lblEnjoyIt.setIcon(new ImageIcon(inLoveImage));
-        welcomeContentPanel.add(lblEnjoyIt, "cell 0 7,aligny top");
-
-        final JLabel lblIconsByIconscom = new JLabel(Lang.get("welcome.icons"));
-        lblIconsByIconscom.setEnabled(false);
-        welcomeContentPanel.add(lblIconsByIconscom, "cell 0 9,alignx left");
 
         setSize(830, 480);
         setLocationRelativeTo(null);
@@ -859,6 +842,8 @@ public class OpenBST extends JFrame
         {
             UIManager.setLookAndFeel(laf);
             SwingUtilities.updateComponentTreeUI(instance);
+            // TODO Add a dark mode to HTML stuff
+            background.setDark(id == 0);
             selectedTheme = id;
         }
         catch(UnsupportedLookAndFeelException e)
