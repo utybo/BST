@@ -10,6 +10,7 @@ package utybo.branchingstorytree.swing;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Desktop;
 import java.awt.Dialog.ModalityType;
 import java.awt.FileDialog;
 import java.awt.FlowLayout;
@@ -24,6 +25,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -206,6 +210,8 @@ public class OpenBST extends JFrame
     public final static Image menuOpenArchive = loadImage("icons/menu/Open Archive.png");
     public final static Image menuAbout = loadImage("icons/menu/About.png");
     public final static Image menuColorDropper = loadImage("icons/menu/Color Dropper.png");
+    
+    public final static Image discordIcon = loadImage("icons/Discord.png");
 
     /**
      * Container for all the tabs
@@ -558,18 +564,46 @@ public class OpenBST extends JFrame
         final JScrollablePanel welcomeContentPanel = new JScrollablePanel();
         welcomeContentPanel.setScrollableHeight(ScrollableSizeHint.STRETCH);
         welcomeContentPanel.setScrollableWidth(ScrollableSizeHint.FIT);
-        welcomeContentPanel.setLayout(new MigLayout("", "[grow,center]", "[][][][][][][][][]"));
+        welcomeContentPanel.setLayout(new MigLayout("hidemode 2", "[grow,center]", "[][][][][][][][][][]"));
         container.add(new JScrollPane(welcomeContentPanel));
         container.setTitleAt(0, Lang.get("welcome"));
+        
+        JPanel panel_1 = new JPanel();
+        panel_1.setBackground(new Color(114, 137, 218).brighter());
+        welcomeContentPanel.add(panel_1, "cell 0 0,grow");
+        panel_1.setLayout(new MigLayout("gap 10px", "[][grow][]", "[]"));
+        
+        JLabel label = new JLabel(new ImageIcon(discordIcon));
+        panel_1.add(label, "cell 0 0");
+        
+        JLabel lblNewLabel = new JLabel("<html>" + Lang.get("openbst.discord"));
+        panel_1.add(lblNewLabel, "cell 1 0,aligny top");
+        
+        JButton btnJoinDiscord = new JButton(Lang.get("openbst.discordjoin"));
+        btnJoinDiscord.addActionListener(e -> {
+            try
+            {
+                Desktop.getDesktop().browse(new URL("https://discord.gg/6SVDCMM").toURI());
+            }
+            catch(Exception e1)
+            {
+                LOG.error("Exception during link opening", e1);
+            }
+        });
+        panel_1.add(btnJoinDiscord, "flowy,cell 2 0,alignx trailing");
+        
+        JButton btnHide = new JButton(Lang.get("hide"));
+        btnHide.addActionListener(e -> panel_1.setVisible(false));
+        panel_1.add(btnHide, "cell 2 0,alignx center");
 
         final JLabel lblOpenbst = new JLabel(Lang.get("title"));
         lblOpenbst.setFont(lblOpenbst.getFont().deriveFont(32F));
         lblOpenbst.setForeground(OPENBST_BLUE);
         lblOpenbst.setIcon(new ImageIcon(bigLogoBlue));
-        welcomeContentPanel.add(lblOpenbst, "cell 0 0");
+        welcomeContentPanel.add(lblOpenbst, "cell 0 1");
 
         final JLabel lblWelcomeToOpenbst = new JLabel(Lang.get("welcome.intro"));
-        welcomeContentPanel.add(lblWelcomeToOpenbst, "cell 0 1");
+        welcomeContentPanel.add(lblWelcomeToOpenbst, "cell 0 2");
 
         final JButton btnOpenAFile = new JButton(Lang.get("welcome.open"));
         btnOpenAFile.setIcon(new ImageIcon(openFolderImage));
@@ -577,51 +611,51 @@ public class OpenBST extends JFrame
         {
             clickOpenStory();
         });
-        welcomeContentPanel.add(btnOpenAFile, "cell 0 2");
+        welcomeContentPanel.add(btnOpenAFile, "cell 0 3");
 
         final JSeparator separator = new JSeparator();
-        welcomeContentPanel.add(separator, "cell 0 3,growx");
+        welcomeContentPanel.add(separator, "cell 0 4,growx");
 
         final JLabel lblwhatIsBst = new JLabel(Lang.get("welcome.whatis"));
         lblwhatIsBst.setFont(lblwhatIsBst.getFont().deriveFont(32F));
-        welcomeContentPanel.add(lblwhatIsBst, "cell 0 4");
+        welcomeContentPanel.add(lblwhatIsBst, "cell 0 5");
 
         final JLabel lblbstIsA = new JLabel(Lang.get("welcome.about"));
-        welcomeContentPanel.add(lblbstIsA, "cell 0 5,alignx center,growy");
+        welcomeContentPanel.add(lblbstIsA, "cell 0 6,alignx center,growy");
 
         final JLabel lblimagineItcreate = new JLabel(Lang.get("welcome.imagine"));
         lblimagineItcreate.setVerticalTextPosition(SwingConstants.BOTTOM);
         lblimagineItcreate.setHorizontalTextPosition(SwingConstants.CENTER);
         lblimagineItcreate.setIcon(new ImageIcon(ideaImage));
-        welcomeContentPanel.add(lblimagineItcreate, "flowx,cell 0 6,alignx center,aligny top");
+        welcomeContentPanel.add(lblimagineItcreate, "flowx,cell 0 7,alignx center,aligny top");
 
-        welcomeContentPanel.add(Box.createHorizontalStrut(10), "cell 0 6");
+        welcomeContentPanel.add(Box.createHorizontalStrut(10), "cell 0 7");
 
         final JLabel lblwriteItwriteSaid = new JLabel(Lang.get("welcome.write"));
         lblwriteItwriteSaid.setVerticalTextPosition(SwingConstants.BOTTOM);
         lblwriteItwriteSaid.setHorizontalTextPosition(SwingConstants.CENTER);
         lblwriteItwriteSaid.setIcon(new ImageIcon(blogImage));
-        welcomeContentPanel.add(lblwriteItwriteSaid, "cell 0 6,aligny top");
+        welcomeContentPanel.add(lblwriteItwriteSaid, "cell 0 7,aligny top");
 
-        welcomeContentPanel.add(Box.createHorizontalStrut(10), "cell 0 6");
+        welcomeContentPanel.add(Box.createHorizontalStrut(10), "cell 0 7");
 
         final JLabel lblPlayIt = new JLabel(Lang.get("welcome.play"));
         lblPlayIt.setVerticalTextPosition(SwingConstants.BOTTOM);
         lblPlayIt.setHorizontalTextPosition(SwingConstants.CENTER);
         lblPlayIt.setIcon(new ImageIcon(controllerImage));
-        welcomeContentPanel.add(lblPlayIt, "cell 0 6,aligny top");
+        welcomeContentPanel.add(lblPlayIt, "cell 0 7,aligny top");
 
-        welcomeContentPanel.add(Box.createHorizontalStrut(10), "cell 0 6");
+        welcomeContentPanel.add(Box.createHorizontalStrut(10), "cell 0 7");
 
         final JLabel lblEnjoyIt = new JLabel(Lang.get("welcome.enjoy"));
         lblEnjoyIt.setVerticalTextPosition(SwingConstants.BOTTOM);
         lblEnjoyIt.setHorizontalTextPosition(SwingConstants.CENTER);
         lblEnjoyIt.setIcon(new ImageIcon(inLoveImage));
-        welcomeContentPanel.add(lblEnjoyIt, "cell 0 6,aligny top");
+        welcomeContentPanel.add(lblEnjoyIt, "cell 0 7,aligny top");
 
         final JLabel lblIconsByIconscom = new JLabel(Lang.get("welcome.icons"));
         lblIconsByIconscom.setEnabled(false);
-        welcomeContentPanel.add(lblIconsByIconscom, "cell 0 8,alignx left");
+        welcomeContentPanel.add(lblIconsByIconscom, "cell 0 9,alignx left");
 
         setSize(830, 480);
         setLocationRelativeTo(null);
@@ -766,8 +800,8 @@ public class OpenBST extends JFrame
                     Collections.sort(list);
                     list.forEach(s -> sb.append(s));
                     JDialog dialog = new JDialog(OpenBST.this, Lang.get("langcheck"));
-                    dialog.setLayout(new MigLayout());
-                    dialog.add(new JLabel(Lang.get("langcheck.result")), "pushx, growx, wrap");
+                    dialog.getContentPane().setLayout(new MigLayout());
+                    dialog.getContentPane().add(new JLabel(Lang.get("langcheck.result")), "pushx, growx, wrap");
                     JTextArea area = new JTextArea();
                     area.setLineWrap(true);
                     area.setWrapStyleWord(true);
@@ -776,7 +810,7 @@ public class OpenBST extends JFrame
                     area.setBorder(BorderFactory.createLoweredBevelBorder());
                     JScrollPane jsp = new JScrollPane(area);
                     jsp.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-                    dialog.add(jsp, "pushx, pushy, growx, growy");
+                    dialog.getContentPane().add(jsp, "pushx, pushy, growx, growy");
                     dialog.setSize(300, 300);
                     dialog.setLocationRelativeTo(OpenBST.this);
                     dialog.setModalityType(ModalityType.APPLICATION_MODAL);
