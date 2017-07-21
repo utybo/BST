@@ -30,7 +30,7 @@ public class BSTException extends Exception
 
     public BSTException(int where, String message, BranchingStory source)
     {
-        super();
+        super(message);
         this.where = where;
         this.source = source.getTag("__sourcename");
     }

@@ -64,7 +64,7 @@ public class JBackgroundPanel extends JPanel
         if(dark)
             g.setColor(new Color(0, 0, 0, 125));
         else
-            g.setColor(new Color(255, 255, 255, 125));
+            g.setColor(new Color(255, 255, 255, 175));
         g.fillRect(0, 0, width + 1, height + 1);
     }
 
@@ -94,5 +94,15 @@ public class JBackgroundPanel extends JPanel
     {
         dark = b;
         repaint();
+    }
+    
+    public void setImage(BufferedImage image)
+    {
+        this.image = image;
+    }
+
+    public BufferedImage getImage()
+    {
+        return image;
     }
 }

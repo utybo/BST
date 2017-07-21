@@ -16,7 +16,6 @@ import java.awt.Dialog.ModalityType;
 import java.awt.Dimension;
 import java.awt.FileDialog;
 import java.awt.FlowLayout;
-import java.awt.Font;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -29,13 +28,16 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Random;
 import java.util.Vector;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
@@ -71,6 +73,7 @@ import javax.swing.SwingWorker;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
+import javax.swing.plaf.metal.MetalLookAndFeel;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.LogManager;
@@ -100,6 +103,7 @@ import utybo.branchingstorytree.swing.utils.Lang;
 import utybo.branchingstorytree.swing.utils.Lang.UnrespectedModelException;
 import utybo.branchingstorytree.swing.visuals.AboutDialog;
 import utybo.branchingstorytree.swing.visuals.JBackgroundPanel;
+import utybo.branchingstorytree.swing.visuals.JBannerPanel;
 import utybo.branchingstorytree.swing.visuals.PackageDialog;
 import utybo.branchingstorytree.swing.visuals.StoryPanel;
 
@@ -144,10 +148,13 @@ public class OpenBST extends JFrame
      */
     private static OpenBST instance;
 
+    private static final Random RANDOM = new Random();
+
     public static final Color OPENBST_BLUE = new Color(33, 150, 243);
 
     public static final SubstanceLookAndFeel DARK_THEME = new SubstanceGraphiteGoldLookAndFeel();
     public static final SubstanceLookAndFeel LIGHT_THEME;
+    public static final LookAndFeel DEBUG_THEME = new MetalLookAndFeel();
 
     static
     {
@@ -163,13 +170,9 @@ public class OpenBST extends JFrame
     }
 
     // --- IMAGES ---
-    public final static Image ideaImage = loadImage("icons/Idea.png");
-    public final static Image blogImage = loadImage("icons/Blog.png");
-    public final static Image controllerImage = loadImage("icons/Controller.png");
-    public final static Image inLoveImage = loadImage("icons/In Love.png");
     public final static Image openFolderImage = loadImage("icons/Open Folder.png");
     public final static Image cancelImage = loadImage("icons/Cancel.png");
-    public final static Image errorImage = loadImage("icons/error.png");
+    public final static Image errorImage = loadImage("icons/Error.png");
     public final static Image aboutImage = loadImage("icons/About.png");
     public final static Image renameImage = loadImage("icons/Rename.png");
     public final static Image addonSearchImage = loadImage("icons/toolbar/Addon Search.png");
@@ -196,6 +199,7 @@ public class OpenBST extends JFrame
     public final static Image undoImage = loadImage("icons/toolbar/Undo.png");
     public final static Image undoBigImage = loadImage("icons/toolbar/Undo Big.png");
     public final static Image visibleImage = loadImage("icons/toolbar/Visible.png");
+    public final static Image smallLogoBlue = loadImage("logos/logo-small-blue.png");
     public final static Image smallLogoWhite = loadImage("logos/logo-small-white.png");
     public final static Image bigLogoBlue = loadImage("logos/logo-big-blue.png");
     public final static Image bigLogoWhite = loadImage("logos/logo-big-white.png");
@@ -213,17 +217,24 @@ public class OpenBST extends JFrame
     public final static Image menuColorDropper = loadImage("icons/menu/Color Dropper.png");
 
     public final static Image discordIcon = loadImage("icons/Discord.png");
-    
-    public final static BufferedImage bgImage = loadImage("images/bg.jpg");
+
+    public final static BufferedImage[] bgImages = loadImages("images/bg$.jpg", 6);
+    public final static Image externalIcon = loadImage("icons/External.png");
+    public final static Image changeThemeMiniIcon = loadImage("icons/Change Theme Mini.png");
+    public final static Image fullLogo = loadImage("logos/logofull.png");
+    public final static Image fullLogoWhite = loadImage("logos/logofullwhite.png");
 
     /**
      * Container for all the tabs
      */
     private final JTabbedPane container;
-    
+
     private JBackgroundPanel background;
 
     private int selectedTheme = 1;
+    private boolean dark = false;
+    private static final Color DISCORD_COLOR = new Color(114, 137, 218);
+    private LinkedList<Consumer<Boolean>> darkModeCallbacks = new LinkedList<>();
 
     /**
      * Launch OpenBST
@@ -284,9 +295,19 @@ public class OpenBST extends JFrame
                 }
             }
 
-            instance = new OpenBST();
+            new OpenBST();
         });
 
+    }
+
+    private static BufferedImage[] loadImages(String string, int length)
+    {
+        BufferedImage[] array = new BufferedImage[length];
+        for(int i = 0; i < length; i++)
+        {
+            array[i] = loadImage(string.replace("$", "" + i));
+        }
+        return array;
     }
 
     private static void invokeSwingAndWait(Runnable r)
@@ -372,12 +393,12 @@ public class OpenBST extends JFrame
                     LOG.error("BSTException caught", e);
                     String s = Lang.get("file.bsterror.1");
                     s += Lang.get("file.bsterror.2");
-                    s += Lang.get("file.bsterror.3").replace("$l", "" + e.getWhere()).replace("$f", "<main>");
+                    s += Lang.get("file.bsterror.3").replace("$l", "" + e.getWhere()).replace("$f", "[main]");
                     if(e.getCause() != null)
                     {
                         s += Lang.get("file.bsterror.4").replace("$e", e.getCause().getClass().getSimpleName()).replace("$m", e.getCause().getMessage());
                     }
-                    s += Lang.get("file.bsterror.5").replace("$m", e.getMessage());
+                    s += Lang.get("file.bsterror.5").replace("$m", "" + e.getMessage());
                     s += Lang.get("file.bsterror.6");
                     String s2 = s;
                     if(doAndReturn(() -> JOptionPane.showConfirmDialog(instance, s2, Lang.get("bsterror"), JOptionPane.ERROR_MESSAGE, JOptionPane.YES_NO_OPTION)) == JOptionPane.YES_OPTION)
@@ -516,7 +537,7 @@ public class OpenBST extends JFrame
      */
     public OpenBST()
     {
-        // Note : this does not work with GTKLookAndFeel
+        instance = this;
         UIManager.put("OptionPane.errorIcon", new ImageIcon(cancelImage));
         UIManager.put("OptionPane.informationIcon", new ImageIcon(aboutImage));
         UIManager.put("OptionPane.questionIcon", new ImageIcon(renameImage));
@@ -529,14 +550,23 @@ public class OpenBST extends JFrame
         setTitle("OpenBST " + version);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
+        JLabel openBST = new JLabel(Lang.get("banner.titleextended"));
         JPanel banner = new JPanel(new FlowLayout(FlowLayout.CENTER));
+
         Timeline tl = new Timeline(banner);
         tl.setDuration(200L);
         tl.addPropertyToInterpolate("background", OPENBST_BLUE, new Color(145, 145, 145));
+        Timeline darkTl = new Timeline(banner);
+        darkTl.setDuration(200L);
+        darkTl.addPropertyToInterpolate("background", OPENBST_BLUE.darker().darker(), new Color(100, 100, 100));
+
         banner.setBackground(OPENBST_BLUE);
         banner.add(new JLabel(new ImageIcon(smallLogoWhite)));
-        JLabel openBST = new JLabel(Lang.get("banner.titleextended"));
         openBST.setForeground(Color.WHITE);
+        addDarkModeCallback(b ->
+        {
+            banner.setBackground(b ? OPENBST_BLUE.darker().darker() : OPENBST_BLUE);
+        });
         banner.add(openBST);
         getContentPane().add(banner, BorderLayout.NORTH);
 
@@ -552,13 +582,27 @@ public class OpenBST extends JFrame
             @Override
             public void mouseEntered(MouseEvent e)
             {
-                tl.play();
+                if(dark)
+                {
+                    darkTl.play();
+                }
+                else
+                {
+                    tl.play();
+                }
             }
 
             @Override
             public void mouseExited(MouseEvent e)
             {
-                tl.playReverse();
+                if(dark)
+                {
+                    darkTl.playReverse();
+                }
+                else
+                {
+                    tl.playReverse();
+                }
             }
 
         });
@@ -566,24 +610,16 @@ public class OpenBST extends JFrame
         container = new JTabbedPane();
         getContentPane().add(container, BorderLayout.CENTER);
 
-        final JBackgroundPanel welcomeContentPanel = new JBackgroundPanel(bgImage, Image.SCALE_FAST);
+        final JBackgroundPanel welcomeContentPanel = new JBackgroundPanel(bgImages[RANDOM.nextInt(bgImages.length)], Image.SCALE_FAST);
         background = welcomeContentPanel;
 
         welcomeContentPanel.setLayout(new MigLayout("hidemode 2", "[grow,center]", "[][grow][]"));
         container.add(welcomeContentPanel);
         container.setTitleAt(0, Lang.get("welcome"));
 
-        JPanel panel_1 = new JPanel();
-        panel_1.setBackground(new Color(114, 137, 218, 200).brighter());
-        welcomeContentPanel.add(panel_1, "cell 0 0,grow");
-        panel_1.setLayout(new MigLayout("gap 10px", "[][grow][]", "[]"));
-
-        JLabel label = new JLabel(new ImageIcon(discordIcon));
-        panel_1.add(label, "cell 0 0");
-
-        JLabel lblNewLabel = new JLabel("<html>" + Lang.get("openbst.discord"));
-        lblNewLabel.setForeground(Color.BLACK); // HAs to be forced due to shitty look in dark mode
-        panel_1.add(lblNewLabel, "cell 1 0,aligny top");
+        JPanel bannersPanel = new JPanel(new MigLayout("hidemode 2, gap 0px, fill, wrap 1, ins 0"));
+        bannersPanel.setBackground(new Color(0, 0, 0, 0));
+        welcomeContentPanel.add(bannersPanel, "cell 0 0,grow");
 
         JButton btnJoinDiscord = new JButton(Lang.get("openbst.discordjoin"));
         btnJoinDiscord.addActionListener(e ->
@@ -597,26 +633,16 @@ public class OpenBST extends JFrame
                 LOG.error("Exception during link opening", e1);
             }
         });
-        panel_1.add(btnJoinDiscord, "flowy,cell 2 0,alignx trailing");
-
-        JButton btnHide = new JButton(Lang.get("hide"));
-        btnHide.addActionListener(e -> panel_1.setVisible(false));
-        panel_1.add(btnHide, "cell 2 0,alignx center");
-
-        final JLabel lblIconsByIconscom = new JLabel(Lang.get("welcome.icons"));
-        lblIconsByIconscom.setEnabled(false);
-        welcomeContentPanel.add(lblIconsByIconscom, "cell 0 2,alignx left");
+        bannersPanel.add(new JBannerPanel(new ImageIcon(discordIcon), DISCORD_COLOR, Lang.get("openbst.discord"), btnJoinDiscord, false), "grow");
 
         JPanel panel = new JPanel();
-        panel.setBackground(new Color(0,0,0,0));
+        panel.setBackground(new Color(0, 0, 0, 0));
         welcomeContentPanel.add(panel, "flowx,cell 0 1,growx,aligny center");
         panel.setLayout(new MigLayout("", "[40%][][][][60%,growprio 50]", "[][grow]"));
 
-        final JLabel lblOpenbst = new JLabel(Lang.get("title"));
+        final JLabel lblOpenbst = new JLabel(new ImageIcon(fullLogo));
+        addDarkModeCallback(b -> lblOpenbst.setIcon(new ImageIcon(b ? fullLogoWhite : fullLogo)));
         panel.add(lblOpenbst, "flowx,cell 0 0 1 2,alignx trailing,aligny center");
-        lblOpenbst.setFont(lblOpenbst.getFont().deriveFont(Font.BOLD, 32F));
-        lblOpenbst.setForeground(OPENBST_BLUE);
-        lblOpenbst.setIcon(new ImageIcon(bigLogoBlue));
 
         JSeparator separator = new JSeparator();
         separator.setOrientation(SwingConstants.VERTICAL);
@@ -640,11 +666,41 @@ public class OpenBST extends JFrame
             clickOpenStory();
         });
 
+        JButton btnChangeBackground = new JButton(Lang.get("welcome.changebackground"), new ImageIcon(changeThemeMiniIcon));
+        btnChangeBackground.addActionListener(e ->
+        {
+            BufferedImage prev = background.getImage();
+            BufferedImage next;
+            do
+            {
+                next = bgImages[RANDOM.nextInt(bgImages.length)];
+            }
+            while(prev == next);
+            background.setImage(next);
+        });
+        welcomeContentPanel.add(btnChangeBackground, "flowx,cell 0 2,alignx left");
+
+        JButton btnWelcomepixabay = new JButton(Lang.get("welcome.pixabay"), new ImageIcon(externalIcon));
+        btnWelcomepixabay.addActionListener(e ->
+        {
+            try
+            {
+                Desktop.getDesktop().browse(new URL("https://pixabay.com").toURI());
+            }
+            catch(IOException | URISyntaxException e1)
+            {
+                LOG.warn("Failed to browse to Pixabay website", e1);
+            }
+        });
+        welcomeContentPanel.add(btnWelcomepixabay, "cell 0 2");
+
+        JLabel creds = new JLabel(Lang.get("welcome.credits"));
+        creds.setEnabled(false);
+        welcomeContentPanel.add(creds, "cell 0 2, gapbefore 10px");
+
         setSize(830, 480);
         setLocationRelativeTo(null);
         setVisible(true);
-
-        createShortMenu();
     }
 
     /**
@@ -824,6 +880,13 @@ public class OpenBST extends JFrame
         themesMenu.add(jrbmi);
         themesGroup.add(jrbmi);
 
+        jrbmi = new JRadioButtonMenuItem(Lang.get("menu.themes.debug"));
+        if(2 == selectedTheme)
+            jrbmi.setSelected(true);
+        jrbmi.addActionListener(e -> switchLaF(2, DEBUG_THEME));
+        themesMenu.add(jrbmi);
+        themesGroup.add(jrbmi);
+
         shortMenu.add(new JMenuItem(new AbstractAction(Lang.get("menu.about"), new ImageIcon(menuAbout))
         {
             @Override
@@ -838,12 +901,14 @@ public class OpenBST extends JFrame
 
     private void switchLaF(int id, LookAndFeel laf)
     {
+
         try
         {
+            dark = id == 0;
             UIManager.setLookAndFeel(laf);
             SwingUtilities.updateComponentTreeUI(instance);
-            // TODO Add a dark mode to HTML stuff
             background.setDark(id == 0);
+            darkModeCallbacks.forEach(a -> a.accept(id == 0));
             selectedTheme = id;
         }
         catch(UnsupportedLookAndFeelException e)
@@ -860,5 +925,20 @@ public class OpenBST extends JFrame
     protected void showMessageDialog(OpenBST obst, String msg, String head, int type)
     {
         invokeSwingAndWait(() -> JOptionPane.showMessageDialog(obst, msg, head, type));
+    }
+
+    public void addDarkModeCallback(Consumer<Boolean> callback)
+    {
+        darkModeCallbacks.add(callback);
+    }
+
+    public void removeDarkModeCallbback(Consumer<Boolean> callback)
+    {
+        darkModeCallbacks.remove(callback);
+    }
+
+    public Boolean isDark()
+    {
+        return dark;
     }
 }

@@ -527,6 +527,7 @@ public class StoryPanel extends JPanel
                 if(JOptionPane.showConfirmDialog(parentWindow, Lang.get("story.close.confirm"), Lang.get("story.close"), JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, new ImageIcon(OpenBST.closeBigImage)) == JOptionPane.YES_OPTION)
                 {
                     client.getSSBHandler().shutdown();
+                    nodePanel.dispose();
                     parentWindow.removeStory(StoryPanel.this);
                 }
             }
@@ -701,7 +702,7 @@ public class StoryPanel extends JPanel
                 catch(final BSTException e)
                 {
                     LOG.error("Encountered an error while triggering option", e);
-                    JOptionPane.showMessageDialog(this, Lang.get("story.error").replace("$n", "" + currentNode.getId()).replace("$f", e.getSourceFile()).replace("$m", e.getMessage()), Lang.get("error"), JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, Lang.get("story.error").replace("$n", "" + currentNode.getId()).replace("$a", currentNode.getTagOrDefault("alias", "<none>")).replace("$f", e.getSourceFile()).replace("$m", e.getMessage()), Lang.get("error"), JOptionPane.ERROR_MESSAGE);
                 }
             });
             optionPanel.add(button);
@@ -753,18 +754,6 @@ public class StoryPanel extends JPanel
         {
             // The node does not exist
             // This should never happen
-            //            LOG.error("Node launched does not exist");
-            //            if(currentNode == null)
-            //            {
-            //                LOG.debug("=> It was the initial node");
-            //                JOptionPane.showMessageDialog(this, Lang.get("story.missinginitial"), Lang.get("error"), JOptionPane.ERROR_MESSAGE);
-            //                return;
-            //            }
-            //            else
-            //            {
-            //                JOptionPane.showMessageDialog(this, Lang.get("story.missingnode").replace("$n", "" + currentNode.getId()), Lang.get("error"), JOptionPane.ERROR_MESSAGE);
-            //                return;
-            //            }
 
             LOG.error("Tried to show a null node!");
             JOptionPane.showMessageDialog(OpenBST.getInstance(), Lang.get("story.nullnode"), Lang.get("error"), JOptionPane.ERROR_MESSAGE);
@@ -789,7 +778,10 @@ public class StoryPanel extends JPanel
                 LOG.trace("=> Logical node result : " + (node == null ? "null" : node.getId()));
                 if(node == null)
                 {
-                    JOptionPane.showMessageDialog(OpenBST.getInstance(), Lang.get("story.logicalnodedeadend").replace("$n", "" + storyNode.getId()).replace("$f", storyNode.getStory().getTag("__sourcename")).replace("$a", storyNode.getTag("alias")));
+                    JOptionPane.showMessageDialog(OpenBST.getInstance(), Lang.get("story.logicalnodedeadend")
+                            .replace("$n", "" + storyNode.getId())
+                            .replace("$f", storyNode.getStory().getTag("__sourcename"))
+                            .replace("$a", storyNode.getTagOrDefault("alias", "<none>")));
                 }
                 else
                 {
@@ -821,13 +813,13 @@ public class StoryPanel extends JPanel
         catch(final BSTException e)
         {
             LOG.error("Encountered a BST exception while trying to show a node", e);
-            final String s = Lang.get("story.error2").replace("$n", "" + currentNode.getId()).replace("$m", e.getMessage()).replace("$l", e.getWhere() + "");
+            final String s = Lang.get("story.error2").replace("$n", "" + currentNode.getId()).replace("$a", currentNode.getTagOrDefault("alias", "<none>")).replace("$m", e.getMessage()).replace("$l", e.getWhere() + "");
             JOptionPane.showMessageDialog(this, s, Lang.get("error"), JOptionPane.ERROR_MESSAGE);
         }
         catch(final Exception e)
         {
             LOG.error("Encountered a generic exception while trying to show a node", e);
-            JOptionPane.showMessageDialog(this, Lang.get("story.error").replace("$n", "" + currentNode.getId()).replace("$f", storyNode.getStory().getTag("__sourcename")).replace("$m", e.getMessage() == null ? "N/A" : e.getMessage()), Lang.get("error"), JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, Lang.get("story.error").replace("$n", "" + currentNode.getId()).replace("$a", currentNode.getTagOrDefault("alias", "<none>")).replace("$f", storyNode.getStory().getTag("__sourcename")).replace("$m", e.getMessage() == null ? "N/A" : e.getMessage()), Lang.get("error"), JOptionPane.ERROR_MESSAGE);
         }
     }
 

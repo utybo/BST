@@ -28,6 +28,7 @@ menu.about=About OpenBST
 menu.themes=Themes
 menu.themes.dark=Dark theme
 menu.themes.light=Light theme
+menu.themes.debug=Debug theme
 
 # Package tool
 pkg.title=BST Package Craft Tool
@@ -85,8 +86,8 @@ story.background=Background picture
 story.mute=Mute
 story.close=Close tab
 story.close.confirm=<html><body style='width: 300px'>You are about to close this BST file. All unsaved progress will be lost. Are you sure you want to close this tab?
-story.error=<html>Error on node $n :<p>$m
-story.error2=<html>Error on node $n (line $l) :<p>$m
+story.error=<html>Error on node $n (alias $a, from $f) :<p>$m
+story.error2=<html>Error on node $n (alias $a, line $l, from $f) :<p>$m
 story.missinginitial=The initial node does not exist. Make sure you are using a correct BST file.
 story.missingnode=The node $n that was supposed to be opened does not exist! (Alias : $a, from : $f)
 story.final.end=The End.
@@ -109,13 +110,9 @@ openbst.discordjoin=Join Server
 welcome=Welcome
 welcome.intro=Welcome to OpenBST. To get started, please open a file using the button below.
 welcome.open=Open a file...
-welcome.whatis=What is BST?
-welcome.about=<html>BST is a simple language that allows you to easily create a branching story.
-welcome.imagine=<html><body style='width: 125px; text-align: center;'><h1>Have ideas?<p style='text-align: justify'>Going from a simple idea to a full, playable story is super easy with BST. It is made to stand out of your way as much as possible, making everything easy.
-welcome.write=<html><body style='width: 125px; text-align: center;'><h1>Wanna write?<p style='text-align: justify'>The awesome thing with BST is that it's an extremely simple yet powerful language. Anyone can create BST stories in seconds! Even children!
-welcome.play=<html><body style='width: 125px; text-align: center;'><h1>Games?<p style='text-align: justify'>BST is so powerful it allows you to create text-based games! The scripting system is open to all and very simple to understand -- but of course, if you just want to add some more dynamic elements to your BST story, you can do that too!
-welcome.enjoy=<html><body style='width: 125px; text-align: center;'><h1>Just reading?<p style='text-align: justify'>If you're just a reader passing by, on his way to launch a good BST story or game, make yourself home! We've got cookies in the box if you want!
-welcome.icons=Icons by icons8.com, go check them out, they make awesome icons!
+welcome.changebackground=Change background
+welcome.pixabay=More free pictures on Pixabay
+welcome.credits=OpenBST - Create Branching stories easily
 
 
 # HTML Security related
@@ -128,5 +125,6 @@ html.hrefenabled=HTML anchors enabled
 
 # Langcheck
 langcheck=Lang Completeness Checker
+# There is a box right after the following string where the user can choose a language
 langcheck.choose=Compare English (en) language file to
 langcheck.result=<html>Here are the strings present in the English language file but missing in the one you chose.

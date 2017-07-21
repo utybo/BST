@@ -9,6 +9,7 @@ title=OpenBST
 error=Erreur
 bsterror=Erreur BST
 wait=Patientez...
+hide=Cacher
 
 # Banner and menu
 banner.title=OpenBST
@@ -21,6 +22,7 @@ menu.about=A propos d'OpenBST
 menu.themes=Thèmes
 menu.themes.dark=Thème sombre
 menu.themes.light=Thème lumineux
+menu.themes.debug=Thème de debug
 
 # Package tool
 pkg.title=Outil de création de paquets BST
@@ -74,8 +76,8 @@ story.variablewatcher=Observation de variable...
 story.tip=Survolez une icône pour plus d'informations.
 story.close=Fermer l'onglet
 story.close.confirm=<html><body style='width: 300px'>Voulez vous vraiment fermer cet onglet? Toute progression non sauvegardée et exportée sera perdue.
-story.error=<html>Erreur sur la node $n (depuis $f) :<p>$m
-story.error2=<html>Erreur sur la node $n (ligne $l, depuis $f) :<p>$m
+story.error=<html>Erreur sur la node $n (alias $a, depuis $f) :<p>$m
+story.error2=<html>Erreur sur la node $n (alias $a, ligne $l, depuis $f) :<p>$m
 story.missinginitial=La node initiale n'existe pas. Vérifiez votre fichier BST.
 story.missingnode=La node $n qui devait être ouverte n'existe pas! (Alias : $a, depuis : $f)
 story.backgroundvisible=Arrière-plan visible
@@ -91,16 +93,33 @@ story.missingtitle=<inconnu>
 story.missingauthor=<inconnu>
 story.nsfw=<html><b>ATTENTION</b><p>Vous allez charger un fichier au contenu choquant. Il est inapproprié pour les enfants.<p>NE CLIQUEZ SUR OK QUE SI VOUS AVEZ AU MOINS 18 ANS ET QUE VOUS SOUHAITEZ VOIR CE CONTENU.
 story.nsfw.title=ALERTE -18
+story.nullnode=Oups, la node qui était censée être ici n'a pas pu être résolue, mais je ne sais pas pourquoi... :(
+story.unknowncolor=Couleur inconnue : $c
+story.modulerestorefail=Le module suivant n'a pas pu être restoré : $m
+story.logicalnodedeadend=La node logique (avec id $n depuis $f avec alias $a) n'a pas donné de node où aller ensuite 
 
 
 # Welcome screen
+openbst.discord=Rejoignez nous sur notre serveur Discord! Vous y trouverez de l'aide pour créer vos histoires BST, ainsi que des créations de la communauté et des informations sur ce qui arrive bientôt dans OpenBST!
+openbst.discordjoin=Rejoindre
 welcome=Bienvenue
 welcome.intro=Bienvenue dans OpenBST. Pour démarrer, ouvrez un fichier en utilisant le bouton ci-dessous
 welcome.open=Ouvrir un fichier...
-welcome.whatis=Qu'est-ce que BST?
-welcome.about=<html>BST est un language simple qui permet de facilement créer des histoires ramifiées.
-welcome.imagine=<html><body style='width: 125px; text-align: center;'><h1>Des idées?<p style='text-align: justify'>Aller d'une simple idée à une histoire complète jouable est simple comme bonjour avec BST, construit pour rester hors de votre chemin autant que possible.
-welcome.write=<html><body style='width: 125px; text-align: center;'><h1>Ecrivain dans l'âme?<p style='text-align: justify'>Ce qui est génial avec BST, c'est qu'il s'agisse d'un language à la fois extrèmement simple mais pourtant très puissant. N'importe qui peut créer une histoire ramifiée avec BST -- même des enfants!
-welcome.play=<html><body style='width: 125px; text-align: center;'><h1>Des jeux?<p style='text-align: justify'>BST est si puissant qu'il vous permet de créer des petits jeux textes! Le système de scripts est ouvert à tous et très simple à comprendre -- mais bien sûr, si vous voulez juste ajouter un peu de dynamisme à votre histoire BST, vous pouvez le faire!
-welcome.enjoy=<html><body style='width: 125px; text-align: center;'><h1>Simple lecteur?<p style='text-align: justify'>Si vous êtes juste un lecteur qui passez par là, sur le point de lancer une bonne histoire ou un jeu, faites comme chez vous! Y'a des cookies dans la boîte si vous voulez!
-welcome.icons=Icônes par icons8.com, allez les voir, leurs icônes sont géniales!
+welcome.changebackground=Changer d'arrière-plan
+welcome.pixabay=Plus d'images gratuites sur Pixabay
+welcome.credits=OpenBST - Créez des histoires ramifiées facilement
+
+
+# HTML Security related
+html.jsrequest=<b>Ce fichier souhaite utiliser du JavaScript intégré!</b><p>Vous ne devriez accepter que si vous faites entièrement confiance à ce fichier. Le JavaScript peut être utilisé pour attaquer votre ordinateur et ne peut pas être controllé de manière sécurisée par OpenBST. A utiliser à vos risques et périls.<p><p>Activer le JavaScript intégré?
+html.hrefrequest=<b>Ce fichier souhaite utiliser des ancres HTML intégrées!</b><p>Vous ne devriez accepter que si vous faites entièrement confiance à ce fichier. Les ancres HTML peuvent vous emmener vers des liens trompeurs, et peuvent entièrement casser OpenBST. A utiliser à vos risques et périls.<p><p>Activer les ancres HTML?
+html.jsblock=JS blocked
+html.hrefblock=HTML anchors blocked
+html.jsenabled=JS enabled
+html.hrefenabled=HTML anchors enabled
+
+# Langcheck
+langcheck=Vérification de complétion des fichiers de langue
+# There is a box right after the following string where the user can choose a language
+langcheck.choose=Comparer l'anglais (en) à
+langcheck.result=<html>Voici les traductions présentes en anglais mais absentes dans le fichier choisi.
