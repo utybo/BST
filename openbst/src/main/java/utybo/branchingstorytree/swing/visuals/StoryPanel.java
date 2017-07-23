@@ -584,7 +584,7 @@ public class StoryPanel extends JPanel
      */
     protected void restoreSaveState(final SaveState ss)
     {
-        System.out.println("From " + ss.getFrom() + " id " + ss.getNodeId());
+        OpenBST.LOG.trace("Restorying from " + ss.getFrom() + " id " + ss.getNodeId());
         ss.applySaveState(story);
         // Also notify modules that need to restore their state
         client.getSSBHandler().restoreSaveState();
@@ -637,7 +637,6 @@ public class StoryPanel extends JPanel
                 }
                 else
                 {
-                    System.out.println("!!");
                     showNode(node);
                 }
             }
