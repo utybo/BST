@@ -24,7 +24,7 @@ public class TagHolder
     {
         return tags.get(tag);
     }
-    
+
     public String getTagOrDefault(final String tag, final String defaultVal)
     {
         return tags.getOrDefault(tag, defaultVal);

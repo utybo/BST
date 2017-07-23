@@ -25,7 +25,7 @@ public class BSTException extends Exception
 {
     private static final long serialVersionUID = 1L;
 
-    private String source;
+    private final String source;
     private int where;
 
     public BSTException(int where, String message, BranchingStory source)
@@ -55,14 +55,13 @@ public class BSTException extends Exception
         this.where = where;
         this.source = source;
     }
-    
+
     public BSTException(final int where, final Throwable cause, BranchingStory story)
     {
         super(cause);
         this.where = where;
-        this.source = story.getTag("__sourcename");
+        source = story.getTag("__sourcename");
     }
-
 
     public BSTException(final int where, final Throwable cause, String source)
     {

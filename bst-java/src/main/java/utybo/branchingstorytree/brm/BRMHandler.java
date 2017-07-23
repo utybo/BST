@@ -23,7 +23,8 @@ public interface BRMHandler
      * handlers' implementation of
      * {@link BRMResourceConsumer#load(String, String)}
      * <p>
-     * The loading process should be called on file load. As such, this method is useless.
+     * The loading process should be called on file load. As such, this method
+     * is useless.
      *
      * @throws BSTException
      */

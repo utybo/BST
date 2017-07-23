@@ -12,8 +12,6 @@ import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.FileDialog;
 import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.HashMap;
@@ -69,14 +67,13 @@ public class PackageDialog extends JDialog
         textField.setColumns(10);
 
         JButton button = new JButton(Lang.get("pkg.select"));
-        button.addActionListener(new ActionListener()
+        button.addActionListener(e ->
         {
-            public void actionPerformed(ActionEvent e)
+            FileDialog fd = new FileDialog(parent, Lang.get("pkg.selin"), FileDialog.LOAD);
+            fd.setVisible(true);
+            if(fd.getFile() != null)
             {
-                FileDialog fd = new FileDialog(parent, Lang.get("pkg.selin"), FileDialog.LOAD);
-                fd.setVisible(true);
-                if(fd.getFile() != null)
-                    textField.setText(fd.getDirectory() + fd.getFile());
+                textField.setText(fd.getDirectory() + fd.getFile());
             }
         });
         panel.add(button, "cell 1 0");
@@ -89,14 +86,13 @@ public class PackageDialog extends JDialog
         textField_1.setColumns(10);
 
         JButton button_1 = new JButton(Lang.get("pkg.select"));
-        button_1.addActionListener(new ActionListener()
+        button_1.addActionListener(e ->
         {
-            public void actionPerformed(ActionEvent e)
+            FileDialog fd = new FileDialog(parent, Lang.get("pkg.selout"), FileDialog.SAVE);
+            fd.setVisible(true);
+            if(fd.getFile() != null)
             {
-                FileDialog fd = new FileDialog(parent, Lang.get("pkg.selout"), FileDialog.SAVE);
-                fd.setVisible(true);
-                if(fd.getFile() != null)
-                    textField_1.setText(fd.getDirectory() + fd.getFile() + (fd.getFile().endsWith(".bsp") ? "" : ".bsp"));
+                textField_1.setText(fd.getDirectory() + fd.getFile() + (fd.getFile().endsWith(".bsp") ? "" : ".bsp"));
             }
         });
         panel.add(button_1, "cell 1 1");

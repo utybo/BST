@@ -36,7 +36,7 @@ public class XBFTest
 
     private class XBFTestClient implements BSTClient, BRMHandler, XBFHandler
     {
-        private HashMap<String, BranchingStory> stories = new HashMap<>();
+        private final HashMap<String, BranchingStory> stories = new HashMap<>();
 
         @Override
         public void load(InputStream in, String name) throws BSTException

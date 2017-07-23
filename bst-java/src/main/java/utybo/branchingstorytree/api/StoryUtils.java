@@ -52,8 +52,10 @@ public class StoryUtils
             {
                 final String s = varName.substring(1);
                 StoryNode node = parseNode(s, story);
-                if(!(node instanceof VirtualNode))  
+                if(!(node instanceof VirtualNode))
+                {
                     throw new BSTException(-1, "Node is not a virtual node : " + node.getId(), story);
+                }
                 text = text.replace(toReplace, ((VirtualNode)node).getText());
             }
             else if(varName.startsWith("&"))
@@ -61,7 +63,9 @@ public class StoryUtils
                 final String s = varName.substring(1);
                 StoryNode i = parseNode(s, story);
                 if(!(i instanceof LogicalNode))
+                {
                     throw new BSTException(-1, "Node " + i.getId() + " (alias : " + i.getTag("alias") + ") is not a logical node", story);
+                }
                 final LogicalNode ln = (LogicalNode)i;
                 i = ln.solve(story);
                 while(i instanceof LogicalNode)
@@ -95,7 +99,9 @@ public class StoryUtils
             int i = Integer.parseInt(toParse);
             sn = story.getNode(i);
             if(sn == null && i != -1)
+            {
                 throw new NodeNotFoundException(i, story.getTag("__sourcename"));
+            }
         }
         else
         {
@@ -105,7 +111,9 @@ public class StoryUtils
             {
                 String aliasTag = node.getTag("alias");
                 if(toParse.equals(aliasTag))
+                {
                     sn = node;
+                }
             }
             if(sn == null)
             {
@@ -123,7 +131,9 @@ public class StoryUtils
                     Integer i = (Integer)obj;
                     sn = story.getNode(i);
                     if(sn == null)
+                    {
                         throw new NodeNotFoundException(i, story.getTag("__sourcename"));
+                    }
                 }
                 else if(obj instanceof String)
                 {
@@ -132,7 +142,9 @@ public class StoryUtils
                     for(StoryNode node : nodes)
                     {
                         if(s.equals(node.getTag("alias")))
+                        {
                             return node;
+                        }
                     }
                     throw new BSTException(-1, "Unknown alias : " + s, story);
                 }

@@ -21,7 +21,7 @@ public class SaveState
 {
     private final int nodeId;
     private final VariableRegistry registry;
-    private String from;
+    private final String from;
 
     /**
      * Create a save state that will contain the given node id and a clone of

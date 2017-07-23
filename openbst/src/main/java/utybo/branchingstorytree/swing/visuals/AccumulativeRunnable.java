@@ -39,14 +39,16 @@ public abstract class AccumulativeRunnable<T> implements Runnable
         boolean requirePush = false;
         if(objects == null)
         {
-            objects = new ArrayList<T>();
+            objects = new ArrayList<>();
             requirePush = true;
         }
         Collections.addAll(objects, obj);
         if(requirePush)
+        {
             push();
+        }
     }
-    
+
     public void push()
     {
         SwingUtilities.invokeLater(this);

@@ -21,11 +21,14 @@ import net.miginfocom.swing.MigLayout;
 import utybo.branchingstorytree.swing.OpenBST;
 import utybo.branchingstorytree.swing.utils.Lang;
 
-@SuppressWarnings("serial")
 public class JBannerPanel extends JPanel
 {
-    private Color c;
-    private Consumer<Boolean> callback = b -> this.setBackground(b ? c.darker() : c.brighter());
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
+    private final Color c;
+    private final Consumer<Boolean> callback = b -> setBackground(b ? getColor().darker() : getColor().brighter());
 
     public JBannerPanel(Icon icon, Color c, String text, JComponent btn, boolean hideButton)
     {
@@ -33,7 +36,7 @@ public class JBannerPanel extends JPanel
         this.c = c;
         setBackground(c.brighter());
         OpenBST.getInstance().addDarkModeCallback(callback);
-        this.setLayout(new MigLayout("gap 10px", "[][grow][]", "[]"));
+        setLayout(new MigLayout("gap 10px", "[][grow][]", "[]"));
 
         JLabel label = new JLabel(icon);
         this.add(label, "cell 0 0");
@@ -44,13 +47,22 @@ public class JBannerPanel extends JPanel
         JButton btnHide = new JButton(Lang.get("hide"));
         btnHide.addActionListener(e ->
         {
-            this.setVisible(false);
+            setVisible(false);
             OpenBST.getInstance().removeDarkModeCallbback(callback);
         });
 
         if(btn != null)
+        {
             this.add(btn, "flowy,cell 2 0,alignx center, aligny center");
+        }
         if(hideButton)
+        {
             this.add(btnHide, "cell 2 0,alignx center, aligny center");
+        }
+    }
+
+    private Color getColor()
+    {
+        return c;
     }
 }

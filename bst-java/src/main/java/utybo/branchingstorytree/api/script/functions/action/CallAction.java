@@ -30,7 +30,9 @@ public class CallAction implements ScriptAction
     {
         StoryNode node = StoryUtils.parseNode(desc, story);
         if(!(node instanceof LogicalNode))
+        {
             throw new BSTException(-1, desc + " is not a logical node", story);
+        }
         ((LogicalNode)node).solve(story);
     }
 

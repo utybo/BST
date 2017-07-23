@@ -28,12 +28,12 @@ import utybo.branchingstorytree.swing.visuals.NodePanel;
 
 public class HTBClient implements HTBHandler
 {
-    private HashMap<String, byte[]> map = new HashMap<>();
-    private NodePanel nodePanel;
+    private final HashMap<String, byte[]> map = new HashMap<>();
+    private final NodePanel nodePanel;
 
     public HTBClient(NodePanel panel)
     {
-        this.nodePanel = panel;
+        nodePanel = panel;
     }
 
     @Override

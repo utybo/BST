@@ -35,7 +35,9 @@ public class VirtualFileHolder extends ArrayList<VirtualFile>
         for(VirtualFile vf : this)
         {
             if(vf.getName().equals(string))
+            {
                 return vf;
+            }
         }
         return null;
     }

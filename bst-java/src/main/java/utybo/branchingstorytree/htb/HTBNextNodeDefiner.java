@@ -19,9 +19,9 @@ import utybo.branchingstorytree.api.story.StoryNode;
 
 public class HTBNextNodeDefiner implements NextNodeDefiner
 {
-    private String head, desc;
-    private BSTClient client;
-    
+    private final String head, desc;
+    private final BSTClient client;
+
     public HTBNextNodeDefiner(String head, String desc, BSTClient client)
     {
         this.head = head;
@@ -33,8 +33,11 @@ public class HTBNextNodeDefiner implements NextNodeDefiner
     public StoryNode getNextNode(BranchingStory story) throws NodeNotFoundException, BSTException
     {
         if(client.getHTBHandler() == null)
+        {
             throw new BSTException(-1, "HTB is not supported", story);
-        switch(head) {
+        }
+        switch(head)
+        {
         case "htb_requestjs":
         {
             StoryNode sn = null;
@@ -56,9 +59,13 @@ public class HTBNextNodeDefiner implements NextNodeDefiner
                 sn = null;
             }
             if(client.getHTBHandler().requestJSAccess())
+            {
                 return null;
+            }
             else
+            {
                 return sn;
+            }
         }
         case "htb_requesthref":
         {

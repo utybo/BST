@@ -37,10 +37,10 @@ public class UIBarAction implements ScriptAction
             final Matcher m = setPropPattern.matcher(desc);
             if(!m.matches())
             {
-                throw new BSTException(line, "incorrect syntax : uib_set:element,id,value",story);
+                throw new BSTException(line, "incorrect syntax : uib_set:element,id,value", story);
             }
             final String element = m.group(1);
-            elementCheck(element, line, handler,story);
+            elementCheck(element, line, handler, story);
             final String id = m.group(2);
             final String value = m.group(3);
             switch(id)
@@ -60,10 +60,10 @@ public class UIBarAction implements ScriptAction
             final Matcher m = setPattern.matcher(desc);
             if(!m.matches())
             {
-                throw new BSTException(line, "incorrect syntax : uib_set:element,id,value",story);
+                throw new BSTException(line, "incorrect syntax : uib_set:element,id,value", story);
             }
             final String element = m.group(1);
-            elementCheck(element, line, handler,story);
+            elementCheck(element, line, handler, story);
             final String value = m.group(2);
             if(handler.isElementValueTypeInteger(element))
             {
@@ -80,7 +80,7 @@ public class UIBarAction implements ScriptAction
                     }
                     else
                     {
-                        throw new BSTException(line, "Invalid value : '" + value + "' for element " + element,story);
+                        throw new BSTException(line, "Invalid value : '" + value + "' for element " + element, story);
                     }
                 }
             }
@@ -104,7 +104,7 @@ public class UIBarAction implements ScriptAction
     {
         if(!handler.elementExists(element))
         {
-            throw new BSTException(line, "Unknown component : " + element,story);
+            throw new BSTException(line, "Unknown component : " + element, story);
         }
     }
 
@@ -116,7 +116,7 @@ public class UIBarAction implements ScriptAction
         }
         catch(final NumberFormatException e)
         {
-            throw new BSTException(line, "invalid value : " + value,story);
+            throw new BSTException(line, "invalid value : " + value, story);
         }
     }
 

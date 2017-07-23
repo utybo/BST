@@ -43,7 +43,7 @@ public interface BRMResourceConsumer
     /**
      * Load the resource from the given InputStream. Implementations do not
      * necessarily have to close the given input stream.
-     * 
+     *
      * @param in
      * @param name
      * @throws BSTException

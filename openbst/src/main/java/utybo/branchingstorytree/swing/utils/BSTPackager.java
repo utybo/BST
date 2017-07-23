@@ -64,10 +64,16 @@ public class BSTPackager
             }
             File outFile = new File(f.getParent(), "PACKAGED.bsp");
             if(outFile.exists())
+            {
                 if(!outFile.delete())
+                {
                     throw new RuntimeException("Cannot delete already existing file");
+                }
+            }
             if(!outFile.createNewFile())
+            {
                 throw new RuntimeException("Failed to create file");
+            }
             System.out.println("Packaging...");
             toPackage(f, new FileOutputStream(outFile), new HashMap<>(), s -> System.out.println(s));
             System.out.println("Done");
@@ -86,18 +92,24 @@ public class BSTPackager
         TarArchiveOutputStream tar = new TarArchiveOutputStream(new GZIPOutputStream(out));
 
         if(cs != null)
+        {
             cs.accept("Packaging the main BST file");
+        }
         // Write the main BST file
         tarFile(bstFile, tar);
 
         // Write the resources folder
         if(cs != null)
+        {
             cs.accept("Packaging resources");
+        }
         tarFolder(new File(bstFile.getParentFile(), "resources"), "resources", tar, cs);
 
         // Write the meta file
         if(cs != null)
+        {
             cs.accept("Writing meta information");
+        }
         meta.put("mainFile", bstFile.getName());
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         OutputStreamWriter osw = new OutputStreamWriter(baos, "UTF-8");
@@ -113,7 +125,9 @@ public class BSTPackager
         tar.close();
 
         if(cs != null)
+        {
             cs.accept("Done");
+        }
     }
 
     private static void tarFile(File file, TarArchiveOutputStream tar) throws IOException
@@ -124,7 +138,9 @@ public class BSTPackager
     private static void tarFile(File file, String name, TarArchiveOutputStream tar, Consumer<String> cs) throws IOException
     {
         if(cs != null)
+        {
             cs.accept("Packaging " + file.getName());
+        }
         TarArchiveEntry entry = new TarArchiveEntry(name);
         entry.setSize(file.length());
         tar.putArchiveEntry(entry);
@@ -137,9 +153,13 @@ public class BSTPackager
     private static void tarFolder(File folder, String base, TarArchiveOutputStream tar, Consumer<String> cs) throws IOException
     {
         if(cs != null)
+        {
             cs.accept("Packaging folder " + folder.getName());
+        }
         if(!folder.exists() || !folder.isDirectory())
+        {
             return;
+        }
         else
         {
             File[] fl = folder.listFiles();

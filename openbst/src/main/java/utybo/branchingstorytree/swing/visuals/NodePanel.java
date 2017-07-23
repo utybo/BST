@@ -75,14 +75,16 @@ public class NodePanel extends JScrollablePanel
     private WebView view;
     private String storyFont;
     private boolean hrefEnabled;
-    private StoryPanel parent;
+    private final StoryPanel parent;
     private boolean isDark, isAlreadyBuilt;
 
-    private Consumer<Boolean> callback = b ->
+    private final Consumer<Boolean> callback = b ->
     {
         isDark = b;
         if(isAlreadyBuilt)
+        {
             build();
+        }
     };
 
     public NodePanel(BranchingStory story, StoryPanel parent, final IMGClient imageClient)
@@ -123,6 +125,7 @@ public class NodePanel extends JScrollablePanel
                             Node n = nl.item(i);
                             HTMLAnchorElement a = (HTMLAnchorElement)n;
                             if(a.getHref() != null)
+                            {
                                 ((EventTarget)a).addEventListener("click", ev ->
                                 {
                                     if(!hrefEnabled)
@@ -130,6 +133,7 @@ public class NodePanel extends JScrollablePanel
                                         ev.preventDefault();
                                     }
                                 }, false);
+                            }
                         }
                     }
                 });
@@ -254,7 +258,9 @@ public class NodePanel extends JScrollablePanel
     private void jfxRunAndWait(Runnable runnable) throws InterruptedException
     {
         if(Platform.isFxApplicationThread())
+        {
             Platform.runLater(runnable);
+        }
         else
         {
             CountDownLatch latch = new CountDownLatch(1);

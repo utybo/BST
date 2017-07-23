@@ -162,7 +162,9 @@ public class BranchingStoryTreeParser
                     if(line.startsWith("::"))
                     {
                         if(nodeType == -1)
+                        {
                             throw new BSTException(lineNumber, "Cannot define node tag when no nodes were started", name);
+                        }
                         final String s = line.substring(2);
                         final String[] bits = s.split("\\=");
                         latestHolder.putTag(bits[0], bits[1]);

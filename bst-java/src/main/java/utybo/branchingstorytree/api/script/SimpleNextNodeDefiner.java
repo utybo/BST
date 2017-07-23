@@ -16,7 +16,7 @@ import utybo.branchingstorytree.api.story.StoryNode;
 
 public class SimpleNextNodeDefiner implements NextNodeDefiner
 {
-    private String alias;
+    private final String alias;
 
     public SimpleNextNodeDefiner(String alias)
     {

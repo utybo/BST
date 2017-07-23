@@ -10,8 +10,8 @@ package utybo.branchingstorytree.swing.virtualfiles;
 
 public class VirtualFile
 {
-    private byte[] data;
-    private String name;
+    private final byte[] data;
+    private final String name;
 
     public VirtualFile(byte[] data, String name)
     {

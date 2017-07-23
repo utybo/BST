@@ -23,7 +23,7 @@ import utybo.branchingstorytree.api.story.StoryNode;
  */
 public class IfNextNodeDefiner implements NextNodeDefiner
 {
-    private String one, two;
+    private final String one, two;
     private final CheckerDescriptor checker;
 
     /**
@@ -56,9 +56,8 @@ public class IfNextNodeDefiner implements NextNodeDefiner
         StoryNode snOne, snTwo;
         snOne = StoryUtils.parseNode(one, story);
         snTwo = StoryUtils.parseNode(two, story);
-        
+
         return checker.check() ? snOne : snTwo;
     }
-    
-                
+
 }

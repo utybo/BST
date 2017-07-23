@@ -31,9 +31,10 @@ public class BRMVirtualFileClient implements BRMAdvancedHandler
     {
         this.vfHolder = vfHolder;
         this.client = client;
-        this.origin = story;
+        origin = story;
     }
 
+    @Override
     public void load() throws BSTException
     {
         initialized = true;
@@ -48,11 +49,14 @@ public class BRMVirtualFileClient implements BRMAdvancedHandler
                 String name = m.group(2);
                 BRMResourceConsumer consumer = client.getResourceHandler(module);
                 if(consumer != null)
+                {
                     consumer.load(new ByteArrayInputStream(vf.getData()), FilenameUtils.getBaseName(name));
+                }
             }
         }
     }
 
+    @Override
     public void restoreSaveState() throws BSTException
     {
         Object o = origin.getRegistry().get("__brm_initialized", 0);

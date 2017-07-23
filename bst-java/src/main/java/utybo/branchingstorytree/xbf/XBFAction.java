@@ -25,7 +25,9 @@ public class XBFAction implements ScriptAction
     {
         XBFHandler xbf = client.getXBFHandler();
         if(xbf == null)
+        {
             throw new BSTException(line, "XBF not supported", story);
+        }
         String[] args = desc.split(",");
         if(args.length == 2)
         {
@@ -33,10 +35,14 @@ public class XBFAction implements ScriptAction
             String id = args[1];
             BranchingStory story2 = xbf.getAdditionalStory(from);
             if(story2 == null)
+            {
                 throw new BSTException(line, from + " doesn't exist", story);
+            }
             StoryNode node = StoryUtils.parseNode(id, story2);
             if(!(node instanceof LogicalNode))
+            {
                 throw new BSTException(line, "Node " + id + " from " + from + " is not a logical node and thus cannot be called", story);
+            }
             LogicalNode lnode = (LogicalNode)node;
             lnode.solve(story);
         }
@@ -45,9 +51,13 @@ public class XBFAction implements ScriptAction
             Integer id = Integer.parseInt(args[0]);
             StoryNode node = xbf.getMainStory().getNode(id);
             if(node == null)
+            {
                 throw new NodeNotFoundException(id, "<main>");
+            }
             if(!(node instanceof LogicalNode))
+            {
                 throw new BSTException(line, "Node " + id + " from the main file is not a logical node and thus cannot be called", story);
+            }
             ((LogicalNode)node).solve(story);
         }
         else

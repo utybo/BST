@@ -16,15 +16,18 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
 
-@SuppressWarnings("serial")
 public class JBackgroundPanel extends JPanel
 {
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
     private Image previousScaledImage;
     private Image previousImage;
     private int imageX, imageY;
     private Dimension previousBounds;
     private BufferedImage image;
-    private int scaling;
+    private final int scaling;
     private boolean dark;
 
     public JBackgroundPanel(BufferedImage image, int scaling)
@@ -70,9 +73,13 @@ public class JBackgroundPanel extends JPanel
 
         g.drawImage(image, imageX, imageY, this);
         if(dark)
+        {
             g.setColor(new Color(0, 0, 0, 125));
+        }
         else
+        {
             g.setColor(new Color(255, 255, 255, 175));
+        }
         g.fillRect(0, 0, width + 1, height + 1);
     }
 
@@ -103,7 +110,7 @@ public class JBackgroundPanel extends JPanel
         dark = b;
         repaint();
     }
-    
+
     public void setImage(BufferedImage image)
     {
         this.image = image;

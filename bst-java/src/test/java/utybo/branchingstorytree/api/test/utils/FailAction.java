@@ -24,7 +24,7 @@ public class FailAction implements ScriptAction
     @Override
     public String[] getName()
     {
-        return new String[]{"fail", "crash"};
+        return new String[] {"fail", "crash"};
     }
 
 }

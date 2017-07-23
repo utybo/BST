@@ -229,12 +229,12 @@ public class OpenBST extends JFrame
      */
     private final JTabbedPane container;
 
-    private JBackgroundPanel background;
+    private final JBackgroundPanel background;
 
     private int selectedTheme = 1;
     private boolean dark = false;
     private static final Color DISCORD_COLOR = new Color(114, 137, 218);
-    private LinkedList<Consumer<Boolean>> darkModeCallbacks = new LinkedList<>();
+    private final LinkedList<Consumer<Boolean>> darkModeCallbacks = new LinkedList<>();
 
     /**
      * Launch OpenBST
@@ -723,6 +723,7 @@ public class OpenBST extends JFrame
             {
                 private StoryPanel sp;
 
+                @Override
                 public void accept(BranchingStory bs)
                 {
                     if(bs != null)
@@ -755,23 +756,30 @@ public class OpenBST extends JFrame
                 private String whichMessage(BSTException e)
                 {
                     if(e.getCause() != null)
+                    {
                         return e.getCause().getMessage();
+                    }
                     else
+                    {
                         return e.getMessage();
+                    }
                 }
 
                 private String whichCause(BSTException e)
                 {
                     if(e.getCause() != null)
+                    {
                         return e.getCause().getClass().getSimpleName();
+                    }
                     else
+                    {
                         return e.getClass().getSimpleName();
+                    }
                 }
             });
         }
     }
 
-    @SuppressWarnings("serial")
     public JPopupMenu createShortMenu()
     {
         JPopupMenu shortMenu = new JPopupMenu();
@@ -781,6 +789,8 @@ public class OpenBST extends JFrame
         shortMenu.addSeparator();
         shortMenu.add(new JMenuItem(new AbstractAction(Lang.get("menu.open"), new ImageIcon(menuOpenFolder))
         {
+            private static final long serialVersionUID = 1L;
+
             @Override
             public void actionPerformed(ActionEvent e)
             {
@@ -795,6 +805,8 @@ public class OpenBST extends JFrame
 
         additionalMenu.add(new JMenuItem(new AbstractAction(Lang.get("menu.package"), new ImageIcon(menuOpenArchive))
         {
+            private static final long serialVersionUID = 1L;
+
             @Override
             public void actionPerformed(ActionEvent e)
             {
@@ -803,6 +815,8 @@ public class OpenBST extends JFrame
         }));
         additionalMenu.add(new JMenuItem(new AbstractAction(Lang.get("langcheck"))
         {
+            private static final long serialVersionUID = 1L;
+
             @Override
             public void actionPerformed(ActionEvent e)
             {
@@ -810,7 +824,7 @@ public class OpenBST extends JFrame
                 {}.getType());
                 languages.remove("en");
                 languages.remove("default");
-                JComboBox<String> jcb = new JComboBox<>(new Vector<String>(languages.keySet()));
+                JComboBox<String> jcb = new JComboBox<>(new Vector<>(languages.keySet()));
                 JPanel panel = new JPanel();
                 panel.add(new JLabel(Lang.get("langcheck.choose")));
                 panel.add(jcb);
@@ -833,7 +847,9 @@ public class OpenBST extends JFrame
                     Lang.getLocaleMap(Locale.ENGLISH).forEach((k, v) ->
                     {
                         if(!Lang.getLocaleMap(selected).containsKey(k))
+                        {
                             list.add(k + "\n");
+                        }
                     });
                     StringBuilder sb = new StringBuilder();
                     Collections.sort(list);
@@ -868,27 +884,38 @@ public class OpenBST extends JFrame
 
         jrbmi = new JRadioButtonMenuItem(Lang.get("menu.themes.dark"));
         if(0 == selectedTheme)
+        {
             jrbmi.setSelected(true);
+        }
         jrbmi.addActionListener(e -> switchLaF(0, DARK_THEME));
         themesMenu.add(jrbmi);
         themesGroup.add(jrbmi);
 
         jrbmi = new JRadioButtonMenuItem(Lang.get("menu.themes.light"));
         if(1 == selectedTheme)
+        {
             jrbmi.setSelected(true);
+        }
         jrbmi.addActionListener(e -> switchLaF(1, LIGHT_THEME));
         themesMenu.add(jrbmi);
         themesGroup.add(jrbmi);
 
         jrbmi = new JRadioButtonMenuItem(Lang.get("menu.themes.debug"));
         if(2 == selectedTheme)
+        {
             jrbmi.setSelected(true);
+        }
         jrbmi.addActionListener(e -> switchLaF(2, DEBUG_THEME));
         themesMenu.add(jrbmi);
         themesGroup.add(jrbmi);
 
         shortMenu.add(new JMenuItem(new AbstractAction(Lang.get("menu.about"), new ImageIcon(menuAbout))
         {
+            /**
+             *
+             */
+            private static final long serialVersionUID = 1L;
+
             @Override
             public void actionPerformed(ActionEvent e)
             {

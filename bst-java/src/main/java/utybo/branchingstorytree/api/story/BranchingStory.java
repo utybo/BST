@@ -107,7 +107,9 @@ public class BranchingStory extends TagHolder
         for(int i = -2;; i--)
         {
             if(!nodes.containsKey(i))
+            {
                 return i;
+            }
 
         }
     }

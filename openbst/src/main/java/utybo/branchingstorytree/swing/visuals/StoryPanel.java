@@ -248,12 +248,18 @@ public class StoryPanel extends JPanel
                             final File file = new File(jfc.getFile().endsWith(".bss") ? jfc.getDirectory() + jfc.getFile() : jfc.getDirectory() + jfc.getFile() + ".bss");
                             final Gson gson = new Gson();
                             if(file.exists())
+                            {
                                 if(!file.delete())
+                                {
                                     LOG.warn("Failed to delete file");
+                                }
+                            }
                             try
                             {
                                 if(!file.createNewFile())
+                                {
                                     LOG.warn("Failed to create file");
+                                }
                                 try(OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8);)
                                 {
                                     gson.toJson(new SaveState(currentNode.getId(), story.getRegistry(), currentNode.getStory().getTag("__sourcename")), writer);
@@ -777,10 +783,7 @@ public class StoryPanel extends JPanel
                 LOG.trace("=> Logical node result : " + (node == null ? "null" : node.getId()));
                 if(node == null)
                 {
-                    JOptionPane.showMessageDialog(OpenBST.getInstance(), Lang.get("story.logicalnodedeadend")
-                            .replace("$n", "" + storyNode.getId())
-                            .replace("$f", storyNode.getStory().getTag("__sourcename"))
-                            .replace("$a", storyNode.getTagOrDefault("alias", "<none>")));
+                    JOptionPane.showMessageDialog(OpenBST.getInstance(), Lang.get("story.logicalnodedeadend").replace("$n", "" + storyNode.getId()).replace("$f", storyNode.getStory().getTag("__sourcename")).replace("$a", storyNode.getTagOrDefault("alias", "<none>")));
                 }
                 else
                 {

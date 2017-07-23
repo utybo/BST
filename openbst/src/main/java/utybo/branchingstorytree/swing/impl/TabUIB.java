@@ -266,7 +266,9 @@ public class TabUIB implements UIBarHandler
             int i = Integer.parseInt(string.substring(1));
             StoryNode sn = tab.getStory().getNode(i);
             if(sn == null)
+            {
                 throw new NodeNotFoundException(i, tab.getStory().getTag("__sourcename"));
+            }
             if(string.startsWith(">"))
             {
                 return computeText(sn, true);

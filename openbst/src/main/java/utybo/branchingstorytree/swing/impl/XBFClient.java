@@ -24,9 +24,9 @@ import utybo.branchingstorytree.xbf.XBFHandler;
 
 public class XBFClient implements XBFHandler
 {
-    private HashMap<String, BranchingStory> stories = new HashMap<>();
-    private StoryPanel sp;
-    private BSTClient client;
+    private final HashMap<String, BranchingStory> stories = new HashMap<>();
+    private final StoryPanel sp;
+    private final BSTClient client;
 
     public XBFClient(StoryPanel sp, BSTClient client)
     {

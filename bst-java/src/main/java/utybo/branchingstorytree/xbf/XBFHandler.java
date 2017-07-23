@@ -21,7 +21,7 @@ public interface XBFHandler extends BRMResourceConsumer
     /**
      * Do a basic setup of a newly added story. Make sure this is called every
      * time you load a story!
-     * 
+     *
      * @param original
      *            The "main" story
      * @param target

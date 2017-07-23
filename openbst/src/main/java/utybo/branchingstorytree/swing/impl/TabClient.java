@@ -120,7 +120,7 @@ public class TabClient implements BSTClient
 
     public void setBRMHandler(BRMAdvancedHandler handler)
     {
-        this.brmClient = handler;
+        brmClient = handler;
     }
 
     @Override

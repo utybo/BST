@@ -11,7 +11,7 @@ package utybo.branchingstorytree.api;
 public class NodeNotFoundException extends BSTException
 {
     private static final long serialVersionUID = 1L;
-    private int id;
+    private final int id;
 
     public NodeNotFoundException(int id, String sourceFile)
     {

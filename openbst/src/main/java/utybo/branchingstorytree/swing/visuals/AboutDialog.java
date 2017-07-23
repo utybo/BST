@@ -39,9 +39,13 @@ import net.miginfocom.swing.MigLayout;
 import utybo.branchingstorytree.swing.OpenBST;
 import utybo.branchingstorytree.swing.utils.Lang;
 
-@SuppressWarnings("serial")
 public class AboutDialog extends JDialog
 {
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
+
     @SuppressWarnings("unchecked")
     public AboutDialog(OpenBST parent)
     {
@@ -74,6 +78,7 @@ public class AboutDialog extends JDialog
             public void mouseClicked(MouseEvent e)
             {
                 if(Desktop.isDesktopSupported())
+                {
                     try
                     {
                         Desktop.getDesktop().browse(new URL("https://utybo.github.io/BST/").toURI());
@@ -82,6 +87,7 @@ public class AboutDialog extends JDialog
                     {
                         OpenBST.LOG.warn("Exception when trying to open website", e1);
                     }
+                }
             }
         });
         pan.add(lblWebsite, "cell 0 0,alignx center");

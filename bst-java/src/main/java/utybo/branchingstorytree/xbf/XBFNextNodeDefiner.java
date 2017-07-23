@@ -19,8 +19,8 @@ import utybo.branchingstorytree.api.story.VirtualNode;
 
 public class XBFNextNodeDefiner implements NextNodeDefiner
 {
-    private String desc;
-    private BSTClient client;
+    private final String desc;
+    private final BSTClient client;
 
     public XBFNextNodeDefiner(String head, String desc, BSTClient client)
     {
@@ -33,7 +33,9 @@ public class XBFNextNodeDefiner implements NextNodeDefiner
     {
         XBFHandler xbf = client.getXBFHandler();
         if(xbf == null)
+        {
             throw new BSTException(-1, "XBF not supported", bs);
+        }
         String[] args = desc.split(",");
         if(args.length == 2)
         {
@@ -41,19 +43,23 @@ public class XBFNextNodeDefiner implements NextNodeDefiner
             String id = args[1];
             BranchingStory story2 = xbf.getAdditionalStory(from);
             StoryNode node = StoryUtils.parseNode(id, story2);
-            if(node instanceof VirtualNode && !(node instanceof TextNode))  
-                // Check if it's just a virtualnode and not a textnode 
-                // This trick is required as TextNodes are a subset of VirtualNodes 
-                throw new BSTException(-1, "Node " + id + " from " + from + " is a virtual node and thus cannot be the next node", bs); 
-            return node; 
+            if(node instanceof VirtualNode && !(node instanceof TextNode))
+            {
+                // Check if it's just a virtualnode and not a textnode
+                // This trick is required as TextNodes are a subset of VirtualNodes
+                throw new BSTException(-1, "Node " + id + " from " + from + " is a virtual node and thus cannot be the next node", bs);
+            }
+            return node;
         }
         else if(args.length == 1)
         {
             StoryNode node = StoryUtils.parseNode(args[0], xbf.getMainStory());
-            if(node instanceof VirtualNode && !(node instanceof TextNode)) 
+            if(node instanceof VirtualNode && !(node instanceof TextNode))
+            {
                 // Check if it's just a virtualnode and not a textnode
                 // This trick is required as TextNodes are a subset of VirtualNodes
                 throw new BSTException(-1, "Node " + args[0] + " from <main> is a virtual node and thus cannot be the next node", bs);
+            }
             return node;
         }
         else

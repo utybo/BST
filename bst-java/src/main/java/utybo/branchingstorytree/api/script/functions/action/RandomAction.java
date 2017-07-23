@@ -25,6 +25,7 @@ import utybo.branchingstorytree.api.story.BranchingStory;
 public class RandomAction implements ScriptAction
 {
     private static final Random RANDOM = new Random();
+
     @Override
     public void exec(final String head, final String desc, final int line, final BranchingStory story, final BSTClient client) throws BSTException
     {

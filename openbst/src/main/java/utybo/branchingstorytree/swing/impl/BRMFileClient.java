@@ -42,6 +42,7 @@ public class BRMFileClient implements BRMAdvancedHandler
 
     private ProgressMonitor pm;
 
+    @Override
     public void load() throws BSTException
     {
         initialized = true;
@@ -121,13 +122,18 @@ public class BRMFileClient implements BRMAdvancedHandler
         for(File f : fl)
         {
             if(f.isDirectory())
+            {
                 i += countFiles(f);
+            }
             else
+            {
                 i += 1;
+            }
         }
         return i;
     }
 
+    @Override
     public void restoreSaveState() throws BSTException
     {
         Object o = origin.getRegistry().get("__brm_initialized", 0);
