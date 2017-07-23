@@ -37,6 +37,7 @@ Major changes and highlights are in **bold**. Other changes that impact users ar
 - Everything related to the old brm_load method that is now unnecessary has been deprecated.
 
 ### Removed
+- The entire JSE manual update mechanism has been deleted (in a backward compatible way)
 
 ### Fixed
 - OpenBST will not crash anymore when loading a valid BST file with an unvalid extension.
