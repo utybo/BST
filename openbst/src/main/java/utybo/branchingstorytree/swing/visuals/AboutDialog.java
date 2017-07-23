@@ -1,7 +1,14 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ *
+ * This Source Code Form is "Incompatible With Secondary Licenses", as
+ * defined by the Mozilla Public License, v. 2.0.
+ */
 package utybo.branchingstorytree.swing.visuals;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Desktop;
 import java.awt.FlowLayout;
@@ -17,6 +24,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -43,10 +51,8 @@ public class AboutDialog extends JDialog
 
         JPanel banner = new JPanel(new FlowLayout(FlowLayout.CENTER));
         banner.setBackground(OpenBST.OPENBST_BLUE);
-        JLabel lblOpenbst = new JLabel(new ImageIcon(OpenBST.bigLogoWhite));
-        lblOpenbst.setText(Lang.get("title"));
-        lblOpenbst.setFont(lblOpenbst.getFont().deriveFont(32F));
-        lblOpenbst.setForeground(Color.WHITE);
+        JLabel lblOpenbst = new JLabel(new ImageIcon(OpenBST.fullLogoWhite));
+        lblOpenbst.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         banner.add(lblOpenbst, "flowx,cell 0 0,alignx center");
         getContentPane().add(banner, BorderLayout.NORTH);
 
@@ -74,7 +80,7 @@ public class AboutDialog extends JDialog
                     }
                     catch(IOException | URISyntaxException e1)
                     {
-                       OpenBST.LOG.warn("Exception when trying to open website", e1);
+                        OpenBST.LOG.warn("Exception when trying to open website", e1);
                     }
             }
         });
@@ -92,7 +98,7 @@ public class AboutDialog extends JDialog
         textArea.setLineWrap(true);
         textArea.setWrapStyleWord(true);
         textArea.setFont(new Font("Monospace", Font.PLAIN, 11));
-        
+
         try(InputStream in = getClass().getResourceAsStream("/utybo/branchingstorytree/swing/about.txt");)
         {
             textArea.setText(IOUtils.toString(in, StandardCharsets.UTF_8));

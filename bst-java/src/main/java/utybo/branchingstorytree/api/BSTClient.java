@@ -118,4 +118,9 @@ public interface BSTClient
             return null;
         }
     }
+
+    public default void warn(String string)
+    {
+        System.err.println(string);
+    }
 }

@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.concurrent.CountDownLatch;
+import java.util.function.Consumer;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -62,6 +63,7 @@ public class NodePanel extends JScrollablePanel
 
         STYLE = s;
     }
+
     /**
      *
      */
@@ -74,9 +76,19 @@ public class NodePanel extends JScrollablePanel
     private String storyFont;
     private boolean hrefEnabled;
     private StoryPanel parent;
+    private boolean isDark, isAlreadyBuilt;
+
+    private Consumer<Boolean> callback = b ->
+    {
+        isDark = b;
+        if(isAlreadyBuilt)
+            build();
+    };
 
     public NodePanel(BranchingStory story, StoryPanel parent, final IMGClient imageClient)
     {
+        OpenBST.getInstance().addDarkModeCallback(callback);
+        callback.accept(OpenBST.getInstance().isDark());
         this.parent = parent;
         this.imageClient = imageClient;
         setLayout(new BorderLayout());
@@ -187,17 +199,19 @@ public class NodePanel extends JScrollablePanel
 
     private void build()
     {
-        String base = "<head><meta charset=\"utf-8\"/><style type='text/css'>" + STYLE + " body {font-family: " + storyFont + "}</style></head><body style=\"margin:10px;padding:0px;$BG\"><div style=\"margin:-10px;padding:10px;$ADDITIONAL;width: 100%; height:100%\">" + "<div style=\"$COLOR\">" + text + "</div></div></body>";
+        String base = "<head><meta charset=\"utf-8\"/><style type='text/css'>" + STYLE + " body {font-family: " + storyFont + ";}</style></head>" //
+                + "<body style=\"margin:10px;padding:0px;$BG\"><div style=\"margin:-10px;padding:10px;$ADDITIONAL;width: 100%; height:100%\">" //
+                + "<div style=\"$COLOR\">" + text + "</div></div></body>";
         String bg, additional, c;
 
         if(imageClient.getCurrentBackground() != null && backgroundVisible)
         {
             bg = "background-image:url('data:image/png;base64," + b64bg() + "'); background-size:cover; background-position:center; background-attachment:fixed";
-            additional = "background-color:rgba(255,255,255,0.66)";
+            additional = isDark ? "background-color:rgba(0,0,0,0.66)" : "background-color:rgba(255,255,255,0.66)";
         }
         else
         {
-            bg = "";
+            bg = isDark ? "background-color: #000000" : "";
             additional = "";
         }
         if(textColor != null)
@@ -206,7 +220,7 @@ public class NodePanel extends JScrollablePanel
         }
         else
         {
-            c = "";
+            c = isDark ? "color: #FFFFFF" : "";
         }
         String s = base.replace("$BG", bg).replace("$ADDITIONAL", additional).replace("$COLOR", c);
         try
@@ -220,6 +234,7 @@ public class NodePanel extends JScrollablePanel
         {
             OpenBST.LOG.warn("Failed to synchronize", e);
         }
+        isAlreadyBuilt = true;
     }
 
     private String b64bg()
@@ -316,4 +331,10 @@ public class NodePanel extends JScrollablePanel
         parent.getHrefHint().setDisabledIcon(new ImageIcon(b ? OpenBST.hrefEnabled : OpenBST.hrefBlocked));
         parent.getHrefHint().setVisible(true);
     }
+
+    public void dispose()
+    {
+        OpenBST.getInstance().removeDarkModeCallbback(callback);
+    }
+
 }

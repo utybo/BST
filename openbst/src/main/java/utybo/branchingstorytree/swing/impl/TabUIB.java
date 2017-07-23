@@ -227,7 +227,7 @@ public class TabUIB implements UIBarHandler
     {
         if(c instanceof JLabel)
         {
-            final String s = MarkupUtils.translateMarkup(MarkupUtils.solveMarkup(tab.getStory(), null), computeText(tab.getStory().getRegistry().get("__uib__" + element + "_value", "").toString()));
+            final String s = "<html>" + MarkupUtils.translateMarkup(MarkupUtils.solveMarkup(tab.getStory(), null), computeText(tab.getStory().getRegistry().get("__uib__" + element + "_value", "").toString()));
             ((JLabel)c).setText(s);
         }
         else if(c instanceof JProgressBar)

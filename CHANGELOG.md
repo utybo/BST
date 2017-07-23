@@ -8,6 +8,7 @@ Major changes and highlights are in **bold**. Other changes that impact users ar
 
 ## [Unreleased]
 ### Added
+- **New, simpler, cleaner, sleeker OpenBST Welcome screen!**
 - **New OpenBST menu with animations and stuff!**
 - **New BSP format that allows you to pack a whole story, including resources, in a single file. An assistant is available in the new menu.**
 - **Now using HTML5 for viewing nodes! Which means that now your BST stories finally look good!**
@@ -19,8 +20,17 @@ Major changes and highlights are in **bold**. Other changes that impact users ar
 - UI theme selector added
 - File logging. Logs are now saved in ~/.openbst/logs
 - We now have an About dialog! Gotta give credit :)
+- Icons8 credits were moved to the About dialog
 - Also introduce a small i18n completeness checker. It basically allows you to check if your current language is completely translated or not, and tells you what still needs to be translated.
+- Added a warning for unknown colors
+- New icons and a few images from Pixabay were added for the new Welcome screen
+- *Missing language strings now yield warnings in the logs*
 - *BSTClient.getResourceHandler() method provides a unified way to get resource folder names*
+- *TagHolder.getTagOrDefault() method provides a way to use getOrDefault() from underlying object*
+- *OpenBST.addDarkModeCallback() allows you to have a callback when you need to adapt to dark mode activation*
+- *New visual utility classes : JBackgroundPanel and JBannerPanel*
+- *Added a warn() method in BSTClient in bst-java for more logging power*
+
 
 ### Changed
 - **Switched from System Look and Feel to a custom Look and Feel that provides a unified look from platform to platform (and eases testing)**
@@ -37,14 +47,28 @@ Major changes and highlights are in **bold**. Other changes that impact users ar
 - Everything related to the old brm_load method that is now unnecessary has been deprecated.
 
 ### Removed
+- Language strings and icons from the old welcome menu have been removed from OpenBST
+- The entire JSE manual update mechanism has been deleted (in a backward compatible way)
 
 ### Fixed
 - OpenBST will not crash anymore when loading a valid BST file with an unvalid extension.
 - Sometimes, ambient sounds in SSB would not be recorded properly due to some race condition. This is now fixed.
 - Fixed crash on stopping when there are no ambient sounds.
 - Fixed some issues related to threading and concurrency (a few deadlocks and wrong thread errors here and there)
+- OpenBST no longer crashes on unrespected language file model
+- A lot of exceptions were not logged before. This is now fixed.
+- Some exceptions were not notified to the user before, they now are.
 - *We're attempting to avoid System.out.println at all cost to avoid polluting System.out, please use the logger if you need to log something!*
-- *Using Findbugs, a LOT of work has been done to stabilize OpenBST and make it more reliable, along with a log of fixes coming along.*
+- *Using Findbugs, a LOT of work has been done to stabilize OpenBST and make it more reliable, along with a lot of fixes.*
 - *Also, the new Look and Feel crashes when changing UI components outside of the EDT thread, which is great since it allows us to track down what is still bugged and outside of the EDT thread.*
+
+### (Partial) i18n changes
+- Added menu.themes.debug
+- Changed story.error and story.error2
+- Remove welcome.whatis welcome.about welcome.imagine welcome.write welcome.play welcome.enjoy welcome.icons
+- Added welcome.changebackground welcome.pixabay welcome.credits
+- Added a small clarifiation inside the language file on a langcheck string
+
+
 
 [Unreleased]: https://github.com/utybo/BST/compare/v1.1...dev

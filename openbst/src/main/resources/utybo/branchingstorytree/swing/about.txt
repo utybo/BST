@@ -1,6 +1,6 @@
 About OpenBST
 
-OpenBST is a free and open-source program that allows you to simply run BST files. BST is, in a nutshell, a simple and powerful language that allows you to create branching stories and interactive, neat text-based games in a very simple way.
+OpenBST is a free and open-source program that allows you to easily run BST files. BST is, in a nutshell, a simple and powerful language that allows you to create branching stories and interactive, neat text-based games in a very simple way.
 
 As with almost all programs, OpenBST is powered by awesome third-party libraries distributed with this program. Here is a complete list. You can have a look at their website to find license information and more :
 
@@ -45,3 +45,5 @@ As with almost all programs, OpenBST is powered by awesome third-party libraries
   Awesome themes for Java Swing apps
 
 OpenBST relies on bst-java, a library made to read and understand BST files. bst-java relies on ClassIndex.
+
+This application contains icons created by Icons8 and distributed under the CC-BY-ND license. Website : icons8.com

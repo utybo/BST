@@ -122,4 +122,10 @@ public class TabClient implements BSTClient
     {
         this.brmClient = handler;
     }
+
+    @Override
+    public void warn(String string)
+    {
+        OpenBST.LOG.warn(string);
+    }
 }
