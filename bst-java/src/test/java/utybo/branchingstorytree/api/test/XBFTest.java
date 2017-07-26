@@ -37,14 +37,14 @@ public class XBFTest
     private class XBFTestClient implements BSTClient, BRMHandler, XBFHandler
     {
         private final HashMap<String, BranchingStory> stories = new HashMap<>();
-
+        
         @Override
         public void load(InputStream in, String name) throws BSTException
         {
             try
             {
                 BranchingStory bs = parser.parse(new BufferedReader(new InputStreamReader(in, "UTF-8")), dict, this, name);
-                bs.setRegistry(mainStory.getRegistry());
+                bs.setRegistry(mainStory.getRegistry()); // basically a bind()
                 stories.put(name, bs);
             }
             catch(Exception e)
@@ -99,7 +99,9 @@ public class XBFTest
     public void testXBF() throws Exception
     {
         dict = new Dictionnary();
-        mainStory = parser.parse(new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/utybo/branchingstorytree/api/test/xbf/test.xbf"))), dict, new XBFTestClient(), "test");
+        XBFTestClient client = new XBFTestClient();
+        mainStory = parser.parse(new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/utybo/branchingstorytree/api/test/xbf/test.xbf"))), dict, client, "test");
+        client.loadAuto();
         StoryNode sn = ((LogicalNode)mainStory.getInitialNode()).solve(mainStory);
         assert (int)mainStory.getRegistry().get("a", 0) == 12;
         assert sn instanceof TextNode && ((TextNode)sn).getText().equals("Hello world");

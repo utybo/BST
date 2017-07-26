@@ -58,7 +58,7 @@ public class MarkupUtils
         case 2:
             return input; // HTML to HTML
         default:
-            return StringEscapeUtils.escapeHtml(input).replace("\n", "<p>"); // Plain text to HTML
+            return StringEscapeUtils.escapeHtml(input).replace("\n\n", "<p>").replace("\n", "<br>"); // Plain text to HTML
         }
     }
 

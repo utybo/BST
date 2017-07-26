@@ -84,6 +84,14 @@ public class NodePanel extends JScrollablePanel
         if(isAlreadyBuilt)
         {
             build();
+            Platform.runLater(() ->
+            {
+                if(!b)
+                    view.setFontSmoothingType(FontSmoothingType.LCD);
+                else
+                    view.setFontSmoothingType(FontSmoothingType.GRAY);
+            });
+
         }
     };
 
@@ -139,7 +147,10 @@ public class NodePanel extends JScrollablePanel
                 });
 
                 Scene sc = new Scene(view);
-                view.setFontSmoothingType(FontSmoothingType.LCD);
+                if(!OpenBST.getInstance().isDark())
+                    view.setFontSmoothingType(FontSmoothingType.LCD);
+                else
+                    view.setFontSmoothingType(FontSmoothingType.GRAY);
                 try
                 {
                     view.getEngine().loadContent(IOUtils.toString(NodePanel.class.getResourceAsStream("/utybo/branchingstorytree/swing/html/error.html"), StandardCharsets.UTF_8).replace("$MSG", Lang.get("story.problem")).replace("$STYLE", STYLE));

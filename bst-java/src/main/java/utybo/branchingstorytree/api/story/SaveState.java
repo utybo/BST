@@ -65,4 +65,9 @@ public class SaveState
     {
         return from;
     }
+    
+    public VariableRegistry getRegistry()
+    {
+        return registry;
+    }
 }

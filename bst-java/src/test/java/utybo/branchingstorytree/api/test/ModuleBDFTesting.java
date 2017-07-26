@@ -34,6 +34,11 @@ public class ModuleBDFTesting
     {
         private final HashMap<String, BDFFile> bdfFiles = new HashMap<>();
 
+        public BDFClient() throws BSTException
+        {
+            loadAuto();
+        }
+        
         @Override
         public void loadAuto() throws BSTException
         {
@@ -52,6 +57,7 @@ public class ModuleBDFTesting
             try
             {
                 bdfFiles.put(name, BDFParser.parse(new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(pathToResource))), name));
+                assert bdfFiles.containsKey(name);
             }
             catch(final IOException e)
             {

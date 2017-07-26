@@ -16,7 +16,7 @@ Major changes and highlights are in **bold**. Other changes that impact users ar
 - **New XBF module. You can now use multiple BST files in your resources and call their nodes.**
 - **Automatic ID attribution is now available, simply use `*` as your node ID**
 - **Node aliasing added, you can now give your nodes names and call them using their names!**
-- You can choose between two fonts for your story now with the tag "fonts": either "libre_baskerville" (default) which is a serif, more classical font, or "ubuntu" which provides a more modern look.
+- You can choose between two fonts for your story now with the tag "font": either "libre_baskerville" (default) which is a serif, more classical font, or "ubuntu" which provides a more modern look.
 - UI theme selector added
 - File logging. Logs are now saved in ~/.openbst/logs
 - We now have an About dialog! Gotta give credit :)
@@ -42,6 +42,7 @@ Major changes and highlights are in **bold**. Other changes that impact users ar
 - *MAJOR API BREAK : Almost everything now has additional context requirements due to the addition of XBF, which now means you can have multiple BranchingStories for one file.*
 - *MAJOR API BREAK : Changed package organisation because that's what we're doing now apparently*
 - *All the icons are now final, and loaded differently.*
+- *Registries are now more tightly linked to the story/stories they belong to. This was necessary for XBF to work properly*
 
 ### Deprecated
 - Everything related to the old brm_load method that is now unnecessary has been deprecated.
@@ -61,6 +62,7 @@ Major changes and highlights are in **bold**. Other changes that impact users ar
 - *We're attempting to avoid System.out.println at all cost to avoid polluting System.out, please use the logger if you need to log something!*
 - *Using Findbugs, a LOT of work has been done to stabilize OpenBST and make it more reliable, along with a lot of fixes.*
 - *Also, the new Look and Feel crashes when changing UI components outside of the EDT thread, which is great since it allows us to track down what is still bugged and outside of the EDT thread.*
+- *VariableRegistry objects are now cloned properly*
 
 ### (Partial) i18n changes
 - Added menu.themes.debug

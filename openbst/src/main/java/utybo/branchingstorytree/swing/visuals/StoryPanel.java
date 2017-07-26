@@ -31,6 +31,7 @@ import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.function.Consumer;
 
 import javax.swing.AbstractAction;
 import javax.swing.Box;
@@ -330,10 +331,12 @@ public class StoryPanel extends JPanel
                         {
                             if(JOptionPane.showConfirmDialog(parentWindow, Lang.get("story.sreload.confirm"), Lang.get("story.sreload.confirm.title"), JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, new ImageIcon(OpenBST.refreshBigImage)) == JOptionPane.YES_OPTION)
                             {
+
                                 final SaveState ss = new SaveState(currentNode.getId(), story.getRegistry(), currentNode.getStory().getTag("__sourcename"));
-                                reset();
-                                reload();
-                                restoreSaveState(ss);
+                                reload(o ->
+                                {
+                                    restoreSaveState(ss);
+                                });
                             }
                         }
                     });
@@ -347,7 +350,8 @@ public class StoryPanel extends JPanel
                             if(JOptionPane.showConfirmDialog(parentWindow, Lang.get("story.hreload.confirm"), Lang.get("story.hreload.confirm.title"), JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, new ImageIcon(OpenBST.synchronizeBigImage)) == JOptionPane.YES_OPTION)
                             {
                                 reset();
-                                reload();
+                                reload(o ->
+                                {});
                             }
                         }
                     });
@@ -590,8 +594,10 @@ public class StoryPanel extends JPanel
      */
     protected void restoreSaveState(final SaveState ss)
     {
-        OpenBST.LOG.trace("Restorying from " + ss.getFrom() + " id " + ss.getNodeId());
+        OpenBST.LOG.trace("Restoring from " + ss.getFrom() + " id " + ss.getNodeId());
+
         ss.applySaveState(story);
+
         // Also notify modules that need to restore their state
         client.getSSBHandler().restoreSaveState();
         client.getIMGHandler().restoreSaveState();
@@ -723,7 +729,7 @@ public class StoryPanel extends JPanel
      * Reload the file (not clean, this is a subroutine method part of the
      * entire reloading process)
      */
-    protected void reload()
+    protected void reload(Consumer<BranchingStory> callback)
     {
         parentWindow.loadFile(bstFile, client, bs ->
         {
@@ -738,7 +744,11 @@ public class StoryPanel extends JPanel
             }
             try
             {
-                SwingUtilities.invokeAndWait(() -> setupStory());
+                SwingUtilities.invokeAndWait(() ->
+                {
+                    setupStory();
+                    callback.accept(bs);
+                });
             }
             catch(Exception e)
             {
