@@ -73,7 +73,6 @@ story.hreload.confirm=<html><body style='width: 300px'>Vous allez recharger le f
 story.hreload.confirm.title=Rechargement dur
 story.jumptonode=Aller à la node...
 story.variablewatcher=Observation de variable...
-story.tip=Survolez une icône pour plus d'informations.
 story.close=Fermer l'onglet
 story.close.confirm=<html><body style='width: 300px'>Voulez vous vraiment fermer cet onglet? Toute progression non sauvegardée et exportée sera perdue.
 story.error=<html>Erreur sur la node $n (alias $a, depuis $f) :<p>$m

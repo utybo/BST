@@ -16,6 +16,7 @@ error=Error
 bsterror=BST Error
 wait=Please wait...
 hide=Hide
+cancel=Cancel
 
 # Banner and menu
 banner.title=OpenBST
@@ -79,7 +80,6 @@ story.hreload.confirm=<html><body style='width: 300px'>You are about to reload t
 story.hreload.confirm.title=Hard Reload
 story.jumptonode=Jump to Node...
 story.variablewatcher=Variable watcher...
-story.tip=Hover on one of the icons for more details.
 story.backgroundvisible=Visible background
 story.seebackground=View the background
 story.background=Background picture
@@ -103,6 +103,25 @@ story.nullnode=Woops, the node that is supposed to be here could not be resolved
 story.unknowncolor=Unknown color : $c
 story.modulerestorefail=Failed to restore the following module : $m
 story.logicalnodedeadend=The logical node (id $n from $f with alias $a) failed to provide a node to go to
+
+# Node jump screen
+nodejump.title=Jump to node
+nodejump.go=Jump to this node
+nodejump.exists=This node exists
+nodejump.notexists=This node does not exist
+# Make sure there is a space at the end of the following four lines
+nodejump.fromfile=From file : 
+nodejump.gotonode=Go to node 
+nodejump.withid=with ID : 
+nodejump.withalias=with alias : 
+
+# Variable Watcher dialog
+vwatch.title=$s -- VariableWatcher
+vwatch.tip=<html>This dialog allows you to check the value of all the variables. If you got here by mistake, no worries, just close this dialog!
+vwatch.refresh=Refresh
+vwatch.vname=Variable Name
+vwatch.vvalue=Variable Value
+vwatch.unknown=<no known variables>
 
 # Welcome screen
 # Non English languages need to note that the discord server is only in english

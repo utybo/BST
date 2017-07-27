@@ -8,7 +8,8 @@
  */
 package utybo.branchingstorytree.xbf;
 
-import utybo.branchingstorytree.api.BSTException;
+import java.util.Collection;
+
 import utybo.branchingstorytree.api.story.BranchingStory;
 import utybo.branchingstorytree.brm.BRMResourceConsumer;
 
@@ -17,18 +18,6 @@ public interface XBFHandler extends BRMResourceConsumer
     public BranchingStory getAdditionalStory(String name);
 
     public BranchingStory getMainStory();
-
-    /**
-     * Do a basic setup of a newly added story. Make sure this is called every
-     * time you load a story!
-     *
-     * @param original
-     *            The "main" story
-     * @param target
-     *            The story newly loaded
-     */
-    public default void bind(BranchingStory original, BranchingStory target, String name) throws BSTException
-    {
-        target.setRegistry(original.getRegistry());
-    }
+    
+    public Collection<String> getAdditionalStoryNames();
 }

@@ -34,7 +34,17 @@ public class BranchingStory extends TagHolder
     /**
      * The variables used in this story
      */
-    private final VariableRegistry registry = new VariableRegistry();
+    private final VariableRegistry registry;
+    
+    public BranchingStory()
+    {
+        registry = new VariableRegistry();
+    }
+    
+    public BranchingStory(VariableRegistry registry)
+    {
+        this.registry = registry;
+    }
 
     /**
      * @return The initial node of the story, which comes from the initialnode
@@ -110,7 +120,6 @@ public class BranchingStory extends TagHolder
             {
                 return i;
             }
-
         }
     }
 
@@ -129,7 +138,7 @@ public class BranchingStory extends TagHolder
      * @param registry
      *            the new registry content to use.
      */
-    public void setRegistry(final VariableRegistry registry)
+    public void setRegistryContent(final VariableRegistry registry)
     {
         this.registry.clear();
         this.registry.merge(registry);

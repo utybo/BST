@@ -12,6 +12,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 
 import utybo.branchingstorytree.api.BSTClient;
@@ -40,14 +42,13 @@ public class XBFClient implements XBFHandler
         BranchingStory bs;
         try
         {
-            bs = new BranchingStoryTreeParser().parse(new BufferedReader(new InputStreamReader(in, "UTF-8")), new Dictionnary(), client, name);
+            bs = new BranchingStoryTreeParser().parse(new BufferedReader(new InputStreamReader(in, "UTF-8")), new Dictionnary(), client, name, sp.getStory().getRegistry());
         }
         catch(InstantiationException | IllegalAccessException | IOException e)
         {
             throw new BSTException(-1, "Unexpected exception", e, name);
         }
         stories.put(name, bs);
-        bind(sp.getStory(), bs, name);
     }
 
     @Override
@@ -60,5 +61,11 @@ public class XBFClient implements XBFHandler
     public BranchingStory getMainStory()
     {
         return sp.getStory();
+    }
+
+    @Override
+    public Collection<String> getAdditionalStoryNames()
+    {
+        return Collections.unmodifiableCollection(stories.keySet());
     }
 }

@@ -22,6 +22,7 @@ import utybo.branchingstorytree.api.script.NextNodeDefiner;
 import utybo.branchingstorytree.api.script.ScriptAction;
 import utybo.branchingstorytree.api.script.ScriptChecker;
 import utybo.branchingstorytree.api.script.SimpleNextNodeDefiner;
+import utybo.branchingstorytree.api.script.VariableRegistry;
 import utybo.branchingstorytree.api.story.BranchingStory;
 import utybo.branchingstorytree.api.story.LogicalNode;
 import utybo.branchingstorytree.api.story.NodeOption;
@@ -79,7 +80,16 @@ public class BranchingStoryTreeParser
      */
     public synchronized BranchingStory parse(final BufferedReader br, final Dictionnary dictionnary, final BSTClient client, String name) throws IOException, BSTException
     {
-        final BranchingStory story = new BranchingStory();
+        return parse(br, dictionnary, client, name, new BranchingStory());
+    }
+
+    public synchronized BranchingStory parse(final BufferedReader br, final Dictionnary dictionnary, final BSTClient client, String name, VariableRegistry registry) throws IOException, BSTException
+    {
+        return parse(br, dictionnary, client, name, new BranchingStory(registry));
+    }
+    
+    private synchronized BranchingStory parse(final BufferedReader br, final Dictionnary dictionnary, final BSTClient client, String name, BranchingStory story) throws IOException, BSTException
+    {
 
         String line = null;
         int lineNumber = 0;

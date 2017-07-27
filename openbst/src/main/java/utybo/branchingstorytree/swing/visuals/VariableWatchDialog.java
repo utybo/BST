@@ -29,6 +29,7 @@ import javax.swing.table.DefaultTableModel;
 import net.miginfocom.swing.MigLayout;
 import utybo.branchingstorytree.api.script.VariableRegistry;
 import utybo.branchingstorytree.swing.OpenBST;
+import utybo.branchingstorytree.swing.utils.Lang;
 
 public class VariableWatchDialog extends JDialog
 {
@@ -47,7 +48,7 @@ public class VariableWatchDialog extends JDialog
     public VariableWatchDialog(final StoryPanel parent)
     {
         super(parent.parentWindow);
-        setTitle(parent.getTitle() + " -- Variable Watcher");
+        setTitle(Lang.get("vwatch.title").replace("$s", parent.getTitle()));
         setModalityType(ModalityType.MODELESS);
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter()
@@ -73,11 +74,11 @@ public class VariableWatchDialog extends JDialog
         getContentPane().add(contentPanel, BorderLayout.CENTER);
         contentPanel.setLayout(new MigLayout("", "[grow][]", "[][][grow]"));
 
-        final JLabel lblthisDialogAllows = new JLabel("<html>This dialog allows you to check the value of all the variables. If you got here by mistake, no worries, just close this dialog!");
+        final JLabel lblthisDialogAllows = new JLabel(Lang.get("vwatch.tip"));
         lblthisDialogAllows.setIcon(new ImageIcon(OpenBST.addonSearchMediumImage));
         contentPanel.add(lblthisDialogAllows, "cell 0 0,aligny top");
 
-        final JButton btnRefresh = new JButton("Refresh", new ImageIcon(OpenBST.refreshImage));
+        final JButton btnRefresh = new JButton(Lang.get("vwatch.refresh"), new ImageIcon(OpenBST.refreshImage));
         btnRefresh.addActionListener(e -> refresh());
         contentPanel.add(btnRefresh, "cell 1 0,aligny center");
 
@@ -121,8 +122,8 @@ public class VariableWatchDialog extends JDialog
             finalVector.add(v);
         }
         final Vector<String> columnsName = new Vector<>();
-        columnsName.add("Variable Name");
-        columnsName.add("Variable Value");
+        columnsName.add(Lang.get("vwatch.vname"));
+        columnsName.add(Lang.get("vwatch.vvalue"));
         model.setDataVector(finalVector, columnsName);
     }
 
@@ -134,7 +135,7 @@ public class VariableWatchDialog extends JDialog
         registry.getAllInt().forEach((str, i) -> fullMap.put(str, i.toString()));
         if(fullMap.isEmpty())
         {
-            fullMap.put("<no known variables>", "<no known variables>");
+            fullMap.put(Lang.get("vwatch.unknown"), Lang.get("vwatch.unknown"));
         }
         return fullMap;
     }

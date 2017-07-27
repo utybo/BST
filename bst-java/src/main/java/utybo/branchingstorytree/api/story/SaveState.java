@@ -58,7 +58,7 @@ public class SaveState
      */
     public void applySaveState(final BranchingStory bs)
     {
-        bs.setRegistry(registry);
+        bs.setRegistryContent(registry);
     }
 
     public String getFrom()

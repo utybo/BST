@@ -11,6 +11,8 @@ package utybo.branchingstorytree.api.test;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 
 import org.junit.Test;
@@ -43,8 +45,7 @@ public class XBFTest
         {
             try
             {
-                BranchingStory bs = parser.parse(new BufferedReader(new InputStreamReader(in, "UTF-8")), dict, this, name);
-                bs.setRegistry(mainStory.getRegistry()); // basically a bind()
+                BranchingStory bs = parser.parse(new BufferedReader(new InputStreamReader(in, "UTF-8")), dict, this, name, mainStory.getRegistry());
                 stories.put(name, bs);
             }
             catch(Exception e)
@@ -93,6 +94,12 @@ public class XBFTest
             return mainStory;
         }
 
+        @Override
+        public Collection<String> getAdditionalStoryNames()
+        {
+            return Collections.unmodifiableCollection(stories.keySet());
+        }
+
     }
 
     @Test
@@ -103,6 +110,7 @@ public class XBFTest
         mainStory = parser.parse(new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/utybo/branchingstorytree/api/test/xbf/test.xbf"))), dict, client, "test");
         client.loadAuto();
         StoryNode sn = ((LogicalNode)mainStory.getInitialNode()).solve(mainStory);
+        System.out.println(mainStory.getRegistry().dump());
         assert (int)mainStory.getRegistry().get("a", 0) == 12;
         assert sn instanceof TextNode && ((TextNode)sn).getText().equals("Hello world");
     }

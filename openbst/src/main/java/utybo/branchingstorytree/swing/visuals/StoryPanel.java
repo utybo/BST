@@ -41,10 +41,8 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JSpinner;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
-import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
@@ -365,13 +363,7 @@ public class StoryPanel extends JPanel
                             @Override
                             public void actionPerformed(final ActionEvent e)
                             {
-                                final SpinnerNumberModel model = new SpinnerNumberModel(1, 1, Integer.MAX_VALUE, 1);
-                                final JSpinner spinner = new JSpinner(model);
-                                final int i = JOptionPane.showOptionDialog(parentWindow, spinner, Lang.get("story.jumptonode"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, new ImageIcon(OpenBST.jumpBigImage), null, null);
-                                if(i == JOptionPane.OK_OPTION)
-                                {
-                                    showNode(story.getNode((Integer)spinner.getModel().getValue()));
-                                }
+                                new JumpToNodeDialog(client, story, n -> showNode(n)).setVisible(true);;
                             }
                         });
                         variableWatcherButton = new JToggleButton("", new ImageIcon(OpenBST.addonSearchImage));
@@ -399,12 +391,6 @@ public class StoryPanel extends JPanel
                     }
                 }
             }
-
-            toolBar.addSeparator();
-
-            final JLabel hintLabel = new JLabel(Lang.get("story.tip"));
-            hintLabel.setEnabled(false);
-            toolBar.add(hintLabel);
         }
 
         toolBar.add(Box.createHorizontalGlue());
@@ -780,7 +766,7 @@ public class StoryPanel extends JPanel
         currentNode = storyNode;
         if(nodeIdLabel != null)
         {
-            nodeIdLabel.setText("Node : " + currentNode.getId());
+            nodeIdLabel.setText("Node : " + (currentNode.getId() > 0 ? currentNode.getId() : "[auto]") + (currentNode.hasTag("alias") ? " (" + currentNode.getTag("alias") + ")" : ""));
         }
 
         try

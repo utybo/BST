@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 Major changes and highlights are in **bold**. Other changes that impact users are in plain. Changes impacting only developers are in *italics*.
 
+Story makers should read all changes in bold and plain. Some mechanisms may be torn apart between major (1.x ==> 2.0) or minor (x.0 ==> x.1) updates, though backward-compatibility is always attempted
+
 ## [Unreleased]
 ### Added
 - **New, simpler, cleaner, sleeker OpenBST Welcome screen!**
@@ -30,6 +32,8 @@ Major changes and highlights are in **bold**. Other changes that impact users ar
 - *OpenBST.addDarkModeCallback() allows you to have a callback when you need to adapt to dark mode activation*
 - *New visual utility classes : JBackgroundPanel and JBannerPanel*
 - *Added a warn() method in BSTClient in bst-java for more logging power*
+- *New method for parsing stories that forces a variable registry*
+- *Added a constructor for BranchingStories that takes a given variable registry as its own*
 
 
 ### Changed
@@ -37,6 +41,7 @@ Major changes and highlights are in **bold**. Other changes that impact users ar
 - **BRM Loading has been made automatic. You do not need to call brm_load anymore.**
 - **All node types can now be tagged.** Previously, only text nodes could receive tags, and this was unnoticed due to the fact no tags were useful for other nodes.
 - Error page is now fully HTML and also much more swag
+- Brand new node jump dialog box that looks nice!
 - *BRM Loading mechanism is much more flexible now (e.g InputStream loading)*
 - *All modules were adapted to this new loading mechanism to add compatibility with BRM. This may break APIs.*
 - *MAJOR API BREAK : Almost everything now has additional context requirements due to the addition of XBF, which now means you can have multiple BranchingStories for one file.*
@@ -50,8 +55,10 @@ Major changes and highlights are in **bold**. Other changes that impact users ar
 ### Removed
 - Language strings and icons from the old welcome menu have been removed from OpenBST
 - The entire JSE manual update mechanism has been deleted (in a backward compatible way)
+- Tip on "hover for more info" has been removed as it took too much space
 
 ### Fixed
+- The variable watcher was not translatable before. This is fixed.
 - OpenBST will not crash anymore when loading a valid BST file with an unvalid extension.
 - Sometimes, ambient sounds in SSB would not be recorded properly due to some race condition. This is now fixed.
 - Fixed crash on stopping when there are no ambient sounds.
@@ -70,6 +77,8 @@ Major changes and highlights are in **bold**. Other changes that impact users ar
 - Remove welcome.whatis welcome.about welcome.imagine welcome.write welcome.play welcome.enjoy welcome.icons
 - Added welcome.changebackground welcome.pixabay welcome.credits
 - Added a small clarifiation inside the language file on a langcheck string
+- Remove story.tip as it was making the toolbar dangerously large
+- Added a vwatch category for variable watcher stringsq
 
 
 
