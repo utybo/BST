@@ -42,7 +42,7 @@ public class JBannerPanel extends JPanel
         this.add(label, "cell 0 0");
 
         JLabel lblNewLabel = new JLabel("<html>" + text);
-        this.add(lblNewLabel, "cell 1 0,aligny top");
+        this.add(lblNewLabel, "cell 1 0,aligny center");
 
         JButton btnHide = new JButton(Lang.get("hide"));
         btnHide.addActionListener(e ->

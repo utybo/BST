@@ -127,6 +127,9 @@ vwatch.unknown=<no known variables>
 # Non English languages need to note that the discord server is only in english
 openbst.discord=Join us on our Discord server! You'll find help for creating stories as well as cool community creations and updates on new things coming soon in OpenBST!
 openbst.discordjoin=Join Server
+welcome.reportbugs=Report bugs
+# Non ENglish languages need to note that the bug reports have to be in english
+welcome.ontheedge=You are currently running an unstable version of OpenBST. Only do this if you know what you're doing, and <i>please report bugs!</i>
 welcome=Welcome
 welcome.intro=Welcome to OpenBST. To get started, please open a file using the button below.
 welcome.open=Open a file...

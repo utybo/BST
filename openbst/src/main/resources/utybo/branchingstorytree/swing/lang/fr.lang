@@ -101,6 +101,8 @@ story.logicalnodedeadend=La node logique (avec id $n depuis $f avec alias $a) n'
 # Welcome screen
 openbst.discord=Rejoignez nous sur notre serveur Discord! Vous y trouverez de l'aide pour créer vos histoires BST, ainsi que des créations de la communauté et des informations sur ce qui arrive bientôt dans OpenBST!<p><i>Serveur uniquement anglophone</i>
 openbst.discordjoin=Rejoindre
+welcome.reportbugs=Signaler un bug (anglais)
+welcome.ontheedge=Vous utilisez une version instable d'OpenBST. Ne le faites que si vous êtes sûr de vous, et merci de <i>signaler les bugs! (en anglais uniquement)</i> 
 welcome=Bienvenue
 welcome.intro=Bienvenue dans OpenBST. Pour démarrer, ouvrez un fichier en utilisant le bouton ci-dessous
 welcome.open=Ouvrir un fichier...

@@ -8,6 +8,8 @@ Major changes and highlights are in **bold**. Other changes that impact users ar
 
 Story makers should read all changes in bold and plain. Some mechanisms may be torn apart between major (1.x ==> 2.0) or minor (x.0 ==> x.1) updates, though backward-compatibility is always attempted
 
+Unstable versions will appear inside OpenBST with a "u" at the end.
+
 ## [Unreleased]
 ### Added
 - **New, simpler, cleaner, sleeker OpenBST Welcome screen!**
@@ -26,6 +28,7 @@ Story makers should read all changes in bold and plain. Some mechanisms may be t
 - Also introduce a small i18n completeness checker. It basically allows you to check if your current language is completely translated or not, and tells you what still needs to be translated.
 - Added a warning for unknown colors
 - New icons and a few images from Pixabay were added for the new Welcome screen
+- Added a small mechanism for warning about unstable releases
 - *Missing language strings now yield warnings in the logs*
 - *BSTClient.getResourceHandler() method provides a unified way to get resource folder names*
 - *TagHolder.getTagOrDefault() method provides a way to use getOrDefault() from underlying object*
@@ -42,6 +45,7 @@ Story makers should read all changes in bold and plain. Some mechanisms may be t
 - **All node types can now be tagged.** Previously, only text nodes could receive tags, and this was unnoticed due to the fact no tags were useful for other nodes.
 - Error page is now fully HTML and also much more swag
 - Brand new node jump dialog box that looks nice!
+- Icon sizes are smaller for a few dialog boxes as they were way too big before
 - *BRM Loading mechanism is much more flexible now (e.g InputStream loading)*
 - *All modules were adapted to this new loading mechanism to add compatibility with BRM. This may break APIs.*
 - *MAJOR API BREAK : Almost everything now has additional context requirements due to the addition of XBF, which now means you can have multiple BranchingStories for one file.*
@@ -50,7 +54,7 @@ Story makers should read all changes in bold and plain. Some mechanisms may be t
 - *Registries are now more tightly linked to the story/stories they belong to. This was necessary for XBF to work properly*
 
 ### Deprecated
-- Everything related to the old brm_load method that is now unnecessary has been deprecated.
+- *Everything internally related to the old brm_load method that is now unnecessary has been deprecated.*
 
 ### Removed
 - Language strings and icons from the old welcome menu have been removed from OpenBST
@@ -74,11 +78,11 @@ Story makers should read all changes in bold and plain. Some mechanisms may be t
 ### (Partial) i18n changes
 - Added menu.themes.debug
 - Changed story.error and story.error2
-- Remove welcome.whatis welcome.about welcome.imagine welcome.write welcome.play welcome.enjoy welcome.icons
-- Added welcome.changebackground welcome.pixabay welcome.credits
+- Removed welcome.whatis welcome.about welcome.imagine welcome.write welcome.play welcome.enjoy welcome.icons
+- Added welcome.changebackground welcome.pixabay welcome.credits welcome.ontheedge welcome.reportbugs
 - Added a small clarifiation inside the language file on a langcheck string
-- Remove story.tip as it was making the toolbar dangerously large
-- Added a vwatch category for variable watcher stringsq
+- Removed story.tip as it was making the toolbar dangerously large
+- Added a vwatch category for variable watcher strings
 
 
 

@@ -121,19 +121,19 @@ public class OpenBST extends JFrame
     /**
      * Version number of OpenBST
      */
-    public static final String version;
-    static
-    {
-        String s = OpenBST.class.getPackage().getImplementationVersion();
-        if(s == null)
-        {
-            version = "<unknown version>";
-        }
-        else
-        {
-            version = s;
-        }
-    }
+    public static final String version = "u"; // TODO
+    //    static
+    //    {
+    //        String s = OpenBST.class.getPackage().getImplementationVersion();
+    //        if(s == null)
+    //        {
+    //            version = "<unknown version>";
+    //        }
+    //        else
+    //        {
+    //            version = s;
+    //        }
+    //    }
     private static final long serialVersionUID = 1L;
 
     public static final Logger LOG = LogManager.getLogger("OpenBST");
@@ -620,6 +620,23 @@ public class OpenBST extends JFrame
         JPanel bannersPanel = new JPanel(new MigLayout("hidemode 2, gap 0px, fill, wrap 1, ins 0"));
         bannersPanel.setBackground(new Color(0, 0, 0, 0));
         welcomeContentPanel.add(bannersPanel, "cell 0 0,grow");
+
+        if(version.endsWith("u"))
+        {
+            JButton btnReportBugs = new JButton(Lang.get("welcome.reportbugs"));
+            btnReportBugs.addActionListener(e ->
+            {
+                try
+                {
+                    Desktop.getDesktop().browse(new URL("https://github.com/utybo/BST/issues").toURI());
+                }
+                catch(Exception e1)
+                {
+                    LOG.error("Exception during link opening", e1);
+                }
+            });
+            bannersPanel.add(new JBannerPanel(new ImageIcon(errorImage.getScaledInstance(32, 32, Image.SCALE_SMOOTH)), Color.YELLOW, Lang.get("welcome.ontheedge"), btnReportBugs, false), "grow");
+        }
 
         JButton btnJoinDiscord = new JButton(Lang.get("openbst.discordjoin"));
         btnJoinDiscord.addActionListener(e ->
