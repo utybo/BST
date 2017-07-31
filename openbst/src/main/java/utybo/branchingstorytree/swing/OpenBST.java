@@ -121,19 +121,19 @@ public class OpenBST extends JFrame
     /**
      * Version number of OpenBST
      */
-    public static final String version = "u"; // TODO
-    //    static
-    //    {
-    //        String s = OpenBST.class.getPackage().getImplementationVersion();
-    //        if(s == null)
-    //        {
-    //            version = "<unknown version>";
-    //        }
-    //        else
-    //        {
-    //            version = s;
-    //        }
-    //    }
+    public static final String version;
+    static
+    {
+        String s = OpenBST.class.getPackage().getImplementationVersion();
+        if(s == null)
+        {
+            version = "<unknown version>";
+        }
+        else
+        {
+            version = s;
+        }
+    }
     private static final long serialVersionUID = 1L;
 
     public static final Logger LOG = LogManager.getLogger("OpenBST");
