@@ -1,18 +1,60 @@
 # English translation by utybo
 # Powered by Lang, based on MinkJ
+# Please do not translate the comments
+# Comments start with a #
+
+# GUIDELINES
+# DO NOT TRANSLATE THE FOLLOWING :
+# "OpenBST" "BST" "BSP" "node"
+
+# TRANSLATORS, FEEL FREE TO PUT YOUR NAME HERE FOR CREDITS!
+author=Translated in English by utybo
 
 # General
 title=OpenBST
 error=Error
 bsterror=BST Error
 wait=Please wait...
+hide=Hide
+cancel=Cancel
+
+# Banner and menu
+banner.title=OpenBST
+banner.titleextended=OpenBST [Click me to open a shortcuts menu!]
+menu.title=OpenBST Menu
+menu.open=Open a file
+menu.advanced=Advanced tools
+menu.package=Package a BST file...
+menu.about=About OpenBST
+menu.themes=Themes
+menu.themes.dark=Dark theme
+menu.themes.light=Light theme
+menu.themes.debug=Debug theme
+
+# Package tool
+pkg.title=BST Package Craft Tool
+# MAKE SURE YOU KEEP A SPACE AT THE END OF THE TWO FOLLOWING LINES!
+pkg.in=File to package : 
+pkg.out=Output : 
+pkg.select=Select file...
+pkg.selin=Select the BST file that will be packaged...
+pkg.selout=Where should the file be saved?
+pkg.help=<html>A BST Package (BSP) is an archive that contains everything that your story needs : resources, the .bst file itself, and much more!<p><p>Package your .bst file to avoid having to manually zip all the resources. This allows you to distribute your BST stories in an easy way, with only one file.<p><p>The BSP file created can easily be opened like any regular BST file.
+pkg.start=Start packaging!
+pkg.cancel=Cancel
+pkg.inprogress=Packaging, please wait...
+
+# About dialog
+about.title=About OpenBST
+about.version=Version : $v
 
 # Loading files
 file.title=Choose a BST file...
 file.error=<html>There was an error during file loading. Please try again and make sure your file is correct.<p>($e: $m)
+file.resourceerror=<html>There was an error during resource loading. Please try again and make sure everything is alright.<p>($e: $m)
 file.bsterror.1=<html><b>-- BST Error --</b><p>
 file.bsterror.2=Your file seems to have an error here :<p>
-file.bsterror.3=Line : $l<p>
+file.bsterror.3=Line : $l (from $f)<p>
 file.bsterror.4=Cause : $e ($m)<p>
 file.bsterror.5=Message : $m<p>
 file.bsterror.6=<p>Do you wish to reload the file?
@@ -38,17 +80,16 @@ story.hreload.confirm=<html><body style='width: 300px'>You are about to reload t
 story.hreload.confirm.title=Hard Reload
 story.jumptonode=Jump to Node...
 story.variablewatcher=Variable watcher...
-story.tip=Hover on one of the icons for more details.
 story.backgroundvisible=Visible background
 story.seebackground=View the background
 story.background=Background picture
 story.mute=Mute
 story.close=Close tab
 story.close.confirm=<html><body style='width: 300px'>You are about to close this BST file. All unsaved progress will be lost. Are you sure you want to close this tab?
-story.error=<html>Error on node $n :<p>$m
-story.error2=<html>Error on node $n (line $l) :<p>$m
+story.error=<html>Error on node $n (alias $a, from $f) :<p>$m
+story.error2=<html>Error on node $n (alias $a, line $l, from $f) :<p>$m
 story.missinginitial=The initial node does not exist. Make sure you are using a correct BST file.
-story.missingnode=The node that was supposed to be opened does not exist. Current node : $n
+story.missingnode=The node $n that was supposed to be opened does not exist! (Alias : $a, from : $f)
 story.final.end=The End.
 story.final.node=Final node : $n
 story.final.restart=Restart
@@ -56,21 +97,57 @@ story.final.close=Close
 story.title=$t, by $a
 story.missingtitle=<undefined>
 story.missingauthor=<unknown>
-story.nsfw=<html><b>WARNING</b><p>You are about to use a NSFW (Not Safe For Work) file. This file is not suitable for children.<p>Only click OK if you are OVER 18 YEARS OLD.
+story.nsfw=<html><b>WARNING</b><p>You are about to use a NSFW (Not Safe For Work) file. This file is not suitable for children.<p>Only click OK if you are OVER 18 YEARS OLD AND WILLING TO SEE THIS CONTENT.
 story.nsfw.title=NSFW WARNING
+story.nullnode=Woops, the node that is supposed to be here could not be resolved, and I don't know why... :(
+story.unknowncolor=Unknown color : $c
+story.modulerestorefail=Failed to restore the following module : $m
+story.logicalnodedeadend=The logical node (id $n from $f with alias $a) failed to provide a node to go to
 
+# Node jump screen
+nodejump.title=Jump to node
+nodejump.go=Jump to this node
+nodejump.exists=This node exists
+nodejump.notexists=This node does not exist
+# Make sure there is a space at the end of the following four lines
+nodejump.fromfile=From file : 
+nodejump.gotonode=Go to node 
+nodejump.withid=with ID : 
+nodejump.withalias=with alias : 
+
+# Variable Watcher dialog
+vwatch.title=$s -- VariableWatcher
+vwatch.tip=<html>This dialog allows you to check the value of all the variables. If you got here by mistake, no worries, just close this dialog!
+vwatch.refresh=Refresh
+vwatch.vname=Variable Name
+vwatch.vvalue=Variable Value
+vwatch.unknown=<no known variables>
 
 # Welcome screen
+# Non English languages need to note that the discord server is only in english
+openbst.discord=Join us on our Discord server! You'll find help for creating stories as well as cool community creations and updates on new things coming soon in OpenBST!
+openbst.discordjoin=Join Server
+welcome.reportbugs=Report bugs
+# Non ENglish languages need to note that the bug reports have to be in english
+welcome.ontheedge=You are currently running an unstable version of OpenBST. Only do this if you know what you're doing, and <i>please report bugs!</i>
 welcome=Welcome
 welcome.intro=Welcome to OpenBST. To get started, please open a file using the button below.
 welcome.open=Open a file...
-welcome.whatis=What is BST?
-welcome.about=<html>BST is a simple language that allows you to easily create a branching story.
-welcome.imagine=<html><body style='width: 100px; text-align: center;'><h1>Imagine it<p style='text-align: justify'>Create your own branching story inside your head, think about all the details and how to make it an unbelievable experience.
-welcome.write=<html><body style='width: 100px; text-align: center;'><h1>Write it<p style='text-align: justify'>Write it down, make it real. With BST's syntax, creating your branching story has never been easier! You can even make it even more dynamic with some scripting!
-welcome.play=<html><body style='width: 100px; text-align: center;'><h1>Play it<p style='text-align: justify'>After writing it all, enjoy your new, fun story and just do cool stuff with it! Or even play some little text based game that use the scripting system in BST!
-welcome.enjoy=<html><body style='width: 100px; text-align: center;'><h1>Enjoy it<p style='text-align: justify'>Write what you love, love what you write! Here, your imagination is the limit; go wild, create everything you want and make it a magnificent branching story. BST FTW!
-welcome.icons=Icons by icons8.com, go check them out, they make awesome icons!
+welcome.changebackground=Change background
+welcome.pixabay=More free pictures on Pixabay
+welcome.credits=OpenBST - Create Branching stories easily
 
 
+# HTML Security related
+html.jsrequest=<b>This BST file wishes to use embedded JavaScript!</b><p>You should only accept this request if you fully trust the file. JavaScript may harm your computer and cannot be securely controlled by OpenBST. Use at your own risk.<p><p>Do you accept to enable JavaScript?
+html.hrefrequest=<b>This BST file wishes to use embedded HTML anchors!</b><p>You should only accept this request if you fully trust the file. HTML anchors may mislead you into clicking into a dangerous place, and may break OpenBST completely. Use at your own risk.<p><p>Do you accept to enable HTML anchors?
+html.jsblock=JS blocked
+html.hrefblock=HTML anchors blocked
+html.jsenabled=JS enabled
+html.hrefenabled=HTML anchors enabled
 
+# Langcheck
+langcheck=Lang Completeness Checker
+# There is a box right after the following string where the user can choose a language
+langcheck.choose=Compare English (en) language file to
+langcheck.result=<html>Here are the strings present in the English language file but missing in the one you chose.

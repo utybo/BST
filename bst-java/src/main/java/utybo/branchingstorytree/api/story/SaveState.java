@@ -21,6 +21,7 @@ public class SaveState
 {
     private final int nodeId;
     private final VariableRegistry registry;
+    private final String from;
 
     /**
      * Create a save state that will contain the given node id and a clone of
@@ -33,10 +34,11 @@ public class SaveState
      *            the variable registry to be cloned and saved in this save
      *            state.
      */
-    public SaveState(final int nodeId, final VariableRegistry vr)
+    public SaveState(final int nodeId, final VariableRegistry vr, final String from)
     {
         this.nodeId = nodeId;
         registry = vr.clone();
+        this.from = from;
     }
 
     /**
@@ -56,6 +58,16 @@ public class SaveState
      */
     public void applySaveState(final BranchingStory bs)
     {
-        bs.setRegistry(registry);
+        bs.setRegistryContent(registry);
+    }
+
+    public String getFrom()
+    {
+        return from;
+    }
+
+    public VariableRegistry getRegistry()
+    {
+        return registry;
     }
 }

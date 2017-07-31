@@ -33,7 +33,7 @@ public class JSEChecker implements ScriptChecker
             handler.setEngine(new ScriptEngineManager().getEngineByName("JavaScript"));
         }
         final ScriptEngine engine = handler.getEngine();
-        checkReg(engine, registry, line);
+        checkReg(engine, registry, line, story);
         try
         {
             final Object result = engine.eval(desc);
@@ -44,7 +44,6 @@ public class JSEChecker implements ScriptChecker
             else if(result instanceof Number)
             {
                 final int i = ((Number)result).intValue();
-                System.out.println(desc + " ==> " + i);
                 if(i <= 0)
                 {
                     return false;
@@ -56,16 +55,16 @@ public class JSEChecker implements ScriptChecker
             }
             else if(result == null)
             {
-                throw new BSTException(line, "No returned value");
+                throw new BSTException(line, "No returned value", story);
             }
             else
             {
-                throw new BSTException(line, "Unknown value type : " + result.getClass().getName());
+                throw new BSTException(line, "Unknown value type : " + result.getClass().getName(), story);
             }
         }
         catch(final ScriptException e)
         {
-            throw new BSTException(line, "Error during script execution : " + e.getMessage(), e);
+            throw new BSTException(line, "Error during script execution : " + e.getMessage(), e, story);
         }
     }
 

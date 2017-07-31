@@ -24,6 +24,8 @@ import utybo.branchingstorytree.api.story.BranchingStory;
  */
 public class RandomAction implements ScriptAction
 {
+    private static final Random RANDOM = new Random();
+
     @Override
     public void exec(final String head, final String desc, final int line, final BranchingStory story, final BSTClient client) throws BSTException
     {
@@ -45,10 +47,10 @@ public class RandomAction implements ScriptAction
         }
         else
         {
-            throw new BSTException(line, "Incorrect syntax : rand:variabletoset,maximum OR rand:variabletoset,minimum,maximum");
+            throw new BSTException(line, "Incorrect syntax : rand:variabletoset,maximum OR rand:variabletoset,minimum,maximum", story);
         }
         final int range = max - min + 1; // +1 because nextInt is exclusive
-        int value = new Random().nextInt(range);
+        int value = RANDOM.nextInt(range);
         // Minimum bounds
         value += min;
         registry.put(varToSet, value);

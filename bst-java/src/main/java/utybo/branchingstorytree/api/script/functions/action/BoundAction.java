@@ -30,18 +30,18 @@ public class BoundAction implements ScriptAction
         final String[] bits = desc.split(",");
         if(bits.length != 3)
         {
-            throw new BSTException(line, "Invalid syntax : bound:tocheck,min,max");
+            throw new BSTException(line, "Invalid syntax : bound:tocheck,min,max", story);
         }
         if(registry.typeOf(bits[0]) != Integer.class && registry.typeOf(bits[0]) != null)
         {
-            throw new BSTException(line, "Unknown variable : " + bits[0]);
+            throw new BSTException(line, "Unknown variable : " + bits[0], story);
         }
         int toCheck = (Integer)registry.get(bits[0], 0);
         final int min = registry.typeOf(bits[1]) == Integer.class ? (Integer)registry.get(bits[1], 0) : Integer.parseInt(bits[1]);
         final int max = registry.typeOf(bits[2]) == Integer.class ? (Integer)registry.get(bits[2], 0) : Integer.parseInt(bits[2]);
         if(max < min)
         {
-            throw new BSTException(line, "min < max");
+            throw new BSTException(line, "min < max", story);
         }
         if(toCheck < min)
         {

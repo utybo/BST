@@ -9,7 +9,9 @@
 package utybo.branchingstorytree.api.story.logicalnode;
 
 import utybo.branchingstorytree.api.BSTException;
+import utybo.branchingstorytree.api.story.BranchingStory;
 import utybo.branchingstorytree.api.story.LogicalNode;
+import utybo.branchingstorytree.api.story.StoryNode;
 
 /**
  * An instruction is a bit of the {@link LogicalNode} (typically a line) that is
@@ -25,11 +27,11 @@ public abstract class LNInstruction
      * Execute this instruction
      *
      * @return The next node if this instruction is supposed to get the story
-     *         forward to another node, or -1 if the execution of the
+     *         forward to another node, or null if the execution of the
      *         {@link LogicalNode} should continue
      * @throws BSTException
      *             If an exception occurs during the execution of this
      *             instruction
      */
-    public abstract int execute() throws BSTException;
+    public abstract StoryNode execute(BranchingStory story) throws BSTException;
 }

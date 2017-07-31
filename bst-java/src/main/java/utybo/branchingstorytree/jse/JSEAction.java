@@ -9,6 +9,7 @@
 package utybo.branchingstorytree.jse;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -42,7 +43,7 @@ public class JSEAction implements ScriptAction
 
         final VariableRegistry registry = story.getRegistry();
 
-        if(handler.getEngine() == null || !registry.get("__jse__auto", "true").toString().equalsIgnoreCase("false"))
+        if(handler.getEngine() == null)
         {
             handler.setEngine(new ScriptEngineManager().getEngineByName("JavaScript"));
         }
@@ -56,7 +57,7 @@ public class JSEAction implements ScriptAction
         {
         case "jse_eval":
         {
-            checkReg(engine, registry, line);
+            checkReg(engine, registry, line, story);
 
             // Parse
             final String varName = desc.split(",")[0];
@@ -80,47 +81,19 @@ public class JSEAction implements ScriptAction
                 }
                 else
                 {
-                    System.err.println("[line " + line + "] Unknown return type : " + result.getClass().getName() + ". Using toString!");
+                    client.warn("[line " + line + "] Unknown return type : " + result.getClass().getName() + ". Using toString!");
                     registry.put(varName, result.toString());
                 }
             }
             catch(final ScriptException e1)
             {
-                throw new BSTException(line, "Error during script execution : " + e1.getMessage(), e1);
+                throw new BSTException(line, "Error during script execution : " + e1.getMessage(), e1, story);
             }
             break;
         }
-        case "jse_import":
-        {
-            try
-            {
-                for(final String varName : desc.split(","))
-                {
-                    final Class<?> type = registry.typeOf(varName);
-
-                    if(type.equals(Integer.class))
-                    {
-                        engine.eval(varName + " = " + registry.get(varName, ""));
-                    }
-                    else if(type.equals(String.class))
-                    {
-                        engine.eval(varName + " = \"" + registry.get(varName, ""));
-                    }
-                    else
-                    {
-                        throw new BSTException(line, "Unknown variable : " + varName);
-                    }
-
-                }
-            }
-            catch(final ScriptException e)
-            {
-                throw new BSTException(line, "Internal error", e);
-            }
+        default:
+            // Happens for the now deprecated manual import mechanism
             break;
-        }
-        case "jse_autoimport":
-            registry.put("__jse__auto", desc);
         }
 
     }
@@ -131,33 +104,30 @@ public class JSEAction implements ScriptAction
         return new String[] {"jse_eval", "jse_reset", "jse_autoimport", "jse_import"};
     }
 
-    public static void checkReg(final ScriptEngine engine, final VariableRegistry registry, final int line) throws BSTException
+    public static void checkReg(final ScriptEngine engine, final VariableRegistry registry, final int line, BranchingStory story) throws BSTException
     {
-        if(!registry.get("__jse__auto", "true").toString().equalsIgnoreCase("false"))
+        final HashMap<String, Integer> ints = registry.getAllInt();
+        for(final Map.Entry<String, Integer> entry : ints.entrySet())
         {
-            final HashMap<String, Integer> ints = registry.getAllInt();
-            for(final String name : ints.keySet())
+            try
             {
-                try
-                {
-                    engine.eval(name + " = " + ints.get(name));
-                }
-                catch(final ScriptException e1)
-                {
-                    throw new BSTException(line, "Error during JSE initialization (step INT) : " + e1.getMessage(), e1);
-                }
+                engine.eval(entry.getKey() + " = " + entry.getValue());
             }
-            final HashMap<String, String> strings = registry.getAllString();
-            for(final String name : strings.keySet())
+            catch(final ScriptException e1)
             {
-                try
-                {
-                    engine.eval(name + " = \"" + strings.get(name) + "\"");
-                }
-                catch(final ScriptException e1)
-                {
-                    throw new BSTException(line, "Error during JSE initialization (step STRING) : " + e1.getMessage(), e1);
-                }
+                throw new BSTException(line, "Error during JSE initialization (step INT) : " + e1.getMessage(), e1, story);
+            }
+        }
+        final HashMap<String, String> strings = registry.getAllString();
+        for(final Map.Entry<String, String> entry : strings.entrySet())
+        {
+            try
+            {
+                engine.eval(entry.getKey() + " = \"" + entry.getValue() + "\"");
+            }
+            catch(final ScriptException e1)
+            {
+                throw new BSTException(line, "Error during JSE initialization (step STRING) : " + e1.getMessage(), e1, story);
             }
         }
     }

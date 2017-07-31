@@ -10,10 +10,13 @@ package utybo.branchingstorytree.api;
 
 import utybo.branchingstorytree.bdf.BDFHandler;
 import utybo.branchingstorytree.brm.BRMHandler;
+import utybo.branchingstorytree.brm.BRMResourceConsumer;
+import utybo.branchingstorytree.htb.HTBHandler;
 import utybo.branchingstorytree.img.IMGHandler;
 import utybo.branchingstorytree.jse.JSEHandler;
 import utybo.branchingstorytree.ssb.SSBHandler;
 import utybo.branchingstorytree.uib.UIBarHandler;
+import utybo.branchingstorytree.xbf.XBFHandler;
 
 /**
  * A BSTClient is the core class to be used for interaction between the engine
@@ -85,5 +88,39 @@ public interface BSTClient
     public default JSEHandler getJSEHandler()
     {
         return null;
+    }
+
+    public default XBFHandler getXBFHandler()
+    {
+        return null;
+    }
+
+    public default HTBHandler getHTBHandler()
+    {
+        return null;
+    }
+
+    public default BRMResourceConsumer getResourceHandler(String name)
+    {
+        switch(name)
+        {
+        case "ssb":
+            return getSSBHandler();
+        case "img":
+            return getIMGHandler();
+        case "bdf":
+            return getBDFHandler();
+        case "xbf":
+            return getXBFHandler();
+        case "htb":
+            return getHTBHandler();
+        default:
+            return null;
+        }
+    }
+
+    public default void warn(String string)
+    {
+        System.err.println(string);
     }
 }

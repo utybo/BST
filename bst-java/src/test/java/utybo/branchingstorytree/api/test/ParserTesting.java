@@ -38,12 +38,12 @@ public class ParserTesting
         final VirtualNode node2 = (VirtualNode)s.getNode(2);
         assertTrue(node2.getText().equals("Wheee!"));
         final LogicalNode node3 = (LogicalNode)s.getNode(3);
-        assertTrue(node3.solve() == 56);
+        assertTrue(node3.solve(s).getId() == 56);
     }
 
     public static BranchingStory testFile(final String path, final BSTClient client) throws IOException, BSTException, InstantiationException, IllegalAccessException
     {
         final Dictionnary d = new Dictionnary();
-        return new BranchingStoryTreeParser().parse(new BufferedReader(new InputStreamReader(ActionTesting.class.getResourceAsStream("/utybo/branchingstorytree/api/test/files/" + path))), d, client);
+        return new BranchingStoryTreeParser().parse(new BufferedReader(new InputStreamReader(ActionTesting.class.getResourceAsStream("/utybo/branchingstorytree/api/test/files/" + path))), d, client, path);
     }
 }

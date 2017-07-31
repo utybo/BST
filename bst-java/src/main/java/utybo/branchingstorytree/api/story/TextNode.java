@@ -27,9 +27,9 @@ public class TextNode extends VirtualNode
      * @param id
      *            the ID of this text node
      */
-    public TextNode(final int id)
+    public TextNode(final int id, BranchingStory story)
     {
-        super(id);
+        super(id, story);
     }
 
     /**

@@ -34,7 +34,17 @@ public class BranchingStory extends TagHolder
     /**
      * The variables used in this story
      */
-    private VariableRegistry registry = new VariableRegistry();
+    private final VariableRegistry registry;
+
+    public BranchingStory()
+    {
+        registry = new VariableRegistry();
+    }
+
+    public BranchingStory(VariableRegistry registry)
+    {
+        this.registry = registry;
+    }
 
     /**
      * @return The initial node of the story, which comes from the initialnode
@@ -102,6 +112,17 @@ public class BranchingStory extends TagHolder
         return nodes.size();
     }
 
+    public int nextAvailableAuto()
+    {
+        for(int i = -2;; i--)
+        {
+            if(!nodes.containsKey(i))
+            {
+                return i;
+            }
+        }
+    }
+
     /**
      * @returns the registry used by this story
      */
@@ -111,15 +132,16 @@ public class BranchingStory extends TagHolder
     }
 
     /**
-     * Replace the current registry by the current one. This can have
-     * potentially dangerous effects if the story is currently being ran.
+     * Replace the current registry's content by the given one. This clears the
+     * registry then merges the values of the given registry
      *
      * @param registry
-     *            the new registry to use.
+     *            the new registry content to use.
      */
-    public void setRegistry(final VariableRegistry registry)
+    public void setRegistryContent(final VariableRegistry registry)
     {
-        this.registry = registry;
+        this.registry.clear();
+        this.registry.merge(registry);
     }
 
     /**

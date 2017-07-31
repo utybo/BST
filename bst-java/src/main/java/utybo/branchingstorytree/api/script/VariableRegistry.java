@@ -17,10 +17,10 @@ import java.util.HashMap;
  * @author utybo
  *
  */
-public class VariableRegistry
+public class VariableRegistry implements Cloneable
 {
-    private final HashMap<String, Integer> variables = new HashMap<>();
-    private final HashMap<String, String> strVar = new HashMap<>();
+    private HashMap<String, Integer> variables = new HashMap<>();
+    private HashMap<String, String> strVar = new HashMap<>();
 
     public void put(final String name, final int var)
     {
@@ -93,10 +93,21 @@ public class VariableRegistry
     @Override
     public VariableRegistry clone()
     {
-        final VariableRegistry vr = new VariableRegistry();
-        vr.strVar.putAll(strVar);
-        vr.variables.putAll(variables);
-        return vr;
+        try
+        {
+            VariableRegistry vr = (VariableRegistry)super.clone();
+            vr.strVar = new HashMap<>();
+            vr.variables = new HashMap<>();
+            vr.strVar.putAll(strVar);
+            vr.variables.putAll(variables);
+            return vr;
+        }
+        catch(CloneNotSupportedException e)
+        {
+            // Cannot happen
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public int getSize()
@@ -107,5 +118,27 @@ public class VariableRegistry
     public String dump()
     {
         return "INTEGERS : " + variables.toString() + " | STRINGS : " + strVar.toString();
+    }
+
+    /**
+     * Completely empty this registry. The contract is that #getSize() will
+     * return 0 after calling this method.
+     */
+    public void clear()
+    {
+        variables.clear();
+        strVar.clear();
+    }
+
+    /**
+     * Merge this registry's content with the given one's content. This will
+     * prioritize the new registry's values over this one's.
+     * 
+     * @param mergeWith
+     */
+    public void merge(VariableRegistry mergeWith)
+    {
+        variables.putAll(mergeWith.getAllInt());
+        strVar.putAll(mergeWith.getAllString());
     }
 }

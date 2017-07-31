@@ -8,6 +8,7 @@
  */
 package utybo.branchingstorytree.api;
 
+import java.util.Collection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,9 +25,11 @@ import utybo.branchingstorytree.api.story.VirtualNode;
  */
 public class StoryUtils
 {
+    public static final Pattern NUMBER_PATTERN = Pattern.compile("-?\\d+");
+
     /**
-     * Replace all the variables placeholders from the virtual node by their
-     * real value from the story.
+     * Replace all the variables placeholders from the virtual node (which can
+     * be a text node!) by their real value from the story.
      *
      * @param virtualNode
      *            The virtual node
@@ -36,7 +39,7 @@ public class StoryUtils
      * @throws BSTException
      *             If an exception occurs while solving
      */
-    public static String solveVariables(final VirtualNode virtualNode, final BranchingStory story) throws BSTException
+    public static String solveVariables(final VirtualNode virtualNode, final BranchingStory story) throws NodeNotFoundException, BSTException
     {
         String text = virtualNode.getText();
         final Pattern vp = Pattern.compile("\\$\\{(([\\&\\>]\\d+)|([\\w_]+))\\}");
@@ -48,26 +51,33 @@ public class StoryUtils
             if(varName.startsWith(">"))
             {
                 final String s = varName.substring(1);
-                final int i = Integer.parseInt(s);
-                text = text.replace(toReplace, ((VirtualNode)story.getNode(i)).getText());
+                StoryNode node = parseNode(s, story);
+                if(!(node instanceof VirtualNode))
+                {
+                    throw new BSTException(-1, "Node is not a virtual node : " + node.getId(), story);
+                }
+                text = text.replace(toReplace, ((VirtualNode)node).getText());
             }
             else if(varName.startsWith("&"))
             {
                 final String s = varName.substring(1);
-                int i = Integer.parseInt(s);
-                final LogicalNode ln = (LogicalNode)story.getNode(i);
-                i = ln.solve();
-                StoryNode node = story.getNode(i);
-                while(node instanceof LogicalNode)
+                StoryNode i = parseNode(s, story);
+                if(!(i instanceof LogicalNode))
                 {
-                    i = ((LogicalNode)node).solve();
-                    node = story.getNode(i);
+                    throw new BSTException(-1, "Node " + i.getId() + " (alias : " + i.getTag("alias") + ") is not a logical node", story);
                 }
-                if(node == null)
+                final LogicalNode ln = (LogicalNode)i;
+                i = ln.solve(story);
+                while(i instanceof LogicalNode)
                 {
-                    throw new BSTException(-1, "Node does not exist : " + i);
+                    i = ((LogicalNode)i).solve(story);
                 }
-                text = text.replace(toReplace, ((VirtualNode)node).getText());
+                if(i == null)
+                {
+                    // Should already be covered, but let's crash anyway, who knows what can happen?
+                    throw new BSTException(-1, "Node does not exist", story);
+                }
+                text = text.replace(toReplace, ((VirtualNode)i).getText());
             }
             else
             {
@@ -77,5 +87,70 @@ public class StoryUtils
         }
 
         return text;
+    }
+
+    public static StoryNode parseNode(String toParse, BranchingStory story) throws NodeNotFoundException, BSTException
+    {
+        StoryNode sn = null;
+        Matcher m = NUMBER_PATTERN.matcher(toParse);
+        // Is it a number? If yes, return the appropriate node
+        if(m.matches())
+        {
+            int i = Integer.parseInt(toParse);
+            sn = story.getNode(i);
+            if(sn == null && i != -1)
+            {
+                throw new NodeNotFoundException(i, story.getTag("__sourcename"));
+            }
+        }
+        else
+        {
+            Collection<StoryNode> nodes = story.getAllNodes();
+            // Is it an alias? Try to find an alias
+            for(StoryNode node : nodes)
+            {
+                String aliasTag = node.getTag("alias");
+                if(toParse.equals(aliasTag))
+                {
+                    sn = node;
+                }
+            }
+            if(sn == null)
+            {
+                // If it's not an alias, try to find the variable
+                Object obj = story.getRegistry().get(toParse, null);
+                if(obj == null)
+                {
+                    // Not a variable either. Throw an exception
+                    throw new BSTException(-1, "Unknown alias or variable : " + toParse, story);
+                }
+
+                if(obj instanceof Integer)
+                {
+                    // The variable is an integer. It's the id we're looking for!
+                    Integer i = (Integer)obj;
+                    sn = story.getNode(i);
+                    if(sn == null)
+                    {
+                        throw new NodeNotFoundException(i, story.getTag("__sourcename"));
+                    }
+                }
+                else if(obj instanceof String)
+                {
+                    // A string! We assume it's an alias
+                    String s = (String)obj;
+                    for(StoryNode node : nodes)
+                    {
+                        if(s.equals(node.getTag("alias")))
+                        {
+                            return node;
+                        }
+                    }
+                    throw new BSTException(-1, "Unknown alias : " + s, story);
+                }
+
+            }
+        }
+        return sn;
     }
 }

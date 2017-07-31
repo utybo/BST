@@ -8,6 +8,8 @@
  */
 package utybo.branchingstorytree.api;
 
+import utybo.branchingstorytree.api.story.BranchingStory;
+
 /**
  * A BSTException is an exception that is thrown by a component of the BST
  * language or of the bst-java implementation of the language, or anything else
@@ -23,30 +25,54 @@ public class BSTException extends Exception
 {
     private static final long serialVersionUID = 1L;
 
+    private final String source;
     private int where;
 
-    public BSTException(final int where)
-    {
-        super();
-        this.where = where;
-    }
-
-    public BSTException(final int where, final String message, final Throwable cause)
-    {
-        super(message, cause);
-        this.where = where;
-    }
-
-    public BSTException(final int where, final String message)
+    public BSTException(int where, String message, BranchingStory source)
     {
         super(message);
         this.where = where;
+        this.source = source.getTag("__sourcename");
     }
 
-    public BSTException(final int where, final Throwable cause)
+    public BSTException(final int where, final String message, String source)
+    {
+        super(message);
+        this.where = where;
+        this.source = source;
+    }
+
+    public BSTException(final int where, final String message, final Throwable cause, BranchingStory source)
+    {
+        super(message, cause);
+        this.where = where;
+        this.source = source.getTag("__sourcename");
+    }
+
+    public BSTException(final int where, final String message, final Throwable cause, String source)
+    {
+        super(message, cause);
+        this.where = where;
+        this.source = source;
+    }
+
+    public BSTException(final int where, final Throwable cause, BranchingStory story)
     {
         super(cause);
         this.where = where;
+        source = story.getTag("__sourcename");
+    }
+
+    public BSTException(final int where, final Throwable cause, String source)
+    {
+        super(cause);
+        this.where = where;
+        this.source = source;
+    }
+
+    public String getSourceFile()
+    {
+        return source;
     }
 
     public int getWhere()
@@ -58,5 +84,4 @@ public class BSTException extends Exception
     {
         this.where = where;
     }
-
 }

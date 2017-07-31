@@ -9,6 +9,10 @@
 package utybo.branchingstorytree.api.script;
 
 import utybo.branchingstorytree.api.BSTException;
+import utybo.branchingstorytree.api.NodeNotFoundException;
+import utybo.branchingstorytree.api.StoryUtils;
+import utybo.branchingstorytree.api.story.BranchingStory;
+import utybo.branchingstorytree.api.story.StoryNode;
 
 /**
  * A {@link NextNodeDefiner} which returns either one node or another depending
@@ -19,7 +23,7 @@ import utybo.branchingstorytree.api.BSTException;
  */
 public class IfNextNodeDefiner implements NextNodeDefiner
 {
-    private final int one, two;
+    private final String one, two;
     private final CheckerDescriptor checker;
 
     /**
@@ -33,7 +37,7 @@ public class IfNextNodeDefiner implements NextNodeDefiner
      * @param checker
      *            The checker to use to determine the next node
      */
-    public IfNextNodeDefiner(final int one, final int two, final CheckerDescriptor checker)
+    public IfNextNodeDefiner(final String one, final String two, final CheckerDescriptor checker)
     {
         this.one = one;
         this.two = two;
@@ -47,9 +51,13 @@ public class IfNextNodeDefiner implements NextNodeDefiner
      *             If the checker throws a BSTExceptions
      */
     @Override
-    public int getNextNode() throws BSTException
+    public StoryNode getNextNode(BranchingStory story) throws NodeNotFoundException, BSTException
     {
-        return checker.check() ? one : two;
+        StoryNode snOne, snTwo;
+        snOne = StoryUtils.parseNode(one, story);
+        snTwo = StoryUtils.parseNode(two, story);
+
+        return checker.check() ? snOne : snTwo;
     }
 
 }

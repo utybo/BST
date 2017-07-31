@@ -18,11 +18,17 @@ package utybo.branchingstorytree.api.story;
  */
 public class StoryNode extends TagHolder
 {
+    private final BranchingStory story;
     private final int id;
 
     public int getId()
     {
         return id;
+    }
+
+    public BranchingStory getStory()
+    {
+        return story;
     }
 
     /**
@@ -31,8 +37,9 @@ public class StoryNode extends TagHolder
      * @param id
      *            the id to use
      */
-    public StoryNode(final int id)
+    public StoryNode(final int id, final BranchingStory story)
     {
         this.id = id;
+        this.story = story;
     }
 }

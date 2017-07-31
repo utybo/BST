@@ -1,0 +1,49 @@
+About OpenBST
+
+OpenBST is a free and open-source program that allows you to easily run BST files. BST is, in a nutshell, a simple and powerful language that allows you to create branching stories and interactive, neat text-based games in a very simple way.
+
+As with almost all programs, OpenBST is powered by awesome third-party libraries distributed with this program. Here is a complete list. You can have a look at their website to find license information and more :
+
+- Log4j2 API and Core
+  https://logging.apache.org/log4j/2.x/
+  A logging library
+
+- MigLayout Swing and Core
+  http://miglayout.com/
+  Allows you to create good looking layouts in Java easily
+
+- Apache Commons Lang
+  https://commons.apache.org/proper/commons-lang/
+  Useful stuff for random things
+
+- Apache Commons IO
+  https://commons.apache.org/proper/commons-io/
+  Useful stuff for I/O
+
+- Apache Commons Compress
+  https://commons.apache.org/proper/commons-compress/
+  Useful stuff for compressing
+
+- txtmark
+  https://github.com/rjeschke/txtmark/
+  Fast Markdown ==> HTML processor
+
+- Gson
+  https://github.com/google/gson/
+  Fast Object <==> Json processor
+
+- ClassIndex
+  https://github.com/atteo/classindex
+  Annotation handling library
+
+- Trident
+  https://github.com/kirill-grouchnikov/trident
+  Universal (and awesome) animation library
+
+- Substance
+  https://github.com/kirill-grouchnikov/substance
+  Awesome themes for Java Swing apps
+
+OpenBST relies on bst-java, a library made to read and understand BST files. bst-java relies on ClassIndex.
+
+This application contains icons created by Icons8 and distributed under the CC-BY-ND license. Website : icons8.com
