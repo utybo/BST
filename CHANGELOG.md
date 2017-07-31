@@ -8,9 +8,10 @@ Major changes and highlights are in **bold**. Other changes that impact users ar
 
 Story makers should read all changes in bold and plain. Some mechanisms may be torn apart between major (1.x ==> 2.0) or minor (x.0 ==> x.1) updates, though backward-compatibility is always attempted
 
-Unstable versions will appear inside OpenBST with a "u" at the end.
+Unstable versions will appear inside OpenBST with a "u" at the end. Version sections include changes regarding the entire evolution, not counting beta versions and release candidates. (This is against keepachangelog's practices)
 
-## [Unreleased]
+## [2.0] (Unreleased)
+Beta releases details : [2.0-beta1]
 ### Added
 - **New, simpler, cleaner, sleeker OpenBST Welcome screen!**
 - **New OpenBST menu with animations and stuff!**
@@ -86,4 +87,5 @@ Unstable versions will appear inside OpenBST with a "u" at the end.
 
 
 
-[Unreleased]: https://github.com/utybo/BST/compare/v1.1...dev
+[2.0]: https://github.com/utybo/BST/compare/v1.1...dev
+[2.0-beta1]: https://github.com/utybo/BST/compare/v1.1...v2.0-beta1
