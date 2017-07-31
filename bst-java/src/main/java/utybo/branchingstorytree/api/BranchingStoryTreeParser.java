@@ -87,7 +87,7 @@ public class BranchingStoryTreeParser
     {
         return parse(br, dictionnary, client, name, new BranchingStory(registry));
     }
-    
+
     private synchronized BranchingStory parse(final BufferedReader br, final Dictionnary dictionnary, final BSTClient client, String name, BranchingStory story) throws IOException, BSTException
     {
 

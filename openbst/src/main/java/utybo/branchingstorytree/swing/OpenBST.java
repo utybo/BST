@@ -33,8 +33,10 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
@@ -89,6 +91,7 @@ import org.pushingpixels.trident.Timeline;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import net.miginfocom.swing.MigLayout;
@@ -218,7 +221,7 @@ public class OpenBST extends JFrame
 
     public final static Image discordIcon = loadImage("icons/Discord.png");
 
-    public final static BufferedImage[] bgImages = loadImages("images/bg$.jpg", 6);
+    public final static List<BufferedImage> bgImages = Collections.unmodifiableList(Arrays.asList(loadImages("images/bg$.jpg", 6)));
     public final static Image externalIcon = loadImage("icons/External.png");
     public final static Image changeThemeMiniIcon = loadImage("icons/Change Theme Mini.png");
     public final static Image fullLogo = loadImage("logos/logofull.png");
@@ -535,6 +538,7 @@ public class OpenBST extends JFrame
     /**
      * Load all the icons and initialize the frame
      */
+    @SuppressFBWarnings("ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD")
     public OpenBST()
     {
         instance = this;
@@ -610,7 +614,7 @@ public class OpenBST extends JFrame
         container = new JTabbedPane();
         getContentPane().add(container, BorderLayout.CENTER);
 
-        final JBackgroundPanel welcomeContentPanel = new JBackgroundPanel(bgImages[RANDOM.nextInt(bgImages.length)], Image.SCALE_FAST);
+        final JBackgroundPanel welcomeContentPanel = new JBackgroundPanel(bgImages.get(RANDOM.nextInt(bgImages.size())), Image.SCALE_FAST);
         background = welcomeContentPanel;
 
         welcomeContentPanel.setLayout(new MigLayout("hidemode 2", "[grow,center]", "[][grow][]"));
@@ -690,7 +694,7 @@ public class OpenBST extends JFrame
             BufferedImage next;
             do
             {
-                next = bgImages[RANDOM.nextInt(bgImages.length)];
+                next = bgImages.get(RANDOM.nextInt(bgImages.size()));
             }
             while(prev == next);
             background.setImage(next);

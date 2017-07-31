@@ -39,7 +39,7 @@ public class XBFTest
     private class XBFTestClient implements BSTClient, BRMHandler, XBFHandler
     {
         private final HashMap<String, BranchingStory> stories = new HashMap<>();
-        
+
         @Override
         public void load(InputStream in, String name) throws BSTException
         {

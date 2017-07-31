@@ -55,6 +55,7 @@ public class JumpToNodeDialog extends JDialog
     public JumpToNodeDialog(TabClient client, BranchingStory mainStory, Consumer<StoryNode> callback)
     {
         super(OpenBST.getInstance());
+        this.client = client;
         this.mainStory = mainStory;
         setModalityType(ModalityType.DOCUMENT_MODAL);
         setTitle(Lang.get("nodejump.title"));
@@ -81,7 +82,7 @@ public class JumpToNodeDialog extends JDialog
 
         spinner = new JSpinner();
         spinner.addChangeListener(e -> updateExistanceInfo());
-        spinner.setModel(new SpinnerNumberModel(new Integer(1), new Integer(1), null, new Integer(1)));
+        spinner.setModel(new SpinnerNumberModel(Integer.valueOf(1), Integer.valueOf(1), null, Integer.valueOf(1)));
         getContentPane().add(spinner, "cell 3 0,growx");
 
         JRadioButton rdbtnWithAlias = new JRadioButton(Lang.get("nodejump.withalias"));
@@ -151,7 +152,7 @@ public class JumpToNodeDialog extends JDialog
         getContentPane().add(btnCancel, "cell 0 5");
 
         updateExistanceInfo();
-        
+
         pack();
         setLocationRelativeTo(OpenBST.getInstance());
     }
@@ -188,7 +189,7 @@ public class JumpToNodeDialog extends JDialog
         btnOk.setEnabled(exists);
         lblNodeExistanceInfo.setText(Lang.get(exists ? "nodejump.exists" : "nodejump.notexists"));
         lblNodeExistanceInfo.setForeground(exists ? (OpenBST.getInstance().isDark() ? Color.GREEN : Color.GREEN.darker()) : Color.RED);
-        
+
         return sn;
     }
 }

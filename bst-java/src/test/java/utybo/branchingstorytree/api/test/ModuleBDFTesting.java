@@ -38,7 +38,7 @@ public class ModuleBDFTesting
         {
             loadAuto();
         }
-        
+
         @Override
         public void loadAuto() throws BSTException
         {

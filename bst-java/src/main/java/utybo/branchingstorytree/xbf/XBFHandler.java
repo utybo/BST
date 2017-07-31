@@ -18,6 +18,6 @@ public interface XBFHandler extends BRMResourceConsumer
     public BranchingStory getAdditionalStory(String name);
 
     public BranchingStory getMainStory();
-    
+
     public Collection<String> getAdditionalStoryNames();
 }

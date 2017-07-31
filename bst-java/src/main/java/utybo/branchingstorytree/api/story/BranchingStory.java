@@ -35,12 +35,12 @@ public class BranchingStory extends TagHolder
      * The variables used in this story
      */
     private final VariableRegistry registry;
-    
+
     public BranchingStory()
     {
         registry = new VariableRegistry();
     }
-    
+
     public BranchingStory(VariableRegistry registry)
     {
         this.registry = registry;

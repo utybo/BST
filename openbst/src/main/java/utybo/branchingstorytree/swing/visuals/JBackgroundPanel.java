@@ -16,11 +16,11 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
+@SuppressFBWarnings("SE_BAD_FIELD_STORE")
 public class JBackgroundPanel extends JPanel
 {
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
     private Image previousScaledImage;
     private Image previousImage;
@@ -94,14 +94,7 @@ public class JBackgroundPanel extends JPanel
     private double getScaleFactor(final int iMasterSize, final int iTargetSize)
     {
         double dScale = 1;
-        if(iMasterSize > iTargetSize)
-        {
-            dScale = (double)iTargetSize / (double)iMasterSize;
-        }
-        else
-        {
-            dScale = (double)iTargetSize / (double)iMasterSize;
-        }
+        dScale = (double)iTargetSize / (double)iMasterSize;
         return dScale;
     }
 
