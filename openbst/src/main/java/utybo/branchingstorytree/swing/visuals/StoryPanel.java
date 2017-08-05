@@ -794,7 +794,7 @@ public class StoryPanel extends JPanel
                 final TextNode textNode = (TextNode)storyNode;
 
                 LOG.trace("=> Applying text");
-                nodePanel.applyNode(story, textNode);
+                nodePanel.applyNode(textNode.getStory(), textNode);
 
                 LOG.trace("Resetting options");
                 resetOptions();

@@ -179,7 +179,7 @@ public class NodePanel extends JScrollablePanel
     public void applyNode(final BranchingStory story, final TextNode textNode) throws BSTException
     {
         final String text = StoryUtils.solveVariables(textNode, story);
-        final int markupLanguage = MarkupUtils.solveMarkup(story, textNode);
+        final int markupLanguage = MarkupUtils.solveMarkup(parent.story, story, textNode);
         setText(MarkupUtils.translateMarkup(markupLanguage, text));
 
         if(textNode.hasTag("color"))
