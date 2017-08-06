@@ -23,7 +23,8 @@ public class AssertAction implements ScriptAction
     private static Dictionnary dict;
 
     @Override
-    public void exec(final String head, final String desc, final int line, final BranchingStory story, final BSTClient client) throws BSTException
+    public void exec(final String head, final String desc, final int line,
+            final BranchingStory story, final BSTClient client) throws BSTException
     {
         try
         {
@@ -47,12 +48,15 @@ public class AssertAction implements ScriptAction
         final String d = m.group(2);
         try
         {
-            final CheckerDescriptor cd = new CheckerDescriptor(dict.getChecker(h), h, d, line, story, client);
+            final CheckerDescriptor cd = new CheckerDescriptor(dict.getChecker(h), h, d, line,
+                    story, client);
             assert cd.check() == true;
         }
         catch(final AssertionError error)
         {
-            throw new AssertionError("Assertion " + desc + " failed. (Registry dumb : " + story.getRegistry().dump(), error);
+            throw new AssertionError(
+                    "Assertion " + desc + " failed. (Registry dumb : " + story.getRegistry().dump(),
+                    error);
         }
 
     }

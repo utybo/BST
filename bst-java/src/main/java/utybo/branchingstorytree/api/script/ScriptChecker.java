@@ -44,7 +44,8 @@ public interface ScriptChecker
      *             error... Make sure to pass the line argument to any thrown
      *             exception!
      */
-    public boolean check(String head, String desc, int line, BranchingStory story, BSTClient client) throws BSTException;
+    public boolean check(String head, String desc, int line, BranchingStory story, BSTClient client)
+            throws BSTException;
 
     /**
      * Gets the different names this ScriptChecker represents.

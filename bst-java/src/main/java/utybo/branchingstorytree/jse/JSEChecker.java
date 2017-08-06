@@ -24,11 +24,13 @@ public class JSEChecker implements ScriptChecker
 {
 
     @Override
-    public boolean check(final String head, final String desc, final int line, final BranchingStory story, final BSTClient client) throws BSTException
+    public boolean check(final String head, final String desc, final int line,
+            final BranchingStory story, final BSTClient client) throws BSTException
     {
         final JSEHandler handler = client.getJSEHandler();
         final VariableRegistry registry = story.getRegistry();
-        if(handler.getEngine() == null || !registry.get("__jse__auto", "true").toString().equalsIgnoreCase("false"))
+        if(handler.getEngine() == null
+                || !registry.get("__jse__auto", "true").toString().equalsIgnoreCase("false"))
         {
             handler.setEngine(new ScriptEngineManager().getEngineByName("JavaScript"));
         }
@@ -59,12 +61,14 @@ public class JSEChecker implements ScriptChecker
             }
             else
             {
-                throw new BSTException(line, "Unknown value type : " + result.getClass().getName(), story);
+                throw new BSTException(line, "Unknown value type : " + result.getClass().getName(),
+                        story);
             }
         }
         catch(final ScriptException e)
         {
-            throw new BSTException(line, "Error during script execution : " + e.getMessage(), e, story);
+            throw new BSTException(line, "Error during script execution : " + e.getMessage(), e,
+                    story);
         }
     }
 

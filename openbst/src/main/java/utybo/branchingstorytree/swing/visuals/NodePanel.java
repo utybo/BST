@@ -53,7 +53,10 @@ public class NodePanel extends JScrollablePanel
         String s;
         try
         {
-            s = IOUtils.toString(NodePanel.class.getResourceAsStream("/utybo/branchingstorytree/swing/font/fonts.css"), StandardCharsets.UTF_8);
+            s = IOUtils.toString(
+                    NodePanel.class
+                            .getResourceAsStream("/utybo/branchingstorytree/swing/font/fonts.css"),
+                    StandardCharsets.UTF_8);
         }
         catch(IOException e)
         {
@@ -121,30 +124,32 @@ public class NodePanel extends JScrollablePanel
             try
             {
                 view = new WebView();
-                view.getEngine().setOnAlert(e -> SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(OpenBST.getInstance(), e.getData())));
-                view.getEngine().getLoadWorker().stateProperty().addListener((obs, oldState, newState) ->
-                {
-                    if(newState == State.SUCCEEDED)
-                    {
-                        Document doc = view.getEngine().getDocument();
-                        NodeList nl = doc.getElementsByTagName("a");
-                        for(int i = 0; i < nl.getLength(); i++)
+                view.getEngine().setOnAlert(e -> SwingUtilities.invokeLater(
+                        () -> JOptionPane.showMessageDialog(OpenBST.getInstance(), e.getData())));
+                view.getEngine().getLoadWorker().stateProperty()
+                        .addListener((obs, oldState, newState) ->
                         {
-                            Node n = nl.item(i);
-                            HTMLAnchorElement a = (HTMLAnchorElement)n;
-                            if(a.getHref() != null)
+                            if(newState == State.SUCCEEDED)
                             {
-                                ((EventTarget)a).addEventListener("click", ev ->
+                                Document doc = view.getEngine().getDocument();
+                                NodeList nl = doc.getElementsByTagName("a");
+                                for(int i = 0; i < nl.getLength(); i++)
                                 {
-                                    if(!hrefEnabled)
+                                    Node n = nl.item(i);
+                                    HTMLAnchorElement a = (HTMLAnchorElement)n;
+                                    if(a.getHref() != null)
                                     {
-                                        ev.preventDefault();
+                                        ((EventTarget)a).addEventListener("click", ev ->
+                                        {
+                                            if(!hrefEnabled)
+                                            {
+                                                ev.preventDefault();
+                                            }
+                                        }, false);
                                     }
-                                }, false);
+                                }
                             }
-                        }
-                    }
-                });
+                        });
 
                 Scene sc = new Scene(view);
                 if(!OpenBST.getInstance().isDark())
@@ -153,7 +158,12 @@ public class NodePanel extends JScrollablePanel
                     view.setFontSmoothingType(FontSmoothingType.GRAY);
                 try
                 {
-                    view.getEngine().loadContent(IOUtils.toString(NodePanel.class.getResourceAsStream("/utybo/branchingstorytree/swing/html/error.html"), StandardCharsets.UTF_8).replace("$MSG", Lang.get("story.problem")).replace("$STYLE", STYLE));
+                    view.getEngine().loadContent(IOUtils
+                            .toString(
+                                    NodePanel.class.getResourceAsStream(
+                                            "/utybo/branchingstorytree/swing/html/error.html"),
+                                    StandardCharsets.UTF_8)
+                            .replace("$MSG", Lang.get("story.problem")).replace("$STYLE", STYLE));
                 }
                 catch(IOException e)
                 {
@@ -204,7 +214,8 @@ public class NodePanel extends JScrollablePanel
                 imageClient.setBackground(bg);
             }
         }
-        else if(textNode.hasTag("img_manual") && Boolean.parseBoolean(textNode.getTag("img_manual")))
+        else if(textNode.hasTag("img_manual")
+                && Boolean.parseBoolean(textNode.getTag("img_manual")))
         {
             imageClient.setBackground(null);
         }
@@ -214,15 +225,18 @@ public class NodePanel extends JScrollablePanel
 
     private void build()
     {
-        String base = "<head><meta charset=\"utf-8\"/><style type='text/css'>" + STYLE + " body {font-family: " + storyFont + ";}</style></head>" //
+        String base = "<head><meta charset=\"utf-8\"/><style type='text/css'>" + STYLE
+                + " body {font-family: " + storyFont + ";}</style></head>" //
                 + "<body style=\"margin:10px;padding:0px;$BG\"><div style=\"margin:-10px;padding:10px;$ADDITIONAL;width: 100%; height:100%\">" //
                 + "<div style=\"$COLOR\">" + text + "</div></div></body>";
         String bg, additional, c;
 
         if(imageClient.getCurrentBackground() != null && backgroundVisible)
         {
-            bg = "background-image:url('data:image/png;base64," + b64bg() + "'); background-size:cover; background-position:center; background-attachment:fixed";
-            additional = isDark ? "background-color:rgba(0,0,0,0.66)" : "background-color:rgba(255,255,255,0.66)";
+            bg = "background-image:url('data:image/png;base64," + b64bg()
+                    + "'); background-size:cover; background-position:center; background-attachment:fixed";
+            additional = isDark ? "background-color:rgba(0,0,0,0.66)"
+                    : "background-color:rgba(255,255,255,0.66)";
         }
         else
         {
@@ -231,7 +245,8 @@ public class NodePanel extends JScrollablePanel
         }
         if(textColor != null)
         {
-            c = "color: " + MarkupUtils.toHex(textColor.getRed(), textColor.getGreen(), textColor.getBlue());
+            c = "color: " + MarkupUtils.toHex(textColor.getRed(), textColor.getGreen(),
+                    textColor.getBlue());
         }
         else
         {
@@ -309,10 +324,14 @@ public class NodePanel extends JScrollablePanel
             {
                 c = (Color)Color.class.getField(color).get(null);
             }
-            catch(IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e)
+            catch(IllegalArgumentException | IllegalAccessException | NoSuchFieldException
+                    | SecurityException e)
             {
                 OpenBST.LOG.warn("Color does not exist : " + color, e);
-                SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(OpenBST.getInstance(), Lang.get("story.unknowncolor").replace("$c", color), Lang.get("error"), JOptionPane.ERROR_MESSAGE));
+                SwingUtilities
+                        .invokeLater(() -> JOptionPane.showMessageDialog(OpenBST.getInstance(),
+                                Lang.get("story.unknowncolor").replace("$c", color),
+                                Lang.get("error"), JOptionPane.ERROR_MESSAGE));
             }
         }
         if(c != null)
@@ -336,7 +355,8 @@ public class NodePanel extends JScrollablePanel
         view.getEngine().setJavaScriptEnabled(b);
         parent.getJSHint().setToolTipText(Lang.get("html.js" + (b ? "enabled" : "blocked")));
         parent.getJSHint().setIcon(new ImageIcon(b ? OpenBST.jsEnabled : OpenBST.jsBlocked));
-        parent.getJSHint().setDisabledIcon(new ImageIcon(b ? OpenBST.jsEnabled : OpenBST.jsBlocked));
+        parent.getJSHint()
+                .setDisabledIcon(new ImageIcon(b ? OpenBST.jsEnabled : OpenBST.jsBlocked));
         parent.getJSHint().setVisible(true);
     }
 
@@ -345,7 +365,8 @@ public class NodePanel extends JScrollablePanel
         hrefEnabled = b;
         parent.getHrefHint().setToolTipText(Lang.get("html.href" + (b ? "enabled" : "blocked")));
         parent.getHrefHint().setIcon(new ImageIcon(b ? OpenBST.hrefEnabled : OpenBST.hrefBlocked));
-        parent.getHrefHint().setDisabledIcon(new ImageIcon(b ? OpenBST.hrefEnabled : OpenBST.hrefBlocked));
+        parent.getHrefHint()
+                .setDisabledIcon(new ImageIcon(b ? OpenBST.hrefEnabled : OpenBST.hrefBlocked));
         parent.getHrefHint().setVisible(true);
     }
 

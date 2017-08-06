@@ -28,7 +28,8 @@ public class JBannerPanel extends JPanel
      */
     private static final long serialVersionUID = 1L;
     private final Color c;
-    private final Consumer<Boolean> callback = b -> setBackground(b ? getColor().darker() : getColor().brighter());
+    private final Consumer<Boolean> callback = b -> setBackground(
+            b ? getColor().darker() : getColor().brighter());
 
     public JBannerPanel(Icon icon, Color c, String text, JComponent btn, boolean hideButton)
     {

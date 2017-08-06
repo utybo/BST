@@ -78,7 +78,8 @@ public class VariableWatchDialog extends JDialog
         lblthisDialogAllows.setIcon(new ImageIcon(OpenBST.addonSearchMediumImage));
         contentPanel.add(lblthisDialogAllows, "cell 0 0,aligny top");
 
-        final JButton btnRefresh = new JButton(Lang.get("vwatch.refresh"), new ImageIcon(OpenBST.refreshImage));
+        final JButton btnRefresh = new JButton(Lang.get("vwatch.refresh"),
+                new ImageIcon(OpenBST.refreshImage));
         btnRefresh.addActionListener(e -> refresh());
         contentPanel.add(btnRefresh, "cell 1 0,aligny center");
 

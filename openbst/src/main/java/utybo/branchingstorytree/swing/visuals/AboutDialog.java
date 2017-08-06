@@ -81,7 +81,8 @@ public class AboutDialog extends JDialog
                 {
                     try
                     {
-                        Desktop.getDesktop().browse(new URL("https://utybo.github.io/BST/").toURI());
+                        Desktop.getDesktop()
+                                .browse(new URL("https://utybo.github.io/BST/").toURI());
                     }
                     catch(IOException | URISyntaxException e1)
                     {
@@ -105,7 +106,8 @@ public class AboutDialog extends JDialog
         textArea.setWrapStyleWord(true);
         textArea.setFont(new Font("Monospace", Font.PLAIN, 11));
 
-        try(InputStream in = getClass().getResourceAsStream("/utybo/branchingstorytree/swing/about.txt");)
+        try(InputStream in = getClass()
+                .getResourceAsStream("/utybo/branchingstorytree/swing/about.txt");)
         {
             textArea.setText(IOUtils.toString(in, StandardCharsets.UTF_8));
         }

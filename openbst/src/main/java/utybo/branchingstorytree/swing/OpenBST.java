@@ -162,7 +162,8 @@ public class OpenBST extends JFrame
     static
     {
         SubstanceSkin skin = new BusinessSkin();
-        for(SubstanceOverlayPainter op : new ArrayList<>(skin.getOverlayPainters(DecorationAreaType.TOOLBAR)))
+        for(SubstanceOverlayPainter op : new ArrayList<>(
+                skin.getOverlayPainters(DecorationAreaType.TOOLBAR)))
         {
             skin.removeOverlayPainter(op, DecorationAreaType.TOOLBAR);
         }
@@ -179,7 +180,8 @@ public class OpenBST extends JFrame
     public final static Image aboutImage = loadImage("icons/About.png");
     public final static Image renameImage = loadImage("icons/Rename.png");
     public final static Image addonSearchImage = loadImage("icons/toolbar/Addon Search.png");
-    public final static Image addonSearchMediumImage = loadImage("icons/toolbar/Addon Search Medium.png");
+    public final static Image addonSearchMediumImage = loadImage(
+            "icons/toolbar/Addon Search Medium.png");
     public final static Image closeImage = loadImage("icons/toolbar/Close.png");
 
     public final static Image closeBigImage = loadImage("icons/toolbar/Close Big.png");
@@ -221,7 +223,8 @@ public class OpenBST extends JFrame
 
     public final static Image discordIcon = loadImage("icons/Discord.png");
 
-    public final static List<BufferedImage> bgImages = Collections.unmodifiableList(Arrays.asList(loadImages("images/bg$.jpg", 6)));
+    public final static List<BufferedImage> bgImages = Collections
+            .unmodifiableList(Arrays.asList(loadImages("images/bg$.jpg", 6)));
     public final static Image externalIcon = loadImage("icons/External.png");
     public final static Image changeThemeMiniIcon = loadImage("icons/Change Theme Mini.png");
     public final static Image fullLogo = loadImage("logos/logofull.png");
@@ -265,7 +268,8 @@ public class OpenBST extends JFrame
             try
             {
                 UIManager.setLookAndFeel(LIGHT_THEME);
-                UIManager.getDefaults().put(SubstanceLookAndFeel.COLORIZATION_FACTOR, new Double(1.0D));
+                UIManager.getDefaults().put(SubstanceLookAndFeel.COLORIZATION_FACTOR,
+                        new Double(1.0D));
 
                 if(System.getProperty("os.name").toLowerCase().equals("linux"))
                 {
@@ -273,7 +277,8 @@ public class OpenBST extends JFrame
                     try
                     {
                         final Toolkit xToolkit = Toolkit.getDefaultToolkit();
-                        final java.lang.reflect.Field awtAppClassNameField = xToolkit.getClass().getDeclaredField("awtAppClassName");
+                        final java.lang.reflect.Field awtAppClassNameField = xToolkit.getClass()
+                                .getDeclaredField("awtAppClassName");
                         awtAppClassNameField.setAccessible(true);
                         awtAppClassNameField.set(xToolkit, Lang.get("title"));
                         awtAppClassNameField.setAccessible(false);
@@ -294,7 +299,9 @@ public class OpenBST extends JFrame
                 }
                 catch(final Exception e1)
                 {
-                    LOG.warn("Failed to load System LaF as well, falling back to keeping the default LaF", e1);
+                    LOG.warn(
+                            "Failed to load System LaF as well, falling back to keeping the default LaF",
+                            e1);
                 }
             }
 
@@ -375,11 +382,19 @@ public class OpenBST extends JFrame
                     BranchingStory bs = null;
                     if(ext.equals("bsp"))
                     {
-                        bs = BSTPackager.fromPackage(new ProgressMonitorInputStream(instance, "Opening " + file.getName() + "...", new FileInputStream(file)), client);
+                        bs = BSTPackager.fromPackage(new ProgressMonitorInputStream(instance,
+                                "Opening " + file.getName() + "...", new FileInputStream(file)),
+                                client);
                     }
                     else
                     {
-                        bs = parser.parse(new BufferedReader(new InputStreamReader(new ProgressMonitorInputStream(instance, "Opening " + file.getName() + "...", new FileInputStream(file)), Charset.forName("UTF-8"))), new Dictionnary(), client, "<main>");
+                        bs = parser.parse(
+                                new BufferedReader(new InputStreamReader(
+                                        new ProgressMonitorInputStream(instance,
+                                                "Opening " + file.getName() + "...",
+                                                new FileInputStream(file)),
+                                        Charset.forName("UTF-8"))),
+                                new Dictionnary(), client, "<main>");
                         client.setBRMHandler(new BRMFileClient(file, client, bs));
                     }
                     callback.accept(bs);
@@ -388,7 +403,10 @@ public class OpenBST extends JFrame
                 catch(final IOException e)
                 {
                     LOG.error("IOException caught", e);
-                    showMessageDialog(instance, Lang.get("file.error").replace("$e", e.getClass().getSimpleName()).replace("$m", e.getMessage()), Lang.get("error"), JOptionPane.ERROR_MESSAGE);
+                    showMessageDialog(instance,
+                            Lang.get("file.error").replace("$e", e.getClass().getSimpleName())
+                                    .replace("$m", e.getMessage()),
+                            Lang.get("error"), JOptionPane.ERROR_MESSAGE);
                     return null;
                 }
                 catch(final BSTException e)
@@ -396,15 +414,20 @@ public class OpenBST extends JFrame
                     LOG.error("BSTException caught", e);
                     String s = Lang.get("file.bsterror.1");
                     s += Lang.get("file.bsterror.2");
-                    s += Lang.get("file.bsterror.3").replace("$l", "" + e.getWhere()).replace("$f", "[main]");
+                    s += Lang.get("file.bsterror.3").replace("$l", "" + e.getWhere()).replace("$f",
+                            "[main]");
                     if(e.getCause() != null)
                     {
-                        s += Lang.get("file.bsterror.4").replace("$e", e.getCause().getClass().getSimpleName()).replace("$m", e.getCause().getMessage());
+                        s += Lang.get("file.bsterror.4")
+                                .replace("$e", e.getCause().getClass().getSimpleName())
+                                .replace("$m", e.getCause().getMessage());
                     }
                     s += Lang.get("file.bsterror.5").replace("$m", "" + e.getMessage());
                     s += Lang.get("file.bsterror.6");
                     String s2 = s;
-                    if(doAndReturn(() -> JOptionPane.showConfirmDialog(instance, s2, Lang.get("bsterror"), JOptionPane.ERROR_MESSAGE, JOptionPane.YES_NO_OPTION)) == JOptionPane.YES_OPTION)
+                    if(doAndReturn(() -> JOptionPane.showConfirmDialog(instance, s2,
+                            Lang.get("bsterror"), JOptionPane.ERROR_MESSAGE,
+                            JOptionPane.YES_NO_OPTION)) == JOptionPane.YES_OPTION)
                     {
                         LOG.debug("Reloading");
                         return doInBackground();
@@ -414,7 +437,8 @@ public class OpenBST extends JFrame
                 catch(final Exception e)
                 {
                     LOG.error("Random exception caught", e);
-                    showMessageDialog(instance, Lang.get("file.crash"), Lang.get("error"), JOptionPane.ERROR_MESSAGE);
+                    showMessageDialog(instance, Lang.get("file.crash"), Lang.get("error"),
+                            JOptionPane.ERROR_MESSAGE);
                     return null;
                 }
 
@@ -444,7 +468,8 @@ public class OpenBST extends JFrame
                 catch(ExecutionException e)
                 {
                     LOG.error("Random exception caught", e);
-                    JOptionPane.showMessageDialog(instance, Lang.get("file.crash"), Lang.get("error"), JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(instance, Lang.get("file.crash"),
+                            Lang.get("error"), JOptionPane.ERROR_MESSAGE);
                 }
             }
         };
@@ -462,11 +487,17 @@ public class OpenBST extends JFrame
      */
     private static void loadLang(final String userCustomLanguage)
     {
-        final Map<String, String> languages = new Gson().fromJson(new InputStreamReader(OpenBST.class.getResourceAsStream("/utybo/branchingstorytree/swing/lang/langs.json"), StandardCharsets.UTF_8), new TypeToken<Map<String, String>>()
-        {}.getType());
+        final Map<String, String> languages = new Gson()
+                .fromJson(new InputStreamReader(
+                        OpenBST.class.getResourceAsStream(
+                                "/utybo/branchingstorytree/swing/lang/langs.json"),
+                        StandardCharsets.UTF_8), new TypeToken<Map<String, String>>()
+                        {}.getType());
         try
         {
-            Lang.loadTranslationsFromFile(Lang.getDefaultLanguage(), OpenBST.class.getResourceAsStream("/utybo/branchingstorytree/swing/lang/" + languages.get("default")));
+            Lang.loadTranslationsFromFile(Lang.getDefaultLanguage(),
+                    OpenBST.class.getResourceAsStream(
+                            "/utybo/branchingstorytree/swing/lang/" + languages.get("default")));
         }
         catch(final Exception e)
         {
@@ -483,7 +514,8 @@ public class OpenBST extends JFrame
             {
                 try
                 {
-                    Lang.loadTranslationsFromFile(userLanguage, OpenBST.class.getResourceAsStream("/utybo/branchingstorytree/swing/lang/" + v));
+                    Lang.loadTranslationsFromFile(userLanguage, OpenBST.class
+                            .getResourceAsStream("/utybo/branchingstorytree/swing/lang/" + v));
                 }
                 catch(final Exception e)
                 {
@@ -497,7 +529,8 @@ public class OpenBST extends JFrame
     {
         try
         {
-            return ImageIO.read(OpenBST.class.getResourceAsStream("/utybo/branchingstorytree/swing/" + path));
+            return ImageIO.read(
+                    OpenBST.class.getResourceAsStream("/utybo/branchingstorytree/swing/" + path));
         }
         catch(Exception e)
         {
@@ -562,7 +595,8 @@ public class OpenBST extends JFrame
         tl.addPropertyToInterpolate("background", OPENBST_BLUE, new Color(145, 145, 145));
         Timeline darkTl = new Timeline(banner);
         darkTl.setDuration(200L);
-        darkTl.addPropertyToInterpolate("background", OPENBST_BLUE.darker().darker(), new Color(100, 100, 100));
+        darkTl.addPropertyToInterpolate("background", OPENBST_BLUE.darker().darker(),
+                new Color(100, 100, 100));
 
         banner.setBackground(OPENBST_BLUE);
         banner.add(new JLabel(new ImageIcon(smallLogoWhite)));
@@ -614,7 +648,8 @@ public class OpenBST extends JFrame
         container = new JTabbedPane();
         getContentPane().add(container, BorderLayout.CENTER);
 
-        final JBackgroundPanel welcomeContentPanel = new JBackgroundPanel(bgImages.get(RANDOM.nextInt(bgImages.size())), Image.SCALE_FAST);
+        final JBackgroundPanel welcomeContentPanel = new JBackgroundPanel(
+                bgImages.get(RANDOM.nextInt(bgImages.size())), Image.SCALE_FAST);
         background = welcomeContentPanel;
 
         welcomeContentPanel.setLayout(new MigLayout("hidemode 2", "[grow,center]", "[][grow][]"));
@@ -632,14 +667,19 @@ public class OpenBST extends JFrame
             {
                 try
                 {
-                    Desktop.getDesktop().browse(new URL("https://github.com/utybo/BST/issues").toURI());
+                    Desktop.getDesktop()
+                            .browse(new URL("https://github.com/utybo/BST/issues").toURI());
                 }
                 catch(Exception e1)
                 {
                     LOG.error("Exception during link opening", e1);
                 }
             });
-            bannersPanel.add(new JBannerPanel(new ImageIcon(errorImage.getScaledInstance(32, 32, Image.SCALE_SMOOTH)), Color.YELLOW, Lang.get("welcome.ontheedge"), btnReportBugs, false), "grow");
+            bannersPanel.add(
+                    new JBannerPanel(
+                            new ImageIcon(errorImage.getScaledInstance(32, 32, Image.SCALE_SMOOTH)),
+                            Color.YELLOW, Lang.get("welcome.ontheedge"), btnReportBugs, false),
+                    "grow");
         }
 
         JButton btnJoinDiscord = new JButton(Lang.get("openbst.discordjoin"));
@@ -654,7 +694,8 @@ public class OpenBST extends JFrame
                 LOG.error("Exception during link opening", e1);
             }
         });
-        bannersPanel.add(new JBannerPanel(new ImageIcon(discordIcon), DISCORD_COLOR, Lang.get("openbst.discord"), btnJoinDiscord, false), "grow");
+        bannersPanel.add(new JBannerPanel(new ImageIcon(discordIcon), DISCORD_COLOR,
+                Lang.get("openbst.discord"), btnJoinDiscord, false), "grow");
 
         JPanel panel = new JPanel();
         panel.setBackground(new Color(0, 0, 0, 0));
@@ -687,7 +728,8 @@ public class OpenBST extends JFrame
             clickOpenStory();
         });
 
-        JButton btnChangeBackground = new JButton(Lang.get("welcome.changebackground"), new ImageIcon(changeThemeMiniIcon));
+        JButton btnChangeBackground = new JButton(Lang.get("welcome.changebackground"),
+                new ImageIcon(changeThemeMiniIcon));
         btnChangeBackground.addActionListener(e ->
         {
             BufferedImage prev = background.getImage();
@@ -701,7 +743,8 @@ public class OpenBST extends JFrame
         });
         welcomeContentPanel.add(btnChangeBackground, "flowx,cell 0 2,alignx left");
 
-        JButton btnWelcomepixabay = new JButton(Lang.get("welcome.pixabay"), new ImageIcon(externalIcon));
+        JButton btnWelcomepixabay = new JButton(Lang.get("welcome.pixabay"),
+                new ImageIcon(externalIcon));
         btnWelcomepixabay.addActionListener(e ->
         {
             try
@@ -761,7 +804,11 @@ public class OpenBST extends JFrame
                                 catch(BSTException e)
                                 {
                                     LOG.error("Exception caught while loading resources", e);
-                                    showMessageDialog(instance, Lang.get("file.resourceerror").replace("$e", whichCause(e)).replace("$m", whichMessage(e)), Lang.get("error"), JOptionPane.ERROR_MESSAGE);
+                                    showMessageDialog(instance,
+                                            Lang.get("file.resourceerror")
+                                                    .replace("$e", whichCause(e))
+                                                    .replace("$m", whichMessage(e)),
+                                            Lang.get("error"), JOptionPane.ERROR_MESSAGE);
                                 }
                                 SwingUtilities.invokeAndWait(() -> sp.setupStory());
                             }
@@ -808,32 +855,34 @@ public class OpenBST extends JFrame
         label.setEnabled(false);
         shortMenu.add(label);
         shortMenu.addSeparator();
-        shortMenu.add(new JMenuItem(new AbstractAction(Lang.get("menu.open"), new ImageIcon(menuOpenFolder))
-        {
-            private static final long serialVersionUID = 1L;
+        shortMenu.add(new JMenuItem(
+                new AbstractAction(Lang.get("menu.open"), new ImageIcon(menuOpenFolder))
+                {
+                    private static final long serialVersionUID = 1L;
 
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                clickOpenStory();
-            }
-        }));
+                    @Override
+                    public void actionPerformed(ActionEvent e)
+                    {
+                        clickOpenStory();
+                    }
+                }));
 
         shortMenu.addSeparator();
 
         JMenu additionalMenu = new JMenu(Lang.get("menu.advanced"));
         shortMenu.add(additionalMenu);
 
-        additionalMenu.add(new JMenuItem(new AbstractAction(Lang.get("menu.package"), new ImageIcon(menuOpenArchive))
-        {
-            private static final long serialVersionUID = 1L;
+        additionalMenu.add(new JMenuItem(
+                new AbstractAction(Lang.get("menu.package"), new ImageIcon(menuOpenArchive))
+                {
+                    private static final long serialVersionUID = 1L;
 
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                new PackageDialog(instance).setVisible(true);
-            }
-        }));
+                    @Override
+                    public void actionPerformed(ActionEvent e)
+                    {
+                        new PackageDialog(instance).setVisible(true);
+                    }
+                }));
         additionalMenu.add(new JMenuItem(new AbstractAction(Lang.get("langcheck"))
         {
             private static final long serialVersionUID = 1L;
@@ -841,15 +890,23 @@ public class OpenBST extends JFrame
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                final Map<String, String> languages = new Gson().fromJson(new InputStreamReader(OpenBST.class.getResourceAsStream("/utybo/branchingstorytree/swing/lang/langs.json"), StandardCharsets.UTF_8), new TypeToken<Map<String, String>>()
-                {}.getType());
+                final Map<String, String> languages = new Gson()
+                        .fromJson(
+                                new InputStreamReader(
+                                        OpenBST.class.getResourceAsStream(
+                                                "/utybo/branchingstorytree/swing/lang/langs.json"),
+                                        StandardCharsets.UTF_8),
+                                new TypeToken<Map<String, String>>()
+                                {}.getType());
                 languages.remove("en");
                 languages.remove("default");
                 JComboBox<String> jcb = new JComboBox<>(new Vector<>(languages.keySet()));
                 JPanel panel = new JPanel();
                 panel.add(new JLabel(Lang.get("langcheck.choose")));
                 panel.add(jcb);
-                int result = JOptionPane.showOptionDialog(OpenBST.this, panel, Lang.get("langcheck"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+                int result = JOptionPane.showOptionDialog(OpenBST.this, panel,
+                        Lang.get("langcheck"), JOptionPane.OK_CANCEL_OPTION,
+                        JOptionPane.QUESTION_MESSAGE, null, null, null);
                 if(result == JOptionPane.OK_OPTION)
                 {
                     Locale selected = new Locale((String)jcb.getSelectedItem());
@@ -857,7 +914,9 @@ public class OpenBST extends JFrame
                     {
                         try
                         {
-                            Lang.loadTranslationsFromFile(selected, OpenBST.class.getResourceAsStream("/utybo/branchingstorytree/swing/lang/" + languages.get(jcb.getSelectedItem().toString())));
+                            Lang.loadTranslationsFromFile(selected, OpenBST.class
+                                    .getResourceAsStream("/utybo/branchingstorytree/swing/lang/"
+                                            + languages.get(jcb.getSelectedItem().toString())));
                         }
                         catch(UnrespectedModelException | IOException e1)
                         {
@@ -877,7 +936,8 @@ public class OpenBST extends JFrame
                     list.forEach(s -> sb.append(s));
                     JDialog dialog = new JDialog(OpenBST.this, Lang.get("langcheck"));
                     dialog.getContentPane().setLayout(new MigLayout());
-                    dialog.getContentPane().add(new JLabel(Lang.get("langcheck.result")), "pushx, growx, wrap");
+                    dialog.getContentPane().add(new JLabel(Lang.get("langcheck.result")),
+                            "pushx, growx, wrap");
                     JTextArea area = new JTextArea();
                     area.setLineWrap(true);
                     area.setWrapStyleWord(true);
@@ -930,19 +990,20 @@ public class OpenBST extends JFrame
         themesMenu.add(jrbmi);
         themesGroup.add(jrbmi);
 
-        shortMenu.add(new JMenuItem(new AbstractAction(Lang.get("menu.about"), new ImageIcon(menuAbout))
-        {
-            /**
-             *
-             */
-            private static final long serialVersionUID = 1L;
+        shortMenu.add(
+                new JMenuItem(new AbstractAction(Lang.get("menu.about"), new ImageIcon(menuAbout))
+                {
+                    /**
+                     *
+                     */
+                    private static final long serialVersionUID = 1L;
 
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                new AboutDialog(instance).setVisible(true);
-            }
-        }));
+                    @Override
+                    public void actionPerformed(ActionEvent e)
+                    {
+                        new AboutDialog(instance).setVisible(true);
+                    }
+                }));
 
         return shortMenu;
     }

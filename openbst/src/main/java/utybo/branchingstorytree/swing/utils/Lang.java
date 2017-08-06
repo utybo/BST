@@ -37,12 +37,14 @@ public class Lang
     private Lang()
     {}
 
-    public static synchronized void setLocaleMap(final Map<String, String> translations, final Locale locale)
+    public static synchronized void setLocaleMap(final Map<String, String> translations,
+            final Locale locale)
     {
         map.put(locale, translations);
     }
 
-    public static synchronized void mergeMapWithLocaleMap(final Map<String, String> toMerge, final Locale locale)
+    public static synchronized void mergeMapWithLocaleMap(final Map<String, String> toMerge,
+            final Locale locale)
     {
         map.get(locale).putAll(toMerge);
     }
@@ -72,7 +74,8 @@ public class Lang
         removeTranslation(selectedLanguage, key);
     }
 
-    public static void addTranslation(final Locale locale, final String key, final String translation)
+    public static void addTranslation(final Locale locale, final String key,
+            final String translation)
     {
         if(!map.containsKey(locale))
         {
@@ -91,28 +94,38 @@ public class Lang
 
     }
 
-    public static synchronized void loadTranslationsFromFile(final Locale locale, final File file) throws UnrespectedModelException, FileNotFoundException, IOException
+    public static synchronized void loadTranslationsFromFile(final Locale locale, final File file)
+            throws UnrespectedModelException, FileNotFoundException, IOException
     {
         if(map.get(locale) == null)
         {
             map.put(locale, new HashMap<String, String>());
         }
 
-        loadTranslationFromBufferedReader(new BufferedReader(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8)), locale, file.getName());
+        loadTranslationFromBufferedReader(
+                new BufferedReader(
+                        new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8)),
+                locale, file.getName());
 
     }
 
-    public static synchronized void loadTranslationsFromFile(final Locale locale, final InputStream input) throws UnrespectedModelException, FileNotFoundException, IOException
+    public static synchronized void loadTranslationsFromFile(final Locale locale,
+            final InputStream input)
+            throws UnrespectedModelException, FileNotFoundException, IOException
     {
         if(map.get(locale) == null)
         {
             map.put(locale, new HashMap<String, String>());
         }
 
-        loadTranslationFromBufferedReader(new BufferedReader(new InputStreamReader(input, StandardCharsets.UTF_8)), locale, input.toString());
+        loadTranslationFromBufferedReader(
+                new BufferedReader(new InputStreamReader(input, StandardCharsets.UTF_8)), locale,
+                input.toString());
     }
 
-    private synchronized static void loadTranslationFromBufferedReader(final BufferedReader br, final Locale locale, final String fileName) throws IOException, UnrespectedModelException
+    private synchronized static void loadTranslationFromBufferedReader(final BufferedReader br,
+            final Locale locale, final String fileName)
+            throws IOException, UnrespectedModelException
     {
         try
         {
@@ -133,7 +146,8 @@ public class Lang
                     }
                     if(map.get(locale).containsKey(translation[0]))
                     {
-                        log("WARNING : File " + fileName + " overwrites a translation @ " + translation[0], true);
+                        log("WARNING : File " + fileName + " overwrites a translation @ "
+                                + translation[0], true);
                     }
                     addTranslation(locale, translation[0], line.substring(line.indexOf("=") + 1));
                 }
@@ -165,7 +179,8 @@ public class Lang
 
     public static String get(final String key, final Locale locale)
     {
-        return isTranslated(key, locale) ? map.get(locale).get(key) : isTranslated(key, defaultLanguage) ? map.get(defaultLanguage).get(key) : key;
+        return isTranslated(key, locale) ? map.get(locale).get(key)
+                : isTranslated(key, defaultLanguage) ? map.get(defaultLanguage).get(key) : key;
     }
 
     public static boolean isTranslated(final String key, final Locale locale)
@@ -173,7 +188,8 @@ public class Lang
         boolean b = map.containsKey(locale) && map.get(locale).containsKey(key);
         if(!b)
         {
-            OpenBST.LOG.warn("Missing translation : '" + key + "' in locale " + locale.getLanguage());
+            OpenBST.LOG
+                    .warn("Missing translation : '" + key + "' in locale " + locale.getLanguage());
         }
         return b;
     }

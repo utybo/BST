@@ -24,7 +24,8 @@ public class IncrDecr implements ScriptAction
 {
 
     @Override
-    public void exec(final String head, final String desc, final int line, final BranchingStory story, final BSTClient client) throws BSTException
+    public void exec(final String head, final String desc, final int line,
+            final BranchingStory story, final BSTClient client) throws BSTException
     {
         final VariableRegistry registry = story.getRegistry();
         boolean incr;
@@ -41,7 +42,9 @@ public class IncrDecr implements ScriptAction
         }
         if(registry.typeOf(desc) != null && registry.typeOf(desc) != Integer.class)
         {
-            throw new BSTException(line, (incr ? "incr" : "decr") + " : The variable " + desc + " is not a number.", story);
+            throw new BSTException(line,
+                    (incr ? "incr" : "decr") + " : The variable " + desc + " is not a number.",
+                    story);
         }
         registry.put(desc, (Integer)registry.get(desc, 0) + (incr ? 1 : -1));
 

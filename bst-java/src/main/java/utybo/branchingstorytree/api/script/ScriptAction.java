@@ -44,7 +44,8 @@ public interface ScriptAction
      *             error... Make sure to pass the line argument to any thrown
      *             exception!
      */
-    public void exec(String head, String desc, int line, BranchingStory story, BSTClient client) throws BSTException;
+    public void exec(String head, String desc, int line, BranchingStory story, BSTClient client)
+            throws BSTException;
 
     /**
      * Gets the different names this ScriptAction represents.

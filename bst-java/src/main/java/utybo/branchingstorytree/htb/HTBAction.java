@@ -17,7 +17,8 @@ public class HTBAction implements ScriptAction
 {
 
     @Override
-    public void exec(String head, String desc, int line, BranchingStory story, BSTClient client) throws BSTException
+    public void exec(String head, String desc, int line, BranchingStory story, BSTClient client)
+            throws BSTException
     {
         if(client.getHTBHandler() == null)
         {
@@ -30,7 +31,9 @@ public class HTBAction implements ScriptAction
             String[] bits = desc.split(",");
             if(bits.length != 2)
             {
-                throw new BSTException(line, "Invalid syntax : htb_import:resourceName,variableToPutItInto", story.getTag("__sourcename"));
+                throw new BSTException(line,
+                        "Invalid syntax : htb_import:resourceName,variableToPutItInto",
+                        story.getTag("__sourcename"));
             }
             String resource = bits[0];
             String var = bits[1];
@@ -42,7 +45,9 @@ public class HTBAction implements ScriptAction
             String[] bits = desc.split(",");
             if(bits.length != 2)
             {
-                throw new BSTException(line, "Invalid syntax : htb_base64:resourceName,variableToPutItIntoAsBase64", story.getTag("__sourcename"));
+                throw new BSTException(line,
+                        "Invalid syntax : htb_base64:resourceName,variableToPutItIntoAsBase64",
+                        story.getTag("__sourcename"));
             }
             String resource = bits[0];
             String var = bits[1];

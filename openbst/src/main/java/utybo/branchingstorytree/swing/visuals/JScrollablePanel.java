@@ -45,15 +45,12 @@ public class JScrollablePanel extends JPanel implements Scrollable, SwingConstan
 
     public enum ScrollableSizeHint
     {
-        NONE,
-        FIT,
-        STRETCH;
+        NONE, FIT, STRETCH;
     }
 
     public enum IncrementType
     {
-        PERCENT,
-        PIXELS;
+        PERCENT, PIXELS;
     }
 
     private ScrollableSizeHint scrollableHeight = ScrollableSizeHint.NONE;
@@ -177,7 +174,8 @@ public class JScrollablePanel extends JPanel implements Scrollable, SwingConstan
      *            a value used with the IncrementType to determine the
      *            scrollable amount
      */
-    public void setScrollableBlockIncrement(final int orientation, final IncrementType type, final int amount)
+    public void setScrollableBlockIncrement(final int orientation, final IncrementType type,
+            final int amount)
     {
         final IncrementInfo info = new IncrementInfo(type, amount);
         setScrollableBlockIncrement(orientation, info);
@@ -232,7 +230,8 @@ public class JScrollablePanel extends JPanel implements Scrollable, SwingConstan
      *            a value used with the IncrementType to determine the
      *            scrollable amount
      */
-    public void setScrollableUnitIncrement(final int orientation, final IncrementType type, final int amount)
+    public void setScrollableUnitIncrement(final int orientation, final IncrementType type,
+            final int amount)
     {
         final IncrementInfo info = new IncrementInfo(type, amount);
         setScrollableUnitIncrement(orientation, info);
@@ -272,7 +271,8 @@ public class JScrollablePanel extends JPanel implements Scrollable, SwingConstan
     }
 
     @Override
-    public int getScrollableUnitIncrement(final Rectangle visible, final int orientation, final int direction)
+    public int getScrollableUnitIncrement(final Rectangle visible, final int orientation,
+            final int direction)
     {
         switch(orientation)
         {
@@ -286,7 +286,8 @@ public class JScrollablePanel extends JPanel implements Scrollable, SwingConstan
     }
 
     @Override
-    public int getScrollableBlockIncrement(final Rectangle visible, final int orientation, final int direction)
+    public int getScrollableBlockIncrement(final Rectangle visible, final int orientation,
+            final int direction)
     {
         switch(orientation)
         {

@@ -66,7 +66,10 @@ public class HTBClient implements HTBHandler
     @Override
     public boolean requestJSAccess()
     {
-        int result = JOptionPane.showConfirmDialog(OpenBST.getInstance(), "<html><body style='width:300px'>" + Lang.get("html.jsrequest"), Lang.get("html.securityalert"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, new ImageIcon(OpenBST.jsAlert));
+        int result = JOptionPane.showConfirmDialog(OpenBST.getInstance(),
+                "<html><body style='width:300px'>" + Lang.get("html.jsrequest"),
+                Lang.get("html.securityalert"), JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE, new ImageIcon(OpenBST.jsAlert));
         if(result == JOptionPane.YES_OPTION)
         {
             nodePanel.setJSEnabled(true);
@@ -81,7 +84,10 @@ public class HTBClient implements HTBHandler
     @Override
     public boolean requestHrefAccess()
     {
-        int result = JOptionPane.showConfirmDialog(OpenBST.getInstance(), "<html><body style='width:300px'>" + Lang.get("html.hrefrequest"), Lang.get("html.securityalert"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, new ImageIcon(OpenBST.hrefAlert));
+        int result = JOptionPane.showConfirmDialog(OpenBST.getInstance(),
+                "<html><body style='width:300px'>" + Lang.get("html.hrefrequest"),
+                Lang.get("html.securityalert"), JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE, new ImageIcon(OpenBST.hrefAlert));
         if(result == JOptionPane.YES_OPTION)
         {
             nodePanel.setHrefEnabled(true);

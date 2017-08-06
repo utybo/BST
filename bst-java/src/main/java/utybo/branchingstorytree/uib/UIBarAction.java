@@ -29,7 +29,8 @@ public class UIBarAction implements ScriptAction
     private final Pattern setPattern = Pattern.compile("(\\w+),(.+)");
 
     @Override
-    public void exec(final String head, final String desc, final int line, final BranchingStory story, final BSTClient client) throws BSTException
+    public void exec(final String head, final String desc, final int line,
+            final BranchingStory story, final BSTClient client) throws BSTException
     {
         final UIBarHandler handler = client.getUIBarHandler();
         if("uib_setprop".equals(head))
@@ -46,10 +47,12 @@ public class UIBarAction implements ScriptAction
             switch(id)
             {
             case "min":
-                handler.setElementMin(element, intIfPossible(value, line, story.getRegistry(), story));
+                handler.setElementMin(element,
+                        intIfPossible(value, line, story.getRegistry(), story));
                 break;
             case "max":
-                handler.setElementMax(element, intIfPossible(value, line, story.getRegistry(), story));
+                handler.setElementMax(element,
+                        intIfPossible(value, line, story.getRegistry(), story));
                 break;
             default:
                 throw new BSTException(line, "Unknown value id " + id, story);
@@ -80,7 +83,8 @@ public class UIBarAction implements ScriptAction
                     }
                     else
                     {
-                        throw new BSTException(line, "Invalid value : '" + value + "' for element " + element, story);
+                        throw new BSTException(line,
+                                "Invalid value : '" + value + "' for element " + element, story);
                     }
                 }
             }
@@ -100,7 +104,8 @@ public class UIBarAction implements ScriptAction
         }
     }
 
-    private void elementCheck(final String element, final int line, final UIBarHandler handler, BranchingStory story) throws BSTException
+    private void elementCheck(final String element, final int line, final UIBarHandler handler,
+            BranchingStory story) throws BSTException
     {
         if(!handler.elementExists(element))
         {
@@ -108,11 +113,13 @@ public class UIBarAction implements ScriptAction
         }
     }
 
-    private int intIfPossible(final String value, final int line, final VariableRegistry registry, BranchingStory story) throws BSTException
+    private int intIfPossible(final String value, final int line, final VariableRegistry registry,
+            BranchingStory story) throws BSTException
     {
         try
         {
-            return registry.typeOf(value) == Integer.class ? (Integer)registry.get(value, 0) : Integer.parseInt(value);
+            return registry.typeOf(value) == Integer.class ? (Integer)registry.get(value, 0)
+                    : Integer.parseInt(value);
         }
         catch(final NumberFormatException e)
         {

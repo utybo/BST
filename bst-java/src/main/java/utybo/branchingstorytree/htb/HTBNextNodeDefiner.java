@@ -46,12 +46,15 @@ public class HTBNextNodeDefiner implements NextNodeDefiner
                 NextNodeDefiner nnd;
                 try
                 {
-                    nnd = new BranchingStoryTreeParser().parseNND(desc, new Dictionnary(), -1, story, client, story.getTag("__sourcename"));
+                    nnd = new BranchingStoryTreeParser().parseNND(desc, new Dictionnary(), -1,
+                            story, client, story.getTag("__sourcename"));
                     sn = nnd.getNextNode(story);
                 }
                 catch(InstantiationException | IllegalAccessException e)
                 {
-                    throw new BSTException(-1, "Unexpected exception : " + e.getClass().getSimpleName() + ", " + e.getMessage(), story.getTag("__sourcename"));
+                    throw new BSTException(-1, "Unexpected exception : "
+                            + e.getClass().getSimpleName() + ", " + e.getMessage(),
+                            story.getTag("__sourcename"));
                 }
             }
             else
@@ -75,12 +78,15 @@ public class HTBNextNodeDefiner implements NextNodeDefiner
                 NextNodeDefiner nnd;
                 try
                 {
-                    nnd = new BranchingStoryTreeParser().parseNND(desc, new Dictionnary(), -1, story, client, story.getTag("__sourcename"));
+                    nnd = new BranchingStoryTreeParser().parseNND(desc, new Dictionnary(), -1,
+                            story, client, story.getTag("__sourcename"));
                     sn = nnd.getNextNode(story);
                 }
                 catch(InstantiationException | IllegalAccessException e)
                 {
-                    throw new BSTException(-1, "Unexpected exception : " + e.getClass().getSimpleName() + ", " + e.getMessage(), story.getTag("__sourcename"));
+                    throw new BSTException(-1, "Unexpected exception : "
+                            + e.getClass().getSimpleName() + ", " + e.getMessage(),
+                            story.getTag("__sourcename"));
                 }
             }
             else

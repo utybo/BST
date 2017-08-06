@@ -157,7 +157,8 @@ public class StoryPanel extends JPanel
      * @param client
      *            the client that will be linked to this story
      */
-    public StoryPanel(final BranchingStory story, final OpenBST parentWindow, final File f, final TabClient client)
+    public StoryPanel(final BranchingStory story, final OpenBST parentWindow, final File f,
+            final TabClient client)
     {
         LOG.trace("=> Initial setup");
         bstFile = f;
@@ -200,14 +201,16 @@ public class StoryPanel extends JPanel
         toolBar.setFloatable(false);
         if(toolbarLevel > 0)
         {
-            toolBar.add(new AbstractAction(Lang.get("story.createss"), new ImageIcon(OpenBST.saveAsImage))
+            toolBar.add(new AbstractAction(Lang.get("story.createss"),
+                    new ImageIcon(OpenBST.saveAsImage))
             {
                 private static final long serialVersionUID = 1L;
 
                 @Override
                 public void actionPerformed(final ActionEvent e)
                 {
-                    latestSaveState = new SaveState(currentNode.getId(), story.getRegistry(), currentNode.getStory().getTag("__sourcename"));
+                    latestSaveState = new SaveState(currentNode.getId(), story.getRegistry(),
+                            currentNode.getStory().getTag("__sourcename"));
                     restoreSaveStateButton.setEnabled(true);
                     if(exportSaveStateButton != null)
                     {
@@ -215,14 +218,18 @@ public class StoryPanel extends JPanel
                     }
                 }
             });
-            restoreSaveStateButton = toolBar.add(new AbstractAction(Lang.get("story.restoress"), new ImageIcon(OpenBST.undoImage))
+            restoreSaveStateButton = toolBar.add(new AbstractAction(Lang.get("story.restoress"),
+                    new ImageIcon(OpenBST.undoImage))
             {
                 private static final long serialVersionUID = 1L;
 
                 @Override
                 public void actionPerformed(final ActionEvent e)
                 {
-                    if(JOptionPane.showConfirmDialog(parentWindow, Lang.get("story.restoress.confirm"), Lang.get("story.restoress"), JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, new ImageIcon(OpenBST.undoBigImage)) == JOptionPane.YES_OPTION)
+                    if(JOptionPane.showConfirmDialog(parentWindow,
+                            Lang.get("story.restoress.confirm"), Lang.get("story.restoress"),
+                            JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE,
+                            new ImageIcon(OpenBST.undoBigImage)) == JOptionPane.YES_OPTION)
                     {
                         restoreSaveState(latestSaveState);
                     }
@@ -231,20 +238,24 @@ public class StoryPanel extends JPanel
             restoreSaveStateButton.setEnabled(false);
             if(toolbarLevel > 1)
             {
-                exportSaveStateButton = toolBar.add(new AbstractAction(Lang.get("story.exportss"), new ImageIcon(OpenBST.exportImage))
+                exportSaveStateButton = toolBar.add(new AbstractAction(Lang.get("story.exportss"),
+                        new ImageIcon(OpenBST.exportImage))
                 {
                     private static final long serialVersionUID = 1L;
 
                     @Override
                     public void actionPerformed(final ActionEvent e)
                     {
-                        final FileDialog jfc = new FileDialog(parentWindow, Lang.get("story.sslocation"), FileDialog.SAVE);
+                        final FileDialog jfc = new FileDialog(parentWindow,
+                                Lang.get("story.sslocation"), FileDialog.SAVE);
                         jfc.setLocationRelativeTo(parentWindow);
                         jfc.setIconImage(OpenBST.exportImage);
                         jfc.setVisible(true);
                         if(jfc.getFile() != null)
                         {
-                            final File file = new File(jfc.getFile().endsWith(".bss") ? jfc.getDirectory() + jfc.getFile() : jfc.getDirectory() + jfc.getFile() + ".bss");
+                            final File file = new File(jfc.getFile().endsWith(".bss")
+                                    ? jfc.getDirectory() + jfc.getFile()
+                                    : jfc.getDirectory() + jfc.getFile() + ".bss");
                             final Gson gson = new Gson();
                             if(file.exists())
                             {
@@ -259,29 +270,38 @@ public class StoryPanel extends JPanel
                                 {
                                     LOG.warn("Failed to create file");
                                 }
-                                try(OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8);)
+                                try(OutputStreamWriter writer = new OutputStreamWriter(
+                                        new FileOutputStream(file), StandardCharsets.UTF_8);)
                                 {
-                                    gson.toJson(new SaveState(currentNode.getId(), story.getRegistry(), currentNode.getStory().getTag("__sourcename")), writer);
+                                    gson.toJson(
+                                            new SaveState(currentNode.getId(), story.getRegistry(),
+                                                    currentNode.getStory().getTag("__sourcename")),
+                                            writer);
                                     writer.flush();
                                 }
                             }
                             catch(final IOException e1)
                             {
                                 LOG.error("Had an IOException while exporting Save State", e1);
-                                JOptionPane.showMessageDialog(parentWindow, Lang.get("story.exportss.error").replace("$m", e1.getMessage()).replace("$e", e1.getClass().getSimpleName()));
+                                JOptionPane.showMessageDialog(parentWindow,
+                                        Lang.get("story.exportss.error")
+                                                .replace("$m", e1.getMessage())
+                                                .replace("$e", e1.getClass().getSimpleName()));
                             }
                         }
                     }
                 });
                 exportSaveStateButton.setEnabled(false);
-                toolBar.add(new AbstractAction(Lang.get("story.importss"), new ImageIcon(OpenBST.importImage))
+                toolBar.add(new AbstractAction(Lang.get("story.importss"),
+                        new ImageIcon(OpenBST.importImage))
                 {
                     private static final long serialVersionUID = 1L;
 
                     @Override
                     public void actionPerformed(final ActionEvent e)
                     {
-                        final FileDialog jfc = new FileDialog(parentWindow, Lang.get("story.sslocation"), FileDialog.LOAD);
+                        final FileDialog jfc = new FileDialog(parentWindow,
+                                Lang.get("story.sslocation"), FileDialog.LOAD);
                         jfc.setLocationRelativeTo(parentWindow);
                         jfc.setIconImage(OpenBST.importImage);
                         jfc.setVisible(true);
@@ -291,7 +311,8 @@ public class StoryPanel extends JPanel
                             final Gson gson = new Gson();
                             try
                             {
-                                final InputStreamReader reader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8);
+                                final InputStreamReader reader = new InputStreamReader(
+                                        new FileInputStream(file), StandardCharsets.UTF_8);
                                 latestSaveState = gson.fromJson(reader, SaveState.class);
                                 reader.close();
                                 restoreSaveState(latestSaveState);
@@ -299,7 +320,10 @@ public class StoryPanel extends JPanel
                             catch(final IOException e1)
                             {
                                 LOG.error("Had an IOException while importing Save State", e1);
-                                JOptionPane.showMessageDialog(parentWindow, Lang.get("story.exportss.error").replace("$m", e1.getMessage()).replace("$e", e1.getClass().getSimpleName()));
+                                JOptionPane.showMessageDialog(parentWindow,
+                                        Lang.get("story.exportss.error")
+                                                .replace("$m", e1.getMessage())
+                                                .replace("$e", e1.getClass().getSimpleName()));
                             }
                         }
                     }
@@ -307,30 +331,43 @@ public class StoryPanel extends JPanel
                 if(toolbarLevel > 2)
                 {
                     toolBar.addSeparator();
-                    toolBar.add(new AbstractAction(Lang.get("story.reset"), new ImageIcon(OpenBST.returnImage))
+                    toolBar.add(new AbstractAction(Lang.get("story.reset"),
+                            new ImageIcon(OpenBST.returnImage))
                     {
                         private static final long serialVersionUID = 1L;
 
                         @Override
                         public void actionPerformed(final ActionEvent e)
                         {
-                            if(JOptionPane.showConfirmDialog(parentWindow, Lang.get("story.reset.confirm"), Lang.get("story.reset"), JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, new ImageIcon(OpenBST.returnBigImage)) == JOptionPane.YES_OPTION)
+                            if(JOptionPane.showConfirmDialog(parentWindow,
+                                    Lang.get("story.reset.confirm"), Lang.get("story.reset"),
+                                    JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE,
+                                    new ImageIcon(
+                                            OpenBST.returnBigImage)) == JOptionPane.YES_OPTION)
                             {
                                 reset();
                             }
                         }
                     });
-                    toolBar.add(new AbstractAction(Lang.get("story.sreload"), new ImageIcon(OpenBST.refreshImage))
+                    toolBar.add(new AbstractAction(Lang.get("story.sreload"),
+                            new ImageIcon(OpenBST.refreshImage))
                     {
                         private static final long serialVersionUID = 1L;
 
                         @Override
                         public void actionPerformed(final ActionEvent e)
                         {
-                            if(JOptionPane.showConfirmDialog(parentWindow, Lang.get("story.sreload.confirm"), Lang.get("story.sreload.confirm.title"), JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, new ImageIcon(OpenBST.refreshBigImage)) == JOptionPane.YES_OPTION)
+                            if(JOptionPane.showConfirmDialog(parentWindow,
+                                    Lang.get("story.sreload.confirm"),
+                                    Lang.get("story.sreload.confirm.title"),
+                                    JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE,
+                                    new ImageIcon(
+                                            OpenBST.refreshBigImage)) == JOptionPane.YES_OPTION)
                             {
 
-                                final SaveState ss = new SaveState(currentNode.getId(), story.getRegistry(), currentNode.getStory().getTag("__sourcename"));
+                                final SaveState ss = new SaveState(currentNode.getId(),
+                                        story.getRegistry(),
+                                        currentNode.getStory().getTag("__sourcename"));
                                 reload(o ->
                                 {
                                     restoreSaveState(ss);
@@ -338,14 +375,20 @@ public class StoryPanel extends JPanel
                             }
                         }
                     });
-                    toolBar.add(new AbstractAction(Lang.get("story.hreload"), new ImageIcon(OpenBST.synchronizeImage))
+                    toolBar.add(new AbstractAction(Lang.get("story.hreload"),
+                            new ImageIcon(OpenBST.synchronizeImage))
                     {
                         private static final long serialVersionUID = 1L;
 
                         @Override
                         public void actionPerformed(final ActionEvent e)
                         {
-                            if(JOptionPane.showConfirmDialog(parentWindow, Lang.get("story.hreload.confirm"), Lang.get("story.hreload.confirm.title"), JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, new ImageIcon(OpenBST.synchronizeBigImage)) == JOptionPane.YES_OPTION)
+                            if(JOptionPane.showConfirmDialog(parentWindow,
+                                    Lang.get("story.hreload.confirm"),
+                                    Lang.get("story.hreload.confirm.title"),
+                                    JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE,
+                                    new ImageIcon(
+                                            OpenBST.synchronizeBigImage)) == JOptionPane.YES_OPTION)
                             {
                                 reset();
                                 reload(o ->
@@ -356,17 +399,20 @@ public class StoryPanel extends JPanel
                     if(toolbarLevel > 3)
                     {
                         toolBar.addSeparator();
-                        toolBar.add(new AbstractAction(Lang.get("story.jumptonode"), new ImageIcon(OpenBST.jumpImage))
+                        toolBar.add(new AbstractAction(Lang.get("story.jumptonode"),
+                                new ImageIcon(OpenBST.jumpImage))
                         {
                             private static final long serialVersionUID = 1L;
 
                             @Override
                             public void actionPerformed(final ActionEvent e)
                             {
-                                new JumpToNodeDialog(client, story, n -> showNode(n)).setVisible(true);;
+                                new JumpToNodeDialog(client, story, n -> showNode(n))
+                                        .setVisible(true);;
                             }
                         });
-                        variableWatcherButton = new JToggleButton("", new ImageIcon(OpenBST.addonSearchImage));
+                        variableWatcherButton = new JToggleButton("",
+                                new ImageIcon(OpenBST.addonSearchImage));
                         variableWatcherButton.addItemListener(e ->
                         {
                             if(e.getStateChange() == ItemEvent.SELECTED)
@@ -407,17 +453,21 @@ public class StoryPanel extends JPanel
         jsHint.setVisible(false);
         toolBar.add(jsHint);
 
-        final JToggleButton seeBackgroundButton = new JToggleButton("", new ImageIcon(OpenBST.visibleImage));
+        final JToggleButton seeBackgroundButton = new JToggleButton("",
+                new ImageIcon(OpenBST.visibleImage));
         seeBackgroundButton.addActionListener(e ->
         {
             nodePanel.setBackgroundVisible(!seeBackgroundButton.isSelected());
-            seeBackgroundButton.setIcon(new ImageIcon(seeBackgroundButton.isSelected() ? OpenBST.invisibleImage : OpenBST.visibleImage));
+            seeBackgroundButton
+                    .setIcon(new ImageIcon(seeBackgroundButton.isSelected() ? OpenBST.invisibleImage
+                            : OpenBST.visibleImage));
 
         });
         seeBackgroundButton.setToolTipText(Lang.get("story.backgroundvisible"));
         toolBar.add(seeBackgroundButton);
 
-        backgroundButton = toolBar.add(new AbstractAction(Lang.get("story.seebackground"), new ImageIcon(OpenBST.pictureImage))
+        backgroundButton = toolBar.add(new AbstractAction(Lang.get("story.seebackground"),
+                new ImageIcon(OpenBST.pictureImage))
         {
 
             /**
@@ -446,7 +496,8 @@ public class StoryPanel extends JPanel
                         Image image;
                         final int width = getWidth() - 1;
                         final int height = getHeight() - 1;
-                        if(previousBounds != null && previousImage != null && getParent().getSize().equals(previousBounds))
+                        if(previousBounds != null && previousImage != null
+                                && getParent().getSize().equals(previousBounds))
                         {
                             image = previousImage;
                         }
@@ -456,16 +507,21 @@ public class StoryPanel extends JPanel
                             double scaleFactor = 1d;
                             if(bi.getWidth() > bi.getHeight())
                             {
-                                scaleFactor = getScaleFactorToFit(new Dimension(bi.getWidth(), bi.getHeight()), getParent().getSize());
+                                scaleFactor = getScaleFactorToFit(
+                                        new Dimension(bi.getWidth(), bi.getHeight()),
+                                        getParent().getSize());
                             }
                             else if(bi.getHeight() > bi.getWidth())
                             {
-                                scaleFactor = getScaleFactorToFit(new Dimension(bi.getWidth(), bi.getHeight()), getParent().getSize());
+                                scaleFactor = getScaleFactorToFit(
+                                        new Dimension(bi.getWidth(), bi.getHeight()),
+                                        getParent().getSize());
                             }
                             final int scaleWidth = (int)Math.round(bi.getWidth() * scaleFactor);
                             final int scaleHeight = (int)Math.round(bi.getHeight() * scaleFactor);
 
-                            image = bi.getScaledInstance(scaleWidth, scaleHeight, Image.SCALE_SMOOTH);
+                            image = bi.getScaledInstance(scaleWidth, scaleHeight,
+                                    Image.SCALE_SMOOTH);
 
                             previousBounds = getParent().getSize();
                             previousImage = image;
@@ -476,10 +532,13 @@ public class StoryPanel extends JPanel
                         g.drawImage(image, x, y, this);
                     }
 
-                    private double getScaleFactorToFit(final Dimension masterSize, final Dimension targetSize)
+                    private double getScaleFactorToFit(final Dimension masterSize,
+                            final Dimension targetSize)
                     {
-                        final double dScaleWidth = getScaleFactor(masterSize.width, targetSize.width);
-                        final double dScaleHeight = getScaleFactor(masterSize.height, targetSize.height);
+                        final double dScaleWidth = getScaleFactor(masterSize.width,
+                                targetSize.width);
+                        final double dScaleHeight = getScaleFactor(masterSize.height,
+                                targetSize.height);
                         final double dScale = Math.min(dScaleHeight, dScaleWidth);
                         return dScale;
                     }
@@ -507,7 +566,8 @@ public class StoryPanel extends JPanel
             if(ssb != null)
             {
                 ssb.setMuted(muteButton.isSelected());
-                muteButton.setIcon(new ImageIcon(muteButton.isSelected() ? OpenBST.muteImage : OpenBST.speakerImage));
+                muteButton.setIcon(new ImageIcon(
+                        muteButton.isSelected() ? OpenBST.muteImage : OpenBST.speakerImage));
             }
         });
         muteButton.setToolTipText(Lang.get("story.mute"));
@@ -520,7 +580,10 @@ public class StoryPanel extends JPanel
             @Override
             public void actionPerformed(final ActionEvent e)
             {
-                if(JOptionPane.showConfirmDialog(parentWindow, Lang.get("story.close.confirm"), Lang.get("story.close"), JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, new ImageIcon(OpenBST.closeBigImage)) == JOptionPane.YES_OPTION)
+                if(JOptionPane.showConfirmDialog(parentWindow, Lang.get("story.close.confirm"),
+                        Lang.get("story.close"), JOptionPane.YES_NO_OPTION,
+                        JOptionPane.WARNING_MESSAGE,
+                        new ImageIcon(OpenBST.closeBigImage)) == JOptionPane.YES_OPTION)
                 {
                     client.getSSBHandler().shutdown();
                     nodePanel.dispose();
@@ -599,7 +662,10 @@ public class StoryPanel extends JPanel
             catch(final BSTException e)
             {
                 LOG.error("Error on BRM restore attempt", e);
-                SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(OpenBST.getInstance(), Lang.get("story.modulerestorefail").replace("$m", "BRM"), Lang.get("error"), JOptionPane.ERROR_MESSAGE));
+                SwingUtilities
+                        .invokeLater(() -> JOptionPane.showMessageDialog(OpenBST.getInstance(),
+                                Lang.get("story.modulerestorefail").replace("$m", "BRM"),
+                                Lang.get("error"), JOptionPane.ERROR_MESSAGE));
             }
         }).start();;
 
@@ -610,7 +676,9 @@ public class StoryPanel extends JPanel
         catch(final BSTException e)
         {
             LOG.error("Error on UIB restore attempt", e);
-            SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(OpenBST.getInstance(), Lang.get("story.modulerestorefail").replace("$m", "UIB"), Lang.get("error"), JOptionPane.ERROR_MESSAGE));
+            SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(OpenBST.getInstance(),
+                    Lang.get("story.modulerestorefail").replace("$m", "UIB"), Lang.get("error"),
+                    JOptionPane.ERROR_MESSAGE));
         }
         String from = ss.getFrom();
         if(from == null || "<main>".equals(from))
@@ -623,7 +691,9 @@ public class StoryPanel extends JPanel
             if(bs == null)
             {
                 LOG.error("Unknown story : " + from);
-                JOptionPane.showMessageDialog(OpenBST.getInstance(), Lang.get("story.unknownstory").replace("$s", from), Lang.get("error"), JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(OpenBST.getInstance(),
+                        Lang.get("story.unknownstory").replace("$s", from), Lang.get("error"),
+                        JOptionPane.ERROR_MESSAGE);
             }
             else
             {
@@ -631,7 +701,10 @@ public class StoryPanel extends JPanel
                 if(node == null)
                 {
                     LOG.error("Unknown node (id " + ss.getNodeId() + " from " + from + ")");
-                    JOptionPane.showMessageDialog(OpenBST.getInstance(), Lang.get("story.missingnode").replace("$n", "" + ss.getNodeId()).replace("$a", "?").replace("$f", from), Lang.get("error"), JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(OpenBST.getInstance(),
+                            Lang.get("story.missingnode").replace("$n", "" + ss.getNodeId())
+                                    .replace("$a", "?").replace("$f", from),
+                            Lang.get("error"), JOptionPane.ERROR_MESSAGE);
                 }
                 else
                 {
@@ -687,19 +760,28 @@ public class StoryPanel extends JPanel
                     if(currentNode == null)
                     {
                         LOG.debug("=> It was the initial node");
-                        JOptionPane.showMessageDialog(this, Lang.get("story.missinginitial"), Lang.get("error"), JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(this, Lang.get("story.missinginitial"),
+                                Lang.get("error"), JOptionPane.ERROR_MESSAGE);
                         return;
                     }
                     else
                     {
-                        JOptionPane.showMessageDialog(this, Lang.get("story.missingnode").replace("$n", "" + e.getId()).replace("$f", "" + e.getSourceFile()).replace("$a", "<none>"), Lang.get("error"), JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(this,
+                                Lang.get("story.missingnode").replace("$n", "" + e.getId())
+                                        .replace("$f", "" + e.getSourceFile())
+                                        .replace("$a", "<none>"),
+                                Lang.get("error"), JOptionPane.ERROR_MESSAGE);
                         return;
                     }
                 }
                 catch(final BSTException e)
                 {
                     LOG.error("Encountered an error while triggering option", e);
-                    JOptionPane.showMessageDialog(this, Lang.get("story.error").replace("$n", "" + currentNode.getId()).replace("$a", currentNode.getTagOrDefault("alias", "<none>")).replace("$f", e.getSourceFile()).replace("$m", e.getMessage()), Lang.get("error"), JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this,
+                            Lang.get("story.error").replace("$n", "" + currentNode.getId())
+                                    .replace("$a", currentNode.getTagOrDefault("alias", "<none>"))
+                                    .replace("$f", e.getSourceFile()).replace("$m", e.getMessage()),
+                            Lang.get("error"), JOptionPane.ERROR_MESSAGE);
                 }
             });
             optionPanel.add(button);
@@ -757,7 +839,8 @@ public class StoryPanel extends JPanel
             // This should never happen
 
             LOG.error("Tried to show a null node!");
-            JOptionPane.showMessageDialog(OpenBST.getInstance(), Lang.get("story.nullnode"), Lang.get("error"), JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(OpenBST.getInstance(), Lang.get("story.nullnode"),
+                    Lang.get("error"), JOptionPane.ERROR_MESSAGE);
             return;
         }
 
@@ -766,7 +849,11 @@ public class StoryPanel extends JPanel
         currentNode = storyNode;
         if(nodeIdLabel != null)
         {
-            nodeIdLabel.setText("Node : " + (currentNode.getId() > 0 ? currentNode.getId() : "[auto]") + (currentNode.hasTag("alias") ? " (" + currentNode.getTag("alias") + ")" : ""));
+            nodeIdLabel
+                    .setText("Node : " + (currentNode.getId() > 0 ? currentNode.getId() : "[auto]")
+                            + (currentNode.hasTag("alias")
+                                    ? " (" + currentNode.getTag("alias") + ")"
+                                    : ""));
         }
 
         try
@@ -779,7 +866,11 @@ public class StoryPanel extends JPanel
                 LOG.trace("=> Logical node result : " + (node == null ? "null" : node.getId()));
                 if(node == null)
                 {
-                    JOptionPane.showMessageDialog(OpenBST.getInstance(), Lang.get("story.logicalnodedeadend").replace("$n", "" + storyNode.getId()).replace("$f", storyNode.getStory().getTag("__sourcename")).replace("$a", storyNode.getTagOrDefault("alias", "<none>")));
+                    JOptionPane.showMessageDialog(OpenBST.getInstance(),
+                            Lang.get("story.logicalnodedeadend")
+                                    .replace("$n", "" + storyNode.getId())
+                                    .replace("$f", storyNode.getStory().getTag("__sourcename"))
+                                    .replace("$a", storyNode.getTagOrDefault("alias", "<none>")));
                 }
                 else
                 {
@@ -811,13 +902,20 @@ public class StoryPanel extends JPanel
         catch(final BSTException e)
         {
             LOG.error("Encountered a BST exception while trying to show a node", e);
-            final String s = Lang.get("story.error2").replace("$n", "" + currentNode.getId()).replace("$a", currentNode.getTagOrDefault("alias", "<none>")).replace("$m", e.getMessage()).replace("$l", e.getWhere() + "");
+            final String s = Lang.get("story.error2").replace("$n", "" + currentNode.getId())
+                    .replace("$a", currentNode.getTagOrDefault("alias", "<none>"))
+                    .replace("$m", e.getMessage()).replace("$l", e.getWhere() + "");
             JOptionPane.showMessageDialog(this, s, Lang.get("error"), JOptionPane.ERROR_MESSAGE);
         }
         catch(final Exception e)
         {
             LOG.error("Encountered a generic exception while trying to show a node", e);
-            JOptionPane.showMessageDialog(this, Lang.get("story.error").replace("$n", "" + currentNode.getId()).replace("$a", currentNode.getTagOrDefault("alias", "<none>")).replace("$f", storyNode.getStory().getTag("__sourcename")).replace("$m", e.getMessage() == null ? "N/A" : e.getMessage()), Lang.get("error"), JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this,
+                    Lang.get("story.error").replace("$n", "" + currentNode.getId())
+                            .replace("$a", currentNode.getTagOrDefault("alias", "<none>"))
+                            .replace("$f", storyNode.getStory().getTag("__sourcename"))
+                            .replace("$m", e.getMessage() == null ? "N/A" : e.getMessage()),
+                    Lang.get("error"), JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -840,7 +938,8 @@ public class StoryPanel extends JPanel
         }
         if(validOptions.size() > 0)
         {
-            LOG.trace("=> Valid options found (" + validOptions.size() + " valid on " + textNode.getOptions().size() + " total)");
+            LOG.trace("=> Valid options found (" + validOptions.size() + " valid on "
+                    + textNode.getOptions().size() + " total)");
             LOG.trace("=> Processing options");
             for(int i = 0; i < validOptions.size(); i++)
             {
@@ -866,7 +965,8 @@ public class StoryPanel extends JPanel
                         {
                             c = (Color)Color.class.getField(color).get(null);
                         }
-                        catch(IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e)
+                        catch(IllegalArgumentException | IllegalAccessException
+                                | NoSuchFieldException | SecurityException e)
                         {
                             LOG.warn("Color does not exist : " + color, e);
                         }
@@ -884,7 +984,8 @@ public class StoryPanel extends JPanel
             LOG.trace("=> No valid options found (" + validOptions.size() + " total");
             LOG.trace("=> Showing ending");
             optionsButton[0].setText(Lang.get("story.final.end"));
-            optionsButton[1].setText(Lang.get("story.final.node").replace("$n", "" + textNode.getId()));
+            optionsButton[1]
+                    .setText(Lang.get("story.final.node").replace("$n", "" + textNode.getId()));
             optionsButton[2].setText(Lang.get("story.final.restart"));
             optionsButton[2].setEnabled(true);
             optionsButton[2].requestFocus();
@@ -982,7 +1083,9 @@ public class StoryPanel extends JPanel
     public String getTitle()
     {
         final HashMap<String, String> tagMap = story.getTagMap();
-        return Lang.get("story.title").replace("$t", tagMap.getOrDefault("title", Lang.get("story.missingtitle"))).replace("$a", tagMap.getOrDefault("author", Lang.get("story.missingauthor")));
+        return Lang.get("story.title")
+                .replace("$t", tagMap.getOrDefault("title", Lang.get("story.missingtitle")))
+                .replace("$a", tagMap.getOrDefault("author", Lang.get("story.missingauthor")));
     }
 
     /**
@@ -996,7 +1099,9 @@ public class StoryPanel extends JPanel
         LOG.trace("NSFW warning check");
         if(story.hasTag("nsfw"))
         {
-            if(JOptionPane.showConfirmDialog(parentWindow, Lang.get("story.nsfw"), Lang.get("story.nsfw.title"), JOptionPane.WARNING_MESSAGE) != JOptionPane.OK_OPTION)
+            if(JOptionPane.showConfirmDialog(parentWindow, Lang.get("story.nsfw"),
+                    Lang.get("story.nsfw.title"),
+                    JOptionPane.WARNING_MESSAGE) != JOptionPane.OK_OPTION)
             {
                 LOG.trace("=> Close");
                 return false;

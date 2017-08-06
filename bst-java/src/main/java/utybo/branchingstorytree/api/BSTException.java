@@ -42,7 +42,8 @@ public class BSTException extends Exception
         this.source = source;
     }
 
-    public BSTException(final int where, final String message, final Throwable cause, BranchingStory source)
+    public BSTException(final int where, final String message, final Throwable cause,
+            BranchingStory source)
     {
         super(message, cause);
         this.where = where;

@@ -21,7 +21,8 @@ import utybo.branchingstorytree.api.story.BranchingStory;
 public class AlwaysTrueChecker implements ScriptChecker
 {
     @Override
-    public boolean check(final String head, final String desc, final int line, final BranchingStory story, final BSTClient client) throws BSTException
+    public boolean check(final String head, final String desc, final int line,
+            final BranchingStory story, final BSTClient client) throws BSTException
     {
         return true;
     }

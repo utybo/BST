@@ -92,7 +92,8 @@ public class PackageDialog extends JDialog
             fd.setVisible(true);
             if(fd.getFile() != null)
             {
-                textField_1.setText(fd.getDirectory() + fd.getFile() + (fd.getFile().endsWith(".bsp") ? "" : ".bsp"));
+                textField_1.setText(fd.getDirectory() + fd.getFile()
+                        + (fd.getFile().endsWith(".bsp") ? "" : ".bsp"));
             }
         });
         panel.add(button_1, "cell 1 1");
@@ -117,7 +118,8 @@ public class PackageDialog extends JDialog
                 @Override
                 protected Object doInBackground() throws Exception
                 {
-                    BSTPackager.toPackage(in, new FileOutputStream(out), new HashMap<>(), s -> publish(s));
+                    BSTPackager.toPackage(in, new FileOutputStream(out), new HashMap<>(),
+                            s -> publish(s));
                     return null;
                 }
 
@@ -137,7 +139,10 @@ public class PackageDialog extends JDialog
                     catch(ExecutionException | InterruptedException e)
                     {
                         Throwable t = e.getCause();
-                        JOptionPane.showMessageDialog(PackageDialog.this, "<html>Something bad happened and the packaging process failed :(<p>" + (t != null ? t.getClass() + " : " + t.getMessage() : ""), "Packaging error", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(PackageDialog.this,
+                                "<html>Something bad happened and the packaging process failed :(<p>"
+                                        + (t != null ? t.getClass() + " : " + t.getMessage() : ""),
+                                "Packaging error", JOptionPane.ERROR_MESSAGE);
                         cl.show(wrapperPanel, "settings");
                     }
                     progressBar.setIndeterminate(false);

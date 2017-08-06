@@ -45,7 +45,8 @@ public class TabClient implements BSTClient
         Object input = null;
         while(input == null || input.toString().isEmpty())
         {
-            input = JOptionPane.showInputDialog(instance, message, "Input asked", JOptionPane.QUESTION_MESSAGE, new ImageIcon(OpenBST.renameImage), null, null);
+            input = JOptionPane.showInputDialog(instance, message, "Input asked",
+                    JOptionPane.QUESTION_MESSAGE, new ImageIcon(OpenBST.renameImage), null, null);
         }
         return input.toString();
     }

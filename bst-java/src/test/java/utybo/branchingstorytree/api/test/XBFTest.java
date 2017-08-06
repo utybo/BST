@@ -45,7 +45,9 @@ public class XBFTest
         {
             try
             {
-                BranchingStory bs = parser.parse(new BufferedReader(new InputStreamReader(in, "UTF-8")), dict, this, name, mainStory.getRegistry());
+                BranchingStory bs = parser.parse(
+                        new BufferedReader(new InputStreamReader(in, "UTF-8")), dict, this, name,
+                        mainStory.getRegistry());
                 stories.put(name, bs);
             }
             catch(Exception e)
@@ -63,7 +65,9 @@ public class XBFTest
         @Override
         public void loadAuto() throws BSTException
         {
-            load(getClass().getResourceAsStream("/utybo/branchingstorytree/api/test/xbf/resources/xbf/additional.bst"), "additional");
+            load(getClass().getResourceAsStream(
+                    "/utybo/branchingstorytree/api/test/xbf/resources/xbf/additional.bst"),
+                    "additional");
         }
 
         @Override
@@ -107,7 +111,10 @@ public class XBFTest
     {
         dict = new Dictionnary();
         XBFTestClient client = new XBFTestClient();
-        mainStory = parser.parse(new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/utybo/branchingstorytree/api/test/xbf/test.xbf"))), dict, client, "test");
+        mainStory = parser.parse(
+                new BufferedReader(new InputStreamReader(getClass()
+                        .getResourceAsStream("/utybo/branchingstorytree/api/test/xbf/test.xbf"))),
+                dict, client, "test");
         client.loadAuto();
         StoryNode sn = ((LogicalNode)mainStory.getInitialNode()).solve(mainStory);
         System.out.println(mainStory.getRegistry().dump());

@@ -42,7 +42,9 @@ public class XBFClient implements XBFHandler
         BranchingStory bs;
         try
         {
-            bs = new BranchingStoryTreeParser().parse(new BufferedReader(new InputStreamReader(in, "UTF-8")), new Dictionnary(), client, name, sp.getStory().getRegistry());
+            bs = new BranchingStoryTreeParser().parse(
+                    new BufferedReader(new InputStreamReader(in, "UTF-8")), new Dictionnary(),
+                    client, name, sp.getStory().getRegistry());
         }
         catch(InstantiationException | IllegalAccessException | IOException e)
         {

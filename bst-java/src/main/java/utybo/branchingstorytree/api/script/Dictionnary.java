@@ -45,7 +45,8 @@ public class Dictionnary
      */
     public Dictionnary() throws InstantiationException, IllegalAccessException
     {
-        for(final Class<? extends ScriptAction> jclass : ClassIndex.getSubclasses(ScriptAction.class))
+        for(final Class<? extends ScriptAction> jclass : ClassIndex
+                .getSubclasses(ScriptAction.class))
         {
             final ScriptAction sa = jclass.newInstance();
             final String[] names = sa.getName();
@@ -57,7 +58,8 @@ public class Dictionnary
                 }
             }
         }
-        for(final Class<? extends ScriptChecker> jclass : ClassIndex.getSubclasses(ScriptChecker.class))
+        for(final Class<? extends ScriptChecker> jclass : ClassIndex
+                .getSubclasses(ScriptChecker.class))
         {
             final ScriptChecker sa = jclass.newInstance();
             final String[] names = sa.getName();
@@ -69,7 +71,8 @@ public class Dictionnary
                 }
             }
         }
-        for(final Class<? extends ExtNNDFactory> jclass : ClassIndex.getSubclasses(ExtNNDFactory.class))
+        for(final Class<? extends ExtNNDFactory> jclass : ClassIndex
+                .getSubclasses(ExtNNDFactory.class))
         {
             final ExtNNDFactory factory = jclass.newInstance();
             final String[] names = factory.getNames();
@@ -105,11 +108,13 @@ public class Dictionnary
         return checkers.get(checker);
     }
 
-    public NextNodeDefiner getExtNND(String group, String group2, BSTClient client, int line, String sourceName) throws BSTException
+    public NextNodeDefiner getExtNND(String group, String group2, BSTClient client, int line,
+            String sourceName) throws BSTException
     {
         if(nndFactories.get(group) == null)
         {
-            throw new BSTException(line, "Unknown external next node definer : " + group, sourceName);
+            throw new BSTException(line, "Unknown external next node definer : " + group,
+                    sourceName);
         }
         return nndFactories.get(group).createNND(group, group2, client);
     }

@@ -47,7 +47,8 @@ public class XBFNextNodeDefiner implements NextNodeDefiner
             {
                 // Check if it's just a virtualnode and not a textnode
                 // This trick is required as TextNodes are a subset of VirtualNodes
-                throw new BSTException(-1, "Node " + id + " from " + from + " is a virtual node and thus cannot be the next node", bs);
+                throw new BSTException(-1, "Node " + id + " from " + from
+                        + " is a virtual node and thus cannot be the next node", bs);
             }
             return node;
         }
@@ -58,13 +59,18 @@ public class XBFNextNodeDefiner implements NextNodeDefiner
             {
                 // Check if it's just a virtualnode and not a textnode
                 // This trick is required as TextNodes are a subset of VirtualNodes
-                throw new BSTException(-1, "Node " + args[0] + " from <main> is a virtual node and thus cannot be the next node", bs);
+                throw new BSTException(-1,
+                        "Node " + args[0]
+                                + " from <main> is a virtual node and thus cannot be the next node",
+                        bs);
             }
             return node;
         }
         else
         {
-            throw new BSTException(-1, "Incorrect syntax : xbf_call:fromfile,node OR to call a node from the main BST file xbf_call:id", bs);
+            throw new BSTException(-1,
+                    "Incorrect syntax : xbf_call:fromfile,node OR to call a node from the main BST file xbf_call:id",
+                    bs);
         }
     }
 

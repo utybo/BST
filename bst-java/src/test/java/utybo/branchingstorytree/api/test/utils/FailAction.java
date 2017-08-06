@@ -16,7 +16,8 @@ import utybo.branchingstorytree.api.story.BranchingStory;
 public class FailAction implements ScriptAction
 {
     @Override
-    public void exec(String head, String desc, int line, BranchingStory story, BSTClient client) throws BSTException
+    public void exec(String head, String desc, int line, BranchingStory story, BSTClient client)
+            throws BSTException
     {
         throw new BSTException(-1, desc, story);
     }

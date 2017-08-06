@@ -95,7 +95,8 @@ public class BranchingStory extends TagHolder
     {
         if(nodes.put(node.getId(), node) != null)
         {
-            throw new IllegalArgumentException("A node already exists with this ID : " + node.getId());
+            throw new IllegalArgumentException(
+                    "A node already exists with this ID : " + node.getId());
         }
     }
 

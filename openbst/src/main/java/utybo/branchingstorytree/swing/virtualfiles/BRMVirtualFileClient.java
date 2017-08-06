@@ -27,7 +27,8 @@ public class BRMVirtualFileClient implements BRMAdvancedHandler
     private final BranchingStory origin;
     private boolean initialized;
 
-    public BRMVirtualFileClient(final VirtualFileHolder vfHolder, final BSTClient client, final BranchingStory story)
+    public BRMVirtualFileClient(final VirtualFileHolder vfHolder, final BSTClient client,
+            final BranchingStory story)
     {
         this.vfHolder = vfHolder;
         this.client = client;
@@ -50,7 +51,8 @@ public class BRMVirtualFileClient implements BRMAdvancedHandler
                 BRMResourceConsumer consumer = client.getResourceHandler(module);
                 if(consumer != null)
                 {
-                    consumer.load(new ByteArrayInputStream(vf.getData()), FilenameUtils.getBaseName(name));
+                    consumer.load(new ByteArrayInputStream(vf.getData()),
+                            FilenameUtils.getBaseName(name));
                 }
             }
         }

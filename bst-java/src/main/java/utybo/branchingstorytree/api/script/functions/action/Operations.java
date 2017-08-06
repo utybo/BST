@@ -25,7 +25,8 @@ public class Operations implements ScriptAction
 {
 
     @Override
-    public void exec(final String head, final String desc, final int line, final BranchingStory story, final BSTClient client) throws BSTException
+    public void exec(final String head, final String desc, final int line,
+            final BranchingStory story, final BSTClient client) throws BSTException
     {
         final VariableRegistry registry = story.getRegistry();
         final String[] pars = desc.split(",");
@@ -45,13 +46,16 @@ public class Operations implements ScriptAction
         }
         else
         {
-            throw new BSTException(line, "Invalid syntax : {" + head + ":a,b} for a + b with result in a or {add:a,b,c} for b + c with result in a", story);
+            throw new BSTException(line, "Invalid syntax : {" + head
+                    + ":a,b} for a + b with result in a or {add:a,b,c} for b + c with result in a",
+                    story);
         }
 
         int ia, ib;
         try
         {
-            ia = registry.typeOf(a) == Integer.class ? (Integer)registry.get(a, 0) : Integer.parseInt(a);
+            ia = registry.typeOf(a) == Integer.class ? (Integer)registry.get(a, 0)
+                    : Integer.parseInt(a);
         }
         catch(final NumberFormatException nfe)
         {
@@ -61,7 +65,8 @@ public class Operations implements ScriptAction
         }
         try
         {
-            ib = registry.typeOf(b) == Integer.class ? (Integer)registry.get(b, 0) : Integer.parseInt(b);
+            ib = registry.typeOf(b) == Integer.class ? (Integer)registry.get(b, 0)
+                    : Integer.parseInt(b);
         }
         catch(final NumberFormatException nfe)
         {
