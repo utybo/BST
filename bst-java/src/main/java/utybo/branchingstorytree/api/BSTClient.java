@@ -46,6 +46,13 @@ public interface BSTClient
     public void exit();
 
     /**
+     * This is called whenever bst-java detects usage of an experimental method.
+     * You should only warn the user once.
+     */
+    public default void warnExperimental(int line, String from)
+    {}
+
+    /**
      * @return The UIB module handler, or null is not supported
      */
     public default UIBarHandler getUIBarHandler()

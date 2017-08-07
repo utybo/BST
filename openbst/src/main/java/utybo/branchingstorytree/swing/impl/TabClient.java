@@ -15,6 +15,7 @@ import utybo.branchingstorytree.api.BSTClient;
 import utybo.branchingstorytree.htb.HTBHandler;
 import utybo.branchingstorytree.jse.JSEHandler;
 import utybo.branchingstorytree.swing.OpenBST;
+import utybo.branchingstorytree.swing.utils.Lang;
 import utybo.branchingstorytree.swing.visuals.NodePanel;
 import utybo.branchingstorytree.swing.visuals.StoryPanel;
 import utybo.branchingstorytree.xbf.XBFHandler;
@@ -31,6 +32,7 @@ public class TabClient implements BSTClient
     private final JSEClient jseClient;
     private XBFClient xbfClient;
     private HTBClient htbClient;
+    private boolean isExperimental;
 
     public TabClient(final OpenBST instance)
     {
@@ -128,5 +130,18 @@ public class TabClient implements BSTClient
     public void warn(String string)
     {
         OpenBST.LOG.warn(string);
+    }
+
+    @Override
+    public void warnExperimental(int line, String from)
+    {
+        if(!isExperimental)
+        {
+            isExperimental = true;
+            JOptionPane.showMessageDialog(OpenBST.getInstance(),
+                    "<html><body style='width:300px'>" + Lang.get("story.experimental").replace("$l", "" + line).replace("$f", from),
+                    Lang.get("story.experimental.title"), JOptionPane.WARNING_MESSAGE,
+                    new ImageIcon(OpenBST.experimentalWarningImage));
+        }
     }
 }

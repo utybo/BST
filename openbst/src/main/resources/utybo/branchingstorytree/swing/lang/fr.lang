@@ -10,6 +10,7 @@ error=Erreur
 bsterror=Erreur BST
 wait=Patientez...
 hide=Cacher
+cancel=Annuler
 
 # Banner and menu
 banner.title=OpenBST
@@ -72,7 +73,7 @@ story.hreload=Rechargement dur (recharger et redémarrer)
 story.hreload.confirm=<html><body style='width: 300px'>Vous allez recharger le fichier. Votre progression ne sera pas sauvegarder. Souhaitez vous vraiment faire cela?
 story.hreload.confirm.title=Rechargement dur
 story.jumptonode=Aller à la node...
-story.variablewatcher=Observation de variable...
+story.variablewatcher=Observation de variables...
 story.close=Fermer l'onglet
 story.close.confirm=<html><body style='width: 300px'>Voulez vous vraiment fermer cet onglet? Toute progression non sauvegardée et exportée sera perdue.
 story.error=<html>Erreur sur la node $n (alias $a, depuis $f) :<p>$m
@@ -96,7 +97,28 @@ story.nullnode=Oups, la node qui était censée être ici n'a pas pu être réso
 story.unknowncolor=Couleur inconnue : $c
 story.modulerestorefail=Le module suivant n'a pas pu être restoré : $m
 story.logicalnodedeadend=La node logique (avec id $n depuis $f avec alias $a) n'a pas donné de node où aller ensuite 
+story.experimental=Utilisation de fonctionnalités expérimentales détéctée!<p><p>Les fonctionnalités experimentales peuvent être très instables et dangereuses et peuvent disparaître à n'importe quel moment. Rappelez vous qu'elles sont ici pour être testées. N'utilisez jamais ces fonctionnalités dans un environnement réel!
+story.experimental.title=Experimental alert
 
+
+# Node jump screen
+nodejump.title=Aller à la node...
+nodejump.go=Aller à la node
+nodejump.exists=This node exists
+nodejump.notexists=This node does not exist
+# Make sure there is a space at the end of the following four lines
+nodejump.fromfile=Depuis le fichier : 
+nodejump.gotonode=Aller à la node 
+nodejump.withid=avec l'ID : 
+nodejump.withalias=avec l'alias : 
+
+# Variable Watcher dialog
+vwatch.title=$s -- Observation de variables
+vwatch.tip=<html>Cet outil vous permet de vérifier les valeurs de toutes les variables. Si vous êtes ici par erreur, aucun problème, refermez simplement cette fenêtre!
+vwatch.refresh=Rafraîchir
+vwatch.vname=Nom de la variable
+vwatch.vvalue=Valeur de la variable
+vwatch.unknown=<aucune variable connue>
 
 # Welcome screen
 openbst.discord=Rejoignez nous sur notre serveur Discord! Vous y trouverez de l'aide pour créer vos histoires BST, ainsi que des créations de la communauté et des informations sur ce qui arrive bientôt dans OpenBST!<p><i>Serveur uniquement anglophone</i>

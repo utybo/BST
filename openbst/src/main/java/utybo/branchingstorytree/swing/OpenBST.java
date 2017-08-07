@@ -216,6 +216,7 @@ public class OpenBST extends JFrame
     public final static Image jsEnabled = loadImage("icons/toolbar/JS Enabled.png");
     public final static Image hrefBlocked = loadImage("icons/toolbar/Href Blocked.png");
     public final static Image hrefEnabled = loadImage("icons/toolbar/Href Enabled.png");
+    public final static Image experimentalWarningImage = loadImage("icons/Experimental Warning.png");
 
     public final static Image menuOpenFolder = loadImage("icons/menu/Open Folder.png");
     public final static Image menuOpenArchive = loadImage("icons/menu/Open Archive.png");

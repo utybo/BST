@@ -8,6 +8,8 @@
  */
 package utybo.branchingstorytree.htb;
 
+import utybo.branchingstorytree.api.Experimental;
+import utybo.branchingstorytree.api.UnsupportedExperimentalException;
 import utybo.branchingstorytree.brm.BRMResourceConsumer;
 
 public interface HTBHandler extends BRMResourceConsumer
@@ -21,5 +23,22 @@ public interface HTBHandler extends BRMResourceConsumer
     public boolean requestJSAccess();
 
     public boolean requestHrefAccess();
+    
+    @Experimental
+    public default void applyCSS(String resource)
+    {
+        throw new UnsupportedExperimentalException();
+    };
 
+    @Experimental
+    public default void removeCSS(String resource)
+    {
+        throw new UnsupportedExperimentalException();
+    };
+    
+    @Experimental
+    public default void clearCSS()
+    {
+        throw new UnsupportedExperimentalException();
+    };
 }

@@ -21,6 +21,7 @@ import javax.swing.JOptionPane;
 import org.apache.commons.io.IOUtils;
 
 import utybo.branchingstorytree.api.BSTException;
+import utybo.branchingstorytree.api.Experimental;
 import utybo.branchingstorytree.htb.HTBHandler;
 import utybo.branchingstorytree.swing.OpenBST;
 import utybo.branchingstorytree.swing.utils.Lang;
@@ -105,4 +106,26 @@ public class HTBClient implements HTBHandler
         return map.containsKey(resource);
     }
 
+    @Override
+    @Experimental
+    public void applyCSS(String resource)
+    {
+        nodePanel.addCSSSheet(getAsString(resource));
+    }
+
+    @Override
+    @Experimental
+    public void removeCSS(String resource)
+    {
+        nodePanel.removeCSSSheet(getAsString(resource));
+    }
+
+    @Override
+    @Experimental
+    public void clearCSS()
+    {
+        nodePanel.removeAllCSSSheets();
+    }
+
+    
 }

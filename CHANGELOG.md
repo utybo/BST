@@ -14,6 +14,11 @@ Less technical explanations available on the [OpenBST website](https://utybo.git
 
 ## [2.0-beta2] (Unreleased)
 ### Added
+- **Experimental features were added.** They provide cool features, but can be very unstable and may disappear at any time. A warning is issued every time you call an experimental function.
+- Added new experimental features for HTB : custom CSS files.
+- Added a new Experimental Warning icon
+- *Note on experimental features : See the javadoc for the @Experimental annotation which explains the general contracts around experimental elements*
+- *Added warnExperimental(line, from) inside BSTClient in bst-java*	 
 ### Changed
 - Large resources are now compressed with XZ to avoid massive file sizes.
 ### Deprecated

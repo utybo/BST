@@ -97,6 +97,8 @@ public class ActionDescriptor
      */
     public void exec() throws BSTException
     {
+        if(action.isExperimental())
+            client.warnExperimental(debugLine, story.getTag("__sourcename"));
         action.exec(head, desc, debugLine, story, client);
     }
 

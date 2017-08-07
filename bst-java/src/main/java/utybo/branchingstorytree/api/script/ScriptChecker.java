@@ -12,6 +12,7 @@ import org.atteo.classindex.IndexSubclasses;
 
 import utybo.branchingstorytree.api.BSTClient;
 import utybo.branchingstorytree.api.BSTException;
+import utybo.branchingstorytree.api.Experimental;
 import utybo.branchingstorytree.api.story.BranchingStory;
 
 /**
@@ -54,4 +55,9 @@ public interface ScriptChecker
      *         covers
      */
     public String[] getName();
+
+    public default boolean isExperimental()
+    {
+        return this.getClass().isAnnotationPresent(Experimental.class);
+    }
 }

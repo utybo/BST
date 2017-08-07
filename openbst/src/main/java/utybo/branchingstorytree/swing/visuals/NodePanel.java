@@ -13,6 +13,7 @@ import java.awt.Color;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.concurrent.CountDownLatch;
 import java.util.function.Consumer;
@@ -37,6 +38,7 @@ import javafx.scene.Scene;
 import javafx.scene.text.FontSmoothingType;
 import javafx.scene.web.WebView;
 import utybo.branchingstorytree.api.BSTException;
+import utybo.branchingstorytree.api.Experimental;
 import utybo.branchingstorytree.api.StoryUtils;
 import utybo.branchingstorytree.api.story.BranchingStory;
 import utybo.branchingstorytree.api.story.TextNode;
@@ -93,6 +95,8 @@ public class NodePanel extends JScrollablePanel
     private boolean hrefEnabled;
     private final StoryPanel parent;
     private boolean isDark, isAlreadyBuilt;
+    @Experimental
+    private ArrayList<String> additionalCSS = new ArrayList<>();
 
     private final Consumer<Boolean> callback = b ->
     {
@@ -242,7 +246,8 @@ public class NodePanel extends JScrollablePanel
         // Build the base, with fonts and style (injecting font info)
         String base = "<head><meta charset=\"utf-8\"/>" //
                 + "<style type='text/css'>" + FONT_STYLE + "</style>" //
-                + "<style type='text/css'>" + STYLE.replace("$f", storyFont) + "</style></head>" //
+                + "<style type='text/css'>" + STYLE.replace("$f", storyFont) + "</style>" //
+                + "$CUSTOMCSS" + "</head>" //
                 + "<body class='$bbg" + (isDark ? " dark" : "") + "'>" + "<div class='storydiv'>" //
                 + "<div style=\"$COLOR\">" + text + "</div></div></body>";
         String additional, c;
@@ -268,7 +273,17 @@ public class NodePanel extends JScrollablePanel
         {
             c = isDark ? "color: #FFFFFF" : "";
         }
-        String s = base.replace("$ADDITIONAL", additional).replace("$COLOR", c);
+
+        // $EXPERIMENTAL
+        StringBuilder sb = new StringBuilder();
+        for(String string : additionalCSS)
+        {
+            sb.append("<style type='text/css'>" + string + "</style>");
+        }
+
+        String s = base.replace("$ADDITIONAL", additional).replace("$COLOR", c)
+                // $EXPERIMENTAL
+                .replace("$CUSTOMCSS", sb.toString());
         try
         {
             jfxRunAndWait(() ->
@@ -389,6 +404,24 @@ public class NodePanel extends JScrollablePanel
     public void dispose()
     {
         OpenBST.getInstance().removeDarkModeCallbback(callback);
+    }
+
+    @Experimental
+    public void addCSSSheet(String sheet)
+    {
+        additionalCSS.add(sheet);
+    }
+
+    @Experimental
+    public void removeCSSSheet(String sheet)
+    {
+        additionalCSS.remove(sheet);
+    }
+
+    @Experimental
+    public void removeAllCSSSheets()
+    {
+        additionalCSS.clear();
     }
 
 }
