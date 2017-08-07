@@ -77,6 +77,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
 import javax.swing.plaf.metal.MetalLookAndFeel;
 
+import org.apache.commons.compress.compressors.xz.XZCompressorInputStream;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -315,7 +316,7 @@ public class OpenBST extends JFrame
         BufferedImage[] array = new BufferedImage[length];
         for(int i = 0; i < length; i++)
         {
-            array[i] = loadImage(string.replace("$", "" + i));
+            array[i] = loadXZImage(string.replace("$", "" + i));
         }
         return array;
     }
@@ -531,6 +532,20 @@ public class OpenBST extends JFrame
         {
             return ImageIO.read(
                     OpenBST.class.getResourceAsStream("/utybo/branchingstorytree/swing/" + path));
+        }
+        catch(Exception e)
+        {
+            LOG.warn("Failed to load image at path " + path, e);
+            return null;
+        }
+    }
+
+    private static BufferedImage loadXZImage(String path)
+    {
+        try
+        {
+            return ImageIO.read(new XZCompressorInputStream(
+                    OpenBST.class.getResourceAsStream("/utybo/branchingstorytree/swing/" + path + ".xz")));
         }
         catch(Exception e)
         {

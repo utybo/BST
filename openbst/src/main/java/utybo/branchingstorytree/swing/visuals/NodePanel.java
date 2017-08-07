@@ -22,6 +22,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
+import org.apache.commons.compress.compressors.xz.XZCompressorInputStream;
 import org.apache.commons.io.IOUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -54,8 +55,8 @@ public class NodePanel extends JScrollablePanel
         try
         {
             s = IOUtils.toString(
-                    NodePanel.class
-                            .getResourceAsStream("/utybo/branchingstorytree/swing/font/fonts.css"),
+                    new XZCompressorInputStream(NodePanel.class
+                            .getResourceAsStream("/utybo/branchingstorytree/swing/font/fonts.css.xz")),
                     StandardCharsets.UTF_8);
         }
         catch(IOException e)

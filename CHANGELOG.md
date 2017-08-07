@@ -8,10 +8,21 @@ Major changes and highlights are in **bold**. Other changes that impact users ar
 
 Story makers should read all changes in bold and plain. Some mechanisms may be torn apart between major (1.x ==> 2.0) or minor (x.0 ==> x.1) updates, though backward-compatibility is always attempted
 
-Unstable versions will appear inside OpenBST with a "u" at the end. Version sections include changes regarding the entire evolution, not counting beta versions and release candidates. (This is against keepachangelog's practices)
+Unstable versions will appear inside OpenBST with a "u" at the end.
 
-## [2.0] (Unreleased)
-Beta releases details : [2.0-beta1]
+Less technical explanations available on the [OpenBST website](https://utybo.github.io/BST/)
+
+## [2.0-beta2] (Unreleased)
+### Added
+### Changed
+- Large resources are now compressed with XZ to avoid massive file sizes.
+### Deprecated
+### Removed
+### Fixed
+- Fonts no longer look like trash inside NodePanels. This was caused by a crappy, wonky and potentially license-breaking WOFF+WOFF2 conversion from TTF or OTF.
+### i18n changes
+
+## [2.0-beta1]
 ### Added
 - **New, simpler, cleaner, sleeker OpenBST Welcome screen!**
 - **New OpenBST menu with animations and stuff!**
