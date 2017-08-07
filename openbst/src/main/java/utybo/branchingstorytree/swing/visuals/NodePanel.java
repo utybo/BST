@@ -47,7 +47,7 @@ import utybo.branchingstorytree.swing.utils.MarkupUtils;
 
 public class NodePanel extends JScrollablePanel
 {
-    private static final String STYLE;
+    private static final String FONT_STYLE, STYLE;
 
     static
     {
@@ -55,8 +55,8 @@ public class NodePanel extends JScrollablePanel
         try
         {
             s = IOUtils.toString(
-                    new XZCompressorInputStream(NodePanel.class
-                            .getResourceAsStream("/utybo/branchingstorytree/swing/font/fonts.css.xz")),
+                    new XZCompressorInputStream(NodePanel.class.getResourceAsStream(
+                            "/utybo/branchingstorytree/swing/font/fonts.css.xz")),
                     StandardCharsets.UTF_8);
         }
         catch(IOException e)
@@ -65,6 +65,18 @@ public class NodePanel extends JScrollablePanel
             s = "";
         }
 
+        FONT_STYLE = s;
+
+        try
+        {
+            s = IOUtils.toString(NodePanel.class.getResourceAsStream(
+                    "/utybo/branchingstorytree/swing/story.css"), StandardCharsets.UTF_8);
+        }
+        catch(IOException e)
+        {
+            OpenBST.LOG.warn("Failed to load fonts CSS file", e);
+            s = "";
+        }
         STYLE = s;
     }
 
@@ -164,7 +176,8 @@ public class NodePanel extends JScrollablePanel
                                     NodePanel.class.getResourceAsStream(
                                             "/utybo/branchingstorytree/swing/html/error.html"),
                                     StandardCharsets.UTF_8)
-                            .replace("$MSG", Lang.get("story.problem")).replace("$STYLE", STYLE));
+                            .replace("$MSG", Lang.get("story.problem"))
+                            .replace("$STYLE", FONT_STYLE));
                 }
                 catch(IOException e)
                 {
@@ -226,22 +239,24 @@ public class NodePanel extends JScrollablePanel
 
     private void build()
     {
-        String base = "<head><meta charset=\"utf-8\"/><style type='text/css'>" + STYLE
-                + " body {font-family: " + storyFont + ";}</style></head>" //
-                + "<body style=\"margin:10px;padding:0px;$BG\"><div style=\"margin:-10px;padding:10px;$ADDITIONAL;width: 100%; height:100%\">" //
+        // Build the base, with fonts and style (injecting font info)
+        String base = "<head><meta charset=\"utf-8\"/>" //
+                + "<style type='text/css'>" + FONT_STYLE + "</style>" //
+                + "<style type='text/css'>" + STYLE.replace("$f", storyFont) + "</style></head>" //
+                + "<body class='$bbg" + (isDark ? " dark" : "") + "'>" + "<div class='storydiv'>" //
                 + "<div style=\"$COLOR\">" + text + "</div></div></body>";
-        String bg, additional, c;
+        String additional, c;
 
         if(imageClient.getCurrentBackground() != null && backgroundVisible)
         {
-            bg = "background-image:url('data:image/png;base64," + b64bg()
-                    + "'); background-size:cover; background-position:center; background-attachment:fixed";
+            // Inject background (base64) and add the background class to the body
+            base = base.replace("$b64bg", b64bg()).replace("$bbg", "bg");
             additional = isDark ? "background-color:rgba(0,0,0,0.66)"
                     : "background-color:rgba(255,255,255,0.66)";
         }
         else
         {
-            bg = isDark ? "background-color: #000000" : "";
+            base.replace("$bbg", "");
             additional = "";
         }
         if(textColor != null)
@@ -253,7 +268,7 @@ public class NodePanel extends JScrollablePanel
         {
             c = isDark ? "color: #FFFFFF" : "";
         }
-        String s = base.replace("$BG", bg).replace("$ADDITIONAL", additional).replace("$COLOR", c);
+        String s = base.replace("$ADDITIONAL", additional).replace("$COLOR", c);
         try
         {
             jfxRunAndWait(() ->
