@@ -25,6 +25,7 @@ Less technical explanations available on the [OpenBST website](https://utybo.git
 ### Removed
 ### Fixed
 - Fonts no longer look like trash inside NodePanels. This was caused by a crappy, wonky and potentially license-breaking WOFF+WOFF2 conversion from TTF or OTF.
+- Fixed font size on the error screen
 ### i18n changes
 - added story.experimental story.experimental.title
 
