@@ -98,7 +98,7 @@ import javafx.embed.swing.JFXPanel;
 import net.miginfocom.swing.MigLayout;
 import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.api.BranchingStoryTreeParser;
-import utybo.branchingstorytree.api.script.Dictionnary;
+import utybo.branchingstorytree.api.script.Dictionary;
 import utybo.branchingstorytree.api.story.BranchingStory;
 import utybo.branchingstorytree.swing.impl.BRMFileClient;
 import utybo.branchingstorytree.swing.impl.TabClient;
@@ -346,7 +346,7 @@ public class OpenBST extends JFrame
                                                 "Opening " + file.getName() + "...",
                                                 new FileInputStream(file)),
                                         Charset.forName("UTF-8"))),
-                                new Dictionnary(), client, "<main>");
+                                new Dictionary(), client, "<main>");
                         client.setBRMHandler(new BRMFileClient(file, client, bs));
                     }
                     callback.accept(bs);

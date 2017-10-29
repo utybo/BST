@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 
 import utybo.branchingstorytree.api.script.ActionDescriptor;
 import utybo.branchingstorytree.api.script.CheckerDescriptor;
-import utybo.branchingstorytree.api.script.Dictionnary;
+import utybo.branchingstorytree.api.script.Dictionary;
 import utybo.branchingstorytree.api.script.IfNextNodeDefiner;
 import utybo.branchingstorytree.api.script.NextNodeDefiner;
 import utybo.branchingstorytree.api.script.ScriptAction;
@@ -80,13 +80,13 @@ public class BranchingStoryTreeParser
      * @throws BSTException
      *             if something is wrong with your input
      */
-    public synchronized BranchingStory parse(final BufferedReader br, final Dictionnary dictionnary,
+    public synchronized BranchingStory parse(final BufferedReader br, final Dictionary dictionnary,
             final BSTClient client, String name) throws IOException, BSTException
     {
         return parse(br, dictionnary, client, name, new BranchingStory());
     }
 
-    public synchronized BranchingStory parse(final BufferedReader br, final Dictionnary dictionnary,
+    public synchronized BranchingStory parse(final BufferedReader br, final Dictionary dictionnary,
             final BSTClient client, String name, VariableRegistry registry)
             throws IOException, BSTException
     {
@@ -94,7 +94,7 @@ public class BranchingStoryTreeParser
     }
 
     private synchronized BranchingStory parse(final BufferedReader br,
-            final Dictionnary dictionnary, final BSTClient client, String name,
+            final Dictionary dictionnary, final BSTClient client, String name,
             BranchingStory story) throws IOException, BSTException
     {
 
@@ -434,7 +434,7 @@ public class BranchingStoryTreeParser
         return story;
     }
 
-    public NextNodeDefiner parseNND(final String nnd, final Dictionnary dictionnary,
+    public NextNodeDefiner parseNND(final String nnd, final Dictionary dictionnary,
             final int lineNumber, final BranchingStory story, final BSTClient client, String name)
             throws BSTException
     {

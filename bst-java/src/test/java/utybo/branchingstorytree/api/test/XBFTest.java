@@ -20,7 +20,7 @@ import org.junit.Test;
 import utybo.branchingstorytree.api.BSTClient;
 import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.api.BranchingStoryTreeParser;
-import utybo.branchingstorytree.api.script.Dictionnary;
+import utybo.branchingstorytree.api.script.Dictionary;
 import utybo.branchingstorytree.api.story.BranchingStory;
 import utybo.branchingstorytree.api.story.LogicalNode;
 import utybo.branchingstorytree.api.story.StoryNode;
@@ -30,7 +30,7 @@ import utybo.branchingstorytree.xbf.XBFHandler;
 
 public class XBFTest
 {
-    private static Dictionnary dict;
+    private static Dictionary dict;
 
     private static BranchingStoryTreeParser parser = new BranchingStoryTreeParser();
 
@@ -109,7 +109,7 @@ public class XBFTest
     @Test
     public void testXBF() throws Exception
     {
-        dict = new Dictionnary();
+        dict = new Dictionary();
         XBFTestClient client = new XBFTestClient();
         mainStory = parser.parse(
                 new BufferedReader(new InputStreamReader(getClass()

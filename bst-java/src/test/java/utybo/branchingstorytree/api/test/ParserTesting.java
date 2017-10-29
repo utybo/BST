@@ -19,7 +19,7 @@ import org.junit.Test;
 import utybo.branchingstorytree.api.BSTClient;
 import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.api.BranchingStoryTreeParser;
-import utybo.branchingstorytree.api.script.Dictionnary;
+import utybo.branchingstorytree.api.script.Dictionary;
 import utybo.branchingstorytree.api.story.BranchingStory;
 import utybo.branchingstorytree.api.story.LogicalNode;
 import utybo.branchingstorytree.api.story.TextNode;
@@ -45,7 +45,7 @@ public class ParserTesting
     public static BranchingStory testFile(final String path, final BSTClient client)
             throws IOException, BSTException, InstantiationException, IllegalAccessException
     {
-        final Dictionnary d = new Dictionnary();
+        final Dictionary d = new Dictionary();
         return new BranchingStoryTreeParser().parse(
                 new BufferedReader(new InputStreamReader(ActionTesting.class
                         .getResourceAsStream("/utybo/branchingstorytree/api/test/files/" + path))),

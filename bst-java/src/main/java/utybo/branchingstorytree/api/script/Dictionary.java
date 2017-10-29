@@ -24,7 +24,7 @@ import utybo.branchingstorytree.api.BSTException;
  * @author utybo
  *
  */
-public class Dictionnary
+public class Dictionary
 {
     /**
      * A HashMap with action names as keys and script actions as values
@@ -43,7 +43,7 @@ public class Dictionnary
      * @throws InstantiationException
      * @throws IllegalAccessException
      */
-    public Dictionnary() throws InstantiationException, IllegalAccessException
+    public Dictionary() throws InstantiationException, IllegalAccessException
     {
         for(final Class<? extends ScriptAction> jclass : ClassIndex
                 .getSubclasses(ScriptAction.class))

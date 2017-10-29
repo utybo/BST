@@ -14,13 +14,13 @@ import java.util.regex.Pattern;
 import utybo.branchingstorytree.api.BSTClient;
 import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.api.script.CheckerDescriptor;
-import utybo.branchingstorytree.api.script.Dictionnary;
+import utybo.branchingstorytree.api.script.Dictionary;
 import utybo.branchingstorytree.api.script.ScriptAction;
 import utybo.branchingstorytree.api.story.BranchingStory;
 
 public class AssertAction implements ScriptAction
 {
-    private static Dictionnary dict;
+    private static Dictionary dict;
 
     @Override
     public void exec(final String head, final String desc, final int line,
@@ -30,7 +30,7 @@ public class AssertAction implements ScriptAction
         {
             if(dict == null)
             {
-                dict = new Dictionnary();
+                dict = new Dictionary();
             }
         }
         catch(InstantiationException | IllegalAccessException e)

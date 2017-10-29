@@ -12,7 +12,7 @@ import utybo.branchingstorytree.api.BSTClient;
 import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.api.BranchingStoryTreeParser;
 import utybo.branchingstorytree.api.NodeNotFoundException;
-import utybo.branchingstorytree.api.script.Dictionnary;
+import utybo.branchingstorytree.api.script.Dictionary;
 import utybo.branchingstorytree.api.script.NextNodeDefiner;
 import utybo.branchingstorytree.api.story.BranchingStory;
 import utybo.branchingstorytree.api.story.StoryNode;
@@ -46,7 +46,7 @@ public class HTBNextNodeDefiner implements NextNodeDefiner
                 NextNodeDefiner nnd;
                 try
                 {
-                    nnd = new BranchingStoryTreeParser().parseNND(desc, new Dictionnary(), -1,
+                    nnd = new BranchingStoryTreeParser().parseNND(desc, new Dictionary(), -1,
                             story, client, story.getTag("__sourcename"));
                     sn = nnd.getNextNode(story);
                 }
@@ -78,7 +78,7 @@ public class HTBNextNodeDefiner implements NextNodeDefiner
                 NextNodeDefiner nnd;
                 try
                 {
-                    nnd = new BranchingStoryTreeParser().parseNND(desc, new Dictionnary(), -1,
+                    nnd = new BranchingStoryTreeParser().parseNND(desc, new Dictionary(), -1,
                             story, client, story.getTag("__sourcename"));
                     sn = nnd.getNextNode(story);
                 }

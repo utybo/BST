@@ -19,7 +19,7 @@ import java.util.HashMap;
 import utybo.branchingstorytree.api.BSTClient;
 import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.api.BranchingStoryTreeParser;
-import utybo.branchingstorytree.api.script.Dictionnary;
+import utybo.branchingstorytree.api.script.Dictionary;
 import utybo.branchingstorytree.api.story.BranchingStory;
 import utybo.branchingstorytree.swing.visuals.StoryPanel;
 import utybo.branchingstorytree.xbf.XBFHandler;
@@ -43,7 +43,7 @@ public class XBFClient implements XBFHandler
         try
         {
             bs = new BranchingStoryTreeParser().parse(
-                    new BufferedReader(new InputStreamReader(in, "UTF-8")), new Dictionnary(),
+                    new BufferedReader(new InputStreamReader(in, "UTF-8")), new Dictionary(),
                     client, name, sp.getStory().getRegistry());
         }
         catch(InstantiationException | IllegalAccessException | IOException e)

@@ -37,7 +37,7 @@ import com.google.gson.reflect.TypeToken;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.api.BranchingStoryTreeParser;
-import utybo.branchingstorytree.api.script.Dictionnary;
+import utybo.branchingstorytree.api.script.Dictionary;
 import utybo.branchingstorytree.api.story.BranchingStory;
 import utybo.branchingstorytree.swing.impl.TabClient;
 import utybo.branchingstorytree.swing.virtualfiles.BRMVirtualFileClient;
@@ -202,7 +202,7 @@ public class BSTPackager
         BranchingStoryTreeParser parser = new BranchingStoryTreeParser();
         BranchingStory bs = parser.parse(new BufferedReader(new InputStreamReader(
                 new ByteArrayInputStream(vfh.getFile(meta.get("mainFile")).getData()),
-                StandardCharsets.UTF_8)), new Dictionnary(), client, "<main>");
+                StandardCharsets.UTF_8)), new Dictionary(), client, "<main>");
         client.setBRMHandler(new BRMVirtualFileClient(vfh, client, bs));
         return bs;
     }
