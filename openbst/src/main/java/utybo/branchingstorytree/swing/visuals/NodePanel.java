@@ -42,6 +42,7 @@ import utybo.branchingstorytree.api.Experimental;
 import utybo.branchingstorytree.api.StoryUtils;
 import utybo.branchingstorytree.api.story.BranchingStory;
 import utybo.branchingstorytree.api.story.TextNode;
+import utybo.branchingstorytree.swing.Icons;
 import utybo.branchingstorytree.swing.OpenBST;
 import utybo.branchingstorytree.swing.impl.IMGClient;
 import utybo.branchingstorytree.swing.utils.Lang;
@@ -385,9 +386,9 @@ public class NodePanel extends JScrollablePanel
     {
         view.getEngine().setJavaScriptEnabled(b);
         parent.getJSHint().setToolTipText(Lang.get("html.js" + (b ? "enabled" : "blocked")));
-        parent.getJSHint().setIcon(new ImageIcon(b ? OpenBST.jsEnabled : OpenBST.jsBlocked));
+        parent.getJSHint().setIcon(new ImageIcon(b ? Icons.getImage("JSY", 16) : Icons.getImage("JSN", 16)));
         parent.getJSHint()
-                .setDisabledIcon(new ImageIcon(b ? OpenBST.jsEnabled : OpenBST.jsBlocked));
+                .setDisabledIcon(new ImageIcon(b ? Icons.getImage("JSY", 16) : Icons.getImage("JSN", 16)));
         parent.getJSHint().setVisible(true);
     }
 
@@ -395,9 +396,9 @@ public class NodePanel extends JScrollablePanel
     {
         hrefEnabled = b;
         parent.getHrefHint().setToolTipText(Lang.get("html.href" + (b ? "enabled" : "blocked")));
-        parent.getHrefHint().setIcon(new ImageIcon(b ? OpenBST.hrefEnabled : OpenBST.hrefBlocked));
+        parent.getHrefHint().setIcon(new ImageIcon(b ? Icons.getImage("LinkY", 16) : Icons.getImage("LinkN", 16)));
         parent.getHrefHint()
-                .setDisabledIcon(new ImageIcon(b ? OpenBST.hrefEnabled : OpenBST.hrefBlocked));
+                .setDisabledIcon(new ImageIcon(b ? Icons.getImage("LinkY", 16) : Icons.getImage("LinkN", 16)));
         parent.getHrefHint().setVisible(true);
     }
 

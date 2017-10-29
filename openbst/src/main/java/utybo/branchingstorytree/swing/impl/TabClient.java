@@ -14,6 +14,7 @@ import javax.swing.JOptionPane;
 import utybo.branchingstorytree.api.BSTClient;
 import utybo.branchingstorytree.htb.HTBHandler;
 import utybo.branchingstorytree.jse.JSEHandler;
+import utybo.branchingstorytree.swing.Icons;
 import utybo.branchingstorytree.swing.OpenBST;
 import utybo.branchingstorytree.swing.utils.Lang;
 import utybo.branchingstorytree.swing.visuals.NodePanel;
@@ -48,7 +49,7 @@ public class TabClient implements BSTClient
         while(input == null || input.toString().isEmpty())
         {
             input = JOptionPane.showInputDialog(instance, message, "Input asked",
-                    JOptionPane.QUESTION_MESSAGE, new ImageIcon(OpenBST.renameImage), null, null);
+                    JOptionPane.QUESTION_MESSAGE);
         }
         return input.toString();
     }
@@ -141,7 +142,7 @@ public class TabClient implements BSTClient
             JOptionPane.showMessageDialog(OpenBST.getInstance(),
                     "<html><body style='width:300px'>" + Lang.get("story.experimental").replace("$l", "" + line).replace("$f", from),
                     Lang.get("story.experimental.title"), JOptionPane.WARNING_MESSAGE,
-                    new ImageIcon(OpenBST.experimentalWarningImage));
+                    new ImageIcon(Icons.getImage("Experiment", 48)));
         }
     }
 }

@@ -23,6 +23,7 @@ import org.apache.commons.io.IOUtils;
 import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.api.Experimental;
 import utybo.branchingstorytree.htb.HTBHandler;
+import utybo.branchingstorytree.swing.Icons;
 import utybo.branchingstorytree.swing.OpenBST;
 import utybo.branchingstorytree.swing.utils.Lang;
 import utybo.branchingstorytree.swing.visuals.NodePanel;
@@ -70,7 +71,7 @@ public class HTBClient implements HTBHandler
         int result = JOptionPane.showConfirmDialog(OpenBST.getInstance(),
                 "<html><body style='width:300px'>" + Lang.get("html.jsrequest"),
                 Lang.get("html.securityalert"), JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE, new ImageIcon(OpenBST.jsAlert));
+                JOptionPane.QUESTION_MESSAGE, new ImageIcon(Icons.getImage("JSAlert", 48)));
         if(result == JOptionPane.YES_OPTION)
         {
             nodePanel.setJSEnabled(true);
@@ -88,7 +89,7 @@ public class HTBClient implements HTBHandler
         int result = JOptionPane.showConfirmDialog(OpenBST.getInstance(),
                 "<html><body style='width:300px'>" + Lang.get("html.hrefrequest"),
                 Lang.get("html.securityalert"), JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE, new ImageIcon(OpenBST.hrefAlert));
+                JOptionPane.QUESTION_MESSAGE, new ImageIcon(Icons.getImage("AAlert", 48)));
         if(result == JOptionPane.YES_OPTION)
         {
             nodePanel.setHrefEnabled(true);

@@ -58,6 +58,7 @@ import utybo.branchingstorytree.api.story.NodeOption;
 import utybo.branchingstorytree.api.story.SaveState;
 import utybo.branchingstorytree.api.story.StoryNode;
 import utybo.branchingstorytree.api.story.TextNode;
+import utybo.branchingstorytree.swing.Icons;
 import utybo.branchingstorytree.swing.OpenBST;
 import utybo.branchingstorytree.swing.impl.SSBClient;
 import utybo.branchingstorytree.swing.impl.TabClient;
@@ -202,7 +203,7 @@ public class StoryPanel extends JPanel
         if(toolbarLevel > 0)
         {
             toolBar.add(new AbstractAction(Lang.get("story.createss"),
-                    new ImageIcon(OpenBST.saveAsImage))
+                    new ImageIcon(Icons.getImage("Save as", 16)))
             {
                 private static final long serialVersionUID = 1L;
 
@@ -219,7 +220,7 @@ public class StoryPanel extends JPanel
                 }
             });
             restoreSaveStateButton = toolBar.add(new AbstractAction(Lang.get("story.restoress"),
-                    new ImageIcon(OpenBST.undoImage))
+                    new ImageIcon(Icons.getImage("Undo", 16)))
             {
                 private static final long serialVersionUID = 1L;
 
@@ -229,7 +230,7 @@ public class StoryPanel extends JPanel
                     if(JOptionPane.showConfirmDialog(parentWindow,
                             Lang.get("story.restoress.confirm"), Lang.get("story.restoress"),
                             JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE,
-                            new ImageIcon(OpenBST.undoBigImage)) == JOptionPane.YES_OPTION)
+                            new ImageIcon(Icons.getImage("Undo", 40))) == JOptionPane.YES_OPTION)
                     {
                         restoreSaveState(latestSaveState);
                     }
@@ -239,7 +240,7 @@ public class StoryPanel extends JPanel
             if(toolbarLevel > 1)
             {
                 exportSaveStateButton = toolBar.add(new AbstractAction(Lang.get("story.exportss"),
-                        new ImageIcon(OpenBST.exportImage))
+                        new ImageIcon(Icons.getImage("Export", 16)))
                 {
                     private static final long serialVersionUID = 1L;
 
@@ -249,7 +250,7 @@ public class StoryPanel extends JPanel
                         final FileDialog jfc = new FileDialog(parentWindow,
                                 Lang.get("story.sslocation"), FileDialog.SAVE);
                         jfc.setLocationRelativeTo(parentWindow);
-                        jfc.setIconImage(OpenBST.exportImage);
+                        jfc.setIconImage(Icons.getImage("Export", 16));
                         jfc.setVisible(true);
                         if(jfc.getFile() != null)
                         {
@@ -293,7 +294,7 @@ public class StoryPanel extends JPanel
                 });
                 exportSaveStateButton.setEnabled(false);
                 toolBar.add(new AbstractAction(Lang.get("story.importss"),
-                        new ImageIcon(OpenBST.importImage))
+                        new ImageIcon(Icons.getImage("Import", 16)))
                 {
                     private static final long serialVersionUID = 1L;
 
@@ -303,7 +304,7 @@ public class StoryPanel extends JPanel
                         final FileDialog jfc = new FileDialog(parentWindow,
                                 Lang.get("story.sslocation"), FileDialog.LOAD);
                         jfc.setLocationRelativeTo(parentWindow);
-                        jfc.setIconImage(OpenBST.importImage);
+                        jfc.setIconImage(Icons.getImage("Import", 16));
                         jfc.setVisible(true);
                         if(jfc.getFile() != null)
                         {
@@ -332,7 +333,7 @@ public class StoryPanel extends JPanel
                 {
                     toolBar.addSeparator();
                     toolBar.add(new AbstractAction(Lang.get("story.reset"),
-                            new ImageIcon(OpenBST.returnImage))
+                            new ImageIcon(Icons.getImage("Return", 16)))
                     {
                         private static final long serialVersionUID = 1L;
 
@@ -342,15 +343,15 @@ public class StoryPanel extends JPanel
                             if(JOptionPane.showConfirmDialog(parentWindow,
                                     Lang.get("story.reset.confirm"), Lang.get("story.reset"),
                                     JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE,
-                                    new ImageIcon(
-                                            OpenBST.returnBigImage)) == JOptionPane.YES_OPTION)
+                                    new ImageIcon(Icons.getImage("Return",
+                                            40))) == JOptionPane.YES_OPTION)
                             {
                                 reset();
                             }
                         }
                     });
                     toolBar.add(new AbstractAction(Lang.get("story.sreload"),
-                            new ImageIcon(OpenBST.refreshImage))
+                            new ImageIcon(Icons.getImage("Refresh", 16)))
                     {
                         private static final long serialVersionUID = 1L;
 
@@ -361,8 +362,8 @@ public class StoryPanel extends JPanel
                                     Lang.get("story.sreload.confirm"),
                                     Lang.get("story.sreload.confirm.title"),
                                     JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE,
-                                    new ImageIcon(
-                                            OpenBST.refreshBigImage)) == JOptionPane.YES_OPTION)
+                                    new ImageIcon(Icons.getImage("Refresh",
+                                            40))) == JOptionPane.YES_OPTION)
                             {
 
                                 final SaveState ss = new SaveState(currentNode.getId(),
@@ -376,7 +377,7 @@ public class StoryPanel extends JPanel
                         }
                     });
                     toolBar.add(new AbstractAction(Lang.get("story.hreload"),
-                            new ImageIcon(OpenBST.synchronizeImage))
+                            new ImageIcon(Icons.getImage("Synchronize", 16)))
                     {
                         private static final long serialVersionUID = 1L;
 
@@ -387,8 +388,8 @@ public class StoryPanel extends JPanel
                                     Lang.get("story.hreload.confirm"),
                                     Lang.get("story.hreload.confirm.title"),
                                     JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE,
-                                    new ImageIcon(
-                                            OpenBST.synchronizeBigImage)) == JOptionPane.YES_OPTION)
+                                    new ImageIcon(Icons.getImage("Synchronize",
+                                            40))) == JOptionPane.YES_OPTION)
                             {
                                 reset();
                                 reload(o ->
@@ -400,7 +401,7 @@ public class StoryPanel extends JPanel
                     {
                         toolBar.addSeparator();
                         toolBar.add(new AbstractAction(Lang.get("story.jumptonode"),
-                                new ImageIcon(OpenBST.jumpImage))
+                                new ImageIcon(Icons.getImage("Easy to Find", 16)))
                         {
                             private static final long serialVersionUID = 1L;
 
@@ -412,7 +413,7 @@ public class StoryPanel extends JPanel
                             }
                         });
                         variableWatcherButton = new JToggleButton("",
-                                new ImageIcon(OpenBST.addonSearchImage));
+                                new ImageIcon(Icons.getImage("Camera Addon Identification", 16)));
                         variableWatcherButton.addItemListener(e ->
                         {
                             if(e.getStateChange() == ItemEvent.SELECTED)
@@ -454,20 +455,20 @@ public class StoryPanel extends JPanel
         toolBar.add(jsHint);
 
         final JToggleButton seeBackgroundButton = new JToggleButton("",
-                new ImageIcon(OpenBST.visibleImage));
+                new ImageIcon(Icons.getImage("Eye", 16)));
         seeBackgroundButton.addActionListener(e ->
         {
             nodePanel.setBackgroundVisible(!seeBackgroundButton.isSelected());
-            seeBackgroundButton
-                    .setIcon(new ImageIcon(seeBackgroundButton.isSelected() ? OpenBST.invisibleImage
-                            : OpenBST.visibleImage));
+            seeBackgroundButton.setIcon(
+                    new ImageIcon(seeBackgroundButton.isSelected() ? Icons.getImage("Invisible", 16)
+                            : Icons.getImage("Eye", 16)));
 
         });
         seeBackgroundButton.setToolTipText(Lang.get("story.backgroundvisible"));
         toolBar.add(seeBackgroundButton);
 
         backgroundButton = toolBar.add(new AbstractAction(Lang.get("story.seebackground"),
-                new ImageIcon(OpenBST.pictureImage))
+                new ImageIcon(Icons.getImage("Picture", 16)))
         {
 
             /**
@@ -552,14 +553,14 @@ public class StoryPanel extends JPanel
                 });
                 dialog.setTitle(Lang.get("story.background"));
                 dialog.setModalityType(ModalityType.APPLICATION_MODAL);
-                dialog.setIconImage(OpenBST.pictureImage);
-                dialog.setSize(1280, 720);
+                dialog.setIconImage(Icons.getImage("Picture", 16));
+                dialog.setSize((int)(Icons.getScale() * 1280), (int)(Icons.getScale() * 720));
                 dialog.setLocationRelativeTo(parentWindow);
                 dialog.setVisible(true);
             }
         });
 
-        final JToggleButton muteButton = new JToggleButton("", new ImageIcon(OpenBST.speakerImage));
+        final JToggleButton muteButton = new JToggleButton("", new ImageIcon(Icons.getImage("Audio", 16)));
         muteButton.addActionListener(e ->
         {
             final SSBClient ssb = client.getSSBHandler();
@@ -567,13 +568,13 @@ public class StoryPanel extends JPanel
             {
                 ssb.setMuted(muteButton.isSelected());
                 muteButton.setIcon(new ImageIcon(
-                        muteButton.isSelected() ? OpenBST.muteImage : OpenBST.speakerImage));
+                        muteButton.isSelected() ? Icons.getImage("Mute", 16) : Icons.getImage("Audio", 16)));
             }
         });
         muteButton.setToolTipText(Lang.get("story.mute"));
         toolBar.add(muteButton);
 
-        toolBar.add(new AbstractAction(Lang.get("story.close"), new ImageIcon(OpenBST.closeImage))
+        toolBar.add(new AbstractAction(Lang.get("story.close"), new ImageIcon(Icons.getImage("Cancel", 16)))
         {
             private static final long serialVersionUID = 1L;
 
@@ -583,7 +584,7 @@ public class StoryPanel extends JPanel
                 if(JOptionPane.showConfirmDialog(parentWindow, Lang.get("story.close.confirm"),
                         Lang.get("story.close"), JOptionPane.YES_NO_OPTION,
                         JOptionPane.WARNING_MESSAGE,
-                        new ImageIcon(OpenBST.closeBigImage)) == JOptionPane.YES_OPTION)
+                        new ImageIcon(Icons.getImage("Cancel", 40))) == JOptionPane.YES_OPTION)
                 {
                     client.getSSBHandler().shutdown();
                     nodePanel.dispose();

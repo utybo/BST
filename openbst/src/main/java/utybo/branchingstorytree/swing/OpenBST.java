@@ -175,62 +175,9 @@ public class OpenBST extends JFrame
     }
 
     // --- IMAGES ---
-    public final static Image openFolderImage = loadImage("icons/Open Folder.png");
-    public final static Image cancelImage = loadImage("icons/Cancel.png");
-    public final static Image errorImage = loadImage("icons/Error.png");
-    public final static Image aboutImage = loadImage("icons/About.png");
-    public final static Image renameImage = loadImage("icons/Rename.png");
-    public final static Image addonSearchImage = loadImage("icons/toolbar/Addon Search.png");
-    public final static Image addonSearchMediumImage = loadImage(
-            "icons/toolbar/Addon Search Medium.png");
-    public final static Image closeImage = loadImage("icons/toolbar/Close.png");
-
-    public final static Image closeBigImage = loadImage("icons/toolbar/Close Big.png");
-    public final static Image jumpImage = loadImage("icons/toolbar/Jump.png");
-    public final static Image jumpBigImage = loadImage("icons/toolbar/Jump Big.png");
-    public final static Image exportImage = loadImage("icons/toolbar/Export.png");
-    public final static Image gearsImage = loadImage("icons/toolbar/Gears.png");
-    public final static Image importImage = loadImage("icons/toolbar/Import.png");
-    public final static Image invisibleImage = loadImage("icons/toolbar/Invisible.png");
-    public final static Image muteImage = loadImage("icons/toolbar/Mute.png");
-    public final static Image pictureImage = loadImage("icons/toolbar/Picture.png");
-    public final static Image refreshImage = loadImage("icons/toolbar/Refresh.png");
-    public final static Image refreshBigImage = loadImage("icons/toolbar/Refresh Big.png");
-    public final static Image returnImage = loadImage("icons/toolbar/Return.png");
-    public final static Image returnBigImage = loadImage("icons/toolbar/Return Big.png");
-    public final static Image saveAsImage = loadImage("icons/toolbar/Save as.png");
-    public final static Image speakerImage = loadImage("icons/toolbar/Speaker.png");
-    public final static Image synchronizeImage = loadImage("icons/toolbar/Synchronize.png");
-    public final static Image synchronizeBigImage = loadImage("icons/toolbar/Synchronize Big.png");
-    public final static Image undoImage = loadImage("icons/toolbar/Undo.png");
-    public final static Image undoBigImage = loadImage("icons/toolbar/Undo Big.png");
-    public final static Image visibleImage = loadImage("icons/toolbar/Visible.png");
-    public final static Image smallLogoBlue = loadImage("logos/logo-small-blue.png");
-    public final static Image smallLogoWhite = loadImage("logos/logo-small-white.png");
-    public final static Image bigLogoBlue = loadImage("logos/logo-big-blue.png");
-    public final static Image bigLogoWhite = loadImage("logos/logo-big-white.png");
-
-    public final static Image jsAlert = loadImage("icons/JSAlert.png");
-    public final static Image hrefAlert = loadImage("icons/Hyperlink Alert.png");
-    public final static Image jsBlocked = loadImage("icons/toolbar/JS Blocked.png");
-    public final static Image jsEnabled = loadImage("icons/toolbar/JS Enabled.png");
-    public final static Image hrefBlocked = loadImage("icons/toolbar/Href Blocked.png");
-    public final static Image hrefEnabled = loadImage("icons/toolbar/Href Enabled.png");
-    public final static Image experimentalWarningImage = loadImage("icons/Experimental Warning.png");
-
-    public final static Image menuOpenFolder = loadImage("icons/menu/Open Folder.png");
-    public final static Image menuOpenArchive = loadImage("icons/menu/Open Archive.png");
-    public final static Image menuAbout = loadImage("icons/menu/About.png");
-    public final static Image menuColorDropper = loadImage("icons/menu/Color Dropper.png");
-
-    public final static Image discordIcon = loadImage("icons/Discord.png");
 
     public final static List<BufferedImage> bgImages = Collections
             .unmodifiableList(Arrays.asList(loadImages("images/bg$.jpg", 6)));
-    public final static Image externalIcon = loadImage("icons/External.png");
-    public final static Image changeThemeMiniIcon = loadImage("icons/Change Theme Mini.png");
-    public final static Image fullLogo = loadImage("logos/logofull.png");
-    public final static Image fullLogoWhite = loadImage("logos/logofullwhite.png");
 
     /**
      * Container for all the tabs
@@ -306,6 +253,9 @@ public class OpenBST extends JFrame
                             e1);
                 }
             }
+
+            LOG.info("Loading icons...");
+            Icons.load();
 
             new OpenBST();
         });
@@ -545,8 +495,8 @@ public class OpenBST extends JFrame
     {
         try
         {
-            return ImageIO.read(new XZCompressorInputStream(
-                    OpenBST.class.getResourceAsStream("/utybo/branchingstorytree/swing/" + path + ".xz")));
+            return ImageIO.read(new XZCompressorInputStream(OpenBST.class
+                    .getResourceAsStream("/utybo/branchingstorytree/swing/" + path + ".xz")));
         }
         catch(Exception e)
         {
@@ -591,15 +541,15 @@ public class OpenBST extends JFrame
     public OpenBST()
     {
         instance = this;
-        UIManager.put("OptionPane.errorIcon", new ImageIcon(cancelImage));
-        UIManager.put("OptionPane.informationIcon", new ImageIcon(aboutImage));
-        UIManager.put("OptionPane.questionIcon", new ImageIcon(renameImage));
-        UIManager.put("OptionPane.warningIcon", new ImageIcon(errorImage));
+        UIManager.put("OptionPane.errorIcon", new ImageIcon(Icons.getImage("Cancel", 48)));
+        UIManager.put("OptionPane.informationIcon", new ImageIcon(Icons.getImage("About", 48)));
+        UIManager.put("OptionPane.questionIcon", new ImageIcon(Icons.getImage("Rename", 48)));
+        UIManager.put("OptionPane.warningIcon", new ImageIcon(Icons.getImage("Error", 48)));
 
         BorderLayout borderLayout = new BorderLayout();
         borderLayout.setVgap(4);
         getContentPane().setLayout(borderLayout);
-        setIconImage(bigLogoBlue);
+        setIconImage(Icons.getImage("Logo", 48));
         setTitle("OpenBST " + version);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
@@ -615,7 +565,7 @@ public class OpenBST extends JFrame
                 new Color(100, 100, 100));
 
         banner.setBackground(OPENBST_BLUE);
-        banner.add(new JLabel(new ImageIcon(smallLogoWhite)));
+        banner.add(new JLabel(new ImageIcon(Icons.getImage("LogoWhite", 16))));
         openBST.setForeground(Color.WHITE);
         addDarkModeCallback(b ->
         {
@@ -691,11 +641,8 @@ public class OpenBST extends JFrame
                     LOG.error("Exception during link opening", e1);
                 }
             });
-            bannersPanel.add(
-                    new JBannerPanel(
-                            new ImageIcon(errorImage.getScaledInstance(32, 32, Image.SCALE_SMOOTH)),
-                            Color.YELLOW, Lang.get("welcome.ontheedge"), btnReportBugs, false),
-                    "grow");
+            bannersPanel.add(new JBannerPanel(new ImageIcon(Icons.getImage("Error", 48)),
+                    Color.YELLOW, Lang.get("welcome.ontheedge"), btnReportBugs, false), "grow");
         }
 
         JButton btnJoinDiscord = new JButton(Lang.get("openbst.discordjoin"));
@@ -710,16 +657,17 @@ public class OpenBST extends JFrame
                 LOG.error("Exception during link opening", e1);
             }
         });
-        bannersPanel.add(new JBannerPanel(new ImageIcon(discordIcon), DISCORD_COLOR,
-                Lang.get("openbst.discord"), btnJoinDiscord, false), "grow");
+        bannersPanel.add(new JBannerPanel(new ImageIcon(Icons.getImage("Discord", 48)),
+                DISCORD_COLOR, Lang.get("openbst.discord"), btnJoinDiscord, false), "grow");
 
         JPanel panel = new JPanel();
         panel.setBackground(new Color(0, 0, 0, 0));
         welcomeContentPanel.add(panel, "flowx,cell 0 1,growx,aligny center");
         panel.setLayout(new MigLayout("", "[40%][][][][60%,growprio 50]", "[][grow]"));
 
-        final JLabel lblOpenbst = new JLabel(new ImageIcon(fullLogo));
-        addDarkModeCallback(b -> lblOpenbst.setIcon(new ImageIcon(b ? fullLogoWhite : fullLogo)));
+        final JLabel lblOpenbst = new JLabel(new ImageIcon(Icons.getImage("FullLogo", 48)));
+        addDarkModeCallback(b -> lblOpenbst.setIcon(new ImageIcon(
+                b ? Icons.getImage("FullLogoWhite", 48) : Icons.getImage("FullLogo", 48))));
         panel.add(lblOpenbst, "flowx,cell 0 0 1 2,alignx trailing,aligny center");
 
         JSeparator separator = new JSeparator();
@@ -738,14 +686,14 @@ public class OpenBST extends JFrame
 
         final JButton btnOpenAFile = new JButton(Lang.get("welcome.open"));
         panel.add(btnOpenAFile, "cell 4 1");
-        btnOpenAFile.setIcon(new ImageIcon(openFolderImage));
+        //        btnOpenAFile.setIcon(new ImageIcon((Image)null)); // TODO
         btnOpenAFile.addActionListener(e ->
         {
             clickOpenStory();
         });
 
         JButton btnChangeBackground = new JButton(Lang.get("welcome.changebackground"),
-                new ImageIcon(changeThemeMiniIcon));
+                new ImageIcon(Icons.getImage("Change Theme", 16)));
         btnChangeBackground.addActionListener(e ->
         {
             BufferedImage prev = background.getImage();
@@ -760,7 +708,7 @@ public class OpenBST extends JFrame
         welcomeContentPanel.add(btnChangeBackground, "flowx,cell 0 2,alignx left");
 
         JButton btnWelcomepixabay = new JButton(Lang.get("welcome.pixabay"),
-                new ImageIcon(externalIcon));
+                new ImageIcon(Icons.getImage("External Link", 16)));
         btnWelcomepixabay.addActionListener(e ->
         {
             try
@@ -778,7 +726,7 @@ public class OpenBST extends JFrame
         creds.setEnabled(false);
         welcomeContentPanel.add(creds, "cell 0 2, gapbefore 10px");
 
-        setSize(830, 480);
+        setSize((int)(830 * Icons.getScale()), (int)(480 * Icons.getScale()));
         setLocationRelativeTo(null);
         setVisible(true);
     }
@@ -871,34 +819,34 @@ public class OpenBST extends JFrame
         label.setEnabled(false);
         shortMenu.add(label);
         shortMenu.addSeparator();
-        shortMenu.add(new JMenuItem(
-                new AbstractAction(Lang.get("menu.open"), new ImageIcon(menuOpenFolder))
-                {
-                    private static final long serialVersionUID = 1L;
+        shortMenu.add(new JMenuItem(new AbstractAction(Lang.get("menu.open"),
+                /* new ImageIcon((Image)null*) */ null) // TODO
+        {
+            private static final long serialVersionUID = 1L;
 
-                    @Override
-                    public void actionPerformed(ActionEvent e)
-                    {
-                        clickOpenStory();
-                    }
-                }));
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                clickOpenStory();
+            }
+        }));
 
         shortMenu.addSeparator();
 
         JMenu additionalMenu = new JMenu(Lang.get("menu.advanced"));
         shortMenu.add(additionalMenu);
 
-        additionalMenu.add(new JMenuItem(
-                new AbstractAction(Lang.get("menu.package"), new ImageIcon(menuOpenArchive))
-                {
-                    private static final long serialVersionUID = 1L;
+        additionalMenu.add(new JMenuItem(new AbstractAction(Lang.get("menu.package"),
+                new ImageIcon(Icons.getImage("Open Archive", 16)))
+        {
+            private static final long serialVersionUID = 1L;
 
-                    @Override
-                    public void actionPerformed(ActionEvent e)
-                    {
-                        new PackageDialog(instance).setVisible(true);
-                    }
-                }));
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                new PackageDialog(instance).setVisible(true);
+            }
+        }));
         additionalMenu.add(new JMenuItem(new AbstractAction(Lang.get("langcheck"))
         {
             private static final long serialVersionUID = 1L;
@@ -975,7 +923,7 @@ public class OpenBST extends JFrame
 
         JMenu themesMenu = new JMenu(Lang.get("menu.themes"));
         shortMenu.add(themesMenu);
-        themesMenu.setIcon(new ImageIcon(menuColorDropper));
+        themesMenu.setIcon(new ImageIcon(Icons.getImage("Color Wheel", 16)));
         ButtonGroup themesGroup = new ButtonGroup();
         JRadioButtonMenuItem jrbmi;
 
@@ -1006,20 +954,20 @@ public class OpenBST extends JFrame
         themesMenu.add(jrbmi);
         themesGroup.add(jrbmi);
 
-        shortMenu.add(
-                new JMenuItem(new AbstractAction(Lang.get("menu.about"), new ImageIcon(menuAbout))
-                {
-                    /**
-                     *
-                     */
-                    private static final long serialVersionUID = 1L;
+        shortMenu.add(new JMenuItem(new AbstractAction(Lang.get("menu.about"),
+                new ImageIcon(Icons.getImage("About", 16)))
+        {
+            /**
+             *
+             */
+            private static final long serialVersionUID = 1L;
 
-                    @Override
-                    public void actionPerformed(ActionEvent e)
-                    {
-                        new AboutDialog(instance).setVisible(true);
-                    }
-                }));
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                new AboutDialog(instance).setVisible(true);
+            }
+        }));
 
         return shortMenu;
     }

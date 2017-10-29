@@ -32,6 +32,7 @@ import javax.swing.event.DocumentListener;
 import net.miginfocom.swing.MigLayout;
 import utybo.branchingstorytree.api.story.BranchingStory;
 import utybo.branchingstorytree.api.story.StoryNode;
+import utybo.branchingstorytree.swing.Icons;
 import utybo.branchingstorytree.swing.OpenBST;
 import utybo.branchingstorytree.swing.impl.TabClient;
 import utybo.branchingstorytree.swing.utils.Lang;
@@ -78,7 +79,7 @@ public class JumpToNodeDialog extends JDialog
         buttonGroup.add(rdbtnWithId);
         getContentPane().add(rdbtnWithId, "cell 2 0");
 
-        JLabel label = new JLabel(new ImageIcon(OpenBST.jumpBigImage));
+        JLabel label = new JLabel(new ImageIcon(Icons.getImage("Easy to Find", 40)));
         getContentPane().add(label, "cell 0 0 1 5,aligny top");
 
         spinner = new JSpinner();

@@ -28,7 +28,7 @@ import javax.swing.table.DefaultTableModel;
 
 import net.miginfocom.swing.MigLayout;
 import utybo.branchingstorytree.api.script.VariableRegistry;
-import utybo.branchingstorytree.swing.OpenBST;
+import utybo.branchingstorytree.swing.Icons;
 import utybo.branchingstorytree.swing.utils.Lang;
 
 public class VariableWatchDialog extends JDialog
@@ -75,11 +75,12 @@ public class VariableWatchDialog extends JDialog
         contentPanel.setLayout(new MigLayout("", "[grow][]", "[][][grow]"));
 
         final JLabel lblthisDialogAllows = new JLabel(Lang.get("vwatch.tip"));
-        lblthisDialogAllows.setIcon(new ImageIcon(OpenBST.addonSearchMediumImage));
+        lblthisDialogAllows
+                .setIcon(new ImageIcon(Icons.getImage("Camera Addon Identification", 40)));
         contentPanel.add(lblthisDialogAllows, "cell 0 0,aligny top");
 
         final JButton btnRefresh = new JButton(Lang.get("vwatch.refresh"),
-                new ImageIcon(OpenBST.refreshImage));
+                new ImageIcon(Icons.getImage("Refresh", 16)));
         btnRefresh.addActionListener(e -> refresh());
         contentPanel.add(btnRefresh, "cell 1 0,aligny center");
 
@@ -107,7 +108,7 @@ public class VariableWatchDialog extends JDialog
         scrollPane.setViewportView(table);
         refresh();
 
-        setSize(450, 300);
+        setSize((int)(450 * Icons.getScale()), (int)(300 * Icons.getScale()));
         setLocationRelativeTo(parent.parentWindow);
     }
 

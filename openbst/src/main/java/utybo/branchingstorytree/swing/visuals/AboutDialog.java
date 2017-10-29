@@ -36,6 +36,7 @@ import javax.swing.border.LineBorder;
 import org.apache.commons.io.IOUtils;
 
 import net.miginfocom.swing.MigLayout;
+import utybo.branchingstorytree.swing.Icons;
 import utybo.branchingstorytree.swing.OpenBST;
 import utybo.branchingstorytree.swing.utils.Lang;
 
@@ -55,7 +56,7 @@ public class AboutDialog extends JDialog
 
         JPanel banner = new JPanel(new FlowLayout(FlowLayout.CENTER));
         banner.setBackground(OpenBST.OPENBST_BLUE);
-        JLabel lblOpenbst = new JLabel(new ImageIcon(OpenBST.fullLogoWhite));
+        JLabel lblOpenbst = new JLabel(new ImageIcon(Icons.getImage("FullLogoWhite", 48)));
         lblOpenbst.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         banner.add(lblOpenbst, "flowx,cell 0 0,alignx center");
         getContentPane().add(banner, BorderLayout.NORTH);
