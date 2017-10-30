@@ -2,10 +2,11 @@
 <h3>Running OpenBST</h3>
 <p>Simply install Java from java.com, and you're ready to go! Click on the OpenBST button to download the version you wish to use, and double click the downloaded .jar file : OpenBST is now running! No installation is required, simply double click the .jar when you want to launch OpenBST.</p>
 
-<p><b>LINUX USERS :</b> You need to use the Oracle JDK, as OpenJDK does not work properly with JavaFX sounds, even when using OpenJFX. For Ubuntu/Linux Mint and deriates (ElementaryOS, X/K/L/Edubuntu, Ubuntu MATE/Gnome/Budgie, ...), use package oracle-java8-installer from PPA ppa:webupd8team/java (instructions available <a href="http://www.webupd8.org/2012/09/install-oracle-java-8-in-ubuntu-via-ppa.html">here</a>).</p>
+<p><b>LINUX USERS :</b> You need to use the Oracle JDK, as OpenJDK does not work properly with JavaFX sounds, even when using OpenJFX. For Ubuntu/Linux Mint and derivates (ElementaryOS, X/K/L/Edubuntu, Ubuntu MATE/Gnome/Budgie, ...), use package oracle-java8-installer from PPA ppa:webupd8team/java (instructions available <a href="http://www.webupd8.org/2012/09/install-oracle-java-8-in-ubuntu-via-ppa.html">here</a>).</p>
 
 <h3>Downloads list</h3>
 <p>Versions that have a slightly red background are not suitable for production use (they are beta versions).</p>
+<p><b>RECOMMENDED DOWNLOADS : </b> If you are a beginner, you should download the latest availale OpenBST, BST Tutorial and Reference</b></p>
 
 <div style=" overflow: scroll; max-height: 500px;"><table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp" style="width: 100%;">
   <thead>
@@ -15,23 +16,23 @@
       <th class="mdl-data-table__cell--non-numeric">Blog post</th>
       <th class="mdl-data-table__cell--non-numeric">OpenBST</th>
       <th class="mdl-data-table__cell--non-numeric">The BST Tutorial</th>
-      <th class="mdl-data-table__cell--non-numeric">Examples</th>
+      <th class="mdl-data-table__cell--non-numeric">Reference</th>
     </tr>
   </thead>
   <tbody>
     {% for version in site.data.versions %}
     <tr {% if version.stable != true %} style="background-color: #ffeeee;" {% endif %}>
       <td class="mdl-data-table__cell--non-numeric">{{ version.name }}</td>
-      
+
       <td class="mdl-data-table__cell--non-numeric"><button class="mdl-button mdl-js-button mdl-js-ripple-effect" {% if version.devtag %} onclick="location.href='https://github.com/utybo/BST/tree/{{ version.devtag }}'" {% else %} disabled {% endif %} style="line-height: 20px; margin-top: -6px; width: 100%;">Tag</button></td>
-      
+
       <td class="mdl-data-table__cell--non-numeric"><button class="mdl-button mdl-js-button mdl-js-ripple-effect" {% if version.blogpost %} onclick="location.href='{{ site.baseurl }}{{ version.blogpost }}'" {% else %} disabled {% endif %} style="line-height: 20px; margin-top: -6px; width: 100%;">Blog post</button></td>
-      
+
       <td class="mdl-data-table__cell--non-numeric"><button class="mdl-button mdl-button--raised mdl-button--colored mdl-js-button mdl-js-ripple-effect" {% if version.jar %} onclick="location.href='{{ version.jar }}'" {% else %} disabled {% endif %} style="line-height: 20px; margin-top: -6px; width: 100%;">OpenBST</button></td>
-      
+
       <td class="mdl-data-table__cell--non-numeric"><button class="mdl-button mdl-button--raised mdl-button--colored mdl-button--accent mdl-js-button mdl-js-ripple-effect" {% if version.tutorial %} onclick="location.href='{{ version.tutorial }}'" {% else %} disabled {% endif %} style="line-height: 20px; margin-top: -6px; width: 100%;">Tutorial</button></td>
-      
-      <td class="mdl-data-table__cell--non-numeric"><button class="mdl-button mdl-button--raised mdl-js-button mdl-js-ripple-effect" {% if version.examples %} onclick="location.href='{{ version.examples }}'" {% else %} disabled {% endif %} style="line-height: 20px; margin-top: -6px; width: 100%;">Examples</button></td>
+
+      <td class="mdl-data-table__cell--non-numeric"><button class="mdl-button mdl-button--raised mdl-js-button mdl-js-ripple-effect" {% if version.reference %} onclick="location.href='{{ version.reference }}'" {% else %} disabled {% endif %} style="line-height: 20px; margin-top: -6px; width: 100%;">Reference</button></td>
     </tr>
     {% endfor %}
   </tbody>
