@@ -477,20 +477,6 @@ public class OpenBST extends JFrame
         });
     }
 
-    private static BufferedImage loadImage(String path)
-    {
-        try
-        {
-            return ImageIO.read(
-                    OpenBST.class.getResourceAsStream("/utybo/branchingstorytree/swing/" + path));
-        }
-        catch(Exception e)
-        {
-            LOG.warn("Failed to load image at path " + path, e);
-            return null;
-        }
-    }
-
     private static BufferedImage loadXZImage(String path)
     {
         try
