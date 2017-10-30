@@ -177,7 +177,7 @@ public class OpenBST extends JFrame
     // --- IMAGES ---
 
     public final static List<BufferedImage> bgImages = Collections
-            .unmodifiableList(Arrays.asList(loadImages("images/bg$.jpg", 6)));
+            .unmodifiableList(Arrays.asList(loadImages("images/bg$.jpg", 8)));
 
     /**
      * Container for all the tabs
