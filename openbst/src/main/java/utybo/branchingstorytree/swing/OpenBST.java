@@ -686,7 +686,7 @@ public class OpenBST extends JFrame
 
         final JButton btnOpenAFile = new JButton(Lang.get("welcome.open"));
         panel.add(btnOpenAFile, "cell 4 1");
-        //        btnOpenAFile.setIcon(new ImageIcon((Image)null)); // TODO
+        btnOpenAFile.setIcon(new ImageIcon(Icons.getImage("Open", 40)));
         btnOpenAFile.addActionListener(e ->
         {
             clickOpenStory();
@@ -819,17 +819,17 @@ public class OpenBST extends JFrame
         label.setEnabled(false);
         shortMenu.add(label);
         shortMenu.addSeparator();
-        shortMenu.add(new JMenuItem(new AbstractAction(Lang.get("menu.open"),
-                /* new ImageIcon((Image)null*) */ null) // TODO
-        {
-            private static final long serialVersionUID = 1L;
+        shortMenu.add(new JMenuItem(
+                new AbstractAction(Lang.get("menu.open"), new ImageIcon(Icons.getImage("Open", 16))) // TODO
+                {
+                    private static final long serialVersionUID = 1L;
 
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                clickOpenStory();
-            }
-        }));
+                    @Override
+                    public void actionPerformed(ActionEvent e)
+                    {
+                        clickOpenStory();
+                    }
+                }));
 
         shortMenu.addSeparator();
 

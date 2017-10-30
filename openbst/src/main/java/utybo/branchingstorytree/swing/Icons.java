@@ -52,14 +52,14 @@ public class Icons
 
         images.put("JSY16", loadImage("16c", "JSY" + applyScaleValue(sizes)));
         images.put("JSN16", loadImage("16c", "JSN" + applyScaleValue(sizes)));
-        
+
         // 16px logos
         images.put("Logo16", loadImage("logos/Logo" + applyScaleValue(sizes)));
         images.put("LogoWhite16", loadImage("logos/LogoWhite" + applyScaleValue(sizes)));
 
         // 40px icons
-        arr = new String[] {"Camera Addon Identification", "Cancel", "Easy to Find", "Refresh",
-                "Return", "Synchronize", "Undo"};
+        arr = new String[] {"Camera Addon Identification", "Cancel", "Easy to Find", "Open",
+                "Refresh", "Return", "Synchronize", "Undo"};
         for(String s : arr)
         {
             images.put(s + 40, loadImage(s, 40));
@@ -163,7 +163,7 @@ public class Icons
     {
         return originalSize + (!factor.isEmpty() ? "x" + factor : "");
     }
-    
+
     public static float getScale()
     {
         switch(factor)
