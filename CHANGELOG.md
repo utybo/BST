@@ -12,7 +12,7 @@ Unstable versions will appear inside OpenBST with a "u" at the end.
 
 Less technical explanations available on the [OpenBST website](https://utybo.github.io/BST/)
 
-## [2.0-beta2] (Unreleased)
+## [2.0-beta2] (Unreleased) - 2.0 with HiDPI Glory
 ### Added
 - **Experimental features were added.** They provide cool features, but can be very unstable and may disappear at any time. A warning is issued every time you call an experimental function.
 - **Better icon support for HiDPI.** Icons were previously very small, but the new addition of scalable icons provides good looking icons on various display sizes.
@@ -26,6 +26,7 @@ Less technical explanations available on the [OpenBST website](https://utybo.git
 - Large resources are now compressed with XZ to avoid massive file sizes.
 ### Deprecated
 ### Removed
+- *Removed most of the leftovers from JSE's old manual update system. JSE does not need to be implemented by clients anymore.*
 ### Fixed
 - Fonts no longer look like trash inside NodePanels. This was caused by a crappy, wonky and potentially license-breaking WOFF+WOFF2 conversion from TTF or OTF.
 - Fixed font size on the error screen
@@ -33,7 +34,7 @@ Less technical explanations available on the [OpenBST website](https://utybo.git
 ### i18n changes
 - added story.experimental story.experimental.title
 
-## [2.0-beta1]
+## [2.0-beta1] - The 2.0 Beginning
 ### Added
 - **New, simpler, cleaner, sleeker OpenBST Welcome screen!**
 - **New OpenBST menu with animations and stuff!**

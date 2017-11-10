@@ -34,31 +34,14 @@ public class JSEAction implements ScriptAction
     public void exec(final String head, final String desc, final int line,
             final BranchingStory story, final BSTClient client) throws BSTException
     {
-        final JSEHandler handler = client.getJSEHandler();
-
-        if(head.equals("jse_reset"))
-        {
-            handler.setEngine(null);
-            return;
-        }
-
         final VariableRegistry registry = story.getRegistry();
-
-        if(handler.getEngine() == null)
-        {
-            handler.setEngine(new ScriptEngineManager().getEngineByName("JavaScript"));
-        }
-
-        final ScriptEngine engine = handler.getEngine();
-        if(engine == null)
-        {
-            throw new Error("Well this doesn't make any sense");
-        }
+        
         switch(head)
         {
         case "jse_eval":
         {
-            checkReg(engine, registry, line, story);
+            ScriptEngine engine = new ScriptEngineManager().getEngineByName("JavaScript");
+            applyReg(engine, registry, line, story);
 
             // Parse
             final String varName = desc.split(",")[0];
@@ -107,7 +90,7 @@ public class JSEAction implements ScriptAction
         return new String[] {"jse_eval", "jse_reset", "jse_autoimport", "jse_import"};
     }
 
-    public static void checkReg(final ScriptEngine engine, final VariableRegistry registry,
+    protected static void applyReg(final ScriptEngine engine, final VariableRegistry registry,
             final int line, BranchingStory story) throws BSTException
     {
         final HashMap<String, Integer> ints = registry.getAllInt();

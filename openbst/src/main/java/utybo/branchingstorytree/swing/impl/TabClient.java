@@ -13,7 +13,6 @@ import javax.swing.JOptionPane;
 
 import utybo.branchingstorytree.api.BSTClient;
 import utybo.branchingstorytree.htb.HTBHandler;
-import utybo.branchingstorytree.jse.JSEHandler;
 import utybo.branchingstorytree.swing.Icons;
 import utybo.branchingstorytree.swing.OpenBST;
 import utybo.branchingstorytree.swing.utils.Lang;
@@ -30,7 +29,6 @@ public class TabClient implements BSTClient
     private SSBClient ssbClient;
     private IMGClient imgClient;
     private final BDFClient bdfClient;
-    private final JSEClient jseClient;
     private XBFClient xbfClient;
     private HTBClient htbClient;
     private boolean isExperimental;
@@ -39,7 +37,6 @@ public class TabClient implements BSTClient
     {
         this.instance = instance;
         bdfClient = new BDFClient();
-        jseClient = new JSEClient();
     }
 
     @Override
@@ -102,12 +99,6 @@ public class TabClient implements BSTClient
     public BDFClient getBDFHandler()
     {
         return bdfClient;
-    }
-
-    @Override
-    public JSEHandler getJSEHandler()
-    {
-        return jseClient;
     }
 
     @Override

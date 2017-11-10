@@ -13,7 +13,6 @@ import utybo.branchingstorytree.brm.BRMHandler;
 import utybo.branchingstorytree.brm.BRMResourceConsumer;
 import utybo.branchingstorytree.htb.HTBHandler;
 import utybo.branchingstorytree.img.IMGHandler;
-import utybo.branchingstorytree.jse.JSEHandler;
 import utybo.branchingstorytree.ssb.SSBHandler;
 import utybo.branchingstorytree.uib.UIBarHandler;
 import utybo.branchingstorytree.xbf.XBFHandler;
@@ -88,11 +87,6 @@ public interface BSTClient
      * @return The BDF module handler, or null is not supported
      */
     public default BDFHandler getBDFHandler()
-    {
-        return null;
-    }
-
-    public default JSEHandler getJSEHandler()
     {
         return null;
     }
