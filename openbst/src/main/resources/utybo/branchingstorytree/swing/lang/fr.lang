@@ -70,7 +70,7 @@ story.sreload=Rechargement doux (recharger le fichier et retourner là où j'ét
 story.sreload.confirm.title=Rechargement doux
 story.sreload.confirm=<html><body style='width: 300px'>Vous allez recharger le fichier BST. Êtes vous sûr de vouloir continuer?
 story.hreload=Rechargement dur (recharger et redémarrer)
-story.hreload.confirm=<html><body style='width: 300px'>Vous allez recharger le fichier. Votre progression ne sera pas sauvegarder. Souhaitez vous vraiment faire cela?
+story.hreload.confirm=<html><body style='width: 300px'>Vous allez recharger le fichier. Votre progression ne sera pas sauvegardée. Souhaitez vous vraiment faire cela?
 story.hreload.confirm.title=Rechargement dur
 story.jumptonode=Aller à la node...
 story.variablewatcher=Observation de variables...

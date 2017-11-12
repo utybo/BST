@@ -22,15 +22,16 @@ Less technical explanations available on the [OpenBST website](https://utybo.git
 - *Note on experimental features : See the javadoc for the @Experimental annotation which explains the general contracts around experimental elements*
 - *Added warnExperimental(line, from) inside BSTClient in bst-java*	 
 ### Changed
-- **All icons have been changed to Icons8's Color set.** This improves consistancy.
-- Large resources are now compressed with XZ to avoid massive file sizes.
+- **All icons have been changed to Icons8's Color set.** This improves consistency.
+- Large resources are now compressed (with XZ) to avoid massive file sizes.
 ### Deprecated
 ### Removed
 - *Removed most of the leftovers from JSE's old manual update system. JSE does not need to be implemented by clients anymore.*
 ### Fixed
-- Fonts no longer look like trash inside NodePanels. This was caused by a crappy, wonky and potentially license-breaking WOFF+WOFF2 conversion from TTF or OTF.
+- Fonts no longer look like trash inside story panels. This was caused by a crappy, wonky and potentially license-breaking WOFF+WOFF2 conversion from TTF or OTF.
 - Fixed font size on the error screen
-- Fixed a (stupid) typo in a class name : Dictionnary -> Dictionary
+- Fixed a typo in French language file.
+- *Fixed a (stupid) typo in a class name : Dictionnary -> Dictionary*
 ### i18n changes
 - added story.experimental story.experimental.title
 
