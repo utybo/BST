@@ -16,6 +16,7 @@ Less technical explanations available on the [OpenBST website](https://utybo.git
 ### Added
 - **Experimental features were added.** They provide cool features, but can be very unstable and may disappear at any time. A warning is issued every time you call an experimental function.
 - **Better icon support for HiDPI.** Icons were previously very small, but the new addition of scalable icons provides good looking icons on various display sizes.
+- **New XSF Module** which adds full Javascript capacity to BST, with the ability to run .js files with all the great stuff from Java's Nashorn!
 - A 2 new, beautiful backgrounds have been added!
 - Added new experimental features for HTB : custom CSS files.
 - Added a new Experimental Warning icon

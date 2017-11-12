@@ -97,7 +97,6 @@ public class BranchingStoryTreeParser
             final Dictionary dictionnary, final BSTClient client, String name,
             BranchingStory story) throws IOException, BSTException
     {
-
         String line = null;
         int lineNumber = 0;
 
@@ -431,6 +430,9 @@ public class BranchingStoryTreeParser
 
         // Always add the story's name in the tag __sourcename, as it allows to get more traceability
         story.putTag("__sourcename", name);
+        
+        // Also define the dictionary of the story (used for XSF)
+        story.setDictionary(dictionnary);
         return story;
     }
 

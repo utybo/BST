@@ -8,27 +8,10 @@
  */
 package utybo.branchingstorytree.api.test.utils;
 
-import javax.script.ScriptEngine;
-
 import utybo.branchingstorytree.api.BSTClient;
-import utybo.branchingstorytree.jse.JSEHandler;
 
-public class JSETestClient implements BSTClient, JSEHandler
+public class JSETestClient implements BSTClient
 {
-    private ScriptEngine engine;
-
-    @Override
-    public ScriptEngine getEngine()
-    {
-        return engine;
-    }
-
-    @Override
-    public void setEngine(final ScriptEngine engine)
-    {
-        this.engine = engine;
-    }
-
     @Override
     public String askInput(final String message)
     {
@@ -39,9 +22,4 @@ public class JSETestClient implements BSTClient, JSEHandler
     public void exit()
     {}
 
-    @Override
-    public JSEHandler getJSEHandler()
-    {
-        return this;
-    }
 }

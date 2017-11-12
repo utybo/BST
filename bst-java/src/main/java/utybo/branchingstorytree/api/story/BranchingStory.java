@@ -11,6 +11,7 @@ package utybo.branchingstorytree.api.story;
 import java.util.Collection;
 import java.util.TreeMap;
 
+import utybo.branchingstorytree.api.script.Dictionary;
 import utybo.branchingstorytree.api.script.VariableRegistry;
 
 /**
@@ -35,6 +36,8 @@ public class BranchingStory extends TagHolder
      * The variables used in this story
      */
     private final VariableRegistry registry;
+    
+    private Dictionary dictionary;
 
     public BranchingStory()
     {
@@ -162,6 +165,16 @@ public class BranchingStory extends TagHolder
     public void reset()
     {
         registry.reset();
+    }
+
+    public Dictionary getDictionary()
+    {
+        return dictionary;
+    }
+
+    public void setDictionary(Dictionary dictionary)
+    {
+        this.dictionary = dictionary;
     }
 
 }

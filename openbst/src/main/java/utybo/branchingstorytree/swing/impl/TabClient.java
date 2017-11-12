@@ -19,6 +19,7 @@ import utybo.branchingstorytree.swing.utils.Lang;
 import utybo.branchingstorytree.swing.visuals.NodePanel;
 import utybo.branchingstorytree.swing.visuals.StoryPanel;
 import utybo.branchingstorytree.xbf.XBFHandler;
+import utybo.branchingstorytree.xsf.XSFHandler;
 
 public class TabClient implements BSTClient
 {
@@ -31,6 +32,7 @@ public class TabClient implements BSTClient
     private final BDFClient bdfClient;
     private XBFClient xbfClient;
     private HTBClient htbClient;
+    private XSFClient xsfClient = new XSFClient();
     private boolean isExperimental;
 
     public TabClient(final OpenBST instance)
@@ -111,6 +113,12 @@ public class TabClient implements BSTClient
     public HTBHandler getHTBHandler()
     {
         return htbClient;
+    }
+
+    @Override
+    public XSFHandler getXSFHandler()
+    {
+        return xsfClient;
     }
 
     public void setBRMHandler(BRMAdvancedHandler handler)
