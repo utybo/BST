@@ -384,21 +384,43 @@ public class NodePanel extends JScrollablePanel
 
     public void setJSEnabled(boolean b)
     {
-        view.getEngine().setJavaScriptEnabled(b);
-        parent.getJSHint().setToolTipText(Lang.get("html.js" + (b ? "enabled" : "blocked")));
-        parent.getJSHint().setIcon(new ImageIcon(b ? Icons.getImage("JSY", 16) : Icons.getImage("JSN", 16)));
+        CountDownLatch cdl = new CountDownLatch(1);
+        Platform.runLater(() ->
+        {
+            try
+            {
+                view.getEngine().setJavaScriptEnabled(b);
+            }
+            finally
+            {
+                cdl.countDown();
+            }
+        });
+        try
+        {
+            cdl.await();
+        }
+        catch(InterruptedException e)
+        {
+            e.printStackTrace();
+        }
+        
+        parent.getJSHint().setToolTipText(Lang.get("html.js" + (b ? "enabled" : "block")));
         parent.getJSHint()
-                .setDisabledIcon(new ImageIcon(b ? Icons.getImage("JSY", 16) : Icons.getImage("JSN", 16)));
+                .setIcon(new ImageIcon(b ? Icons.getImage("JSY", 16) : Icons.getImage("JSN", 16)));
+        parent.getJSHint().setDisabledIcon(
+                new ImageIcon(b ? Icons.getImage("JSY", 16) : Icons.getImage("JSN", 16)));
         parent.getJSHint().setVisible(true);
     }
 
     public void setHrefEnabled(boolean b)
     {
         hrefEnabled = b;
-        parent.getHrefHint().setToolTipText(Lang.get("html.href" + (b ? "enabled" : "blocked")));
-        parent.getHrefHint().setIcon(new ImageIcon(b ? Icons.getImage("LinkY", 16) : Icons.getImage("LinkN", 16)));
-        parent.getHrefHint()
-                .setDisabledIcon(new ImageIcon(b ? Icons.getImage("LinkY", 16) : Icons.getImage("LinkN", 16)));
+        parent.getHrefHint().setToolTipText(Lang.get("html.href" + (b ? "enabled" : "block")));
+        parent.getHrefHint().setIcon(
+                new ImageIcon(b ? Icons.getImage("LinkY", 16) : Icons.getImage("LinkN", 16)));
+        parent.getHrefHint().setDisabledIcon(
+                new ImageIcon(b ? Icons.getImage("LinkY", 16) : Icons.getImage("LinkN", 16)));
         parent.getHrefHint().setVisible(true);
     }
 

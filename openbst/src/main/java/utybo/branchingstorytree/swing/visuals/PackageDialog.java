@@ -28,6 +28,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingWorker;
 
 import net.miginfocom.swing.MigLayout;
+import utybo.branchingstorytree.swing.Icons;
 import utybo.branchingstorytree.swing.OpenBST;
 import utybo.branchingstorytree.swing.utils.BSTPackager;
 import utybo.branchingstorytree.swing.utils.Lang;
@@ -174,7 +175,7 @@ public class PackageDialog extends JDialog
         progressBar.setIndeterminate(true);
         panelWorking.add(progressBar, "cell 0 2,growx");
 
-        setSize(450, 300);
+        setSize((int)(Icons.getScale() * 450), (int)(Icons.getScale() * 300));
         setLocationRelativeTo(parent);
     }
 

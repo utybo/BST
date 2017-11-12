@@ -814,7 +814,7 @@ public class OpenBST extends JFrame
         shortMenu.add(label);
         shortMenu.addSeparator();
         shortMenu.add(new JMenuItem(
-                new AbstractAction(Lang.get("menu.open"), new ImageIcon(Icons.getImage("Open", 16))) // TODO
+                new AbstractAction(Lang.get("menu.open"), new ImageIcon(Icons.getImage("Open", 16)))
                 {
                     private static final long serialVersionUID = 1L;
 
@@ -905,7 +905,7 @@ public class OpenBST extends JFrame
                     JScrollPane jsp = new JScrollPane(area);
                     jsp.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
                     dialog.getContentPane().add(jsp, "pushx, pushy, growx, growy");
-                    dialog.setSize(300, 300);
+                    dialog.setSize((int)(Icons.getScale() * 300), (int)(Icons.getScale() * 300));
                     dialog.setLocationRelativeTo(OpenBST.this);
                     dialog.setModalityType(ModalityType.APPLICATION_MODAL);
                     dialog.setVisible(true);

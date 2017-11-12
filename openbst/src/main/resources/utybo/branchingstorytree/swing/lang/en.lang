@@ -65,18 +65,18 @@ file.crash=OpenBST crashed upon opening your file. Your file may have a problem.
 story.problem=<html><b>If you see this, there was a problem.</b><p>You may have seen a failure message. Please fix the problem and reload the file :)
 story.createss=Create Save State
 story.restoress=Restore latest Save State
-story.restoress.confirm=<html><body style='width: 300px'>You are about to go back to the latest save state. Are you sure you want to do this?<p><p>(Note : any change to the tag 'hidetools' will be ignored)
+story.restoress.confirm=You are about to go back to the latest save state. Are you sure you want to do this?<p><p>(Note : any change to the tag 'hidetools' will be ignored)
 story.exportss=Export latest Save State
 story.exportss.error=Could not save the file : $m ($e)
 story.sslocation=Save State location
 story.importss=Import Save State
 story.reset=Reset and restart from the beginning
-story.reset.confirm=<html><body style='width: 300px'>You are about to reset your progress and restart from the beginning. Are you sure you want to continue?
+story.reset.confirm=You are about to reset your progress and restart from the beginning. Are you sure you want to continue?
 story.sreload=Soft Reload (reload the file and go back to where I left)
 story.sreload.confirm.title=Soft Reload
-story.sreload.confirm=<html><body style='width: 300px'>You are about to reload the BST file. We will try to restore where you were, but this is not a good idea if you heavily edited nodes and scripting. Are you sure you want to continue?
+story.sreload.confirm=You are about to reload the BST file. We will try to restore where you were, but this is not a good idea if you heavily edited nodes and scripting. Are you sure you want to continue?
 story.hreload=Hard Reload (reload and reset)
-story.hreload.confirm=<html><body style='width: 300px'>You are about to reload the BST file. This will also reset all your progress. Are you sure you want to continue?
+story.hreload.confirm=You are about to reload the BST file. This will also reset all your progress. Are you sure you want to continue?
 story.hreload.confirm.title=Hard Reload
 story.jumptonode=Jump to Node...
 story.variablewatcher=Variable watcher...
@@ -85,7 +85,7 @@ story.seebackground=View the background
 story.background=Background picture
 story.mute=Mute
 story.close=Close tab
-story.close.confirm=<html><body style='width: 300px'>You are about to close this BST file. All unsaved progress will be lost. Are you sure you want to close this tab?
+story.close.confirm=You are about to close this BST file. All unsaved progress will be lost. Are you sure you want to close this tab?
 story.error=<html>Error on node $n (alias $a, from $f) :<p>$m
 story.error2=<html>Error on node $n (alias $a, line $l, from $f) :<p>$m
 story.missinginitial=The initial node does not exist. Make sure you are using a correct BST file.
@@ -132,6 +132,7 @@ openbst.discordjoin=Join Server
 welcome.reportbugs=Report bugs
 # Non ENglish languages need to note that the bug reports have to be in english
 welcome.ontheedge=You are currently running an unstable version of OpenBST. Only do this if you know what you're doing, and <i>please report bugs!</i>
+welcome.java9warning=<b>You are using Java 9, which is not supported.</b> If you see visual problems, such as tiny fonts, blurry visuals or pixelated icons, please return to Java 8.
 welcome=Welcome
 welcome.intro=Welcome to OpenBST. To get started, please open a file using the button below.
 welcome.open=Open a file...
@@ -147,6 +148,7 @@ html.jsblock=JS blocked
 html.hrefblock=HTML anchors blocked
 html.jsenabled=JS enabled
 html.hrefenabled=HTML anchors enabled
+html.securityalert=HTML Security Alert
 
 # Langcheck
 langcheck=Lang Completeness Checker

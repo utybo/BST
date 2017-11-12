@@ -69,7 +69,8 @@ public class HTBClient implements HTBHandler
     public boolean requestJSAccess()
     {
         int result = JOptionPane.showConfirmDialog(OpenBST.getInstance(),
-                "<html><body style='width:300px'>" + Lang.get("html.jsrequest"),
+                "<html><body style='width:" + (int)(Icons.getScale() * 300) + "px'>"
+                        + Lang.get("html.jsrequest"),
                 Lang.get("html.securityalert"), JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE, new ImageIcon(Icons.getImage("JSAlert", 48)));
         if(result == JOptionPane.YES_OPTION)
@@ -79,6 +80,7 @@ public class HTBClient implements HTBHandler
         }
         else
         {
+            nodePanel.setJSEnabled(false);
             return false;
         }
     }
@@ -87,7 +89,8 @@ public class HTBClient implements HTBHandler
     public boolean requestHrefAccess()
     {
         int result = JOptionPane.showConfirmDialog(OpenBST.getInstance(),
-                "<html><body style='width:300px'>" + Lang.get("html.hrefrequest"),
+                "<html><body style='width:" + (int)(Icons.getScale() * 300) + "px'>"
+                        + Lang.get("html.hrefrequest"),
                 Lang.get("html.securityalert"), JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE, new ImageIcon(Icons.getImage("AAlert", 48)));
         if(result == JOptionPane.YES_OPTION)
@@ -97,6 +100,7 @@ public class HTBClient implements HTBHandler
         }
         else
         {
+            nodePanel.setHrefEnabled(false);
             return false;
         }
     }
@@ -128,5 +132,4 @@ public class HTBClient implements HTBHandler
         nodePanel.removeAllCSSSheets();
     }
 
-    
 }

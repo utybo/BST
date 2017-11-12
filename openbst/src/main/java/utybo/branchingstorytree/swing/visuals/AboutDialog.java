@@ -105,7 +105,7 @@ public class AboutDialog extends JDialog
         textArea.setMargin(new Insets(5, 5, 5, 5));
         textArea.setLineWrap(true);
         textArea.setWrapStyleWord(true);
-        textArea.setFont(new Font("Monospace", Font.PLAIN, 11));
+        textArea.setFont(new Font("Monospace", Font.PLAIN, (int)(Icons.getScale() * 11)));
 
         try(InputStream in = getClass()
                 .getResourceAsStream("/utybo/branchingstorytree/swing/about.txt");)
@@ -123,7 +123,7 @@ public class AboutDialog extends JDialog
         JLabel lblTranslatedBy = new JLabel(Lang.get("author"));
         pan.add(lblTranslatedBy, "cell 0 1");
 
-        setSize(450, 300);
+        setSize((int)(Icons.getScale() * 450), (int)(Icons.getScale() * 300));
         setLocationRelativeTo(parent);
     }
 

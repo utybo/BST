@@ -139,7 +139,9 @@ public class TabClient implements BSTClient
         {
             isExperimental = true;
             JOptionPane.showMessageDialog(OpenBST.getInstance(),
-                    "<html><body style='width:300px'>" + Lang.get("story.experimental").replace("$l", "" + line).replace("$f", from),
+                    "<html><body style='width:" + (int)(Icons.getScale() * 300) + "px'>"
+                            + Lang.get("story.experimental").replace("$l", "" + line).replace("$f",
+                                    from),
                     Lang.get("story.experimental.title"), JOptionPane.WARNING_MESSAGE,
                     new ImageIcon(Icons.getImage("Experiment", 48)));
         }

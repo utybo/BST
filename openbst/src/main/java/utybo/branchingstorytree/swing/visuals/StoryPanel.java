@@ -228,8 +228,10 @@ public class StoryPanel extends JPanel
                 public void actionPerformed(final ActionEvent e)
                 {
                     if(JOptionPane.showConfirmDialog(parentWindow,
-                            Lang.get("story.restoress.confirm"), Lang.get("story.restoress"),
-                            JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE,
+                            "<html><body style='width: " + (int)(Icons.getScale() * 300) + "'>"
+                                    + Lang.get("story.restoress.confirm"),
+                            Lang.get("story.restoress"), JOptionPane.YES_NO_OPTION,
+                            JOptionPane.WARNING_MESSAGE,
                             new ImageIcon(Icons.getImage("Undo", 40))) == JOptionPane.YES_OPTION)
                     {
                         restoreSaveState(latestSaveState);
@@ -341,10 +343,11 @@ public class StoryPanel extends JPanel
                         public void actionPerformed(final ActionEvent e)
                         {
                             if(JOptionPane.showConfirmDialog(parentWindow,
-                                    Lang.get("story.reset.confirm"), Lang.get("story.reset"),
-                                    JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE,
-                                    new ImageIcon(Icons.getImage("Return",
-                                            40))) == JOptionPane.YES_OPTION)
+                                    "<html><body style='width: " + (int)(Icons.getScale() * 300)
+                                            + "'>" + Lang.get("story.reset.confirm"),
+                                    Lang.get("story.reset"), JOptionPane.YES_NO_OPTION,
+                                    JOptionPane.WARNING_MESSAGE, new ImageIcon(Icons
+                                            .getImage("Return", 40))) == JOptionPane.YES_OPTION)
                             {
                                 reset();
                             }
@@ -359,7 +362,8 @@ public class StoryPanel extends JPanel
                         public void actionPerformed(final ActionEvent e)
                         {
                             if(JOptionPane.showConfirmDialog(parentWindow,
-                                    Lang.get("story.sreload.confirm"),
+                                    "<html><body style='width: " + (int)(Icons.getScale() * 300)
+                                            + "'>" + Lang.get("story.sreload.confirm"),
                                     Lang.get("story.sreload.confirm.title"),
                                     JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE,
                                     new ImageIcon(Icons.getImage("Refresh",
@@ -385,7 +389,8 @@ public class StoryPanel extends JPanel
                         public void actionPerformed(final ActionEvent e)
                         {
                             if(JOptionPane.showConfirmDialog(parentWindow,
-                                    Lang.get("story.hreload.confirm"),
+                                    "<html><body style='width: " + (int)(Icons.getScale() * 300)
+                                            + "'>" + Lang.get("story.hreload.confirm"),
                                     Lang.get("story.hreload.confirm.title"),
                                     JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE,
                                     new ImageIcon(Icons.getImage("Synchronize",
@@ -560,28 +565,33 @@ public class StoryPanel extends JPanel
             }
         });
 
-        final JToggleButton muteButton = new JToggleButton("", new ImageIcon(Icons.getImage("Audio", 16)));
+        final JToggleButton muteButton = new JToggleButton("",
+                new ImageIcon(Icons.getImage("Audio", 16)));
         muteButton.addActionListener(e ->
         {
             final SSBClient ssb = client.getSSBHandler();
             if(ssb != null)
             {
                 ssb.setMuted(muteButton.isSelected());
-                muteButton.setIcon(new ImageIcon(
-                        muteButton.isSelected() ? Icons.getImage("Mute", 16) : Icons.getImage("Audio", 16)));
+                muteButton
+                        .setIcon(new ImageIcon(muteButton.isSelected() ? Icons.getImage("Mute", 16)
+                                : Icons.getImage("Audio", 16)));
             }
         });
         muteButton.setToolTipText(Lang.get("story.mute"));
         toolBar.add(muteButton);
 
-        toolBar.add(new AbstractAction(Lang.get("story.close"), new ImageIcon(Icons.getImage("Cancel", 16)))
+        toolBar.add(new AbstractAction(Lang.get("story.close"),
+                new ImageIcon(Icons.getImage("Cancel", 16)))
         {
             private static final long serialVersionUID = 1L;
 
             @Override
             public void actionPerformed(final ActionEvent e)
             {
-                if(JOptionPane.showConfirmDialog(parentWindow, Lang.get("story.close.confirm"),
+                if(JOptionPane.showConfirmDialog(parentWindow,
+                        "<html><body style='width: " + (int)(Icons.getScale() * 300) + "'>"
+                                + Lang.get("story.close.confirm"),
                         Lang.get("story.close"), JOptionPane.YES_NO_OPTION,
                         JOptionPane.WARNING_MESSAGE,
                         new ImageIcon(Icons.getImage("Cancel", 40))) == JOptionPane.YES_OPTION)

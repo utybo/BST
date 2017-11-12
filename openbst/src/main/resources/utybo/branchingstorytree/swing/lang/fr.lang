@@ -59,23 +59,23 @@ file.crash=OpenBST a rencontré une erreur en ouvrant votre fichier. Merci de v�
 story.problem=<html><b>Si vous voyez ceci, il y a eu un problème!</b><p>Vous avez peut être eu un message d'erreur. Merci de corriger le problème et recharger le fichier :)
 story.createss=Créer une image de sauvegarde (Save State)
 story.restoress=Retourner à la dernière image de sauvegarde (Save State)
-story.restoress.confirm=<html><body style='width: 300px'>Vous allez retourner à la dernière image de sauvegarde (Save State). Souhaitez vous vraiment faire cela?<p><p>(Note : les changements au tag 'supertools' seront ignorés)
+story.restoress.confirm=Vous allez retourner à la dernière image de sauvegarde (Save State). Souhaitez vous vraiment faire cela?<p><p>(Note : les changements au tag 'supertools' seront ignorés)
 story.exportss=Exporter la dernière image de sauvegarde
 story.exportss.error=Impossible de sauvegarder le fichier : $m ($e)
 story.sslocation=Emplacement de l'image de sauvegarde
 story.importss=Importer l'image de sauvegarde
 story.reset=Redémarrer depuis le début
-story.reset.confirm=<html><body style='width: 300px'>Vous alllez recommencer depuis le début. Êtes vous sûr de vouloir continuer?
+story.reset.confirm=Vous alllez recommencer depuis le début. Êtes vous sûr de vouloir continuer?
 story.sreload=Rechargement doux (recharger le fichier et retourner là où j'étais)
 story.sreload.confirm.title=Rechargement doux
-story.sreload.confirm=<html><body style='width: 300px'>Vous allez recharger le fichier BST. Êtes vous sûr de vouloir continuer?
+story.sreload.confirm=Vous allez recharger le fichier BST. Êtes vous sûr de vouloir continuer?
 story.hreload=Rechargement dur (recharger et redémarrer)
-story.hreload.confirm=<html><body style='width: 300px'>Vous allez recharger le fichier. Votre progression ne sera pas sauvegardée. Souhaitez vous vraiment faire cela?
+story.hreload.confirm=Vous allez recharger le fichier. Votre progression ne sera pas sauvegardée. Souhaitez vous vraiment faire cela?
 story.hreload.confirm.title=Rechargement dur
 story.jumptonode=Aller à la node...
 story.variablewatcher=Observation de variables...
 story.close=Fermer l'onglet
-story.close.confirm=<html><body style='width: 300px'>Voulez vous vraiment fermer cet onglet? Toute progression non sauvegardée et exportée sera perdue.
+story.close.confirm=Voulez vous vraiment fermer cet onglet? Toute progression non sauvegardée et exportée sera perdue.
 story.error=<html>Erreur sur la node $n (alias $a, depuis $f) :<p>$m
 story.error2=<html>Erreur sur la node $n (alias $a, ligne $l, depuis $f) :<p>$m
 story.missinginitial=La node initiale n'existe pas. Vérifiez votre fichier BST.
@@ -96,7 +96,7 @@ story.nsfw.title=ALERTE -18
 story.nullnode=Oups, la node qui était censée être ici n'a pas pu être résolue, mais je ne sais pas pourquoi... :(
 story.unknowncolor=Couleur inconnue : $c
 story.modulerestorefail=Le module suivant n'a pas pu être restoré : $m
-story.logicalnodedeadend=La node logique (avec id $n depuis $f avec alias $a) n'a pas donné de node où aller ensuite 
+story.logicalnodedeadend=La node logique (avec id $n depuis $f avec alias $a) n'a pas donné de node où aller ensuite
 story.experimental=Utilisation de fonctionnalités expérimentales détéctée!<p><p>Les fonctionnalités experimentales peuvent être très instables et dangereuses et peuvent disparaître à n'importe quel moment. Rappelez vous qu'elles sont ici pour être testées. N'utilisez jamais ces fonctionnalités dans un environnement réel!
 story.experimental.title=Experimental alert
 
@@ -124,7 +124,7 @@ vwatch.unknown=<aucune variable connue>
 openbst.discord=Rejoignez nous sur notre serveur Discord! Vous y trouverez de l'aide pour créer vos histoires BST, ainsi que des créations de la communauté et des informations sur ce qui arrive bientôt dans OpenBST!<p><i>Serveur uniquement anglophone</i>
 openbst.discordjoin=Rejoindre
 welcome.reportbugs=Signaler un bug (anglais)
-welcome.ontheedge=Vous utilisez une version instable d'OpenBST. Ne le faites que si vous êtes sûr de vous, et merci de <i>signaler les bugs! (en anglais uniquement)</i> 
+welcome.ontheedge=Vous utilisez une version instable d'OpenBST. Ne le faites que si vous êtes sûr de vous, et merci de <i>signaler les bugs! (en anglais uniquement)</i>
 welcome=Bienvenue
 welcome.intro=Bienvenue dans OpenBST. Pour démarrer, ouvrez un fichier en utilisant le bouton ci-dessous
 welcome.open=Ouvrir un fichier...
