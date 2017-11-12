@@ -57,6 +57,13 @@ public class Icons
         images.put("Logo16", loadImage("logos/Logo" + applyScaleValue(sizes)));
         images.put("LogoWhite16", loadImage("logos/LogoWhite" + applyScaleValue(sizes)));
 
+        // 32px icons
+        arr = new String[] {"Attention", "Experiment"};
+        for(String s : arr)
+        {
+            images.put(s + 32, loadImage(s, 32));
+        }
+        
         // 40px icons
         arr = new String[] {"Camera Addon Identification", "Cancel", "Easy to Find", "Open",
                 "Refresh", "Return", "Synchronize", "Undo"};
@@ -146,8 +153,6 @@ public class Icons
     {
         try
         {
-            System.out.println("/utybo/branchingstorytree/swing/" + scaled(originalSize) + "/"
-                    + name + ".png");
             return ImageIO
                     .read(OpenBST.class.getResourceAsStream("/utybo/branchingstorytree/swing/icons/"
                             + scaled(originalSize) + "/" + name + ".png"));

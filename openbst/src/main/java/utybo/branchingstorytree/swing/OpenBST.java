@@ -627,8 +627,16 @@ public class OpenBST extends JFrame
                     LOG.error("Exception during link opening", e1);
                 }
             });
-            bannersPanel.add(new JBannerPanel(new ImageIcon(Icons.getImage("Error", 48)),
+            bannersPanel.add(new JBannerPanel(new ImageIcon(Icons.getImage("Experiment", 32)),
                     Color.YELLOW, Lang.get("welcome.ontheedge"), btnReportBugs, false), "grow");
+        }
+
+        if(System.getProperty("java.specification.version").equals("9"))
+        {
+            bannersPanel.add(
+                    new JBannerPanel(new ImageIcon(Icons.getImage("Attention", 32)),
+                            new Color(255, 50, 50), Lang.get("welcome.java9warning"), null, true),
+                    "grow");
         }
 
         JButton btnJoinDiscord = new JButton(Lang.get("openbst.discordjoin"));
