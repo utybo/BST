@@ -84,9 +84,11 @@ import org.apache.logging.log4j.Logger;
 import org.pushingpixels.substance.api.DecorationAreaType;
 import org.pushingpixels.substance.api.SubstanceLookAndFeel;
 import org.pushingpixels.substance.api.SubstanceSkin;
+import org.pushingpixels.substance.api.fonts.SubstanceFontUtilities;
 import org.pushingpixels.substance.api.painter.overlay.SubstanceOverlayPainter;
 import org.pushingpixels.substance.api.skin.BusinessSkin;
 import org.pushingpixels.substance.api.skin.SubstanceGraphiteGoldLookAndFeel;
+import org.pushingpixels.substance.internal.utils.SubstanceSizeUtils;
 import org.pushingpixels.trident.Timeline;
 
 import com.google.gson.Gson;
@@ -218,7 +220,7 @@ public class OpenBST extends JFrame
             {
                 UIManager.setLookAndFeel(LIGHT_THEME);
                 UIManager.getDefaults().put(SubstanceLookAndFeel.COLORIZATION_FACTOR,
-                        new Double(1.0D));
+                        Double.valueOf(1.0D));
 
                 if(System.getProperty("os.name").toLowerCase().equals("linux"))
                 {
@@ -257,6 +259,11 @@ public class OpenBST extends JFrame
             LOG.info("Loading icons...");
             Icons.load();
 
+            LOG.trace("Fixing text scaling");
+            SubstanceLookAndFeel.setFontPolicy(SubstanceFontUtilities.getScaledFontPolicy(
+                    (float)(SubstanceSizeUtils.getPointsToPixelsRatio()) / 1.33F));
+
+            LOG.trace("Opening OpenBST...");
             new OpenBST();
         });
 

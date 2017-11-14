@@ -39,7 +39,7 @@ public class Icons
         String[] arr = new String[] {"About", "Audio", "Camera Addon Identification", "Cancel",
                 "Change Theme", "Color Wheel", "Easy to Find", "Export", "External Link", "Eye",
                 "Gears", "Import", "Invisible", "Mute", "Open Archive", "Open", "Picture",
-                "Refresh", "Return", "Save as", "Synchronize", "Undo"};
+                "Refresh", "Return", "Save As", "Synchronize", "Undo"};
         for(String s : arr)
         {
             images.put(s + 16, loadImage(s, 16));

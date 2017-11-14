@@ -203,7 +203,7 @@ public class StoryPanel extends JPanel
         if(toolbarLevel > 0)
         {
             toolBar.add(new AbstractAction(Lang.get("story.createss"),
-                    new ImageIcon(Icons.getImage("Save as", 16)))
+                    new ImageIcon(Icons.getImage("Save As", 16)))
             {
                 private static final long serialVersionUID = 1L;
 
