@@ -16,15 +16,18 @@ Less technical explanations available on the [OpenBST website](https://utybo.git
 ### Added
 - **Experimental features were added.** They provide cool features, but can be very unstable and may disappear at any time. A warning is issued every time you call an experimental function.
 - **Better icon support for HiDPI.** Icons were previously very small, but the new addition of scalable icons provides good looking icons on various display sizes.
-- **New XSF Module** which adds full Javascript capacity to BST, with the ability to run .js files with all the great stuff from Java's Nashorn!
-- A 2 new, beautiful backgrounds have been added!
+- **New XSF Module** which adds full Javascript capacity to BST, with the ability to run .js files with all the great stuff from Java's Nashorn! There is also a Next Node Definer available as an experimental feature.
+- Options now support variables
+- 2 new, beautiful backgrounds have been added!
 - Added new experimental features for HTB : custom CSS files.
 - Added a new Experimental Warning icon
 - *Note on experimental features : See the javadoc for the @Experimental annotation which explains the general contracts around experimental elements*
 - *Added warnExperimental(line, from) inside BSTClient in bst-java*	 
+- *Next Node Definers now require line arguments to provide better information when an error occurs*
 ### Changed
 - **All icons have been changed to Icons8's Color set.** This improves consistency.
 - Large resources are now compressed (with XZ) to avoid massive file sizes.
+- The option buttons system has been reworked to be much more dynamic
 ### Deprecated
 ### Removed
 - *Removed most of the leftovers from JSE's old manual update system. JSE does not need to be implemented by clients anymore.*

@@ -16,10 +16,8 @@ import java.awt.Dialog.ModalityType;
 import java.awt.Dimension;
 import java.awt.FileDialog;
 import java.awt.Graphics;
-import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -51,6 +49,7 @@ import com.google.gson.Gson;
 import net.miginfocom.swing.MigLayout;
 import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.api.NodeNotFoundException;
+import utybo.branchingstorytree.api.StoryUtils;
 import utybo.branchingstorytree.api.script.ActionDescriptor;
 import utybo.branchingstorytree.api.story.BranchingStory;
 import utybo.branchingstorytree.api.story.LogicalNode;
@@ -119,25 +118,9 @@ public class StoryPanel extends JPanel
     private JLabel nodeIdLabel;
 
     /**
-     * The list of node options for the current node
-     */
-    private NodeOption[] options;
-
-    /**
-     * An array of the Option Buttons available in the grid
-     */
-    private JButton[] optionsButton;
-
-    /**
      * The panel in which option buttons are placed
      */
     private final JPanel optionPanel = new JPanel();
-
-    /**
-     * The regular foreground for option buttons when the "color" tag is not
-     * applied
-     */
-    private Color normalButtonFg;
 
     // --- Toolbar buttons ---
     private JButton restoreSaveStateButton, exportSaveStateButton;
@@ -730,76 +713,6 @@ public class StoryPanel extends JPanel
      */
     public void setupStory()
     {
-        LOG.trace("=> Analyzing options and deducing maximum option amount");
-        // Quick analysis of all the nodes to get the maximum amount of options
-        int maxOptions = 0;
-        for(final StoryNode sn : story.getAllNodes())
-        {
-            if(sn instanceof TextNode && ((TextNode)sn).getOptions().size() > maxOptions)
-            {
-                maxOptions = ((TextNode)sn).getOptions().size();
-            }
-        }
-        if(maxOptions < 4)
-        {
-            maxOptions = 4;
-        }
-        int rows = maxOptions / 2;
-        // Make sure the options are always a multiple of 2
-        if(maxOptions % 2 != 0)
-        {
-            rows++;
-        }
-        options = new NodeOption[rows * 2];
-        optionsButton = new JButton[rows * 2];
-        optionPanel.removeAll();
-        optionPanel.setLayout(new GridLayout(rows, 2, 5, 5));
-        for(int i = 0; i < options.length; i++)
-        {
-            final int optionId = i;
-            final JButton button = new JButton();
-            normalButtonFg = button.getForeground();
-            button.addActionListener(ev ->
-            {
-                try
-                {
-                    optionSelected(options[optionId]);
-                }
-                catch(final NodeNotFoundException e)
-                {
-                    LOG.error("Node not found : " + e.getId());
-                    if(currentNode == null)
-                    {
-                        LOG.debug("=> It was the initial node");
-                        JOptionPane.showMessageDialog(this, Lang.get("story.missinginitial"),
-                                Lang.get("error"), JOptionPane.ERROR_MESSAGE);
-                        return;
-                    }
-                    else
-                    {
-                        JOptionPane.showMessageDialog(this,
-                                Lang.get("story.missingnode").replace("$n", "" + e.getId())
-                                        .replace("$f", "" + e.getSourceFile())
-                                        .replace("$a", "<none>"),
-                                Lang.get("error"), JOptionPane.ERROR_MESSAGE);
-                        return;
-                    }
-                }
-                catch(final BSTException e)
-                {
-                    LOG.error("Encountered an error while triggering option", e);
-                    JOptionPane.showMessageDialog(this,
-                            Lang.get("story.error").replace("$n", "" + currentNode.getId())
-                                    .replace("$a", currentNode.getTagOrDefault("alias", "<none>"))
-                                    .replace("$f", e.getSourceFile()).replace("$m", e.getMessage()),
-                            Lang.get("error"), JOptionPane.ERROR_MESSAGE);
-                }
-            });
-            optionPanel.add(button);
-            optionsButton[i] = button;
-            button.setEnabled(false);
-        }
-
         LOG.trace("Displaying first node");
         showNode(story.getInitialNode());
     }
@@ -947,6 +860,8 @@ public class StoryPanel extends JPanel
                 validOptions.add(no);
             }
         }
+        optionPanel.removeAll();
+        optionPanel.setLayout(new MigLayout("wrap 2, fill", "[50%][50%]", ""));
         if(validOptions.size() > 0)
         {
             LOG.trace("=> Valid options found (" + validOptions.size() + " valid on "
@@ -955,9 +870,48 @@ public class StoryPanel extends JPanel
             for(int i = 0; i < validOptions.size(); i++)
             {
                 final NodeOption option = validOptions.get(i);
-                final JButton button = optionsButton[i];
-                options[i] = option;
-                button.setEnabled(true);
+                final JButton button = new JButton(
+                        StoryUtils.solveVariables(option.getText(), story));
+                button.addActionListener(ev ->
+                {
+                    try
+                    {
+                        optionSelected(option);
+                    }
+                    catch(final NodeNotFoundException e)
+                    {
+                        LOG.error("Node not found : " + e.getId());
+                        if(currentNode == null)
+                        {
+                            LOG.debug("=> It was the initial node");
+                            JOptionPane.showMessageDialog(this, Lang.get("story.missinginitial"),
+                                    Lang.get("error"), JOptionPane.ERROR_MESSAGE);
+                            return;
+                        }
+                        else
+                        {
+                            JOptionPane.showMessageDialog(this,
+                                    Lang.get("story.missingnode").replace("$n", "" + e.getId())
+                                            .replace("$f", "" + e.getSourceFile())
+                                            .replace("$a", "<none>"),
+                                    Lang.get("error"), JOptionPane.ERROR_MESSAGE);
+                            return;
+                        }
+                    }
+                    catch(final BSTException e)
+                    {
+                        LOG.error("Encountered an error while triggering option", e);
+                        JOptionPane.showMessageDialog(this, Lang.get("story.error")
+                                .replace("$n", "" + currentNode.getId())
+                                .replace("$a", currentNode.getTagOrDefault("alias", "<none>"))
+                                .replace("$f", e.getSourceFile()).replace("$m", e.getMessage()),
+                                Lang.get("error"), JOptionPane.ERROR_MESSAGE);
+                    }
+                });
+                optionPanel.add(button,
+                        "grow" + (validOptions.size() % 2 == 1 && i == validOptions.size() - 1
+                                ? ",spanx 2"
+                                : ""));
                 if(i == 0)
                 {
                     button.requestFocus();
@@ -987,52 +941,29 @@ public class StoryPanel extends JPanel
                         button.setForeground(c);
                     }
                 }
-                button.setText(option.getText());
             }
         }
         else
         {
             LOG.trace("=> No valid options found (" + validOptions.size() + " total");
             LOG.trace("=> Showing ending");
-            optionsButton[0].setText(Lang.get("story.final.end"));
-            optionsButton[1]
-                    .setText(Lang.get("story.final.node").replace("$n", "" + textNode.getId()));
-            optionsButton[2].setText(Lang.get("story.final.restart"));
-            optionsButton[2].setEnabled(true);
-            optionsButton[2].requestFocus();
-            final ActionListener[] original = optionsButton[2].getActionListeners();
-            final ActionListener[] original2 = optionsButton[3].getActionListeners();
-            for(final ActionListener al : original)
-            {
-                optionsButton[2].removeActionListener(al);
-            }
-            final ActionListener shutdownListener = e -> parentWindow.removeStory(this);
-            optionsButton[2].addActionListener(new ActionListener()
-            {
-                @Override
-                public void actionPerformed(final ActionEvent e)
-                {
-                    LOG.trace("Resetting story");
-                    for(final ActionListener al : original)
-                    {
-                        optionsButton[2].addActionListener(al);
-                    }
-                    for(final ActionListener al : original2)
-                    {
-                        optionsButton[3].addActionListener(al);
-                    }
-                    optionsButton[2].removeActionListener(this);
-                    optionsButton[3].removeActionListener(shutdownListener);
-                    reset();
-                }
-            });
-            optionsButton[3].setText(Lang.get("story.final.close"));
-            optionsButton[3].setEnabled(true);
-            for(final ActionListener al : original2)
-            {
-                optionsButton[3].removeActionListener(al);
-            }
-            optionsButton[3].addActionListener(shutdownListener);
+            JButton button = new JButton(Lang.get("story.final.end"));
+            button.setEnabled(false);
+            optionPanel.add(button, "grow");
+
+            // TODO Make compatible with alias system
+            button = new JButton(Lang.get("story.final.node").replace("$n", "" + textNode.getId()));
+            button.setEnabled(false);
+            optionPanel.add(button, "grow");
+
+            button = new JButton(Lang.get("story.final.restart"));
+            button.requestFocus();
+            button.addActionListener(e -> reset());
+            optionPanel.add(button, "grow");
+
+            button = new JButton(Lang.get("story.final.close"));
+            button.addActionListener(e -> parentWindow.removeStory(this));
+            optionPanel.add(button, "grow");
         }
 
     }
@@ -1059,14 +990,7 @@ public class StoryPanel extends JPanel
      */
     private void resetOptions()
     {
-        for(int i = 0; i < optionsButton.length; i++)
-        {
-            options[i] = null;
-            final JButton button = optionsButton[i];
-            button.setForeground(normalButtonFg);
-            button.setEnabled(false);
-            button.setText("");
-        }
+        optionPanel.removeAll();
     }
 
     /**

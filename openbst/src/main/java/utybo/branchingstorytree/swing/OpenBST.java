@@ -260,8 +260,9 @@ public class OpenBST extends JFrame
             Icons.load();
 
             LOG.trace("Fixing text scaling");
-            SubstanceLookAndFeel.setFontPolicy(SubstanceFontUtilities.getScaledFontPolicy(
-                    (float)(SubstanceSizeUtils.getPointsToPixelsRatio()) / 1.33F));
+            if(new JLabel("AAA").getFont().getSize() <= 12)
+                SubstanceLookAndFeel.setFontPolicy(SubstanceFontUtilities.getScaledFontPolicy(
+                        (float)(SubstanceSizeUtils.getPointsToPixelsRatio()) / 1.33F));
 
             LOG.trace("Opening OpenBST...");
             new OpenBST();

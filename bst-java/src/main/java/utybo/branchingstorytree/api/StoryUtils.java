@@ -39,10 +39,16 @@ public class StoryUtils
      * @throws BSTException
      *             If an exception occurs while solving
      */
-    public static String solveVariables(final VirtualNode virtualNode, final BranchingStory story)
+    public static String solveVariables(final VirtualNode node, final BranchingStory story)
             throws NodeNotFoundException, BSTException
     {
-        String text = virtualNode.getText();
+        return solveVariables(node.getText(), story);
+    }
+
+    public static String solveVariables(final String s, final BranchingStory story)
+            throws NodeNotFoundException, BSTException
+    {
+        String text = s;
         final Pattern vp = Pattern.compile("\\$\\{(([\\&\\>]\\d+)|([\\w_]+))\\}");
         final Matcher vn = vp.matcher(text);
         while(vn.find())
@@ -51,8 +57,8 @@ public class StoryUtils
             final String varName = toReplace.substring(2, toReplace.length() - 1);
             if(varName.startsWith(">"))
             {
-                final String s = varName.substring(1);
-                StoryNode node = parseNode(s, story);
+                final String str = varName.substring(1);
+                StoryNode node = parseNode(str, story);
                 if(!(node instanceof VirtualNode))
                 {
                     throw new BSTException(-1, "Node is not a virtual node : " + node.getId(),
@@ -62,8 +68,8 @@ public class StoryUtils
             }
             else if(varName.startsWith("&"))
             {
-                final String s = varName.substring(1);
-                StoryNode i = parseNode(s, story);
+                final String str = varName.substring(1);
+                StoryNode i = parseNode(str, story);
                 if(!(i instanceof LogicalNode))
                 {
                     throw new BSTException(-1, "Node " + i.getId() + " (alias : "

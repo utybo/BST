@@ -116,6 +116,6 @@ public class Dictionary
             throw new BSTException(line, "Unknown external next node definer : " + group,
                     sourceName);
         }
-        return nndFactories.get(group).createNND(group, group2, client);
+        return nndFactories.get(group).createNND(group, group2, line, client);
     }
 }
