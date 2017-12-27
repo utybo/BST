@@ -87,7 +87,8 @@ public class StoryEditor extends JPanel implements EditorControl<BranchingStory>
             }
             catch(Exception e)
             {
-                e.printStackTrace();
+                OpenBST.LOG.error("Export failed", e);
+                JOptionPane.showMessageDialog(OpenBST.getInstance(), "Failed to export the file");
             }
         });
         toolBar.add(btnPlay);
@@ -111,7 +112,8 @@ public class StoryEditor extends JPanel implements EditorControl<BranchingStory>
             }
             catch(Exception x)
             {
-                x.printStackTrace();
+                OpenBST.LOG.error("Failed to preview", x);
+                JOptionPane.showMessageDialog(OpenBST.getInstance(), "Unexpected exception during preview creation (" + x.getClass().getSimpleName() + " : " + x.getMessage() + ")");
             }
         });
         toolBar.add(btnFilePreview);

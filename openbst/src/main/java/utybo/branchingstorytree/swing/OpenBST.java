@@ -821,13 +821,17 @@ public class OpenBST extends JFrame
                             }
                             catch(Exception e)
                             {
-                                e.printStackTrace();
+                                LOG.error("Error on story editor init", e);
+                                JOptionPane.showMessageDialog(OpenBST.this,
+                                        "Error while creating the Story Editor ("
+                                                + e.getClass().getSimpleName() + " : "
+                                                + e.getMessage() + ")");
                             }
                         });
                     }
                     catch(Exception e)
                     {
-                        e.printStackTrace();
+                        LOG.error(e);
                     }
                 }
             });
@@ -844,7 +848,11 @@ public class OpenBST extends JFrame
         }
         catch(Exception e)
         {
-            e.printStackTrace();
+            LOG.error("Error on story editor init", e);
+            JOptionPane.showMessageDialog(OpenBST.this,
+                    "Error while creating the Story Editor ("
+                            + e.getClass().getSimpleName() + " : "
+                            + e.getMessage() + ")");
         }
     }
 

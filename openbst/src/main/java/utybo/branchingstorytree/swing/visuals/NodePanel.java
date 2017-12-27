@@ -402,7 +402,7 @@ public class NodePanel extends JScrollablePanel
         }
         catch(InterruptedException e)
         {
-            e.printStackTrace();
+           OpenBST.LOG.error(e);
         }
         
         parent.getJSHint().setToolTipText(Lang.get("html.js" + (b ? "enabled" : "block")));
