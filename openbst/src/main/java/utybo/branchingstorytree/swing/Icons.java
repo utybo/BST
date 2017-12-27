@@ -37,9 +37,9 @@ public class Icons
 
         // 16px icons names
         String[] arr = new String[] {"About", "Audio", "Camera Addon Identification", "Cancel",
-                "Change Theme", "Color Wheel", "Easy to Find", "Export", "External Link", "Eye",
-                "Gears", "Import", "Invisible", "Mute", "Open Archive", "Open", "Picture",
-                "Refresh", "Return", "Save As", "Synchronize", "Undo"};
+                "Change Theme", "Circled Play", "Color Wheel", "Easy to Find", "Export",
+                "External Link", "Eye", "Gears", "Import", "Invisible", "Mute", "Open Archive",
+                "Open", "Picture", "Refresh", "Return", "Save", "Save As", "Synchronize", "Undo"};
         for(String s : arr)
         {
             images.put(s + 16, loadImage(s, 16));
@@ -53,6 +53,12 @@ public class Icons
         images.put("JSY16", loadImage("16c", "JSY" + applyScaleValue(sizes)));
         images.put("JSN16", loadImage("16c", "JSN" + applyScaleValue(sizes)));
 
+        images.put("VirtualNode16", loadImage("16c", "VirtualNode" + applyScaleValue(sizes)));
+        images.put("LogicalNode16", loadImage("16c", "LogicalNode" + applyScaleValue(sizes)));
+        images.put("TextNode16", loadImage("16c", "TextNode" + applyScaleValue(sizes)));
+        
+        images.put("PreviewText16", loadImage("16c", "PreviewText" + applyScaleValue(sizes)));
+
         // 16px logos
         images.put("Logo16", loadImage("logos/Logo" + applyScaleValue(sizes)));
         images.put("LogoWhite16", loadImage("logos/LogoWhite" + applyScaleValue(sizes)));
@@ -63,7 +69,7 @@ public class Icons
         {
             images.put(s + 32, loadImage(s, 32));
         }
-        
+
         // 40px icons
         arr = new String[] {"Camera Addon Identification", "Cancel", "Easy to Find", "Open",
                 "Refresh", "Return", "Synchronize", "Undo"};

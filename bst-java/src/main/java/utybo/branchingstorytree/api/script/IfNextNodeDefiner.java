@@ -23,8 +23,8 @@ import utybo.branchingstorytree.api.story.StoryNode;
  */
 public class IfNextNodeDefiner implements NextNodeDefiner
 {
-    private final String one, two;
-    private final CheckerDescriptor checker;
+    public final String one, two;
+    public final CheckerDescriptor checker;
 
     /**
      * Create an If-NND that will return either the node one if the checker is

@@ -40,6 +40,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
+import java.util.TreeMap;
 import java.util.Vector;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
@@ -87,7 +88,31 @@ import org.pushingpixels.substance.api.SubstanceSkin;
 import org.pushingpixels.substance.api.fonts.SubstanceFontUtilities;
 import org.pushingpixels.substance.api.painter.overlay.SubstanceOverlayPainter;
 import org.pushingpixels.substance.api.skin.BusinessSkin;
+import org.pushingpixels.substance.api.skin.SubstanceAutumnLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceBusinessBlackSteelLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceBusinessBlueSteelLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceCeruleanLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceCremeCoffeeLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceCremeLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceDustCoffeeLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceDustLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceGeminiLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceGraphiteAquaLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceGraphiteChalkLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceGraphiteGlassLookAndFeel;
 import org.pushingpixels.substance.api.skin.SubstanceGraphiteGoldLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceGraphiteLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceMagellanLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceMarinerLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceModerateLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceNebulaBrickWallLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceNebulaLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceOfficeBlack2007LookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceOfficeBlue2007LookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceOfficeSilver2007LookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceRavenLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceSaharaLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceTwilightLookAndFeel;
 import org.pushingpixels.substance.internal.utils.SubstanceSizeUtils;
 import org.pushingpixels.trident.Timeline;
 
@@ -102,6 +127,7 @@ import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.api.BranchingStoryTreeParser;
 import utybo.branchingstorytree.api.script.Dictionary;
 import utybo.branchingstorytree.api.story.BranchingStory;
+import utybo.branchingstorytree.swing.editor.StoryEditor;
 import utybo.branchingstorytree.swing.impl.BRMFileClient;
 import utybo.branchingstorytree.swing.impl.TabClient;
 import utybo.branchingstorytree.swing.utils.BSTPackager;
@@ -162,6 +188,8 @@ public class OpenBST extends JFrame
     public static final SubstanceLookAndFeel LIGHT_THEME;
     public static final LookAndFeel DEBUG_THEME = new MetalLookAndFeel();
 
+    public static final Map<String, LookAndFeel> ADDITIONAL_LIGHT_THEMES, ADDITIONAL_DARK_THEMES;
+    //    public static final Map<String, LookAndFeel> ADDITIONAL_THEMES;
     static
     {
         SubstanceSkin skin = new BusinessSkin();
@@ -174,6 +202,36 @@ public class OpenBST extends JFrame
         {
             private static final long serialVersionUID = 1L;
         };
+
+        TreeMap<String, LookAndFeel> mapl = new TreeMap<>();
+        TreeMap<String, LookAndFeel> mapd = new TreeMap<>();
+        mapl.put("Autumn", new SubstanceAutumnLookAndFeel());
+        mapl.put("Business Black Steel", new SubstanceBusinessBlackSteelLookAndFeel());
+        mapl.put("Business Blue Steel", new SubstanceBusinessBlueSteelLookAndFeel());
+        mapl.put("Cerulean", new SubstanceCeruleanLookAndFeel());
+        mapl.put("Creme Coffee", new SubstanceCremeCoffeeLookAndFeel());
+        mapl.put("Creme", new SubstanceCremeLookAndFeel());
+        mapl.put("Dust Coffee", new SubstanceDustCoffeeLookAndFeel());
+        mapl.put("Dust", new SubstanceDustLookAndFeel());
+        mapl.put("Gemini", new SubstanceGeminiLookAndFeel());
+        mapd.put("Graphite Aqua", new SubstanceGraphiteAquaLookAndFeel());
+        mapd.put("Graphite Chalk", new SubstanceGraphiteChalkLookAndFeel());
+        mapd.put("Graphite Glass", new SubstanceGraphiteGlassLookAndFeel());
+        mapd.put("Graphite", new SubstanceGraphiteLookAndFeel());
+        mapd.put("Magellan", new SubstanceMagellanLookAndFeel());
+        mapl.put("Mariner", new SubstanceMarinerLookAndFeel());
+        mapl.put("Moderate", new SubstanceModerateLookAndFeel());
+        mapl.put("Nebula Brick Wall", new SubstanceNebulaBrickWallLookAndFeel());
+        mapl.put("Nebula", new SubstanceNebulaLookAndFeel());
+        mapl.put("Office 2007 (Black)", new SubstanceOfficeBlack2007LookAndFeel());
+        mapl.put("Office 2007 (Blue)", new SubstanceOfficeBlue2007LookAndFeel());
+        mapl.put("Office 2007 (Silver)", new SubstanceOfficeSilver2007LookAndFeel());
+        mapd.put("Raven", new SubstanceRavenLookAndFeel());
+        mapl.put("Sahara", new SubstanceSaharaLookAndFeel());
+        mapd.put("Twilight", new SubstanceTwilightLookAndFeel());
+        //        ADDITIONAL_THEMES = Collections.unmodifiableMap(map);
+        ADDITIONAL_LIGHT_THEMES = Collections.unmodifiableMap(mapl);
+        ADDITIONAL_DARK_THEMES = Collections.unmodifiableMap(mapd);
     }
 
     // --- IMAGES ---
@@ -687,11 +745,19 @@ public class OpenBST extends JFrame
         panel.add(horizontalStrut_1, "cell 3 1");
 
         final JButton btnOpenAFile = new JButton(Lang.get("welcome.open"));
-        panel.add(btnOpenAFile, "cell 4 1");
+        panel.add(btnOpenAFile, "flowx,cell 4 1");
         btnOpenAFile.setIcon(new ImageIcon(Icons.getImage("Open", 40)));
         btnOpenAFile.addActionListener(e ->
         {
-            clickOpenStory();
+            clickOpenStory(askForFile());
+        });
+
+        final JButton btnOpenEditor = new JButton("Open Editor");
+        panel.add(btnOpenEditor, "cell 4 1");
+        btnOpenEditor.setIcon(new ImageIcon(Icons.getImage("Open", 40)));
+        btnOpenEditor.addActionListener(e ->
+        {
+            clickOpenEditor(askForFile());
         });
 
         JButton btnChangeBackground = new JButton(Lang.get("welcome.changebackground"),
@@ -733,19 +799,65 @@ public class OpenBST extends JFrame
         setVisible(true);
     }
 
-    /**
-     * Remove a story panel from the tabs
-     *
-     * @param storyPanel
-     */
-    public void removeStory(final StoryPanel storyPanel)
+    private void clickOpenEditor(File f)
     {
-        container.remove(storyPanel);
+        if(f != null)
+        {
+            final TabClient client = new TabClient(instance);
+            loadFile(f, client, new Consumer<BranchingStory>()
+            {
+                @Override
+                public void accept(BranchingStory bs)
+                {
+                    try
+                    {
+                        SwingUtilities.invokeAndWait(() ->
+                        {
+                            try
+                            {
+                                StoryEditor se = new StoryEditor(bs);
+                                container.addTab(se.getTitle(), se);
+                                container.setSelectedComponent(se);
+                            }
+                            catch(Exception e)
+                            {
+                                e.printStackTrace();
+                            }
+                        });
+                    }
+                    catch(Exception e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
     }
 
-    public void clickOpenStory()
+    private void clickNewEditor()
     {
-        final File f = askForFile();
+        try
+        {
+            StoryEditor se = new StoryEditor(new BranchingStory());
+            container.addTab("Editor", se);
+            container.setSelectedComponent(se);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Remove a panel from the tabs
+     */
+    public void removeTab(final JPanel panel)
+    {
+        container.remove(panel);
+    }
+
+    public void clickOpenStory(File f)
+    {
         if(f != null)
         {
             final TabClient client = new TabClient(instance);
@@ -829,11 +941,22 @@ public class OpenBST extends JFrame
                     @Override
                     public void actionPerformed(ActionEvent e)
                     {
-                        clickOpenStory();
+                        clickOpenStory(askForFile());
                     }
                 }));
 
         shortMenu.addSeparator();
+
+        shortMenu.add(new JMenuItem(new AbstractAction("Edit a new story")
+        {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                clickNewEditor();
+            }
+        }));
 
         JMenu additionalMenu = new JMenu(Lang.get("menu.advanced"));
         shortMenu.add(additionalMenu);
@@ -956,6 +1079,35 @@ public class OpenBST extends JFrame
         themesMenu.add(jrbmi);
         themesGroup.add(jrbmi);
 
+        JMenu additionalLightThemesMenu = new JMenu("Additional light themes");
+        int j = 3;
+        for(Map.Entry<String, LookAndFeel> entry : ADDITIONAL_LIGHT_THEMES.entrySet())
+        {
+            int jf = j;
+            jrbmi = new JRadioButtonMenuItem(entry.getKey());
+            if(j == selectedTheme)
+                jrbmi.setSelected(true);
+            jrbmi.addActionListener(e -> switchLaF(jf, entry.getValue()));
+            additionalLightThemesMenu.add(jrbmi);
+            themesGroup.add(jrbmi);
+            j++;
+        }
+        themesMenu.add(additionalLightThemesMenu);
+
+        JMenu additionalDarkThemesMenu = new JMenu("Additional dark themes");
+        for(Map.Entry<String, LookAndFeel> entry : ADDITIONAL_DARK_THEMES.entrySet())
+        {
+            int jf = j;
+            jrbmi = new JRadioButtonMenuItem(entry.getKey());
+            if(j == selectedTheme)
+                jrbmi.setSelected(true);
+            jrbmi.addActionListener(e -> switchLaF(jf, entry.getValue()));
+            additionalDarkThemesMenu.add(jrbmi);
+            themesGroup.add(jrbmi);
+            j++;
+        }
+        themesMenu.add(additionalDarkThemesMenu);
+
         shortMenu.add(new JMenuItem(new AbstractAction(Lang.get("menu.about"),
                 new ImageIcon(Icons.getImage("About", 16)))
         {
@@ -976,14 +1128,13 @@ public class OpenBST extends JFrame
 
     private void switchLaF(int id, LookAndFeel laf)
     {
-
         try
         {
-            dark = id == 0;
+            dark = id == 0 || ADDITIONAL_DARK_THEMES.containsValue(laf);
             UIManager.setLookAndFeel(laf);
             SwingUtilities.updateComponentTreeUI(instance);
-            background.setDark(id == 0);
-            darkModeCallbacks.forEach(a -> a.accept(id == 0));
+            background.setDark(dark);
+            darkModeCallbacks.forEach(a -> a.accept(dark));
             selectedTheme = id;
         }
         catch(UnsupportedLookAndFeelException e)
@@ -1015,5 +1166,11 @@ public class OpenBST extends JFrame
     public Boolean isDark()
     {
         return dark;
+    }
+
+    public void setTabName(JPanel panel, String string)
+    {
+        if(container.indexOfComponent(panel) != -1)
+            container.setTitleAt(container.indexOfComponent(panel), string);
     }
 }

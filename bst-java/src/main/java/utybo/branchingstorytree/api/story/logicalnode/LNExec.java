@@ -40,4 +40,9 @@ public class LNExec extends LNInstruction
         action.exec();
         return null;
     }
+    
+    public ActionDescriptor getAction()
+    {
+        return action;
+    }
 }

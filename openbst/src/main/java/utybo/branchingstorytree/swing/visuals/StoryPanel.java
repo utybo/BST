@@ -581,7 +581,7 @@ public class StoryPanel extends JPanel
                 {
                     client.getSSBHandler().shutdown();
                     nodePanel.dispose();
-                    parentWindow.removeStory(StoryPanel.this);
+                    parentWindow.removeTab(StoryPanel.this);
                 }
             }
         });
@@ -962,7 +962,7 @@ public class StoryPanel extends JPanel
             optionPanel.add(button, "grow");
 
             button = new JButton(Lang.get("story.final.close"));
-            button.addActionListener(e -> parentWindow.removeStory(this));
+            button.addActionListener(e -> parentWindow.removeTab(this));
             optionPanel.add(button, "grow");
         }
 

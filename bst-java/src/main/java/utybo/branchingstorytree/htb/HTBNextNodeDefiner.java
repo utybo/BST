@@ -19,7 +19,7 @@ import utybo.branchingstorytree.api.story.StoryNode;
 
 public class HTBNextNodeDefiner implements NextNodeDefiner
 {
-    private final String head, desc;
+    public final String head, desc;
     private final int line;
     private final BSTClient client;
 

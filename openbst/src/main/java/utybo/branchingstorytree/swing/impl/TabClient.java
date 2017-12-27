@@ -56,7 +56,7 @@ public class TabClient implements BSTClient
     @Override
     public void exit()
     {
-        instance.removeStory(tab);
+        instance.removeTab(tab);
     }
 
     public void setStoryPanel(final StoryPanel sp)
