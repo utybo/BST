@@ -24,7 +24,6 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
@@ -41,10 +40,10 @@ import utybo.branchingstorytree.api.story.StoryNode;
 import utybo.branchingstorytree.api.story.TextNode;
 import utybo.branchingstorytree.api.story.VirtualNode;
 import utybo.branchingstorytree.swing.Icons;
+import utybo.branchingstorytree.swing.Messagers;
 import utybo.branchingstorytree.swing.OpenBST;
 import utybo.branchingstorytree.swing.editor.StorySingleNodeEditor.Status;
 import utybo.branchingstorytree.swing.utils.AlphanumComparator;
-import utybo.branchingstorytree.swing.utils.Lang;
 import utybo.branchingstorytree.swing.visuals.JScrollablePanel;
 import utybo.branchingstorytree.swing.visuals.JScrollablePanel.ScrollableSizeHint;
 
@@ -170,18 +169,18 @@ public class StoryNodesEditor extends JPanel implements EditorControl<Collection
         StorySingleNodeEditor ssne = jlist.getSelectedValue();
         if(ssne == null)
         {
-            JOptionPane.showMessageDialog(OpenBST.getInstance(), "No nodes selected!",
-                    Lang.get("error"), JOptionPane.ERROR_MESSAGE);
+            Messagers.showMessage(OpenBST.getInstance(), "No nodes selected!",
+                    Messagers.TYPE_ERROR);
             return;
         }
         else
         {
-            int i = JOptionPane.showConfirmDialog(OpenBST.getInstance(),
+            int i = Messagers.showConfirm(OpenBST.getInstance(),
                     "<html>You are about to remove this node :<p>" + ssne.getIdentifier() + " : "
                             + StringEscapeUtils.escapeHtml(ssne.getSummary())
                             + "<p><p>Are you sure you want to remove it? This cannot be undone later.",
-                    null, JOptionPane.YES_NO_OPTION);
-            if(i == JOptionPane.YES_OPTION)
+                    Messagers.OPTIONS_YES_NO);
+            if(i == Messagers.OPTION_YES)
             {
                 int index = list.indexOf(ssne);
                 list.remove(ssne);

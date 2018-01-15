@@ -69,6 +69,13 @@ public class Icons
         {
             images.put(s + 32, loadImage(s, 32));
         }
+        
+        // 32px based msgr icons
+        sizes = new int[]{32, 40, 48, 64};
+        images.put("err32", loadImage("msgr", "err" + applyScaleValue(sizes)));
+        images.put("ok32", loadImage("msgr", "ok" + applyScaleValue(sizes)));
+        images.put("quest32", loadImage("msgr", "quest" + applyScaleValue(sizes)));
+        images.put("warn32", loadImage("msgr", "warn" + applyScaleValue(sizes)));
 
         // 40px icons
         arr = new String[] {"Camera Addon Identification", "Cancel", "Easy to Find", "Open",

@@ -20,7 +20,6 @@ import java.util.function.Consumer;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
-import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import org.apache.commons.compress.compressors.xz.XZCompressorInputStream;
@@ -43,6 +42,7 @@ import utybo.branchingstorytree.api.StoryUtils;
 import utybo.branchingstorytree.api.story.BranchingStory;
 import utybo.branchingstorytree.api.story.TextNode;
 import utybo.branchingstorytree.swing.Icons;
+import utybo.branchingstorytree.swing.Messagers;
 import utybo.branchingstorytree.swing.OpenBST;
 import utybo.branchingstorytree.swing.impl.IMGClient;
 import utybo.branchingstorytree.swing.utils.Lang;
@@ -143,7 +143,7 @@ public class NodePanel extends JScrollablePanel
             {
                 view = new WebView();
                 view.getEngine().setOnAlert(e -> SwingUtilities.invokeLater(
-                        () -> JOptionPane.showMessageDialog(OpenBST.getInstance(), e.getData())));
+                        () -> Messagers.showMessage(OpenBST.getInstance(), e.getData())));
                 view.getEngine().getLoadWorker().stateProperty()
                         .addListener((obs, oldState, newState) ->
                         {
@@ -360,10 +360,8 @@ public class NodePanel extends JScrollablePanel
                     | SecurityException e)
             {
                 OpenBST.LOG.warn("Color does not exist : " + color, e);
-                SwingUtilities
-                        .invokeLater(() -> JOptionPane.showMessageDialog(OpenBST.getInstance(),
-                                Lang.get("story.unknowncolor").replace("$c", color),
-                                Lang.get("error"), JOptionPane.ERROR_MESSAGE));
+                SwingUtilities.invokeLater(() -> Messagers.showMessage(OpenBST.getInstance(),
+                        Lang.get("story.unknowncolor").replace("$c", color), Messagers.TYPE_ERROR));
             }
         }
         if(c != null)
@@ -402,9 +400,9 @@ public class NodePanel extends JScrollablePanel
         }
         catch(InterruptedException e)
         {
-           OpenBST.LOG.error(e);
+            OpenBST.LOG.error(e);
         }
-        
+
         parent.getJSHint().setToolTipText(Lang.get("html.js" + (b ? "enabled" : "block")));
         parent.getJSHint()
                 .setIcon(new ImageIcon(b ? Icons.getImage("JSY", 16) : Icons.getImage("JSN", 16)));

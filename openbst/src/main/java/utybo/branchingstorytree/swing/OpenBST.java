@@ -421,16 +421,16 @@ public class OpenBST extends JFrame
                 catch(final IOException e)
                 {
                     LOG.error("IOException caught", e);
-                    showMessageDialog(instance,
+                    showException(instance,
                             Lang.get("file.error").replace("$e", e.getClass().getSimpleName())
                                     .replace("$m", e.getMessage()),
-                            Lang.get("error"), JOptionPane.ERROR_MESSAGE);
+                            e);
                     return null;
                 }
                 catch(final BSTException e)
                 {
                     LOG.error("BSTException caught", e);
-                    String s = Lang.get("file.bsterror.1");
+                    String s = "<html>" + Lang.get("file.bsterror.1");
                     s += Lang.get("file.bsterror.2");
                     s += Lang.get("file.bsterror.3").replace("$l", "" + e.getWhere()).replace("$f",
                             "[main]");
@@ -443,9 +443,9 @@ public class OpenBST extends JFrame
                     s += Lang.get("file.bsterror.5").replace("$m", "" + e.getMessage());
                     s += Lang.get("file.bsterror.6");
                     String s2 = s;
-                    if(doAndReturn(() -> JOptionPane.showConfirmDialog(instance, s2,
-                            Lang.get("bsterror"), JOptionPane.ERROR_MESSAGE,
-                            JOptionPane.YES_NO_OPTION)) == JOptionPane.YES_OPTION)
+                    if(doAndReturn(() -> Messagers.showConfirm(instance, s2,
+                            Messagers.OPTIONS_YES_NO, Messagers.TYPE_ERROR,
+                            Lang.get("bsterror"))) == Messagers.OPTION_YES)
                     {
                         LOG.debug("Reloading");
                         return doInBackground();
@@ -455,8 +455,7 @@ public class OpenBST extends JFrame
                 catch(final Exception e)
                 {
                     LOG.error("Random exception caught", e);
-                    showMessageDialog(instance, Lang.get("file.crash"), Lang.get("error"),
-                            JOptionPane.ERROR_MESSAGE);
+                    showException(instance, Lang.get("file.crash"), e);
                     return null;
                 }
 
@@ -486,8 +485,7 @@ public class OpenBST extends JFrame
                 catch(ExecutionException e)
                 {
                     LOG.error("Random exception caught", e);
-                    JOptionPane.showMessageDialog(instance, Lang.get("file.crash"),
-                            Lang.get("error"), JOptionPane.ERROR_MESSAGE);
+                    Messagers.showException(instance, Lang.get("file.crash"), e);
                 }
             }
         };
@@ -822,10 +820,11 @@ public class OpenBST extends JFrame
                             catch(Exception e)
                             {
                                 LOG.error("Error on story editor init", e);
-                                JOptionPane.showMessageDialog(OpenBST.this,
+                                Messagers.showException(OpenBST.this,
                                         "Error while creating the Story Editor ("
                                                 + e.getClass().getSimpleName() + " : "
-                                                + e.getMessage() + ")");
+                                                + e.getMessage() + ")",
+                                        e);
                             }
                         });
                     }
@@ -849,10 +848,8 @@ public class OpenBST extends JFrame
         catch(Exception e)
         {
             LOG.error("Error on story editor init", e);
-            JOptionPane.showMessageDialog(OpenBST.this,
-                    "Error while creating the Story Editor ("
-                            + e.getClass().getSimpleName() + " : "
-                            + e.getMessage() + ")");
+            Messagers.showException(OpenBST.this, "Error while creating the Story Editor ("
+                    + e.getClass().getSimpleName() + " : " + e.getMessage() + ")", e);
         }
     }
 
@@ -890,11 +887,11 @@ public class OpenBST extends JFrame
                                 catch(BSTException e)
                                 {
                                     LOG.error("Exception caught while loading resources", e);
-                                    showMessageDialog(instance,
+                                    showException(instance,
                                             Lang.get("file.resourceerror")
                                                     .replace("$e", whichCause(e))
                                                     .replace("$m", whichMessage(e)),
-                                            Lang.get("error"), JOptionPane.ERROR_MESSAGE);
+                                            e);
                                 }
                                 SwingUtilities.invokeAndWait(() -> sp.setupStory());
                             }
@@ -1156,9 +1153,14 @@ public class OpenBST extends JFrame
         return instance;
     }
 
-    protected void showMessageDialog(OpenBST obst, String msg, String head, int type)
+    protected void showMessage(OpenBST obst, String msg, int type)
     {
-        invokeSwingAndWait(() -> JOptionPane.showMessageDialog(obst, msg, head, type));
+        invokeSwingAndWait(() -> Messagers.showMessage(obst, msg, type));
+    }
+
+    protected void showException(OpenBST obst, String msg, Exception e)
+    {
+        invokeSwingAndWait(() -> Messagers.showException(obst, msg, e));
     }
 
     public void addDarkModeCallback(Consumer<Boolean> callback)

@@ -24,7 +24,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
@@ -38,8 +37,8 @@ import net.miginfocom.swing.MigLayout;
 import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.api.story.BranchingStory;
 import utybo.branchingstorytree.swing.Icons;
+import utybo.branchingstorytree.swing.Messagers;
 import utybo.branchingstorytree.swing.OpenBST;
-import utybo.branchingstorytree.swing.utils.Lang;
 
 @SuppressWarnings("serial")
 public class StoryEditor extends JPanel implements EditorControl<BranchingStory>
@@ -88,7 +87,7 @@ public class StoryEditor extends JPanel implements EditorControl<BranchingStory>
             catch(Exception e)
             {
                 OpenBST.LOG.error("Export failed", e);
-                JOptionPane.showMessageDialog(OpenBST.getInstance(), "Failed to export the file");
+                Messagers.showException(OpenBST.getInstance(), "Failed to export the file", e);
             }
         });
         toolBar.add(btnPlay);
@@ -113,7 +112,8 @@ public class StoryEditor extends JPanel implements EditorControl<BranchingStory>
             catch(Exception x)
             {
                 OpenBST.LOG.error("Failed to preview", x);
-                JOptionPane.showMessageDialog(OpenBST.getInstance(), "Unexpected exception during preview creation (" + x.getClass().getSimpleName() + " : " + x.getMessage() + ")");
+                Messagers.showException(OpenBST.getInstance(),
+                        "Unexpected exception during preview creation", x);
             }
         });
         toolBar.add(btnFilePreview);
@@ -124,15 +124,15 @@ public class StoryEditor extends JPanel implements EditorControl<BranchingStory>
         JButton btnClose = new JButton("Close", new ImageIcon(Icons.getImage("Cancel", 16)));
         btnClose.addActionListener(e ->
         {
-            int i = JOptionPane.showConfirmDialog(OpenBST.getInstance(),
+            int i = Messagers.showConfirm(OpenBST.getInstance(),
                     "You are about to close this editor view. Do you wish to save your work before quitting?",
-                    "Editor", JOptionPane.YES_NO_CANCEL_OPTION);
-            if(i == JOptionPane.YES_OPTION)
+                    Messagers.OPTIONS_YES_NO_CANCEL);
+            if(i == Messagers.OPTION_YES)
             {
                 if(save())
                     OpenBST.getInstance().removeTab(this);
             }
-            else if(i == JOptionPane.NO_OPTION)
+            else if(i == Messagers.OPTION_NO)
                 OpenBST.getInstance().removeTab(this);
             else
                 return;
@@ -214,10 +214,7 @@ public class StoryEditor extends JPanel implements EditorControl<BranchingStory>
             catch(IOException | BSTException e1)
             {
                 OpenBST.LOG.error("Failed saving a file", e1);
-                JOptionPane.showMessageDialog(OpenBST.getInstance(),
-                        "Failed to save the file (" + e1.getClass().getSimpleName() + " : "
-                                + e1.getMessage() + ")",
-                        Lang.get("error"), JOptionPane.ERROR_MESSAGE);
+                Messagers.showException(OpenBST.getInstance(), "Failed to save the file", e1);
             }
         }
         return false;
@@ -251,10 +248,7 @@ public class StoryEditor extends JPanel implements EditorControl<BranchingStory>
             catch(IOException | BSTException e1)
             {
                 OpenBST.LOG.error("Failed saving a file", e1);
-                JOptionPane.showMessageDialog(OpenBST.getInstance(),
-                        "Failed to save the file (" + e1.getClass().getSimpleName() + " : "
-                                + e1.getMessage() + ")",
-                        Lang.get("error"), JOptionPane.ERROR_MESSAGE);
+                Messagers.showException(OpenBST.getInstance(), "Failed to save the file", e1);
             }
         }
         return false;
