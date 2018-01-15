@@ -68,6 +68,27 @@ public class StoryDetailsEditor extends JPanel implements EditorControl<Map<Stri
         add(lblAuthor, "cell 0 1,alignx trailing");
 
         author = new JTextField();
+        author.getDocument().addDocumentListener(new DocumentListener()
+        {
+
+            @Override
+            public void removeUpdate(DocumentEvent e)
+            {
+                editor.updateTabTitle();
+            }
+
+            @Override
+            public void insertUpdate(DocumentEvent e)
+            {
+                editor.updateTabTitle();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e)
+            {
+                editor.updateTabTitle();
+            }
+        });
         add(author, "cell 1 1,growx");
         author.setColumns(10);
 
