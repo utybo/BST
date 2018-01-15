@@ -18,6 +18,7 @@ Less technical explanations available on the [OpenBST website](https://utybo.git
 - **Experimental features were added.** They provide cool features, but can be very unstable and may disappear at any time. A warning is issued every time you call an experimental function.
 - **Better icon support for HiDPI.** Icons were previously very small, but the new addition of scalable icons provides good looking icons on various display sizes.
 - **New XSF Module** which adds full Javascript capacity to BST, with the ability to run .js files with all the great stuff from Java's Nashorn! There is also a Next Node Definer available as an experimental feature.
+- Added better message dialogs. Just fancy stuff, but hey, at least errors are shown more consistently!
 - Options now support variables
 - 2 new, beautiful backgrounds have been added!
 - Additional themes from Substance are now supported, although they are not considered to be official ones.
@@ -31,7 +32,7 @@ Less technical explanations available on the [OpenBST website](https://utybo.git
 - Large resources are now compressed (with XZ) to avoid massive file sizes.
 - The option buttons system has been reworked to be much more dynamic
 - *Most NNDs and NodeOption now publicly expose their variables to allow for easier recreating of text*
--
+
 
 ### Deprecated
 ### Removed
