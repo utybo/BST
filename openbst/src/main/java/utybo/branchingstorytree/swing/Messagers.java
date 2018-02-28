@@ -31,6 +31,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.LineBorder;
 
+import org.pushingpixels.substance.api.SubstanceCortex;
 import org.pushingpixels.substance.api.SubstanceLookAndFeel;
 import org.pushingpixels.substance.api.skin.SubstanceBusinessLookAndFeel;
 
@@ -57,8 +58,7 @@ public class Messagers
             try
             {
                 UIManager.setLookAndFeel(new SubstanceBusinessLookAndFeel());
-                UIManager.getDefaults().put(SubstanceLookAndFeel.COLORIZATION_FACTOR,
-                        Double.valueOf(1.0D));
+                SubstanceCortex.GlobalScope.setColorizationFactor(1.0D);
             }
             catch(UnsupportedLookAndFeelException e)
             {

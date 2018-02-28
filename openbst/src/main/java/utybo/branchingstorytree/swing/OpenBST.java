@@ -82,10 +82,11 @@ import org.apache.commons.compress.compressors.xz.XZCompressorInputStream;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.pushingpixels.substance.api.DecorationAreaType;
+import org.pushingpixels.substance.api.SubstanceCortex;
 import org.pushingpixels.substance.api.SubstanceLookAndFeel;
 import org.pushingpixels.substance.api.SubstanceSkin;
-import org.pushingpixels.substance.api.fonts.SubstanceFontUtilities;
+import org.pushingpixels.substance.api.SubstanceSlices.DecorationAreaType;
+import org.pushingpixels.substance.api.font.SubstanceFontUtilities;
 import org.pushingpixels.substance.api.painter.overlay.SubstanceOverlayPainter;
 import org.pushingpixels.substance.api.skin.BusinessSkin;
 import org.pushingpixels.substance.api.skin.SubstanceAutumnLookAndFeel;
@@ -277,8 +278,7 @@ public class OpenBST extends JFrame
             try
             {
                 UIManager.setLookAndFeel(LIGHT_THEME);
-                UIManager.getDefaults().put(SubstanceLookAndFeel.COLORIZATION_FACTOR,
-                        Double.valueOf(1.0D));
+                SubstanceCortex.GlobalScope.setColorizationFactor(1.0D);
 
                 if(System.getProperty("os.name").toLowerCase().equals("linux"))
                 {
@@ -319,7 +319,7 @@ public class OpenBST extends JFrame
 
             LOG.trace("Fixing text scaling");
             if(new JLabel("AAA").getFont().getSize() <= 12)
-                SubstanceLookAndFeel.setFontPolicy(SubstanceFontUtilities.getScaledFontPolicy(
+                SubstanceCortex.GlobalScope.setFontPolicy(SubstanceFontUtilities.getScaledFontPolicy(
                         (float)(SubstanceSizeUtils.getPointsToPixelsRatio()) / 1.33F));
 
             LOG.trace("Opening OpenBST...");

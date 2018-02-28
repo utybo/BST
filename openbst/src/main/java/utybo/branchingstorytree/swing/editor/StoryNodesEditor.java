@@ -31,7 +31,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 
 import org.apache.commons.lang.StringEscapeUtils;
-import org.pushingpixels.substance.api.renderers.SubstanceDefaultListCellRenderer;
+import org.pushingpixels.substance.api.renderer.SubstanceDefaultListCellRenderer;
 
 import net.miginfocom.swing.MigLayout;
 import utybo.branchingstorytree.api.BSTException;
