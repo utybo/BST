@@ -59,7 +59,7 @@ public class StoryEditor extends JPanel implements EditorControl<BranchingStory>
         JButton btnSaveAs = new JButton("Save as", new ImageIcon(Icons.getImage("Save As", 16)));
         btnSaveAs.addActionListener(e ->
         {
-
+        	saveAs();
         });
         toolBar.add(btnSaveAs);
 
@@ -107,6 +107,7 @@ public class StoryEditor extends JPanel implements EditorControl<BranchingStory>
 
                 dialog.setModalityType(ModalityType.APPLICATION_MODAL);
                 dialog.setSize((int)(Icons.getScale() * 350), (int)(Icons.getScale() * 300));
+                dialog.setLocationRelativeTo(OpenBST.getInstance());
                 dialog.setVisible(true);
             }
             catch(Exception x)
@@ -152,6 +153,8 @@ public class StoryEditor extends JPanel implements EditorControl<BranchingStory>
         JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
         tabbedPane.setTabPlacement(JTabbedPane.LEFT);
         add(tabbedPane, "cell 0 1,grow");
+        
+        tabbedPane.addTab("Beta Warning", new StoryEditorWelcomeScreen());
 
         details = new StoryDetailsEditor(this);
         tabbedPane.addTab("Details", details);

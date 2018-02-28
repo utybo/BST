@@ -16,6 +16,8 @@ import javax.swing.JTextArea;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import org.pushingpixels.substance.internal.utils.border.SubstanceTextComponentBorder;
+
 import net.miginfocom.swing.MigLayout;
 import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.api.story.LogicalNode;
@@ -23,6 +25,7 @@ import utybo.branchingstorytree.api.story.logicalnode.LNCondReturn;
 import utybo.branchingstorytree.api.story.logicalnode.LNExec;
 import utybo.branchingstorytree.api.story.logicalnode.LNInstruction;
 import utybo.branchingstorytree.api.story.logicalnode.LNTern;
+import utybo.branchingstorytree.swing.utils.UndoUtils;
 
 @SuppressWarnings("serial")
 public class StoryLogicalNodeEditor extends StorySingleNodeEditor
@@ -45,6 +48,8 @@ public class StoryLogicalNodeEditor extends StorySingleNodeEditor
         add(scrollPane, "cell 1 1,grow");
 
         textArea = new JTextArea();
+        UndoUtils.attachSimpleUndoManager(textArea);
+        textArea.setBorder(new SubstanceTextComponentBorder(new Insets(5,5,5,5)));
         textArea.getDocument().addDocumentListener(new DocumentListener()
         {
 

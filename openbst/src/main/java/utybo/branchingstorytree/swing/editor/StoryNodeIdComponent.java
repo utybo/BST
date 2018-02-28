@@ -23,6 +23,7 @@ import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.plaf.BorderUIResource;
 
 import net.miginfocom.swing.MigLayout;
 import utybo.branchingstorytree.api.story.StoryNode;
@@ -102,6 +103,9 @@ public class StoryNodeIdComponent extends JPanel
         });
         add(txtStringid, "cell 4 0,growx");
         txtStringid.setColumns(10);
+        
+        System.out.println(((BorderUIResource.CompoundBorderUIResource)txtStringid.getBorder()).getOutsideBorder().getClass().getName());
+        System.out.println(((BorderUIResource.CompoundBorderUIResource)txtStringid.getBorder()).getInsideBorder().getClass().getName());
 
         lblNodeStatus = new JLabel("");
         // TODO
