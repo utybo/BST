@@ -155,6 +155,12 @@ public class Messagers
         dialog.setMaximumSize(
                 new Dimension((int)(450 * Icons.getScale()), (int)(800 * Icons.getScale())));
         dialog.pack();
+        if(dialog.getWidth() > 450 * Icons.getScale())
+        {
+            lblSwagSwag.setText("<html><body style='width: " + (int)(400 * Icons.getScale())
+                    + "px'>" + lblSwagSwag.getText());
+            dialog.pack();
+        }
         dialog.setLocationRelativeTo(parent);
         dialog.setResizable(false);
         Toolkit.getDefaultToolkit().beep();
@@ -164,7 +170,7 @@ public class Messagers
 
     private static float adaptSize(int iconWidth)
     {
-        switch((int)(iconWidth/Icons.getScale()))
+        switch((int)(iconWidth / Icons.getScale()))
         {
         case 32:
             return 48;
