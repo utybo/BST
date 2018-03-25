@@ -87,12 +87,12 @@ public class NodePanel extends JScrollablePanel
      *
      */
     private static final long serialVersionUID = 1L;
+    private static final String defaultFont = "libre_baskerville";
     private final IMGClient imageClient;
     private String text;
     private Color textColor;
     private boolean backgroundVisible = true;
     private WebView view;
-    private String storyFont;
     private boolean hrefEnabled;
     private final StoryPanel parent;
     private boolean isDark, isAlreadyBuilt;
@@ -126,15 +126,6 @@ public class NodePanel extends JScrollablePanel
 
         JFXPanel panel = new JFXPanel();
         add(panel, BorderLayout.CENTER);
-
-        if(story.hasTag("font"))
-        {
-            storyFont = story.getTag("font");
-        }
-        else
-        {
-            storyFont = "libre_baskerville";
-        }
 
         CountDownLatch cdl = new CountDownLatch(1);
         Platform.runLater(() ->
@@ -247,7 +238,7 @@ public class NodePanel extends JScrollablePanel
         // Build the base, with fonts and style (injecting font info)
         String base = "<head><meta charset=\"utf-8\"/>" //
                 + "<style type='text/css'>" + FONT_STYLE + "</style>" //
-                + "<style type='text/css'>" + STYLE.replace("$f", storyFont) + "</style>" //
+                + "<style type='text/css'>" + STYLE.replace("$f", getCurrentFont()) + "</style>" //
                 + "$CUSTOMCSS" + "</head>" //
                 + "<body class='$bbg" + (isDark ? " dark" : "") + "'>" + "<div class='storydiv'>" //
                 + "<div style=\"$COLOR\">" + text + "</div></div></body>";
@@ -297,6 +288,32 @@ public class NodePanel extends JScrollablePanel
             OpenBST.LOG.warn("Failed to synchronize", e);
         }
         isAlreadyBuilt = true;
+    }
+
+    private String getCurrentFont()
+    {
+        if((int)parent.currentNode.getStory().getRegistry()
+                .get("__nonlatin_" + parent.currentNode.getStory().getTag("__sourcename"), 0) == 1)
+        {
+            return "sans-serif";
+        }
+        return parseFont(parent.currentNode.getStory());
+    }
+
+    private String parseFont(BranchingStory s)
+    {
+        if(s.hasTag("font"))
+        {
+            return s.getTag("font");
+        }
+        else if(parent.story.hasTag("font"))
+        {
+            return parent.story.getTag("font");
+        }
+        else
+        {
+            return defaultFont;
+        }
     }
 
     private String b64bg()

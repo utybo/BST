@@ -16,11 +16,18 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 
+import javax.swing.ImageIcon;
+
 import utybo.branchingstorytree.api.BSTClient;
 import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.api.BranchingStoryTreeParser;
 import utybo.branchingstorytree.api.script.Dictionary;
 import utybo.branchingstorytree.api.story.BranchingStory;
+import utybo.branchingstorytree.swing.Icons;
+import utybo.branchingstorytree.swing.Messagers;
+import utybo.branchingstorytree.swing.OpenBST;
+import utybo.branchingstorytree.swing.utils.Lang;
+import utybo.branchingstorytree.swing.utils.LanguageUtils;
 import utybo.branchingstorytree.swing.visuals.StoryPanel;
 import utybo.branchingstorytree.xbf.XBFHandler;
 
@@ -45,6 +52,16 @@ public class XBFClient implements XBFHandler
             bs = new BranchingStoryTreeParser().parse(
                     new BufferedReader(new InputStreamReader(in, "UTF-8")), new Dictionary(),
                     client, name, sp.getStory().getRegistry());
+            if(LanguageUtils.checkNonLatin(bs))
+            {
+                if((int)bs.getRegistry().get("__nonlatinwarned", 0) == 0)
+                {
+                    Messagers.showMessage(OpenBST.getInstance(), Lang.get("story.unicodecompat"),
+                            Messagers.TYPE_INFO, Lang.get("story.unicodecompat.title"),
+                            new ImageIcon(Icons.getImage("LanguageError", 48)));
+                }
+                bs.getRegistry().put("__nonlatin_" + bs.getTag("__sourcename"), 1);
+            }
         }
         catch(InstantiationException | IllegalAccessException | IOException e)
         {

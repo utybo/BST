@@ -155,7 +155,12 @@ public class StoryDetailsEditor extends JPanel implements EditorControl<Map<Stri
         if(!markup.getSelectedItem().toString().isEmpty())
             sb.append("markup=" + markup.getSelectedItem().toString() + "\n");
 
-        if(!font.getSelectedItem().toString().isEmpty())
+        // While it does not hurt to write the default to other files, this one
+        // is actually quite important.
+        // Using a font like this bypasses the non-latin character checker which
+        // switches to a compatible font.
+        if(!font.getSelectedItem().toString().isEmpty()
+                && "libre_baskerville".equals(font.getSelectedItem().toString()))
             sb.append("font=" + font.getSelectedItem().toString() + "\n");
 
         if(!supertools.getSelectedItem().toString().isEmpty())

@@ -38,12 +38,14 @@ Less technical explanations available on the [OpenBST website](https://utybo.git
 ### Removed
 - *Removed most of the leftovers from JSE's old manual update system. JSE does not need to be implemented by clients anymore.*
 ### Fixed
+- **OpenBST is now compatible with non-latin languages.**
 - Fonts no longer look like trash inside story panels. This was caused by a crappy, wonky and potentially license-breaking WOFF+WOFF2 conversion from TTF or OTF.
 - Fixed font size on the error screen
 - Fixed a typo in French language file.
 - *Fixed a (stupid) typo in a class name : Dictionnary -> Dictionary*
 ### i18n changes
 - added story.experimental story.experimental.title
+- removed all html tags that were used for notifications (the new message dialogs automatically adds them where needed)
 
 ## [2.0-beta1] - The 2.0 Beginning
 ### Added
@@ -123,3 +125,4 @@ Less technical explanations available on the [OpenBST website](https://utybo.git
 
 [2.0]: https://github.com/utybo/BST/compare/v1.1...dev
 [2.0-beta1]: https://github.com/utybo/BST/compare/v1.1...v2.0-beta1
+[2.0-beta2]: https://github.com/utybo/BST/compare/v.2.0-beta1...dev

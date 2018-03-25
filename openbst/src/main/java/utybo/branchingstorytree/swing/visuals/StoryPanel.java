@@ -62,6 +62,7 @@ import utybo.branchingstorytree.swing.OpenBST;
 import utybo.branchingstorytree.swing.impl.SSBClient;
 import utybo.branchingstorytree.swing.impl.TabClient;
 import utybo.branchingstorytree.swing.utils.Lang;
+import utybo.branchingstorytree.swing.utils.LanguageUtils;
 import utybo.branchingstorytree.swing.visuals.JScrollablePanel.ScrollableSizeHint;
 
 public class StoryPanel extends JPanel
@@ -85,7 +86,7 @@ public class StoryPanel extends JPanel
     /**
      * The node currently on screen
      */
-    private StoryNode currentNode;
+    protected StoryNode currentNode;
 
     /**
      * The {@link TabClient} linked to this panel
@@ -1037,6 +1038,18 @@ public class StoryPanel extends JPanel
             {
                 nodeIdLabel.setEnabled(true);
                 nodeIdLabel.setForeground(Color.RED);
+            }
+        }
+        LOG.trace("Font compatibility check");
+        if(!story.hasTag("font")) // If no fonts are forced
+        {
+            if(LanguageUtils.checkNonLatin(story))
+            {
+                Messagers.showMessage(OpenBST.getInstance(), Lang.get("story.unicodecompat"),
+                        Messagers.TYPE_INFO, Lang.get("story.unicodecompat.title"),
+                        new ImageIcon(Icons.getImage("LanguageError", 48)));
+                story.getRegistry().put("__nonlatin_" + story.getTag("__sourcename"), 1);
+                story.getRegistry().put("__nonlatinwarned", 1);
             }
         }
         return true;

@@ -97,6 +97,7 @@ public class Icons
         images.put("Experiment48", loadImage("48c", "Experiment" + applyScaleValue(sizes)));
         images.put("JSAlert48", loadImage("48c", "JSAlert" + applyScaleValue(sizes)));
         images.put("AAlert48", loadImage("48c", "AAlert" + applyScaleValue(sizes)));
+        images.put("LanguageError48", loadImage("48c", "LanguageError" + applyScaleValue(sizes)));
 
         // 48px logos
         sizes = new int[] {48, 60, 72, 96};

@@ -105,6 +105,8 @@ story.modulerestorefail=Failed to restore the following module : $m
 story.logicalnodedeadend=The logical node (id $n from $f with alias $a) failed to provide a node to go to
 story.experimental=We detected usage of an experimental feature.<p><p>Experimental features can be extremely unstable and dangerous and can disappear at any time, without warning. Please always remember they are here for, well, experimenting and messing around. Never use experimental features inside a real-world use case!
 story.experimental.title=Experimental alert
+story.unicodecompat=Non-latin Unicode characters have been detected. OpenBST has automatically changed the font to a more compatible one to try and fix this automatically, but you may see glitches in text (empty squares).
+story.unicodecompat.title=Unicode compatibility
 
 # Node jump screen
 nodejump.title=Jump to node
