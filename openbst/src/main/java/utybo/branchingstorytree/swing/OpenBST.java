@@ -15,12 +15,9 @@ import java.awt.Desktop;
 import java.awt.Dialog.ModalityType;
 import java.awt.Dimension;
 import java.awt.FileDialog;
-import java.awt.FlowLayout;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
@@ -58,10 +55,10 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
+import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
@@ -115,7 +112,6 @@ import org.pushingpixels.substance.api.skin.SubstanceRavenLookAndFeel;
 import org.pushingpixels.substance.api.skin.SubstanceSaharaLookAndFeel;
 import org.pushingpixels.substance.api.skin.SubstanceTwilightLookAndFeel;
 import org.pushingpixels.substance.internal.utils.SubstanceSizeUtils;
-import org.pushingpixels.trident.Timeline;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -603,62 +599,16 @@ public class OpenBST extends JFrame
         setTitle("OpenBST " + version);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-        JLabel openBST = new JLabel(Lang.get("banner.titleextended"));
-        JPanel banner = new JPanel(new FlowLayout(FlowLayout.CENTER));
-
-        Timeline tl = new Timeline(banner);
-        tl.setDuration(200L);
-        tl.addPropertyToInterpolate("background", OPENBST_BLUE, new Color(145, 145, 145));
-        Timeline darkTl = new Timeline(banner);
-        darkTl.setDuration(200L);
-        darkTl.addPropertyToInterpolate("background", OPENBST_BLUE.darker().darker(),
-                new Color(100, 100, 100));
-
-        banner.setBackground(OPENBST_BLUE);
-        banner.add(new JLabel(new ImageIcon(Icons.getImage("LogoWhite", 16))));
-        openBST.setForeground(Color.WHITE);
+        JMenuBar jmb = new JMenuBar();
+        jmb.setBackground(OPENBST_BLUE);
+        jmb.add(Box.createHorizontalGlue());
+        jmb.add(createShortMenu());
+        jmb.add(Box.createHorizontalGlue());
+        this.setJMenuBar(jmb);
+        
         addDarkModeCallback(b ->
         {
-            banner.setBackground(b ? OPENBST_BLUE.darker().darker() : OPENBST_BLUE);
-        });
-        banner.add(openBST);
-        getContentPane().add(banner, BorderLayout.NORTH);
-
-        banner.addMouseListener(new MouseAdapter()
-        {
-            @Override
-            public void mouseClicked(MouseEvent e)
-            {
-                openBST.setText(Lang.get("banner.title"));
-                createShortMenu().show(OpenBST.this, e.getX(), e.getY());
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e)
-            {
-                if(dark)
-                {
-                    darkTl.play();
-                }
-                else
-                {
-                    tl.play();
-                }
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e)
-            {
-                if(dark)
-                {
-                    darkTl.playReverse();
-                }
-                else
-                {
-                    tl.playReverse();
-                }
-            }
-
+            jmb.setBackground(b ? OPENBST_BLUE.darker().darker() : OPENBST_BLUE);
         });
 
         container = new JTabbedPane();
@@ -792,7 +742,7 @@ public class OpenBST extends JFrame
         creds.setEnabled(false);
         welcomeContentPanel.add(creds, "cell 0 2, gapbefore 10px");
 
-        setSize((int)(830 * Icons.getScale()), (int)(480 * Icons.getScale()));
+        setSize(830, 480);
         setLocationRelativeTo(null);
         setVisible(true);
     }
@@ -931,9 +881,15 @@ public class OpenBST extends JFrame
         }
     }
 
-    public JPopupMenu createShortMenu()
+    public JMenu createShortMenu()
     {
-        JPopupMenu shortMenu = new JPopupMenu();
+        JMenu shortMenu = new JMenu();
+        addDarkModeCallback(b ->
+        {
+            shortMenu.setBackground(b ? OPENBST_BLUE.darker().darker() : OPENBST_BLUE);
+        });
+        shortMenu.setText(Lang.get("banner.title"));
+        shortMenu.setIcon(new ImageIcon(Icons.getImage("Logo", 16)));
         JMenuItem label = new JMenuItem(Lang.get("menu.title"));
         label.setEnabled(false);
         shortMenu.add(label);
