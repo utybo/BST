@@ -315,8 +315,9 @@ public class OpenBST extends JFrame
 
             LOG.trace("Fixing text scaling");
             if(new JLabel("AAA").getFont().getSize() <= 12)
-                SubstanceCortex.GlobalScope.setFontPolicy(SubstanceFontUtilities.getScaledFontPolicy(
-                        (float)(SubstanceSizeUtils.getPointsToPixelsRatio()) / 1.33F));
+                SubstanceCortex.GlobalScope
+                        .setFontPolicy(SubstanceFontUtilities.getScaledFontPolicy(
+                                (float)(SubstanceSizeUtils.getPointsToPixelsRatio()) / 1.33F));
 
             LOG.trace("Opening OpenBST...");
             new OpenBST();
@@ -605,7 +606,7 @@ public class OpenBST extends JFrame
         jmb.add(createShortMenu());
         jmb.add(Box.createHorizontalGlue());
         this.setJMenuBar(jmb);
-        
+
         addDarkModeCallback(b ->
         {
             jmb.setBackground(b ? OPENBST_BLUE.darker().darker() : OPENBST_BLUE);
@@ -742,7 +743,7 @@ public class OpenBST extends JFrame
         creds.setEnabled(false);
         welcomeContentPanel.add(creds, "cell 0 2, gapbefore 10px");
 
-        setSize(830, 480);
+        setSize((int)(830 * Icons.getScale()), (int)(480 * Icons.getScale()));
         setLocationRelativeTo(null);
         setVisible(true);
     }
@@ -881,13 +882,16 @@ public class OpenBST extends JFrame
         }
     }
 
-    public JMenu createShortMenu()
+    private JMenu createShortMenu()
     {
         JMenu shortMenu = new JMenu();
         addDarkModeCallback(b ->
         {
-            shortMenu.setBackground(b ? OPENBST_BLUE.darker().darker() : OPENBST_BLUE);
+            shortMenu.setBackground(b ? OPENBST_BLUE.darker().darker() : OPENBST_BLUE.brighter());
+            shortMenu.setForeground(b ? Color.WHITE : OPENBST_BLUE);
         });
+        shortMenu.setBackground(OPENBST_BLUE.brighter());
+        shortMenu.setForeground(OPENBST_BLUE);
         shortMenu.setText(Lang.get("banner.title"));
         shortMenu.setIcon(new ImageIcon(Icons.getImage("Logo", 16)));
         JMenuItem label = new JMenuItem(Lang.get("menu.title"));
