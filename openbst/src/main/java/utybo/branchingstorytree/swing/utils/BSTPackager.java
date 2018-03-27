@@ -198,7 +198,6 @@ public class BSTPackager
                 new ByteArrayInputStream(vfh.getFile("bstmeta.json").getData()),
                 StandardCharsets.UTF_8), new TypeToken<HashMap<String, String>>()
                 {}.getType());
-        System.out.println(meta.toString());
         BranchingStoryTreeParser parser = new BranchingStoryTreeParser();
         BranchingStory bs = parser.parse(new BufferedReader(new InputStreamReader(
                 new ByteArrayInputStream(vfh.getFile(meta.get("mainFile")).getData()),

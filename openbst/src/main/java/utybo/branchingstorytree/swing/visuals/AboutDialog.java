@@ -57,12 +57,12 @@ public class AboutDialog extends JDialog
         JPanel banner = new JPanel(new FlowLayout(FlowLayout.CENTER));
         banner.setBackground(OpenBST.OPENBST_BLUE);
         JLabel lblOpenbst = new JLabel(new ImageIcon(Icons.getImage("FullLogoWhite", 48)));
-        lblOpenbst.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        lblOpenbst.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         banner.add(lblOpenbst, "flowx,cell 0 0,alignx center");
         getContentPane().add(banner, BorderLayout.NORTH);
 
         JPanel pan = new JPanel();
-        pan.setLayout(new MigLayout("", "[grow]", "[][][grow]"));
+        pan.setLayout(new MigLayout("insets 10, gap 10px", "[grow]", "[][][grow]"));
         getContentPane().add(pan, BorderLayout.CENTER);
 
         JLabel lblWebsite = new JLabel("https://utybo.github.io/BST/");
@@ -98,14 +98,14 @@ public class AboutDialog extends JDialog
         pan.add(lblVersion, "flowy,cell 0 1");
 
         JScrollPane scrollPane = new JScrollPane();
-        scrollPane.setBorder(new LineBorder(pan.getBackground().darker(), 1, true));
+        scrollPane.setBorder(new LineBorder(pan.getBackground().darker(), 1, false));
         pan.add(scrollPane, "cell 0 2,grow");
 
         JTextArea textArea = new JTextArea();
         textArea.setMargin(new Insets(5, 5, 5, 5));
         textArea.setLineWrap(true);
         textArea.setWrapStyleWord(true);
-        textArea.setFont(new Font("Monospace", Font.PLAIN, (int)(Icons.getScale() * 11)));
+        textArea.setFont(new Font(textArea.getFont().getFontName(), Font.PLAIN, (int)(Icons.getScale() * 11)));
 
         try(InputStream in = getClass()
                 .getResourceAsStream("/utybo/branchingstorytree/swing/about.txt");)

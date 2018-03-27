@@ -16,8 +16,6 @@ import javax.swing.JTextArea;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-import org.pushingpixels.substance.internal.utils.border.SubstanceTextComponentBorder;
-
 import net.miginfocom.swing.MigLayout;
 import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.api.story.LogicalNode;
@@ -49,7 +47,6 @@ public class StoryLogicalNodeEditor extends StorySingleNodeEditor
 
         textArea = new JTextArea();
         UndoUtils.attachSimpleUndoManager(textArea);
-        textArea.setBorder(new SubstanceTextComponentBorder(new Insets(5,5,5,5)));
         textArea.getDocument().addDocumentListener(new DocumentListener()
         {
 
@@ -71,7 +68,7 @@ public class StoryLogicalNodeEditor extends StorySingleNodeEditor
                 sne.refreshList();
             }
         });
-        textArea.setMargin(new Insets(5, 5, 5, 5));
+        textArea.setMargin(new Insets(10, 10, 10, 10));
         textArea.setWrapStyleWord(true);
         textArea.setLineWrap(true);
         scrollPane.setViewportView(textArea);

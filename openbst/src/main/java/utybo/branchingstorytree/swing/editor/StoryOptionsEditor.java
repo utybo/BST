@@ -18,8 +18,6 @@ import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.border.TitledBorder;
 
-import org.pushingpixels.substance.internal.utils.border.SubstanceTextComponentBorder;
-
 import net.miginfocom.swing.MigLayout;
 import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.api.story.NodeOption;
@@ -46,8 +44,7 @@ public class StoryOptionsEditor extends JPanel implements EditorControl<List<Nod
 
         textArea = new JTextArea();
         UndoUtils.attachSimpleUndoManager(textArea);
-        textArea.setBorder(new SubstanceTextComponentBorder(new Insets(5,5,5,5)));
-        textArea.setMargin(new Insets(5, 5, 5, 5));
+        textArea.setMargin(new Insets(10, 10, 10, 10));
         textArea.setLineWrap(true);
         textArea.setWrapStyleWord(true);
         scrollPane.setViewportView(textArea);

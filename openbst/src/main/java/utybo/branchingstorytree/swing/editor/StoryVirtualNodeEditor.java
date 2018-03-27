@@ -16,8 +16,6 @@ import javax.swing.JTextArea;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-import org.pushingpixels.substance.internal.utils.border.SubstanceTextComponentBorder;
-
 import net.miginfocom.swing.MigLayout;
 import utybo.branchingstorytree.api.story.VirtualNode;
 import utybo.branchingstorytree.swing.utils.UndoUtils;
@@ -44,7 +42,6 @@ public class StoryVirtualNodeEditor extends StorySingleNodeEditor
 
         textArea = new JTextArea();
         UndoUtils.attachSimpleUndoManager(textArea);
-        textArea.setBorder(new SubstanceTextComponentBorder(new Insets(5,5,5,5)));
         textArea.getDocument().addDocumentListener(new DocumentListener()
         {
 
@@ -68,7 +65,7 @@ public class StoryVirtualNodeEditor extends StorySingleNodeEditor
             }
         });
         textArea.setWrapStyleWord(true);
-        textArea.setMargin(new Insets(5, 5, 5, 5));
+        textArea.setMargin(new Insets(10, 10, 10, 10));
         textArea.setLineWrap(true);
         scrollPane.setViewportView(textArea);
 
