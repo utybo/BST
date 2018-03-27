@@ -240,44 +240,33 @@ public class ListListModel<T> extends AbstractListModel<T> implements List<T>
     {
         if(isEmpty())
         {
-            //            System.out.println(1);
             add(element);
             return 0;
         }
 
         for(int i = 0; i < list.size(); i++)
         {
-            //            System.out.println(2);
             if(i == 0)
             {
-                //                System.out.println(3);
                 if(comparator.compare(element, list.get(i)) <= 0)
                 {
-
-                    //                    System.out.println(4);
                     add(0, element);
                     return 0;
                 }
             }
             if(i == list.size() - 1)
             {
-
-                //                System.out.println(5);
                 add(element);
                 return list.size() - 1;
             }
             else if(i != 0 && comparator.compare(list.get(i - 1), element) <= 0
                     && comparator.compare(element, list.get(i)) <= 0)
             {
-                //                System.out.println(6);
                 add(i, element);
                 return i;
             }
-            //            System.out.println(7);
-
         }
 
-        //        System.out.println(8);
         return -1;
     }
 

@@ -645,6 +645,13 @@ public class OpenBST extends JFrame
             bannersPanel.add(new JBannerPanel(new ImageIcon(Icons.getImage("Experiment", 32)),
                     Color.YELLOW, Lang.get("welcome.ontheedge"), btnReportBugs, false), "grow");
         }
+        else if(version.contains("SNAPSHOT"))
+        {
+            bannersPanel.add(new JBannerPanel(new ImageIcon(Icons.getImage("Experiment", 32)),
+                    Color.ORANGE,
+                    "You are running a Snapshot. This version is in development. Do not post bug reports!",
+                    null, false), "grow");
+        }
 
         if(System.getProperty("java.specification.version").equals("9"))
         {
@@ -667,7 +674,7 @@ public class OpenBST extends JFrame
             }
         });
         bannersPanel.add(new JBannerPanel(new ImageIcon(Icons.getImage("Discord", 48)),
-                DISCORD_COLOR, Lang.get("openbst.discord"), btnJoinDiscord, false), "grow");
+                DISCORD_COLOR, Lang.get("openbst.discord"), btnJoinDiscord, true), "grow");
 
         JPanel panel = new JPanel();
         panel.setBackground(new Color(0, 0, 0, 0));
@@ -1006,6 +1013,17 @@ public class OpenBST extends JFrame
                     dialog.setModalityType(ModalityType.APPLICATION_MODAL);
                     dialog.setVisible(true);
                 }
+            }
+        }));
+
+        additionalMenu.add(new JMenuItem(new AbstractAction("Show debug info")
+        {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                DebugInfo.launch(OpenBST.this);
             }
         }));
 

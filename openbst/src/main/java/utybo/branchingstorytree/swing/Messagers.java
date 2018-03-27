@@ -313,6 +313,8 @@ public class Messagers
     {
         switch(type)
         {
+        case TYPE_OK:
+            return Color.GREEN.darker();
         case TYPE_INFO:
             return Color.BLUE.darker();
         case TYPE_QUESTION:
@@ -364,6 +366,8 @@ public class Messagers
     {
         switch(type)
         {
+        case TYPE_OK:
+            return new ImageIcon(Icons.getImage("ok", 32));
         case TYPE_INFO:
             return new ImageIcon(Icons.getImage("ok", 32));
         case TYPE_QUESTION:
