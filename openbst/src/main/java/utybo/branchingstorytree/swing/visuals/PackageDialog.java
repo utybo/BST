@@ -21,7 +21,6 @@ import java.util.concurrent.ExecutionException;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JTextField;
@@ -29,6 +28,7 @@ import javax.swing.SwingWorker;
 
 import net.miginfocom.swing.MigLayout;
 import utybo.branchingstorytree.swing.Icons;
+import utybo.branchingstorytree.swing.Messagers;
 import utybo.branchingstorytree.swing.OpenBST;
 import utybo.branchingstorytree.swing.utils.BSTPackager;
 import utybo.branchingstorytree.swing.utils.Lang;
@@ -139,17 +139,14 @@ public class PackageDialog extends JDialog
                     }
                     catch(ExecutionException | InterruptedException e)
                     {
-                        Throwable t = e.getCause();
-                        JOptionPane.showMessageDialog(PackageDialog.this,
-                                "<html>Something bad happened and the packaging process failed :(<p>"
-                                        + (t != null ? t.getClass() + " : " + t.getMessage() : ""),
-                                "Packaging error", JOptionPane.ERROR_MESSAGE);
+                        Messagers.showException(PackageDialog.this,
+                                "<html>Something bad happened and the packaging process failed", e);
                         cl.show(wrapperPanel, "settings");
                     }
                     progressBar.setIndeterminate(false);
                     progressBar.setMaximum(1);
                     progressBar.setValue(1);
-                    JOptionPane.showMessageDialog(parent, "Packaged succesfully!");
+                    Messagers.showMessage(parent, "Packaged succesfully!");
                     dispose();
                 }
             };

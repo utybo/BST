@@ -50,9 +50,9 @@ about.version=Version : $v
 
 # Loading files
 file.title=Choose a BST file...
-file.error=<html>There was an error during file loading. Please try again and make sure your file is correct.<p>($e: $m)
-file.resourceerror=<html>There was an error during resource loading. Please try again and make sure everything is alright.<p>($e: $m)
-file.bsterror.1=<html><b>-- BST Error --</b><p>
+file.error=There was an error during file loading. Please try again and make sure your file is correct.<p>($e: $m)
+file.resourceerror=There was an error during resource loading. Please try again and make sure everything is alright.<p>($e: $m)
+file.bsterror.1=<b>-- BST Error --</b><p>
 file.bsterror.2=Your file seems to have an error here :<p>
 file.bsterror.3=Line : $l (from $f)<p>
 file.bsterror.4=Cause : $e ($m)<p>
@@ -86,8 +86,8 @@ story.background=Background picture
 story.mute=Mute
 story.close=Close tab
 story.close.confirm=You are about to close this BST file. All unsaved progress will be lost. Are you sure you want to close this tab?
-story.error=<html>Error on node $n (alias $a, from $f) :<p>$m
-story.error2=<html>Error on node $n (alias $a, line $l, from $f) :<p>$m
+story.error=Error on node $n (alias $a, from $f) :<p>$m
+story.error2=Error on node $n (alias $a, line $l, from $f) :<p>$m
 story.missinginitial=The initial node does not exist. Make sure you are using a correct BST file.
 story.missingnode=The node $n that was supposed to be opened does not exist! (Alias : $a, from : $f)
 story.final.end=The End.
@@ -97,7 +97,7 @@ story.final.close=Close
 story.title=$t, by $a
 story.missingtitle=<undefined>
 story.missingauthor=<unknown>
-story.nsfw=<html><b>WARNING</b><p>You are about to use a NSFW (Not Safe For Work) file. This file is not suitable for children.<p>Only click OK if you are OVER 18 YEARS OLD AND WILLING TO SEE THIS CONTENT.
+story.nsfw=<b>WARNING</b><p>You are about to use a NSFW (Not Safe For Work) file. This file is not suitable for children.<p>Only click OK if you are OVER 18 YEARS OLD AND WILLING TO SEE THIS CONTENT.
 story.nsfw.title=NSFW WARNING
 story.nullnode=Woops, the node that is supposed to be here could not be resolved, and I don't know why... :(
 story.unknowncolor=Unknown color : $c
@@ -105,6 +105,8 @@ story.modulerestorefail=Failed to restore the following module : $m
 story.logicalnodedeadend=The logical node (id $n from $f with alias $a) failed to provide a node to go to
 story.experimental=We detected usage of an experimental feature.<p><p>Experimental features can be extremely unstable and dangerous and can disappear at any time, without warning. Please always remember they are here for, well, experimenting and messing around. Never use experimental features inside a real-world use case!
 story.experimental.title=Experimental alert
+story.unicodecompat=Non-latin Unicode characters have been detected. OpenBST has automatically changed the font to a more compatible one to try and fix this automatically, but you may see glitches in text (empty squares).
+story.unicodecompat.title=Unicode compatibility
 
 # Node jump screen
 nodejump.title=Jump to node

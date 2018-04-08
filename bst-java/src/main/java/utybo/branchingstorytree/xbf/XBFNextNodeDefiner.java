@@ -19,7 +19,7 @@ import utybo.branchingstorytree.api.story.VirtualNode;
 
 public class XBFNextNodeDefiner implements NextNodeDefiner
 {
-    private final String desc;
+    public final String desc;
     private final int line;
     private final BSTClient client;
 

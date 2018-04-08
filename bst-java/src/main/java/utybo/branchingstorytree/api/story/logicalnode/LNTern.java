@@ -82,4 +82,19 @@ public class LNTern extends LNInstruction
             action.exec();
         }
     }
+    
+    public ArrayList<ActionDescriptor> getTrueActions()
+    {
+        return new ArrayList<>(trueActions);
+    }
+    
+    public ArrayList<ActionDescriptor> getFalseActions()
+    {
+        return new ArrayList<>(falseActions);
+    }
+    
+    public ArrayList<CheckerDescriptor> getCheckers()
+    {
+        return new ArrayList<>(checkers);
+    }
 }

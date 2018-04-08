@@ -15,18 +15,16 @@ import java.awt.Desktop;
 import java.awt.Dialog.ModalityType;
 import java.awt.Dimension;
 import java.awt.FileDialog;
-import java.awt.FlowLayout;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -40,6 +38,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
+import java.util.TreeMap;
 import java.util.Vector;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
@@ -57,10 +56,10 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
+import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
@@ -79,17 +78,42 @@ import javax.swing.plaf.metal.MetalLookAndFeel;
 
 import org.apache.commons.compress.compressors.xz.XZCompressorInputStream;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.pushingpixels.substance.api.DecorationAreaType;
+import org.pushingpixels.substance.api.SubstanceCortex;
 import org.pushingpixels.substance.api.SubstanceLookAndFeel;
 import org.pushingpixels.substance.api.SubstanceSkin;
-import org.pushingpixels.substance.api.fonts.SubstanceFontUtilities;
+import org.pushingpixels.substance.api.SubstanceSlices.DecorationAreaType;
+import org.pushingpixels.substance.api.font.SubstanceFontUtilities;
 import org.pushingpixels.substance.api.painter.overlay.SubstanceOverlayPainter;
 import org.pushingpixels.substance.api.skin.BusinessSkin;
+import org.pushingpixels.substance.api.skin.SubstanceAutumnLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceBusinessBlackSteelLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceBusinessBlueSteelLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceCeruleanLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceCremeCoffeeLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceCremeLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceDustCoffeeLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceDustLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceGeminiLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceGraphiteAquaLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceGraphiteChalkLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceGraphiteGlassLookAndFeel;
 import org.pushingpixels.substance.api.skin.SubstanceGraphiteGoldLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceGraphiteLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceMagellanLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceMarinerLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceModerateLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceNebulaBrickWallLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceNebulaLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceOfficeBlack2007LookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceOfficeBlue2007LookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceOfficeSilver2007LookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceRavenLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceSaharaLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceTwilightLookAndFeel;
 import org.pushingpixels.substance.internal.utils.SubstanceSizeUtils;
-import org.pushingpixels.trident.Timeline;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -102,10 +126,12 @@ import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.api.BranchingStoryTreeParser;
 import utybo.branchingstorytree.api.script.Dictionary;
 import utybo.branchingstorytree.api.story.BranchingStory;
+import utybo.branchingstorytree.swing.editor.StoryEditor;
 import utybo.branchingstorytree.swing.impl.BRMFileClient;
 import utybo.branchingstorytree.swing.impl.TabClient;
 import utybo.branchingstorytree.swing.utils.BSTPackager;
 import utybo.branchingstorytree.swing.utils.Lang;
+import utybo.branchingstorytree.swing.utils.OutputStreamToOutputAndPrint;
 import utybo.branchingstorytree.swing.utils.Lang.UnrespectedModelException;
 import utybo.branchingstorytree.swing.visuals.AboutDialog;
 import utybo.branchingstorytree.swing.visuals.JBackgroundPanel;
@@ -142,7 +168,23 @@ public class OpenBST extends JFrame
     }
     private static final long serialVersionUID = 1L;
 
-    public static final Logger LOG = LogManager.getLogger("OpenBST");
+    public static final Logger LOG;
+    private static ByteArrayOutputStream logOutput;
+    static {
+        logOutput = new ByteArrayOutputStream();
+
+        PrintStream sysout = System.out;
+        OutputStreamToOutputAndPrint newout = new OutputStreamToOutputAndPrint(logOutput, sysout);
+        PrintStream ps = new PrintStream(newout);
+        System.setOut(ps);
+
+        PrintStream syserr = System.err;
+        OutputStreamToOutputAndPrint newerr = new OutputStreamToOutputAndPrint(logOutput, syserr);
+        PrintStream pserr = new PrintStream(newerr);
+        System.setErr(pserr);
+        
+        LOG = LogManager.getLogger("OpenBST");
+    }
 
     /**
      * The parser that will be reused throughout the entire session.
@@ -162,6 +204,8 @@ public class OpenBST extends JFrame
     public static final SubstanceLookAndFeel LIGHT_THEME;
     public static final LookAndFeel DEBUG_THEME = new MetalLookAndFeel();
 
+    public static final Map<String, LookAndFeel> ADDITIONAL_LIGHT_THEMES, ADDITIONAL_DARK_THEMES;
+    //    public static final Map<String, LookAndFeel> ADDITIONAL_THEMES;
     static
     {
         SubstanceSkin skin = new BusinessSkin();
@@ -174,6 +218,36 @@ public class OpenBST extends JFrame
         {
             private static final long serialVersionUID = 1L;
         };
+
+        TreeMap<String, LookAndFeel> mapl = new TreeMap<>();
+        TreeMap<String, LookAndFeel> mapd = new TreeMap<>();
+        mapl.put("Autumn", new SubstanceAutumnLookAndFeel());
+        mapl.put("Business Black Steel", new SubstanceBusinessBlackSteelLookAndFeel());
+        mapl.put("Business Blue Steel", new SubstanceBusinessBlueSteelLookAndFeel());
+        mapl.put("Cerulean", new SubstanceCeruleanLookAndFeel());
+        mapl.put("Creme Coffee", new SubstanceCremeCoffeeLookAndFeel());
+        mapl.put("Creme", new SubstanceCremeLookAndFeel());
+        mapl.put("Dust Coffee", new SubstanceDustCoffeeLookAndFeel());
+        mapl.put("Dust", new SubstanceDustLookAndFeel());
+        mapl.put("Gemini", new SubstanceGeminiLookAndFeel());
+        mapd.put("Graphite Aqua", new SubstanceGraphiteAquaLookAndFeel());
+        mapd.put("Graphite Chalk", new SubstanceGraphiteChalkLookAndFeel());
+        mapd.put("Graphite Glass", new SubstanceGraphiteGlassLookAndFeel());
+        mapd.put("Graphite", new SubstanceGraphiteLookAndFeel());
+        mapd.put("Magellan", new SubstanceMagellanLookAndFeel());
+        mapl.put("Mariner", new SubstanceMarinerLookAndFeel());
+        mapl.put("Moderate", new SubstanceModerateLookAndFeel());
+        mapl.put("Nebula Brick Wall", new SubstanceNebulaBrickWallLookAndFeel());
+        mapl.put("Nebula", new SubstanceNebulaLookAndFeel());
+        mapl.put("Office 2007 (Black)", new SubstanceOfficeBlack2007LookAndFeel());
+        mapl.put("Office 2007 (Blue)", new SubstanceOfficeBlue2007LookAndFeel());
+        mapl.put("Office 2007 (Silver)", new SubstanceOfficeSilver2007LookAndFeel());
+        mapd.put("Raven", new SubstanceRavenLookAndFeel());
+        mapl.put("Sahara", new SubstanceSaharaLookAndFeel());
+        mapd.put("Twilight", new SubstanceTwilightLookAndFeel());
+        //        ADDITIONAL_THEMES = Collections.unmodifiableMap(map);
+        ADDITIONAL_LIGHT_THEMES = Collections.unmodifiableMap(mapl);
+        ADDITIONAL_DARK_THEMES = Collections.unmodifiableMap(mapd);
     }
 
     // --- IMAGES ---
@@ -201,9 +275,11 @@ public class OpenBST extends JFrame
      */
     public static void main(final String[] args)
     {
+
+
         LOG.info("OpenBST version " + version + ", part of the BST project");
         LOG.trace("[ INIT ]");
-
+        LOG.info("ééé\"\"");
         LOG.trace("Loading language files");
         loadLang(args.length > 0 ? args[0] : null);
 
@@ -219,8 +295,7 @@ public class OpenBST extends JFrame
             try
             {
                 UIManager.setLookAndFeel(LIGHT_THEME);
-                UIManager.getDefaults().put(SubstanceLookAndFeel.COLORIZATION_FACTOR,
-                        Double.valueOf(1.0D));
+                SubstanceCortex.GlobalScope.setColorizationFactor(1.0D);
 
                 if(System.getProperty("os.name").toLowerCase().equals("linux"))
                 {
@@ -261,8 +336,9 @@ public class OpenBST extends JFrame
 
             LOG.trace("Fixing text scaling");
             if(new JLabel("AAA").getFont().getSize() <= 12)
-                SubstanceLookAndFeel.setFontPolicy(SubstanceFontUtilities.getScaledFontPolicy(
-                        (float)(SubstanceSizeUtils.getPointsToPixelsRatio()) / 1.33F));
+                SubstanceCortex.GlobalScope
+                        .setFontPolicy(SubstanceFontUtilities.getScaledFontPolicy(
+                                (float)(SubstanceSizeUtils.getPointsToPixelsRatio()) / 1.33F));
 
             LOG.trace("Opening OpenBST...");
             new OpenBST();
@@ -363,16 +439,16 @@ public class OpenBST extends JFrame
                 catch(final IOException e)
                 {
                     LOG.error("IOException caught", e);
-                    showMessageDialog(instance,
+                    showException(instance,
                             Lang.get("file.error").replace("$e", e.getClass().getSimpleName())
                                     .replace("$m", e.getMessage()),
-                            Lang.get("error"), JOptionPane.ERROR_MESSAGE);
+                            e);
                     return null;
                 }
                 catch(final BSTException e)
                 {
                     LOG.error("BSTException caught", e);
-                    String s = Lang.get("file.bsterror.1");
+                    String s = "<html>" + Lang.get("file.bsterror.1");
                     s += Lang.get("file.bsterror.2");
                     s += Lang.get("file.bsterror.3").replace("$l", "" + e.getWhere()).replace("$f",
                             "[main]");
@@ -385,9 +461,9 @@ public class OpenBST extends JFrame
                     s += Lang.get("file.bsterror.5").replace("$m", "" + e.getMessage());
                     s += Lang.get("file.bsterror.6");
                     String s2 = s;
-                    if(doAndReturn(() -> JOptionPane.showConfirmDialog(instance, s2,
-                            Lang.get("bsterror"), JOptionPane.ERROR_MESSAGE,
-                            JOptionPane.YES_NO_OPTION)) == JOptionPane.YES_OPTION)
+                    if(doAndReturn(() -> Messagers.showConfirm(instance, s2,
+                            Messagers.OPTIONS_YES_NO, Messagers.TYPE_ERROR,
+                            Lang.get("bsterror"))) == Messagers.OPTION_YES)
                     {
                         LOG.debug("Reloading");
                         return doInBackground();
@@ -397,8 +473,7 @@ public class OpenBST extends JFrame
                 catch(final Exception e)
                 {
                     LOG.error("Random exception caught", e);
-                    showMessageDialog(instance, Lang.get("file.crash"), Lang.get("error"),
-                            JOptionPane.ERROR_MESSAGE);
+                    showException(instance, Lang.get("file.crash"), e);
                     return null;
                 }
 
@@ -428,8 +503,7 @@ public class OpenBST extends JFrame
                 catch(ExecutionException e)
                 {
                     LOG.error("Random exception caught", e);
-                    JOptionPane.showMessageDialog(instance, Lang.get("file.crash"),
-                            Lang.get("error"), JOptionPane.ERROR_MESSAGE);
+                    Messagers.showException(instance, Lang.get("file.crash"), e);
                 }
             }
         };
@@ -547,62 +621,16 @@ public class OpenBST extends JFrame
         setTitle("OpenBST " + version);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-        JLabel openBST = new JLabel(Lang.get("banner.titleextended"));
-        JPanel banner = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JMenuBar jmb = new JMenuBar();
+        jmb.setBackground(OPENBST_BLUE);
+        jmb.add(Box.createHorizontalGlue());
+        jmb.add(createShortMenu());
+        jmb.add(Box.createHorizontalGlue());
+        this.setJMenuBar(jmb);
 
-        Timeline tl = new Timeline(banner);
-        tl.setDuration(200L);
-        tl.addPropertyToInterpolate("background", OPENBST_BLUE, new Color(145, 145, 145));
-        Timeline darkTl = new Timeline(banner);
-        darkTl.setDuration(200L);
-        darkTl.addPropertyToInterpolate("background", OPENBST_BLUE.darker().darker(),
-                new Color(100, 100, 100));
-
-        banner.setBackground(OPENBST_BLUE);
-        banner.add(new JLabel(new ImageIcon(Icons.getImage("LogoWhite", 16))));
-        openBST.setForeground(Color.WHITE);
         addDarkModeCallback(b ->
         {
-            banner.setBackground(b ? OPENBST_BLUE.darker().darker() : OPENBST_BLUE);
-        });
-        banner.add(openBST);
-        getContentPane().add(banner, BorderLayout.NORTH);
-
-        banner.addMouseListener(new MouseAdapter()
-        {
-            @Override
-            public void mouseClicked(MouseEvent e)
-            {
-                openBST.setText(Lang.get("banner.title"));
-                createShortMenu().show(OpenBST.this, e.getX(), e.getY());
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e)
-            {
-                if(dark)
-                {
-                    darkTl.play();
-                }
-                else
-                {
-                    tl.play();
-                }
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e)
-            {
-                if(dark)
-                {
-                    darkTl.playReverse();
-                }
-                else
-                {
-                    tl.playReverse();
-                }
-            }
-
+            jmb.setBackground(b ? OPENBST_BLUE.darker().darker() : OPENBST_BLUE);
         });
 
         container = new JTabbedPane();
@@ -638,6 +666,13 @@ public class OpenBST extends JFrame
             bannersPanel.add(new JBannerPanel(new ImageIcon(Icons.getImage("Experiment", 32)),
                     Color.YELLOW, Lang.get("welcome.ontheedge"), btnReportBugs, false), "grow");
         }
+        else if(version.contains("SNAPSHOT"))
+        {
+            bannersPanel.add(new JBannerPanel(new ImageIcon(Icons.getImage("Experiment", 32)),
+                    Color.ORANGE,
+                    "You are running a Snapshot. This version is in development. Do not post bug reports!",
+                    null, false), "grow");
+        }
 
         if(System.getProperty("java.specification.version").equals("9"))
         {
@@ -660,7 +695,7 @@ public class OpenBST extends JFrame
             }
         });
         bannersPanel.add(new JBannerPanel(new ImageIcon(Icons.getImage("Discord", 48)),
-                DISCORD_COLOR, Lang.get("openbst.discord"), btnJoinDiscord, false), "grow");
+                DISCORD_COLOR, Lang.get("openbst.discord"), btnJoinDiscord, true), "grow");
 
         JPanel panel = new JPanel();
         panel.setBackground(new Color(0, 0, 0, 0));
@@ -687,11 +722,19 @@ public class OpenBST extends JFrame
         panel.add(horizontalStrut_1, "cell 3 1");
 
         final JButton btnOpenAFile = new JButton(Lang.get("welcome.open"));
-        panel.add(btnOpenAFile, "cell 4 1");
+        panel.add(btnOpenAFile, "flowx,cell 4 1");
         btnOpenAFile.setIcon(new ImageIcon(Icons.getImage("Open", 40)));
         btnOpenAFile.addActionListener(e ->
         {
-            clickOpenStory();
+            clickOpenStory(askForFile());
+        });
+
+        final JButton btnOpenEditor = new JButton("Open Editor");
+        panel.add(btnOpenEditor, "cell 4 1");
+        btnOpenEditor.setIcon(new ImageIcon(Icons.getImage("Open", 40)));
+        btnOpenEditor.addActionListener(e ->
+        {
+            clickOpenEditor(askForFile());
         });
 
         JButton btnChangeBackground = new JButton(Lang.get("welcome.changebackground"),
@@ -733,19 +776,72 @@ public class OpenBST extends JFrame
         setVisible(true);
     }
 
-    /**
-     * Remove a story panel from the tabs
-     *
-     * @param storyPanel
-     */
-    public void removeStory(final StoryPanel storyPanel)
+    private void clickOpenEditor(File f)
     {
-        container.remove(storyPanel);
+        if(f != null)
+        {
+            final TabClient client = new TabClient(instance);
+            loadFile(f, client, new Consumer<BranchingStory>()
+            {
+                @Override
+                public void accept(BranchingStory bs)
+                {
+                    try
+                    {
+                        SwingUtilities.invokeAndWait(() ->
+                        {
+                            try
+                            {
+                                StoryEditor se = new StoryEditor(bs);
+                                container.addTab(se.getTitle(), se);
+                                container.setSelectedComponent(se);
+                            }
+                            catch(Exception e)
+                            {
+                                LOG.error("Error on story editor init", e);
+                                Messagers.showException(OpenBST.this,
+                                        "Error while creating the Story Editor ("
+                                                + e.getClass().getSimpleName() + " : "
+                                                + e.getMessage() + ")",
+                                        e);
+                            }
+                        });
+                    }
+                    catch(Exception e)
+                    {
+                        LOG.error(e);
+                    }
+                }
+            });
+        }
     }
 
-    public void clickOpenStory()
+    private void clickNewEditor()
     {
-        final File f = askForFile();
+        try
+        {
+            StoryEditor se = new StoryEditor(new BranchingStory());
+            container.addTab("Editor", se);
+            container.setSelectedComponent(se);
+        }
+        catch(Exception e)
+        {
+            LOG.error("Error on story editor init", e);
+            Messagers.showException(OpenBST.this, "Error while creating the Story Editor ("
+                    + e.getClass().getSimpleName() + " : " + e.getMessage() + ")", e);
+        }
+    }
+
+    /**
+     * Remove a panel from the tabs
+     */
+    public void removeTab(final JPanel panel)
+    {
+        container.remove(panel);
+    }
+
+    public void clickOpenStory(File f)
+    {
         if(f != null)
         {
             final TabClient client = new TabClient(instance);
@@ -770,11 +866,11 @@ public class OpenBST extends JFrame
                                 catch(BSTException e)
                                 {
                                     LOG.error("Exception caught while loading resources", e);
-                                    showMessageDialog(instance,
+                                    showException(instance,
                                             Lang.get("file.resourceerror")
                                                     .replace("$e", whichCause(e))
                                                     .replace("$m", whichMessage(e)),
-                                            Lang.get("error"), JOptionPane.ERROR_MESSAGE);
+                                            e);
                                 }
                                 SwingUtilities.invokeAndWait(() -> sp.setupStory());
                             }
@@ -814,9 +910,18 @@ public class OpenBST extends JFrame
         }
     }
 
-    public JPopupMenu createShortMenu()
+    private JMenu createShortMenu()
     {
-        JPopupMenu shortMenu = new JPopupMenu();
+        JMenu shortMenu = new JMenu();
+        addDarkModeCallback(b ->
+        {
+            shortMenu.setBackground(b ? OPENBST_BLUE.darker().darker() : OPENBST_BLUE.brighter());
+            shortMenu.setForeground(b ? Color.WHITE : OPENBST_BLUE);
+        });
+        shortMenu.setBackground(OPENBST_BLUE.brighter());
+        shortMenu.setForeground(OPENBST_BLUE);
+        shortMenu.setText(Lang.get("banner.title"));
+        shortMenu.setIcon(new ImageIcon(Icons.getImage("Logo", 16)));
         JMenuItem label = new JMenuItem(Lang.get("menu.title"));
         label.setEnabled(false);
         shortMenu.add(label);
@@ -829,11 +934,22 @@ public class OpenBST extends JFrame
                     @Override
                     public void actionPerformed(ActionEvent e)
                     {
-                        clickOpenStory();
+                        clickOpenStory(askForFile());
                     }
                 }));
 
         shortMenu.addSeparator();
+
+        shortMenu.add(new JMenuItem(new AbstractAction("Edit a new story")
+        {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                clickNewEditor();
+            }
+        }));
 
         JMenu additionalMenu = new JMenu(Lang.get("menu.advanced"));
         shortMenu.add(additionalMenu);
@@ -921,6 +1037,17 @@ public class OpenBST extends JFrame
             }
         }));
 
+        additionalMenu.add(new JMenuItem(new AbstractAction("Show debug info")
+        {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                DebugInfo.launch(OpenBST.this);
+            }
+        }));
+
         shortMenu.addSeparator();
 
         JMenu themesMenu = new JMenu(Lang.get("menu.themes"));
@@ -956,6 +1083,35 @@ public class OpenBST extends JFrame
         themesMenu.add(jrbmi);
         themesGroup.add(jrbmi);
 
+        JMenu additionalLightThemesMenu = new JMenu("Additional light themes");
+        int j = 3;
+        for(Map.Entry<String, LookAndFeel> entry : ADDITIONAL_LIGHT_THEMES.entrySet())
+        {
+            int jf = j;
+            jrbmi = new JRadioButtonMenuItem(entry.getKey());
+            if(j == selectedTheme)
+                jrbmi.setSelected(true);
+            jrbmi.addActionListener(e -> switchLaF(jf, entry.getValue()));
+            additionalLightThemesMenu.add(jrbmi);
+            themesGroup.add(jrbmi);
+            j++;
+        }
+        themesMenu.add(additionalLightThemesMenu);
+
+        JMenu additionalDarkThemesMenu = new JMenu("Additional dark themes");
+        for(Map.Entry<String, LookAndFeel> entry : ADDITIONAL_DARK_THEMES.entrySet())
+        {
+            int jf = j;
+            jrbmi = new JRadioButtonMenuItem(entry.getKey());
+            if(j == selectedTheme)
+                jrbmi.setSelected(true);
+            jrbmi.addActionListener(e -> switchLaF(jf, entry.getValue()));
+            additionalDarkThemesMenu.add(jrbmi);
+            themesGroup.add(jrbmi);
+            j++;
+        }
+        themesMenu.add(additionalDarkThemesMenu);
+
         shortMenu.add(new JMenuItem(new AbstractAction(Lang.get("menu.about"),
                 new ImageIcon(Icons.getImage("About", 16)))
         {
@@ -976,14 +1132,13 @@ public class OpenBST extends JFrame
 
     private void switchLaF(int id, LookAndFeel laf)
     {
-
         try
         {
-            dark = id == 0;
+            dark = id == 0 || ADDITIONAL_DARK_THEMES.containsValue(laf);
             UIManager.setLookAndFeel(laf);
             SwingUtilities.updateComponentTreeUI(instance);
-            background.setDark(id == 0);
-            darkModeCallbacks.forEach(a -> a.accept(id == 0));
+            background.setDark(dark);
+            darkModeCallbacks.forEach(a -> a.accept(dark));
             selectedTheme = id;
         }
         catch(UnsupportedLookAndFeelException e)
@@ -997,9 +1152,14 @@ public class OpenBST extends JFrame
         return instance;
     }
 
-    protected void showMessageDialog(OpenBST obst, String msg, String head, int type)
+    protected void showMessage(OpenBST obst, String msg, int type)
     {
-        invokeSwingAndWait(() -> JOptionPane.showMessageDialog(obst, msg, head, type));
+        invokeSwingAndWait(() -> Messagers.showMessage(obst, msg, type));
+    }
+
+    protected void showException(OpenBST obst, String msg, Exception e)
+    {
+        invokeSwingAndWait(() -> Messagers.showException(obst, msg, e));
     }
 
     public void addDarkModeCallback(Consumer<Boolean> callback)
@@ -1015,5 +1175,16 @@ public class OpenBST extends JFrame
     public Boolean isDark()
     {
         return dark;
+    }
+
+    public void setTabName(JPanel panel, String string)
+    {
+        if(container.indexOfComponent(panel) != -1)
+            container.setTitleAt(container.indexOfComponent(panel), string);
+    }
+    
+    public static String getAllLogs()
+    {
+        return logOutput.toString(Charset.defaultCharset());
     }
 }

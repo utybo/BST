@@ -37,7 +37,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
@@ -58,10 +57,12 @@ import utybo.branchingstorytree.api.story.SaveState;
 import utybo.branchingstorytree.api.story.StoryNode;
 import utybo.branchingstorytree.api.story.TextNode;
 import utybo.branchingstorytree.swing.Icons;
+import utybo.branchingstorytree.swing.Messagers;
 import utybo.branchingstorytree.swing.OpenBST;
 import utybo.branchingstorytree.swing.impl.SSBClient;
 import utybo.branchingstorytree.swing.impl.TabClient;
 import utybo.branchingstorytree.swing.utils.Lang;
+import utybo.branchingstorytree.swing.utils.LanguageUtils;
 import utybo.branchingstorytree.swing.visuals.JScrollablePanel.ScrollableSizeHint;
 
 public class StoryPanel extends JPanel
@@ -85,7 +86,7 @@ public class StoryPanel extends JPanel
     /**
      * The node currently on screen
      */
-    private StoryNode currentNode;
+    protected StoryNode currentNode;
 
     /**
      * The {@link TabClient} linked to this panel
@@ -210,12 +211,12 @@ public class StoryPanel extends JPanel
                 @Override
                 public void actionPerformed(final ActionEvent e)
                 {
-                    if(JOptionPane.showConfirmDialog(parentWindow,
+                    if(Messagers.showConfirm(parentWindow,
                             "<html><body style='width: " + (int)(Icons.getScale() * 300) + "'>"
                                     + Lang.get("story.restoress.confirm"),
-                            Lang.get("story.restoress"), JOptionPane.YES_NO_OPTION,
-                            JOptionPane.WARNING_MESSAGE,
-                            new ImageIcon(Icons.getImage("Undo", 40))) == JOptionPane.YES_OPTION)
+                            Messagers.TYPE_WARNING, Messagers.OPTIONS_YES_NO,
+                            Lang.get("story.restoress"),
+                            new ImageIcon(Icons.getImage("Undo", 40))) == Messagers.OPTION_YES)
                     {
                         restoreSaveState(latestSaveState);
                     }
@@ -269,10 +270,11 @@ public class StoryPanel extends JPanel
                             catch(final IOException e1)
                             {
                                 LOG.error("Had an IOException while exporting Save State", e1);
-                                JOptionPane.showMessageDialog(parentWindow,
+                                Messagers.showException(parentWindow,
                                         Lang.get("story.exportss.error")
                                                 .replace("$m", e1.getMessage())
-                                                .replace("$e", e1.getClass().getSimpleName()));
+                                                .replace("$e", e1.getClass().getSimpleName()),
+                                        e1);
                             }
                         }
                     }
@@ -306,10 +308,11 @@ public class StoryPanel extends JPanel
                             catch(final IOException e1)
                             {
                                 LOG.error("Had an IOException while importing Save State", e1);
-                                JOptionPane.showMessageDialog(parentWindow,
-                                        Lang.get("story.exportss.error")
+                                Messagers.showException(parentWindow,
+                                        Lang.get("story.importss.error")
                                                 .replace("$m", e1.getMessage())
-                                                .replace("$e", e1.getClass().getSimpleName()));
+                                                .replace("$e", e1.getClass().getSimpleName()),
+                                        e1);
                             }
                         }
                     }
@@ -325,12 +328,11 @@ public class StoryPanel extends JPanel
                         @Override
                         public void actionPerformed(final ActionEvent e)
                         {
-                            if(JOptionPane.showConfirmDialog(parentWindow,
-                                    "<html><body style='width: " + (int)(Icons.getScale() * 300)
-                                            + "'>" + Lang.get("story.reset.confirm"),
-                                    Lang.get("story.reset"), JOptionPane.YES_NO_OPTION,
-                                    JOptionPane.WARNING_MESSAGE, new ImageIcon(Icons
-                                            .getImage("Return", 40))) == JOptionPane.YES_OPTION)
+                            if(Messagers.showConfirm(parentWindow,
+                                    "<html>" + Lang.get("story.reset.confirm"),
+                                    Messagers.OPTIONS_YES_NO, Messagers.TYPE_WARNING,
+                                    Lang.get("story.reset"), new ImageIcon(
+                                            Icons.getImage("Return", 40))) == Messagers.OPTION_YES)
                             {
                                 reset();
                             }
@@ -344,13 +346,12 @@ public class StoryPanel extends JPanel
                         @Override
                         public void actionPerformed(final ActionEvent e)
                         {
-                            if(JOptionPane.showConfirmDialog(parentWindow,
+                            if(Messagers.showConfirm(parentWindow,
                                     "<html><body style='width: " + (int)(Icons.getScale() * 300)
                                             + "'>" + Lang.get("story.sreload.confirm"),
-                                    Lang.get("story.sreload.confirm.title"),
-                                    JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE,
-                                    new ImageIcon(Icons.getImage("Refresh",
-                                            40))) == JOptionPane.YES_OPTION)
+                                    Messagers.OPTIONS_YES_NO, Messagers.TYPE_WARNING,
+                                    Lang.get("story.sreload.confirm.title"), new ImageIcon(
+                                            Icons.getImage("Refresh", 40))) == Messagers.OPTION_YES)
                             {
 
                                 final SaveState ss = new SaveState(currentNode.getId(),
@@ -371,13 +372,11 @@ public class StoryPanel extends JPanel
                         @Override
                         public void actionPerformed(final ActionEvent e)
                         {
-                            if(JOptionPane.showConfirmDialog(parentWindow,
-                                    "<html><body style='width: " + (int)(Icons.getScale() * 300)
-                                            + "'>" + Lang.get("story.hreload.confirm"),
-                                    Lang.get("story.hreload.confirm.title"),
-                                    JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE,
-                                    new ImageIcon(Icons.getImage("Synchronize",
-                                            40))) == JOptionPane.YES_OPTION)
+                            if(Messagers.showConfirm(parentWindow,
+                                    "<html>" + Lang.get("story.hreload.confirm"),
+                                    Messagers.OPTIONS_YES_NO, Messagers.TYPE_WARNING,
+                                    Lang.get("story.hreload.confirm.title"), new ImageIcon(Icons
+                                            .getImage("Synchronize", 40))) == Messagers.OPTION_YES)
                             {
                                 reset();
                                 reload(o ->
@@ -572,16 +571,13 @@ public class StoryPanel extends JPanel
             @Override
             public void actionPerformed(final ActionEvent e)
             {
-                if(JOptionPane.showConfirmDialog(parentWindow,
-                        "<html><body style='width: " + (int)(Icons.getScale() * 300) + "'>"
-                                + Lang.get("story.close.confirm"),
-                        Lang.get("story.close"), JOptionPane.YES_NO_OPTION,
-                        JOptionPane.WARNING_MESSAGE,
-                        new ImageIcon(Icons.getImage("Cancel", 40))) == JOptionPane.YES_OPTION)
+                if(Messagers.showConfirm(parentWindow, "<html>" + Lang.get("story.close.confirm"),
+                        Messagers.OPTIONS_YES_NO, Messagers.TYPE_WARNING, Lang.get("story.close"),
+                        new ImageIcon(Icons.getImage("Cancel", 40))) == Messagers.OPTION_YES)
                 {
                     client.getSSBHandler().shutdown();
                     nodePanel.dispose();
-                    parentWindow.removeStory(StoryPanel.this);
+                    parentWindow.removeTab(StoryPanel.this);
                 }
             }
         });
@@ -656,10 +652,8 @@ public class StoryPanel extends JPanel
             catch(final BSTException e)
             {
                 LOG.error("Error on BRM restore attempt", e);
-                SwingUtilities
-                        .invokeLater(() -> JOptionPane.showMessageDialog(OpenBST.getInstance(),
-                                Lang.get("story.modulerestorefail").replace("$m", "BRM"),
-                                Lang.get("error"), JOptionPane.ERROR_MESSAGE));
+                SwingUtilities.invokeLater(() -> Messagers.showException(OpenBST.getInstance(),
+                        Lang.get("story.modulerestorefail").replace("$m", "BRM"), e));
             }
         }).start();;
 
@@ -670,9 +664,8 @@ public class StoryPanel extends JPanel
         catch(final BSTException e)
         {
             LOG.error("Error on UIB restore attempt", e);
-            SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(OpenBST.getInstance(),
-                    Lang.get("story.modulerestorefail").replace("$m", "UIB"), Lang.get("error"),
-                    JOptionPane.ERROR_MESSAGE));
+            SwingUtilities.invokeLater(() -> Messagers.showException(OpenBST.getInstance(),
+                    Lang.get("story.modulerestorefail").replace("$m", "UIB"), e));
         }
         String from = ss.getFrom();
         if(from == null || "<main>".equals(from))
@@ -685,9 +678,8 @@ public class StoryPanel extends JPanel
             if(bs == null)
             {
                 LOG.error("Unknown story : " + from);
-                JOptionPane.showMessageDialog(OpenBST.getInstance(),
-                        Lang.get("story.unknownstory").replace("$s", from), Lang.get("error"),
-                        JOptionPane.ERROR_MESSAGE);
+                Messagers.showMessage(OpenBST.getInstance(),
+                        Lang.get("story.unknownstory").replace("$s", from), Messagers.TYPE_ERROR);
             }
             else
             {
@@ -695,10 +687,11 @@ public class StoryPanel extends JPanel
                 if(node == null)
                 {
                     LOG.error("Unknown node (id " + ss.getNodeId() + " from " + from + ")");
-                    JOptionPane.showMessageDialog(OpenBST.getInstance(),
-                            Lang.get("story.missingnode").replace("$n", "" + ss.getNodeId())
-                                    .replace("$a", "?").replace("$f", from),
-                            Lang.get("error"), JOptionPane.ERROR_MESSAGE);
+                    Messagers
+                            .showMessage(OpenBST.getInstance(),
+                                    Lang.get("story.missingnode").replace("$n", "" + ss.getNodeId())
+                                            .replace("$a", "?").replace("$f", from),
+                                    Messagers.TYPE_ERROR);
                 }
                 else
                 {
@@ -763,8 +756,8 @@ public class StoryPanel extends JPanel
             // This should never happen
 
             LOG.error("Tried to show a null node!");
-            JOptionPane.showMessageDialog(OpenBST.getInstance(), Lang.get("story.nullnode"),
-                    Lang.get("error"), JOptionPane.ERROR_MESSAGE);
+            Messagers.showMessage(OpenBST.getInstance(), Lang.get("story.nullnode"),
+                    Messagers.TYPE_ERROR);
             return;
         }
 
@@ -790,11 +783,12 @@ public class StoryPanel extends JPanel
                 LOG.trace("=> Logical node result : " + (node == null ? "null" : node.getId()));
                 if(node == null)
                 {
-                    JOptionPane.showMessageDialog(OpenBST.getInstance(),
+                    Messagers.showMessage(OpenBST.getInstance(),
                             Lang.get("story.logicalnodedeadend")
                                     .replace("$n", "" + storyNode.getId())
                                     .replace("$f", storyNode.getStory().getTag("__sourcename"))
-                                    .replace("$a", storyNode.getTagOrDefault("alias", "<none>")));
+                                    .replace("$a", storyNode.getTagOrDefault("alias", "<none>")),
+                            Messagers.TYPE_ERROR);
                 }
                 else
                 {
@@ -829,17 +823,17 @@ public class StoryPanel extends JPanel
             final String s = Lang.get("story.error2").replace("$n", "" + currentNode.getId())
                     .replace("$a", currentNode.getTagOrDefault("alias", "<none>"))
                     .replace("$m", e.getMessage()).replace("$l", e.getWhere() + "");
-            JOptionPane.showMessageDialog(this, s, Lang.get("error"), JOptionPane.ERROR_MESSAGE);
+            Messagers.showException(OpenBST.getInstance(), s, e);
         }
         catch(final Exception e)
         {
             LOG.error("Encountered a generic exception while trying to show a node", e);
-            JOptionPane.showMessageDialog(this,
+            Messagers.showException(OpenBST.getInstance(),
                     Lang.get("story.error").replace("$n", "" + currentNode.getId())
                             .replace("$a", currentNode.getTagOrDefault("alias", "<none>"))
                             .replace("$f", storyNode.getStory().getTag("__sourcename"))
                             .replace("$m", e.getMessage() == null ? "N/A" : e.getMessage()),
-                    Lang.get("error"), JOptionPane.ERROR_MESSAGE);
+                    e);
         }
     }
 
@@ -884,28 +878,28 @@ public class StoryPanel extends JPanel
                         if(currentNode == null)
                         {
                             LOG.debug("=> It was the initial node");
-                            JOptionPane.showMessageDialog(this, Lang.get("story.missinginitial"),
-                                    Lang.get("error"), JOptionPane.ERROR_MESSAGE);
+                            Messagers.showMessage(OpenBST.getInstance(),
+                                    Lang.get("story.missinginitial"), Messagers.TYPE_ERROR);
                             return;
                         }
                         else
                         {
-                            JOptionPane.showMessageDialog(this,
+                            Messagers.showMessage(OpenBST.getInstance(),
                                     Lang.get("story.missingnode").replace("$n", "" + e.getId())
                                             .replace("$f", "" + e.getSourceFile())
                                             .replace("$a", "<none>"),
-                                    Lang.get("error"), JOptionPane.ERROR_MESSAGE);
+                                    Messagers.TYPE_ERROR);
                             return;
                         }
                     }
                     catch(final BSTException e)
                     {
                         LOG.error("Encountered an error while triggering option", e);
-                        JOptionPane.showMessageDialog(this, Lang.get("story.error")
+                        Messagers.showMessage(OpenBST.getInstance(), Lang.get("story.error")
                                 .replace("$n", "" + currentNode.getId())
                                 .replace("$a", currentNode.getTagOrDefault("alias", "<none>"))
                                 .replace("$f", e.getSourceFile()).replace("$m", e.getMessage()),
-                                Lang.get("error"), JOptionPane.ERROR_MESSAGE);
+                                Messagers.TYPE_ERROR);
                     }
                 });
                 optionPanel.add(button,
@@ -962,7 +956,7 @@ public class StoryPanel extends JPanel
             optionPanel.add(button, "grow");
 
             button = new JButton(Lang.get("story.final.close"));
-            button.addActionListener(e -> parentWindow.removeStory(this));
+            button.addActionListener(e -> parentWindow.removeTab(this));
             optionPanel.add(button, "grow");
         }
 
@@ -1034,9 +1028,8 @@ public class StoryPanel extends JPanel
         LOG.trace("NSFW warning check");
         if(story.hasTag("nsfw"))
         {
-            if(JOptionPane.showConfirmDialog(parentWindow, Lang.get("story.nsfw"),
-                    Lang.get("story.nsfw.title"),
-                    JOptionPane.WARNING_MESSAGE) != JOptionPane.OK_OPTION)
+            if(Messagers.showConfirm(parentWindow, Lang.get("story.nsfw"), Messagers.OPTIONS_YES_NO,
+                    Messagers.TYPE_WARNING, Lang.get("story.nsfw.title")) != Messagers.OPTION_OK)
             {
                 LOG.trace("=> Close");
                 return false;
@@ -1045,6 +1038,18 @@ public class StoryPanel extends JPanel
             {
                 nodeIdLabel.setEnabled(true);
                 nodeIdLabel.setForeground(Color.RED);
+            }
+        }
+        LOG.trace("Font compatibility check");
+        if(!story.hasTag("font")) // If no fonts are forced
+        {
+            if(LanguageUtils.checkNonLatin(story))
+            {
+                Messagers.showMessage(OpenBST.getInstance(), Lang.get("story.unicodecompat"),
+                        Messagers.TYPE_INFO, Lang.get("story.unicodecompat.title"),
+                        new ImageIcon(Icons.getImage("LanguageError", 48)));
+                story.getRegistry().put("__nonlatin_" + story.getTag("__sourcename"), 1);
+                story.getRegistry().put("__nonlatinwarned", 1);
             }
         }
         return true;

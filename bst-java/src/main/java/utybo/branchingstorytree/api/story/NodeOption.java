@@ -102,6 +102,11 @@ public class NodeOption extends TagHolder
             throw new Error("Impossible state", e);
         }
     }
+    
+    public boolean hasChecker()
+    {
+        return checker != null;
+    }
 
     /**
      * Define the checker to be used to determine the availability of this
@@ -136,4 +141,8 @@ public class NodeOption extends TagHolder
         this.doOnClick.add(doOnClick);
     }
 
+    public NextNodeDefiner getNND()
+    {
+        return nextNode;
+    }
 }

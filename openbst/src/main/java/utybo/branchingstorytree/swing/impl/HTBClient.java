@@ -16,7 +16,6 @@ import java.util.Base64;
 import java.util.HashMap;
 
 import javax.swing.ImageIcon;
-import javax.swing.JOptionPane;
 
 import org.apache.commons.io.IOUtils;
 
@@ -24,6 +23,7 @@ import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.api.Experimental;
 import utybo.branchingstorytree.htb.HTBHandler;
 import utybo.branchingstorytree.swing.Icons;
+import utybo.branchingstorytree.swing.Messagers;
 import utybo.branchingstorytree.swing.OpenBST;
 import utybo.branchingstorytree.swing.utils.Lang;
 import utybo.branchingstorytree.swing.visuals.NodePanel;
@@ -68,12 +68,12 @@ public class HTBClient implements HTBHandler
     @Override
     public boolean requestJSAccess()
     {
-        int result = JOptionPane.showConfirmDialog(OpenBST.getInstance(),
+        int result = Messagers.showConfirm(OpenBST.getInstance(),
                 "<html><body style='width:" + (int)(Icons.getScale() * 300) + "px'>"
                         + Lang.get("html.jsrequest"),
-                Lang.get("html.securityalert"), JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE, new ImageIcon(Icons.getImage("JSAlert", 48)));
-        if(result == JOptionPane.YES_OPTION)
+                Messagers.TYPE_QUESTION, Messagers.OPTIONS_YES_NO, Lang.get("html.securityalert"),
+                new ImageIcon(Icons.getImage("JSAlert", 48)));
+        if(result == Messagers.OPTION_YES)
         {
             nodePanel.setJSEnabled(true);
             return true;
@@ -88,12 +88,12 @@ public class HTBClient implements HTBHandler
     @Override
     public boolean requestHrefAccess()
     {
-        int result = JOptionPane.showConfirmDialog(OpenBST.getInstance(),
+        int result = Messagers.showConfirm(OpenBST.getInstance(),
                 "<html><body style='width:" + (int)(Icons.getScale() * 300) + "px'>"
-                        + Lang.get("html.hrefrequest"),
-                Lang.get("html.securityalert"), JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE, new ImageIcon(Icons.getImage("AAlert", 48)));
-        if(result == JOptionPane.YES_OPTION)
+                        + Lang.get("html.htmlrequest"),
+                Messagers.TYPE_QUESTION, Messagers.OPTIONS_YES_NO, Lang.get("html.securityalert"),
+                new ImageIcon(Icons.getImage("JSAlert", 48)));
+        if(result == Messagers.OPTION_YES)
         {
             nodePanel.setHrefEnabled(true);
             return true;
