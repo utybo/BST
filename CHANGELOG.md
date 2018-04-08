@@ -18,6 +18,7 @@ Less technical explanations available on the [OpenBST website](https://utybo.git
 - **Experimental features were added.** They provide cool features, but can be very unstable and may disappear at any time. A warning is issued every time you call an experimental function.
 - **Better icon support for HiDPI.** Icons were previously very small, but the new addition of scalable icons provides good looking icons on various display sizes.
 - **New XSF Module** which adds full Javascript capacity to BST, with the ability to run .js files with all the great stuff from Java's Nashorn! There is also a Next Node Definer available as an experimental feature.
+- A Debug Info dialog has been created, which will make troubleshooting easier for devs when users will create issues.
 - Added better message dialogs. Just fancy stuff, but hey, at least errors are shown more consistently!
 - Options now support variables
 - 2 new, beautiful backgrounds have been added!
