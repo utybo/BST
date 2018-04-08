@@ -57,7 +57,7 @@ public class AboutDialog extends JDialog
         JPanel banner = new JPanel(new FlowLayout(FlowLayout.CENTER));
         banner.setBackground(OpenBST.OPENBST_BLUE);
         JLabel lblOpenbst = new JLabel(new ImageIcon(Icons.getImage("FullLogoWhite", 48)));
-        lblOpenbst.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        lblOpenbst.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         banner.add(lblOpenbst, "flowx,cell 0 0,alignx center");
         getContentPane().add(banner, BorderLayout.NORTH);
 
@@ -123,7 +123,7 @@ public class AboutDialog extends JDialog
         JLabel lblTranslatedBy = new JLabel(Lang.get("author"));
         pan.add(lblTranslatedBy, "cell 0 1");
 
-        setSize((int)(Icons.getScale() * 450), (int)(Icons.getScale() * 300));
+        setSize((int)(Icons.getScale() * 450), (int)(Icons.getScale() * 400));
         setLocationRelativeTo(parent);
     }
 

@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -77,6 +78,7 @@ import javax.swing.plaf.metal.MetalLookAndFeel;
 
 import org.apache.commons.compress.compressors.xz.XZCompressorInputStream;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.pushingpixels.substance.api.SubstanceCortex;
@@ -129,6 +131,7 @@ import utybo.branchingstorytree.swing.impl.BRMFileClient;
 import utybo.branchingstorytree.swing.impl.TabClient;
 import utybo.branchingstorytree.swing.utils.BSTPackager;
 import utybo.branchingstorytree.swing.utils.Lang;
+import utybo.branchingstorytree.swing.utils.OutputStreamToOutputAndPrint;
 import utybo.branchingstorytree.swing.utils.Lang.UnrespectedModelException;
 import utybo.branchingstorytree.swing.visuals.AboutDialog;
 import utybo.branchingstorytree.swing.visuals.JBackgroundPanel;
@@ -165,7 +168,23 @@ public class OpenBST extends JFrame
     }
     private static final long serialVersionUID = 1L;
 
-    public static final Logger LOG = LogManager.getLogger("OpenBST");
+    public static final Logger LOG;
+    private static ByteArrayOutputStream logOutput;
+    static {
+        logOutput = new ByteArrayOutputStream();
+
+        PrintStream sysout = System.out;
+        OutputStreamToOutputAndPrint newout = new OutputStreamToOutputAndPrint(logOutput, sysout);
+        PrintStream ps = new PrintStream(newout);
+        System.setOut(ps);
+
+        PrintStream syserr = System.err;
+        OutputStreamToOutputAndPrint newerr = new OutputStreamToOutputAndPrint(logOutput, syserr);
+        PrintStream pserr = new PrintStream(newerr);
+        System.setErr(pserr);
+        
+        LOG = LogManager.getLogger("OpenBST");
+    }
 
     /**
      * The parser that will be reused throughout the entire session.
@@ -256,9 +275,11 @@ public class OpenBST extends JFrame
      */
     public static void main(final String[] args)
     {
+
+
         LOG.info("OpenBST version " + version + ", part of the BST project");
         LOG.trace("[ INIT ]");
-
+        LOG.info("ééé\"\"");
         LOG.trace("Loading language files");
         loadLang(args.length > 0 ? args[0] : null);
 
@@ -1160,5 +1181,10 @@ public class OpenBST extends JFrame
     {
         if(container.indexOfComponent(panel) != -1)
             container.setTitleAt(container.indexOfComponent(panel), string);
+    }
+    
+    public static String getAllLogs()
+    {
+        return logOutput.toString(Charset.defaultCharset());
     }
 }

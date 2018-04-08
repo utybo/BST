@@ -1,3 +1,11 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ *
+ * This Source Code Form is "Incompatible With Secondary Licenses", as
+ * defined by the Mozilla Public License, v. 2.0.
+ */
 package utybo.branchingstorytree.swing;
 
 import java.awt.BorderLayout;
@@ -5,10 +13,8 @@ import java.awt.CardLayout;
 import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
-import java.io.File;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -23,8 +29,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingWorker;
-
-import org.apache.commons.io.FileUtils;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -120,11 +124,7 @@ public class DebugInfo extends JDialog
                 sb.append("\n");
                 publish("Getting logs...");
                 sb.append("--- LOGS ---\n");
-                String s = FileUtils.readFileToString(
-                        new File(System.getProperty("user.home")
-                                + "/.openbst/logs/openbst.log".replace("/", File.separator)),
-                        StandardCharsets.UTF_8);
-                sb.append(s);
+                sb.append(OpenBST.getAllLogs());
 
                 return sb.toString();
             }
