@@ -41,7 +41,7 @@ public class Icons
         LOG.info("Scaling factor : " + (factor.isEmpty() ? "1x" : factor.replace('_', '.') + "x"));
 
         // Background images
-        backgroundImages = Arrays.asList(loadImages("images/bg$.jpg", 9));
+        backgroundImages = Arrays.asList(loadImages("images/bg$.jpg", 10));
 
         // 16px icons names
         String[] arr = new String[] {"About", "Audio", "Camera Addon Identification", "Cancel",
@@ -95,7 +95,7 @@ public class Icons
         }
 
         // 48px icons
-        arr = new String[] {"About", "Cancel", "Discord", "Error", "Rename"};
+        arr = new String[] {"About", "Cancel", "Discord", "Error", "Installing Updates", "Rename"};
         for(String s : arr)
         {
             images.put(s + 48, loadImage(s, 48));

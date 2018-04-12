@@ -8,12 +8,19 @@
  */
 package utybo.branchingstorytree.swing;
 
+import java.awt.Color;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.SwingWorker;
 
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.logging.log4j.LogManager;
@@ -24,8 +31,10 @@ import com.google.gson.reflect.TypeToken;
 
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
+import utybo.branchingstorytree.swing.ext.ComparableVersion;
 import utybo.branchingstorytree.swing.utils.Lang;
 import utybo.branchingstorytree.swing.utils.OutputStreamToOutputAndPrint;
+import utybo.branchingstorytree.swing.visuals.JBannerPanel;
 
 /**
  * OpenBST is an open source implementation of the BST language that aims to be
@@ -110,6 +119,144 @@ public class OpenBST
 
         LOG.trace("Launching app...");
         OpenBSTGUI.launch();
+
+        LOG.trace("Checking versions...");
+        if(!"<unknown version>".equals(VERSION))
+        {
+            SwingWorker<UpdateInfo, Void> worker = new SwingWorker<UpdateInfo, Void>()
+            {
+
+                @Override
+                protected UpdateInfo doInBackground() throws Exception
+                {
+                    URL updateInfoSite = new URL("https://utybo.github.io/BST/version.json");
+                    UpdateInfo info = new Gson().fromJson(new InputStreamReader(
+                            updateInfoSite.openStream(), StandardCharsets.UTF_8), UpdateInfo.class);
+                    return info;
+                }
+
+                @Override
+                protected void done()
+                {
+                    try
+                    {
+                        UpdateInfo remoteVersion = this.get();
+                        ComparableVersion remoteUnstable = new ComparableVersion(
+                                remoteVersion.unstable),
+                                remoteStable = new ComparableVersion(remoteVersion.stable);
+                        ComparableVersion local = new ComparableVersion(
+                                VERSION.substring(0, VERSION.length() - 1));
+
+                        if(VERSION.endsWith("u"))
+                        {
+                            // Local version is unstable
+                            // Show updates to either the most recent unstable or the most recent stable
+                            if(local.compareTo(remoteStable) < 0
+                                    && remoteStable.compareTo(remoteUnstable) < 0)
+                            {
+                                // local (unstable) < stable < unstable
+                                // Give options for both unstable and stable
+                                JButton stablebtn = new JButton("More information (stable)");
+                                stablebtn.addActionListener(e ->
+                                {
+                                    VisualsUtils.browse(remoteVersion.stableurl);
+                                });
+                                JButton unstablebtn = new JButton("More information (unstable)");
+                                unstablebtn.addActionListener(e ->
+                                {
+                                    VisualsUtils.browse(remoteVersion.unstableurl);
+                                });
+                                OpenBSTGUI.getInstance().addBanner(new JBannerPanel(
+                                        new ImageIcon(Icons.getImage("Installing Updates", 48)),
+                                        new Color(142, 255, 159),
+                                        "Unstable and stable updates are available!<p>"
+                                                + "You can either continue on the unstable path by picking the new unstable version, "
+                                                + "or return to the stable versions by picking the most recent stable versions.",
+                                        stablebtn, false, unstablebtn));
+                            }
+                            else if(remoteStable.compareTo(local) < 0
+                                    && local.compareTo(remoteUnstable) < 0)
+                            {
+                                // stable < local (unstable) < unstable
+                                JButton unstablebtn = new JButton("More information");
+                                unstablebtn.addActionListener(e ->
+                                {
+                                    VisualsUtils.browse(remoteVersion.unstableurl);
+                                });
+                                OpenBSTGUI.getInstance().addBanner(new JBannerPanel(
+                                        new ImageIcon(Icons.getImage("Installing Updates", 48)),
+                                        new Color(142, 255, 159),
+                                        "An update is available!<p>"
+                                                + "An unstable update is available. Unstable updates provide great improvements "
+                                                + "and are constantly updated to provide bugfixes and new features.",
+                                        unstablebtn, false));
+                            }
+                            else if(remoteUnstable.compareTo(remoteStable) < 0
+                                    && local.compareTo(remoteStable) < 0)
+                            {
+                                // local (unstable) < stable
+                                // and unstable < stable
+                                JButton stablebtn = new JButton("More information");
+                                stablebtn.addActionListener(e ->
+                                {
+                                    VisualsUtils.browse(remoteVersion.stableurl);
+                                });
+                                OpenBSTGUI.getInstance().addBanner(new JBannerPanel(
+                                        new ImageIcon(Icons.getImage("Installing Updates", 48)),
+                                        new Color(142, 255, 159),
+                                        "The stable version is available!<p>"
+                                                + "The stable update of the unstable version you are running is available. "
+                                                + "Check it out now to get all the fancy new updates and bug fixes! "
+                                                + "Stable versions are much better than unstable ones as they are less likely "
+                                                + "to just randomly crash and ruin hours of work!",
+                                        stablebtn, false));
+                            }
+                        }
+                        else
+                        {
+                            // If we're not running an unstable version, the only interesting case is local < stable
+                            if(local.compareTo(remoteStable) < 0)
+                            {
+                                // local (stable) < stable
+                                JButton stablebtn = new JButton("More information");
+                                stablebtn.addActionListener(e ->
+                                {
+                                    VisualsUtils.browse(remoteVersion.stableurl);
+                                });
+                                OpenBSTGUI.getInstance().addBanner(new JBannerPanel(
+                                        new ImageIcon(Icons.getImage("Installing Updates", 48)),
+                                        new Color(142, 255, 159),
+                                        "An update is available!<p>"
+                                                + "A new version of OpenBST is available! Each new version provides "
+                                                + "new features, bugfixes and more. Check it out now by clickling the button on the right!",
+                                        stablebtn, false));
+                            }
+                        }
+                    }
+
+                    catch(InterruptedException | ExecutionException e)
+                    {
+                        LOG.warn("Failed to read update information", e);
+                        JButton showDetails = new JButton("Show details");
+                        showDetails.addActionListener(ev -> Messagers.showException(
+                                OpenBSTGUI.getInstance(),
+                                "Checking for updates failed. Here are the details on the error.",
+                                e));
+                        OpenBSTGUI.getInstance().addBanner(new JBannerPanel(
+                                new ImageIcon(Icons.getImage("Cancel", 16)),
+                                new Color(255, 144, 144),
+                                "We are unable to check for updates. Is your Internet connection working properly?",
+                                showDetails, false));
+                    }
+                }
+            };
+            worker.execute();
+        }
+    }
+
+    public static class UpdateInfo
+    {
+        private String stable, stableurl, unstable, unstableurl;
     }
 
     /**

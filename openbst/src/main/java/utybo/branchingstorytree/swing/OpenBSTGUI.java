@@ -189,6 +189,8 @@ public class OpenBSTGUI extends JFrame
 
     private final JBackgroundPanel background;
 
+    private final JPanel bannersPanel;
+
     private int selectedTheme = 1;
     private boolean dark = false;
     private final LinkedList<Consumer<Boolean>> darkModeCallbacks = new LinkedList<>();
@@ -222,7 +224,7 @@ public class OpenBSTGUI extends JFrame
                     try
                     {
                         final Toolkit xToolkit = Toolkit.getDefaultToolkit();
-                        final java.lang.reflect.Field awtAppClassNameField = xToolkit.getClass()
+                        java.lang.reflect.Field awtAppClassNameField = xToolkit.getClass()
                                 .getDeclaredField("awtAppClassName");
                         awtAppClassNameField.setAccessible(true);
                         awtAppClassNameField.set(xToolkit, Lang.get("title"));
@@ -292,7 +294,7 @@ public class OpenBSTGUI extends JFrame
         container.add(welcomeContentPanel);
         container.setTitleAt(0, Lang.get("welcome"));
 
-        JPanel bannersPanel = new JPanel(new MigLayout("hidemode 2, gap 0px, fill, wrap 1, ins 0"));
+        bannersPanel = new JPanel(new MigLayout("hidemode 2, gap 0px, fill, wrap 1, ins 0"));
         bannersPanel.setBackground(new Color(0, 0, 0, 0));
         welcomeContentPanel.add(bannersPanel, "cell 0 0,grow");
 
@@ -301,15 +303,7 @@ public class OpenBSTGUI extends JFrame
             JButton btnReportBugs = new JButton(Lang.get("welcome.reportbugs"));
             btnReportBugs.addActionListener(e ->
             {
-                try
-                {
-                    Desktop.getDesktop()
-                            .browse(new URL("https://github.com/utybo/BST/issues").toURI());
-                }
-                catch(Exception e1)
-                {
-                    LOG.error("Exception during link opening", e1);
-                }
+                VisualsUtils.browse("https://github.com/utybo/BST/issues");
             });
             bannersPanel.add(new JBannerPanel(new ImageIcon(Icons.getImage("Experiment", 32)),
                     Color.YELLOW, Lang.get("welcome.ontheedge"), btnReportBugs, false), "grow");
@@ -333,14 +327,7 @@ public class OpenBSTGUI extends JFrame
         JButton btnJoinDiscord = new JButton(Lang.get("openbst.discordjoin"));
         btnJoinDiscord.addActionListener(e ->
         {
-            try
-            {
-                Desktop.getDesktop().browse(new URL("https://discord.gg/6SVDCMM").toURI());
-            }
-            catch(Exception e1)
-            {
-                LOG.error("Exception during link opening", e1);
-            }
+            VisualsUtils.browse("https://discord.gg/6SVDCMM");
         });
         bannersPanel.add(new JBannerPanel(new ImageIcon(Icons.getImage("Discord", 48)),
                 DISCORD_COLOR, Lang.get("openbst.discord"), btnJoinDiscord, true), "grow");
@@ -404,14 +391,8 @@ public class OpenBSTGUI extends JFrame
                 new ImageIcon(Icons.getImage("External Link", 16)));
         btnWelcomepixabay.addActionListener(e ->
         {
-            try
-            {
-                Desktop.getDesktop().browse(new URL("https://pixabay.com").toURI());
-            }
-            catch(IOException | URISyntaxException e1)
-            {
-                LOG.warn("Failed to browse to Pixabay website", e1);
-            }
+            VisualsUtils.browse("https://pixabay.com");
+
         });
         welcomeContentPanel.add(btnWelcomepixabay, "cell 0 2");
 
@@ -966,5 +947,23 @@ public class OpenBSTGUI extends JFrame
     {
         if(container.indexOfComponent(panel) != -1)
             container.setTitleAt(container.indexOfComponent(panel), string);
+    }
+
+    public void addBanner(JBannerPanel banner)
+    {
+        bannersPanel.add(banner, "grow");
+        banner.revalidate();
+        banner.repaint();
+        // So... There's a weird bug where the background will keep some bits of older
+        // banners that were present at first paint time.
+        // This makes sure that after everything is rendered correctly and ready, the
+        // background gets repainted fully
+        
+        // (swing is painful sometimes)
+        SwingUtilities.invokeLater(() ->
+        {
+            background.revalidate();
+            background.repaint();
+        });
     }
 }

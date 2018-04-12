@@ -31,7 +31,8 @@ public class JBannerPanel extends JPanel
     private final Consumer<Boolean> callback = b -> setBackground(
             b ? getColor().darker() : getColor().brighter());
 
-    public JBannerPanel(Icon icon, Color c, String text, JComponent btn, boolean hideButton)
+    public JBannerPanel(Icon icon, Color c, String text, JComponent btn, boolean hideButton,
+            JComponent... otherButtons)
     {
         c = new Color(c.getRed(), c.getGreen(), c.getBlue(), 150);
         this.c = c;
@@ -55,6 +56,9 @@ public class JBannerPanel extends JPanel
         if(btn != null)
         {
             this.add(btn, "flowy,cell 2 0,alignx center, aligny center");
+            if(otherButtons.length > 0)
+                for(JComponent cx : otherButtons)
+                    this.add(cx, "cell 2 0,alignx center, aligny center");
         }
         if(hideButton)
         {
