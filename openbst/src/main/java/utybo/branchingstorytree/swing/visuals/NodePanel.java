@@ -10,15 +10,12 @@ package utybo.branchingstorytree.swing.visuals;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.concurrent.CountDownLatch;
 import java.util.function.Consumer;
 
-import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
 
@@ -248,7 +245,7 @@ public class NodePanel extends JScrollablePanel
         if(imageClient.getCurrentBackground() != null && backgroundVisible)
         {
             // Inject background (base64) and add the background class to the body
-            base = base.replace("$b64bg", b64bg()).replace("$bbg", "bg");
+            base = base.replace("$b64bg", imageClient.getBase64Background()).replace("$bbg", "bg");
             additional = isDark ? "background-color:rgba(0,0,0,0.66)"
                     : "background-color:rgba(255,255,255,0.66)";
         }
@@ -317,20 +314,6 @@ public class NodePanel extends JScrollablePanel
         }
     }
 
-    private String b64bg()
-    {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        try
-        {
-            ImageIO.write(imageClient.getCurrentBackground(), "PNG", baos);
-        }
-        catch(IOException e)
-        {
-            OpenBST.LOG.warn("Failed to create Base64 background", e);
-        }
-        return Base64.getMimeEncoder().encodeToString(baos.toByteArray()).replaceAll("[\n\r]", "");
-    }
-
     private void jfxRunAndWait(Runnable runnable) throws InterruptedException
     {
         if(Platform.isFxApplicationThread())
@@ -395,7 +378,7 @@ public class NodePanel extends JScrollablePanel
     public void setBackgroundVisible(final boolean selected)
     {
         backgroundVisible = selected;
-        repaint();
+        build();
     }
 
     public void setJSEnabled(boolean b)

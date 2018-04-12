@@ -12,6 +12,7 @@ import static utybo.branchingstorytree.swing.OpenBST.LOG;
 
 import java.awt.image.BufferedImage;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
@@ -196,7 +197,7 @@ public class Icons
         return img;
     }
 
-    public static BufferedImage getBackgorund(int id)
+    public static BufferedImage getBackground(int id)
     {
         return backgroundImages.get(id);
     }
@@ -206,6 +207,10 @@ public class Icons
         return backgroundImages.get(new Random().nextInt(backgroundImages.size()));
     }
 
+    public static List<BufferedImage> getAllBackgrounds()
+    {
+        return Collections.unmodifiableList(backgroundImages);
+    }
     private static BufferedImage loadImage(String name, int originalSize)
     {
         try

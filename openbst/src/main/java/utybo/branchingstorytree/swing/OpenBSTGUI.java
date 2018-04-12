@@ -14,7 +14,6 @@ import static utybo.branchingstorytree.swing.VisualsUtils.invokeSwingAndWait;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Desktop;
 import java.awt.Dialog.ModalityType;
 import java.awt.Dimension;
 import java.awt.Image;
@@ -27,8 +26,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -116,6 +113,7 @@ import utybo.branchingstorytree.api.script.Dictionary;
 import utybo.branchingstorytree.api.story.BranchingStory;
 import utybo.branchingstorytree.swing.editor.StoryEditor;
 import utybo.branchingstorytree.swing.impl.BRMFileClient;
+import utybo.branchingstorytree.swing.impl.IMGClient;
 import utybo.branchingstorytree.swing.impl.TabClient;
 import utybo.branchingstorytree.swing.utils.BSTPackager;
 import utybo.branchingstorytree.swing.utils.Lang;
@@ -699,6 +697,9 @@ public class OpenBSTGUI extends JFrame
                                 try
                                 {
                                     client.getBRMHandler().load();
+                                    if(Boolean.parseBoolean(
+                                            bs.getTagOrDefault("img_requireinternal", "false")))
+                                        IMGClient.initInternal();
                                 }
                                 catch(BSTException e)
                                 {
@@ -958,7 +959,7 @@ public class OpenBSTGUI extends JFrame
         // banners that were present at first paint time.
         // This makes sure that after everything is rendered correctly and ready, the
         // background gets repainted fully
-        
+
         // (swing is painful sometimes)
         SwingUtilities.invokeLater(() ->
         {

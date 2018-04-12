@@ -13,7 +13,7 @@ body {
 }
 
 .bg {
-  background-image:url('data:image/png;base64,$b64bg');
+  background-image:url('data:image;base64,$b64bg');
   background-size:cover;
   background-position:center;
   background-attachment:fixed;

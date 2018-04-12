@@ -60,6 +60,7 @@ import utybo.branchingstorytree.swing.Icons;
 import utybo.branchingstorytree.swing.Messagers;
 import utybo.branchingstorytree.swing.OpenBST;
 import utybo.branchingstorytree.swing.OpenBSTGUI;
+import utybo.branchingstorytree.swing.impl.IMGClient;
 import utybo.branchingstorytree.swing.impl.SSBClient;
 import utybo.branchingstorytree.swing.impl.TabClient;
 import utybo.branchingstorytree.swing.utils.Lang;
@@ -974,6 +975,9 @@ public class StoryPanel extends JPanel
             button.addActionListener(e -> parentWindow.removeTab(this));
             optionPanel.add(button, "grow");
         }
+        
+        optionPanel.revalidate();
+        optionPanel.repaint();
 
     }
 
@@ -989,6 +993,8 @@ public class StoryPanel extends JPanel
             try
             {
                 client.getBRMHandler().load();
+                if(Boolean.parseBoolean(story.getTagOrDefault("img_requireinternal", "false")))
+                    IMGClient.initInternal();
             }
             catch(BSTException e)
             {
@@ -1083,6 +1089,11 @@ public class StoryPanel extends JPanel
                 }
             }
         }
+    }
+    
+    public TabClient getClient()
+    {
+        return client;
     }
 
     /**

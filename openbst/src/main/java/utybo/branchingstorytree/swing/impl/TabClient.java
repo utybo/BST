@@ -133,7 +133,7 @@ public class TabClient implements BSTClient
     }
 
     @Override
-    public void warnExperimental(int line, String from)
+    public void warnExperimental(int line, String from, String what)
     {
         if(!isExperimental)
         {
@@ -141,7 +141,7 @@ public class TabClient implements BSTClient
             Messagers.showMessage(OpenBSTGUI.getInstance(),
                     "<html><body style='width:" + (int)(Icons.getScale() * 300) + "px'>"
                             + Lang.get("story.experimental").replace("$l", "" + line).replace("$f",
-                                    from),
+                                    from).replace("$w", what),
                     Messagers.TYPE_WARNING, Lang.get("story.experimental.title"),
                     new ImageIcon(Icons.getImage("Experiment", 48)));
         }

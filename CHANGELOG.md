@@ -6,11 +6,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 Major changes and highlights are in **bold**. Other changes that impact users are in plain. Changes impacting only developers are in *italics*.
 
-Story makers should read all changes in bold and plain. Some mechanisms may be torn apart between major (1.x ==> 2.0) or minor (x.0 ==> x.1) updates, though backward-compatibility is always attempted
+Story makers should read all changes in bold and plain. Some mechanisms may be torn apart between major (1.x ==> 2.0) or minor (x.0 ==> x.1) updates, though backward-compatibility is always attempted for BST files.
 
-Unstable versions will appear inside OpenBST with a "u" at the end.
+Unstable versions will appear inside OpenBST with a "u" at the end and a warning on the welcome screen.
 
-Less technical explanations available on the [OpenBST website](https://utybo.github.io/BST/)
+Less technical explanations for each update available on the [OpenBST website](https://utybo.github.io/BST/)
 
 ## [2.0-beta2] (Unreleased) - 2.0 with HiDPI Glory, and an editor
 ### Added
@@ -18,6 +18,7 @@ Less technical explanations available on the [OpenBST website](https://utybo.git
 - **Experimental features were added.** They provide cool features, but can be very unstable and may disappear at any time. A warning is issued every time you call an experimental function.
 - **Better icon support for HiDPI.** Icons were previously very small, but the new addition of scalable icons provides good looking icons on various display sizes.
 - **New XSF Module** which adds full Javascript capacity to BST, with the ability to run .js files with all the great stuff from Java's Nashorn! There is also a Next Node Definer available as an experimental feature.
+- An update checker has been added. Due to how OpenBST can be distributed and ran, it is only a checker, and will just warn you that a new update exists, leaving a link for you to click on to go and download it.
 - A Debug Info dialog has been created, which will make troubleshooting easier for devs when users will create issues.
 - Added better message dialogs. Just fancy stuff, but hey, at least errors are shown more consistently!
 - Options now support variables
@@ -28,14 +29,16 @@ Less technical explanations available on the [OpenBST website](https://utybo.git
 - *Note on experimental features : See the javadoc for the @Experimental annotation which explains the general contracts around experimental elements*
 - *Added warnExperimental(line, from) inside BSTClient in bst-java*	 
 - *Next Node Definers now require line arguments to provide better information when an error occurs*
+
 ### Changed
 - **All icons have been changed to Icons8's Color set.** This improves consistency.
 - Large resources are now compressed (with XZ) to avoid massive file sizes.
 - The option buttons system has been reworked to be much more dynamic
 - *Most NNDs and NodeOption now publicly expose their variables to allow for easier recreating of text*
-
+- *Code related to the user interface and code related to the main routines of OpenBST have been separated from the OpenBST class to OpenBST and OpenBSTGUI*
 
 ### Deprecated
+
 ### Removed
 - *Removed most of the leftovers from JSE's old manual update system. JSE does not need to be implemented by clients anymore.*
 ### Fixed
@@ -44,9 +47,10 @@ Less technical explanations available on the [OpenBST website](https://utybo.git
 - Fixed font size on the error screen
 - Fixed a typo in French language file.
 - *Fixed a (stupid) typo in a class name : Dictionnary -> Dictionary*
+
 ### i18n changes
 - added story.experimental story.experimental.title
-- removed all html tags that were used for notifications (the new message dialogs automatically adds them where needed)
+- removed all the html tags that were used for notifications (the new message dialogs automatically adds them where needed)
 
 ## [2.0-beta1] - The 2.0 Beginning
 ### Added

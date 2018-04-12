@@ -90,9 +90,9 @@ public class BRMFileClient implements BRMAdvancedHandler
                     {
                         try
                         {
-                            handler.load(file, FilenameUtils.getBaseName(file.getName()));
                             r.add(new Pair<>(current++,
                                     "Loading " + file.getName() + " for module " + module));
+                            handler.load(file, FilenameUtils.getBaseName(file.getName()));
                         }
                         catch(IOException e)
                         {

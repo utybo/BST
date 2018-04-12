@@ -10,8 +10,6 @@ package utybo.branchingstorytree.swing;
 
 import static utybo.branchingstorytree.swing.OpenBST.LOG;
 
-import java.awt.Component;
-import java.awt.Container;
 import java.awt.Desktop;
 import java.awt.FileDialog;
 import java.io.File;
@@ -95,5 +93,5 @@ public class VisualsUtils
             LOG.error("Exception during link opening", e1);
         }
     }
-    
+
 }
