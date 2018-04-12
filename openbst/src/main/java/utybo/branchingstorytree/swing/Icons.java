@@ -11,16 +11,21 @@ package utybo.branchingstorytree.swing;
 import static utybo.branchingstorytree.swing.OpenBST.LOG;
 
 import java.awt.image.BufferedImage;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Random;
 
 import javax.imageio.ImageIO;
 
+import org.apache.commons.compress.compressors.xz.XZCompressorInputStream;
 import org.pushingpixels.substance.internal.utils.SubstanceSizeUtils;
 
 public class Icons
 {
     private static String factor;
     private static HashMap<String, BufferedImage> images = new HashMap<>();
+    private static List<BufferedImage> backgroundImages;
 
     public static void load()
     {
@@ -34,6 +39,9 @@ public class Icons
         else
             factor = "2";
         LOG.info("Scaling factor : " + (factor.isEmpty() ? "1x" : factor.replace('_', '.') + "x"));
+
+        // Background images
+        backgroundImages = Arrays.asList(loadImages("images/bg$.jpg", 9));
 
         // 16px icons names
         String[] arr = new String[] {"About", "Audio", "Camera Addon Identification", "Cancel",
@@ -109,6 +117,30 @@ public class Icons
 
     }
 
+    private static BufferedImage[] loadImages(String string, int length)
+    {
+        BufferedImage[] array = new BufferedImage[length];
+        for(int i = 0; i < length; i++)
+        {
+            array[i] = loadXZImage(string.replace("$", "" + i));
+        }
+        return array;
+    }
+
+    private static BufferedImage loadXZImage(String path)
+    {
+        try
+        {
+            return ImageIO.read(new XZCompressorInputStream(OpenBST.class
+                    .getResourceAsStream("/utybo/branchingstorytree/swing/" + path + ".xz")));
+        }
+        catch(Exception e)
+        {
+            LOG.warn("Failed to load image at path " + path, e);
+            return null;
+        }
+    }
+
     private static int applyScaleValue(int[] scaledSizes)
     {
         switch(factor)
@@ -162,6 +194,16 @@ public class Icons
         if(img == null)
             LOG.error("Unknown image : " + name + " at original size " + size);
         return img;
+    }
+
+    public static BufferedImage getBackgorund(int id)
+    {
+        return backgroundImages.get(id);
+    }
+
+    public static BufferedImage getRandomBackground()
+    {
+        return backgroundImages.get(new Random().nextInt(backgroundImages.size()));
     }
 
     private static BufferedImage loadImage(String name, int originalSize)

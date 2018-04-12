@@ -20,7 +20,7 @@ public class LanguageUtils
 {
     private LanguageUtils()
     {}
-    
+
     public static boolean checkNonLatin(BranchingStory story)
     {
         boolean hasNonLatin = false;

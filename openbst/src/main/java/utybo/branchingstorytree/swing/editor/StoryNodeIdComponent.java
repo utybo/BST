@@ -102,7 +102,7 @@ public class StoryNodeIdComponent extends JPanel
         });
         add(txtStringid, "cell 4 0,growx");
         txtStringid.setColumns(10);
-        
+
         lblNodeStatus = new JLabel("");
         add(lblNodeStatus, "cell 0 1 5 1");
 

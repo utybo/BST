@@ -41,7 +41,7 @@ import utybo.branchingstorytree.api.story.TextNode;
 import utybo.branchingstorytree.api.story.VirtualNode;
 import utybo.branchingstorytree.swing.Icons;
 import utybo.branchingstorytree.swing.Messagers;
-import utybo.branchingstorytree.swing.OpenBST;
+import utybo.branchingstorytree.swing.OpenBSTGUI;
 import utybo.branchingstorytree.swing.editor.StorySingleNodeEditor.Status;
 import utybo.branchingstorytree.swing.utils.AlphanumComparator;
 import utybo.branchingstorytree.swing.visuals.JScrollablePanel;
@@ -169,13 +169,13 @@ public class StoryNodesEditor extends JPanel implements EditorControl<Collection
         StorySingleNodeEditor ssne = jlist.getSelectedValue();
         if(ssne == null)
         {
-            Messagers.showMessage(OpenBST.getInstance(), "No nodes selected!",
+            Messagers.showMessage(OpenBSTGUI.getInstance(), "No nodes selected!",
                     Messagers.TYPE_ERROR);
             return;
         }
         else
         {
-            int i = Messagers.showConfirm(OpenBST.getInstance(),
+            int i = Messagers.showConfirm(OpenBSTGUI.getInstance(),
                     "<html>You are about to remove this node :<p>" + ssne.getIdentifier() + " : "
                             + StringEscapeUtils.escapeHtml(ssne.getSummary())
                             + "<p><p>Are you sure you want to remove it? This cannot be undone later.",

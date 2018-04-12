@@ -16,21 +16,19 @@ public class OutputStreamToOutputAndPrint extends OutputStream
 {
     public OutputStream toStream;
     public PrintStream toPrint;
-    
+
     public OutputStreamToOutputAndPrint(OutputStream toStream, PrintStream toPrint)
     {
         this.toStream = toStream;
         this.toPrint = toPrint;
     }
-    
+
     @Override
     public void write(byte[] b) throws IOException
     {
         toStream.write(b);
         toPrint.write(b);
     }
-
-
 
     @Override
     public void write(byte[] b, int off, int len) throws IOException
@@ -39,8 +37,6 @@ public class OutputStreamToOutputAndPrint extends OutputStream
         toPrint.write(b, off, len);
     }
 
-
-
     @Override
     public void flush() throws IOException
     {
@@ -48,16 +44,12 @@ public class OutputStreamToOutputAndPrint extends OutputStream
         toPrint.flush();
     }
 
-
-
     @Override
     public void close() throws IOException
     {
         toStream.close();
         toPrint.close();
     }
-
-
 
     @Override
     public void write(int b) throws IOException

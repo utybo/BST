@@ -44,6 +44,7 @@ import utybo.branchingstorytree.api.story.TextNode;
 import utybo.branchingstorytree.swing.Icons;
 import utybo.branchingstorytree.swing.Messagers;
 import utybo.branchingstorytree.swing.OpenBST;
+import utybo.branchingstorytree.swing.OpenBSTGUI;
 import utybo.branchingstorytree.swing.impl.IMGClient;
 import utybo.branchingstorytree.swing.utils.Lang;
 import utybo.branchingstorytree.swing.utils.MarkupUtils;
@@ -118,8 +119,8 @@ public class NodePanel extends JScrollablePanel
 
     public NodePanel(BranchingStory story, StoryPanel parent, final IMGClient imageClient)
     {
-        OpenBST.getInstance().addDarkModeCallback(callback);
-        callback.accept(OpenBST.getInstance().isDark());
+        OpenBSTGUI.getInstance().addDarkModeCallback(callback);
+        callback.accept(OpenBSTGUI.getInstance().isDark());
         this.parent = parent;
         this.imageClient = imageClient;
         setLayout(new BorderLayout());
@@ -134,7 +135,7 @@ public class NodePanel extends JScrollablePanel
             {
                 view = new WebView();
                 view.getEngine().setOnAlert(e -> SwingUtilities.invokeLater(
-                        () -> Messagers.showMessage(OpenBST.getInstance(), e.getData())));
+                        () -> Messagers.showMessage(OpenBSTGUI.getInstance(), e.getData())));
                 view.getEngine().getLoadWorker().stateProperty()
                         .addListener((obs, oldState, newState) ->
                         {
@@ -161,7 +162,7 @@ public class NodePanel extends JScrollablePanel
                         });
 
                 Scene sc = new Scene(view);
-                if(!OpenBST.getInstance().isDark())
+                if(!OpenBSTGUI.getInstance().isDark())
                     view.setFontSmoothingType(FontSmoothingType.LCD);
                 else
                     view.setFontSmoothingType(FontSmoothingType.GRAY);
@@ -377,7 +378,7 @@ public class NodePanel extends JScrollablePanel
                     | SecurityException e)
             {
                 OpenBST.LOG.warn("Color does not exist : " + color, e);
-                SwingUtilities.invokeLater(() -> Messagers.showMessage(OpenBST.getInstance(),
+                SwingUtilities.invokeLater(() -> Messagers.showMessage(OpenBSTGUI.getInstance(),
                         Lang.get("story.unknowncolor").replace("$c", color), Messagers.TYPE_ERROR));
             }
         }
@@ -441,7 +442,7 @@ public class NodePanel extends JScrollablePanel
 
     public void dispose()
     {
-        OpenBST.getInstance().removeDarkModeCallbback(callback);
+        OpenBSTGUI.getInstance().removeDarkModeCallbback(callback);
     }
 
     @Experimental

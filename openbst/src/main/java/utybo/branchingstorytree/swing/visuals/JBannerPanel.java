@@ -18,7 +18,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import net.miginfocom.swing.MigLayout;
-import utybo.branchingstorytree.swing.OpenBST;
+import utybo.branchingstorytree.swing.OpenBSTGUI;
 import utybo.branchingstorytree.swing.utils.Lang;
 
 public class JBannerPanel extends JPanel
@@ -36,7 +36,7 @@ public class JBannerPanel extends JPanel
         c = new Color(c.getRed(), c.getGreen(), c.getBlue(), 150);
         this.c = c;
         setBackground(c.brighter());
-        OpenBST.getInstance().addDarkModeCallback(callback);
+        OpenBSTGUI.getInstance().addDarkModeCallback(callback);
         setLayout(new MigLayout("gap 10px", "[][grow][]", "[]"));
 
         JLabel label = new JLabel(icon);
@@ -49,7 +49,7 @@ public class JBannerPanel extends JPanel
         btnHide.addActionListener(e ->
         {
             setVisible(false);
-            OpenBST.getInstance().removeDarkModeCallbback(callback);
+            OpenBSTGUI.getInstance().removeDarkModeCallbback(callback);
         });
 
         if(btn != null)

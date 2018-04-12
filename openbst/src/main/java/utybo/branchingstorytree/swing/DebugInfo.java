@@ -59,13 +59,13 @@ public class DebugInfo extends JDialog
             {
                 StringSelection ss = new StringSelection(text);
                 Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ss, ss);
-                Messagers.showMessage(OpenBST.getInstance(), "Logs copied to the clipboard",
+                Messagers.showMessage(OpenBSTGUI.getInstance(), "Logs copied to the clipboard",
                         Messagers.TYPE_OK);
             }
             catch(Exception ex)
             {
                 OpenBST.LOG.error("Failed to copy logs to clipboard", ex);
-                Messagers.showMessage(OpenBST.getInstance(),
+                Messagers.showMessage(OpenBSTGUI.getInstance(),
                         "Failed to copy the report to the clipboard. "
                                 + "You should still be able to copy it by clicking on the text, "
                                 + "pressing Ctrl+A to select all the text, and Ctrl+C to copy it.",
