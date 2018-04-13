@@ -18,6 +18,7 @@ Less technical explanations for each update available on the [OpenBST website](h
 - **Experimental features were added.** They provide cool features, but can be very unstable and may disappear at any time. A warning is issued every time you call an experimental function.
 - **Better icon support for HiDPI.** Icons were previously very small, but the new addition of scalable icons provides good looking icons on various display sizes.
 - **New XSF Module** which adds full Javascript capacity to BST, with the ability to run .js files with all the great stuff from Java's Nashorn! There is also a Next Node Definer available as an experimental feature.
+- **A fancy splash screen has appeared!** Because we're now loading a *lot* of things.
 - An update checker has been added. Due to how OpenBST can be distributed and ran, it is only a checker, and will just warn you that a new update exists, leaving a link for you to click on to go and download it.
 - A Debug Info dialog has been created, which will make troubleshooting easier for devs when users will create issues.
 - Added better message dialogs. Just fancy stuff, but hey, at least errors are shown more consistently!
@@ -26,13 +27,17 @@ Less technical explanations for each update available on the [OpenBST website](h
 - Additional themes from Substance are now supported, although they are not considered to be official ones.
 - Added new experimental features for HTB : custom CSS files.
 - Added a new Experimental Warning icon
+- Added a new experimental feature for IMG : using the internal backgrounds.
 - *Note on experimental features : See the javadoc for the @Experimental annotation which explains the general contracts around experimental elements*
 - *Added warnExperimental(line, from) inside BSTClient in bst-java*	 
+- *Added a BezierEase class adapted from the Javascript library [bezier-easing](https://github.com/gre/bezier-easing)*
 - *Next Node Definers now require line arguments to provide better information when an error occurs*
 
 ### Changed
 - **All icons have been changed to Icons8's Color set.** This improves consistency.
 - Large resources are now compressed (with XZ) to avoid massive file sizes.
+- IMG now automatically caches images into the Base64 format, which makes selecting an option *much* faster now.
+- All common image types should be supported now.
 - The option buttons system has been reworked to be much more dynamic
 - *Most NNDs and NodeOption now publicly expose their variables to allow for easier recreating of text*
 - *Code related to the user interface and code related to the main routines of OpenBST have been separated from the OpenBST class to OpenBST and OpenBSTGUI*
@@ -44,6 +49,9 @@ Less technical explanations for each update available on the [OpenBST website](h
 ### Fixed
 - **OpenBST is now compatible with non-latin languages.**
 - Fonts no longer look like trash inside story panels. This was caused by a crappy, wonky and potentially license-breaking WOFF+WOFF2 conversion from TTF or OTF.
+- Fixed options not working at all in some cases.
+- Fixed the background visibility button not working
+- Fixed the Show Background button only showing the first background it has ever showed.
 - Fixed font size on the error screen
 - Fixed a typo in French language file.
 - *Fixed a (stupid) typo in a class name : Dictionnary -> Dictionary*

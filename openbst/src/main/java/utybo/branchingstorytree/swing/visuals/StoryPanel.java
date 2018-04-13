@@ -548,14 +548,7 @@ public class StoryPanel extends JPanel
         backgroundButton = toolBar.add(new AbstractAction(Lang.get("story.seebackground"),
                 new ImageIcon(Icons.getImage("Picture", 16)))
         {
-
-            /**
-             *
-             */
             private static final long serialVersionUID = 1L;
-            private Dimension previousBounds;
-            private Image previousImage;
-            private int x, y;
 
             @Override
             public void actionPerformed(final ActionEvent e)
@@ -563,6 +556,10 @@ public class StoryPanel extends JPanel
                 final JDialog dialog = new JDialog(parentWindow);
                 dialog.getContentPane().add(new JPanel()
                 {
+                    private Dimension previousBounds;
+                    private Image previousImage;
+                    private int x, y;
+
                     /**
                      *
                      */
@@ -570,9 +567,7 @@ public class StoryPanel extends JPanel
 
                     private double getScaleFactor(final int iMasterSize, final int iTargetSize)
                     {
-                        double dScale = 1;
-                        dScale = (double)iTargetSize / (double)iMasterSize;
-                        return dScale;
+                        return (double)iTargetSize / (double)iMasterSize;
                     }
 
                     private double getScaleFactorToFit(final Dimension masterSize,
@@ -602,18 +597,10 @@ public class StoryPanel extends JPanel
                         {
                             final BufferedImage bi = client.getIMGHandler().getCurrentBackground();
                             double scaleFactor = 1d;
-                            if(bi.getWidth() > bi.getHeight())
-                            {
-                                scaleFactor = getScaleFactorToFit(
-                                        new Dimension(bi.getWidth(), bi.getHeight()),
-                                        getParent().getSize());
-                            }
-                            else if(bi.getHeight() > bi.getWidth())
-                            {
-                                scaleFactor = getScaleFactorToFit(
-                                        new Dimension(bi.getWidth(), bi.getHeight()),
-                                        getParent().getSize());
-                            }
+                            scaleFactor = getScaleFactorToFit(
+                                    new Dimension(bi.getWidth(), bi.getHeight()),
+                                    getParent().getSize());
+
                             final int scaleWidth = (int)Math.round(bi.getWidth() * scaleFactor);
                             final int scaleHeight = (int)Math.round(bi.getHeight() * scaleFactor);
 
@@ -975,7 +962,7 @@ public class StoryPanel extends JPanel
             button.addActionListener(e -> parentWindow.removeTab(this));
             optionPanel.add(button, "grow");
         }
-        
+
         optionPanel.revalidate();
         optionPanel.repaint();
 
@@ -1090,7 +1077,7 @@ public class StoryPanel extends JPanel
             }
         }
     }
-    
+
     public TabClient getClient()
     {
         return client;

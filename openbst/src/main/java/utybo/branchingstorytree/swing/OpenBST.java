@@ -14,6 +14,7 @@ import java.io.PrintStream;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -32,9 +33,11 @@ import com.google.gson.reflect.TypeToken;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import utybo.branchingstorytree.swing.ext.ComparableVersion;
+import utybo.branchingstorytree.swing.impl.IMGClient;
 import utybo.branchingstorytree.swing.utils.Lang;
 import utybo.branchingstorytree.swing.utils.OutputStreamToOutputAndPrint;
 import utybo.branchingstorytree.swing.visuals.JBannerPanel;
+import utybo.branchingstorytree.swing.visuals.Splashscreen;
 
 /**
  * OpenBST is an open source implementation of the BST language that aims to be
@@ -99,26 +102,72 @@ public class OpenBST
         LOG.trace("Loading language files");
         loadLang(args.length > 0 ? args[0] : null);
 
-        LOG.trace("Initializing JavaFX");
-        // Necessary - because we are killing Scenes all the time with WebViews in NodePanels,
-        // JFX may think we just ended our application.
-        // OpenBST exits with a dirty System.exit() anyway.
-        Platform.setImplicitExit(false);
-        new JFXPanel();
-
         LOG.trace("Applying Look and Feel");
         OpenBSTGUI.initializeLaF();
+        
+        LOG.trace("Loading scaling factor");
+        Icons.loadScalingFactor();
+        
+        Splashscreen sc = Splashscreen.start();
+        SwingWorker<Void, String> sw = new SwingWorker<Void, String>(){
 
-        LOG.info("Loading icons...");
-        long timeAtIconStart = System.currentTimeMillis();
-        Icons.load();
-        LOG.info("Time taken to load icons : " + (System.currentTimeMillis() - timeAtIconStart));
+            @Override
+            protected Void doInBackground()
+            {
+                LOG.trace("Initializing JavaFX");
+                publish("Initializing reader...");
+                // Necessary - because we are killing Scenes all the time with WebViews in NodePanels,
+                // JFX may think we just ended our application.
+                // OpenBST exits with a dirty System.exit() anyway.
+                Platform.setImplicitExit(false);
+                new JFXPanel();
 
-        LOG.trace("Fixing text scaling");
-        VisualsUtils.fixTextFontScaling();
+                LOG.info("Loading icons...");
+                publish("Loading icons...");
+                long timeAtIconStart = System.currentTimeMillis();
+                Icons.load();
+                LOG.info("Time taken to load icons : " + (System.currentTimeMillis() - timeAtIconStart) + " ms");
 
+                LOG.info("Loading backgrounds...");
+                publish("Loading backgrounds...");
+                Icons.loadBackgrounds();
+                
+                // $EXPERIMENTAL
+                LOG.info("Caching backgrounds...");
+                publish("Processing backgrounds...");
+                IMGClient.initInternal();
+                
+                LOG.trace("Fixing text scaling");
+                VisualsUtils.fixTextFontScaling();
+                
+                return null;
+            }
+
+            @Override
+            protected void process(List<String> chunks)
+            {
+                String s = chunks.get(chunks.size() - 1);
+                sc.setText(s);
+            }
+            
+        };
+
+        sw.execute();
+        try
+        {
+            sw.get();
+        }
+        catch(InterruptedException | ExecutionException e1)
+        {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
+        
+        VisualsUtils.invokeSwingAndWait(() -> sc.setText("Launching..."));
         LOG.trace("Launching app...");
         OpenBSTGUI.launch();
+        
+        VisualsUtils.invokeSwingAndWait(() -> sc.stop());
 
         LOG.trace("Checking versions...");
         if(!"<unknown version>".equals(VERSION))

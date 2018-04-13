@@ -131,6 +131,12 @@ public class TabClient implements BSTClient
     {
         OpenBST.LOG.warn(string);
     }
+    
+    public void error(String string)
+    {
+        OpenBST.LOG.error(string);
+        Messagers.showMessage(OpenBSTGUI.getInstance(), string, Messagers.TYPE_ERROR);
+    }
 
     @Override
     public void warnExperimental(int line, String from, String what)

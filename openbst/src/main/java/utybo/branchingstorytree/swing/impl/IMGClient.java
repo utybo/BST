@@ -18,25 +18,24 @@ import java.util.HashMap;
 import java.util.List;
 
 import javax.imageio.ImageIO;
-import javax.swing.ProgressMonitor;
 
 import org.apache.commons.io.IOUtils;
 
 import utybo.branchingstorytree.api.BSTException;
+import utybo.branchingstorytree.api.Experimental;
 import utybo.branchingstorytree.img.IMGHandler;
 import utybo.branchingstorytree.swing.Icons;
 import utybo.branchingstorytree.swing.OpenBST;
-import utybo.branchingstorytree.swing.OpenBSTGUI;
-import utybo.branchingstorytree.swing.VisualsUtils;
-import utybo.branchingstorytree.swing.utils.Pair;
-import utybo.branchingstorytree.swing.visuals.AccumulativeRunnable;
 import utybo.branchingstorytree.swing.visuals.StoryPanel;
 
 public class IMGClient implements IMGHandler
 {
     private final HashMap<String, BufferedImage> images = new HashMap<>();
     private final HashMap<String, String> b64images = new HashMap<>();
+    
+    @Experimental
     private static final HashMap<Integer, String> internalb64images = new HashMap<>();
+    
     private BufferedImage current = null;
     private String currentBase64 = null;
     private final StoryPanel panel;
@@ -76,11 +75,19 @@ public class IMGClient implements IMGHandler
             if(name.startsWith("$internal"))
             {
                 if(internalb64images.isEmpty())
-                    initInternal();
-                panel.getClient().warnExperimental(-1, "<unknown>", "$internal background");
-                int i = Integer.parseInt(name.substring(9));
-                current = Icons.getBackground(i);
-                currentBase64 = internalb64images.get(i);
+                {
+                    panel.getClient().error(
+                            "You need to add the tag 'img_requireinternal=true' to your story "
+                                    + "for internal images to work properly.");
+                }
+                else
+                {
+                    // $EXPERIMENTAL
+                    panel.getClient().warnExperimental(-1, "<unknown>", "$internal background");
+                    int i = Integer.parseInt(name.substring(9));
+                    current = Icons.getBackground(i);
+                    currentBase64 = internalb64images.get(i);
+                }
             }
             else
             {
@@ -90,33 +97,16 @@ public class IMGClient implements IMGHandler
         }
     }
 
+    @Experimental
     public static void initInternal()
     {
         if(!internalb64images.isEmpty())
             return;
-            
+
         OpenBST.LOG.info("Creating internal images cache, this could take some time...");
-        ProgressMonitor[] pm = new ProgressMonitor[1];
         List<BufferedImage> bgs = Icons.getAllBackgrounds();
-        VisualsUtils.invokeSwingAndWait(() ->
-        {
-            pm[0] = new ProgressMonitor(OpenBSTGUI.getInstance(), "Caching internal images...",
-                    "Initializing...", 0, bgs.size());
-            pm[0].setMillisToDecideToPopup(1);
-            pm[0].setMillisToPopup(1);
-        });
-        AccumulativeRunnable<Pair<Integer, String>> r = new AccumulativeRunnable<Pair<Integer, String>>()
-        {
-            @Override
-            public void run(List<Pair<Integer, String>> pairs)
-            {
-                pm[0].setProgress(pairs.get(pairs.size() - 1).a);
-                pm[0].setNote(pairs.get(pairs.size() - 1).b);
-            }
-        };
         for(int i = 0; i < bgs.size(); i++)
         {
-            r.add(new Pair<>(i, "Caching file " + i));
             BufferedImage img = bgs.get(i);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             try
@@ -130,8 +120,6 @@ public class IMGClient implements IMGHandler
             internalb64images.put(i, Base64.getMimeEncoder().encodeToString(baos.toByteArray())
                     .replaceAll("[\n\r]", ""));
         }
-        VisualsUtils.invokeSwingAndWait(() -> pm[0].close());
-
     }
 
     public BufferedImage getCurrentBackground()

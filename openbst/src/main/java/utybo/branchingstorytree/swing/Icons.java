@@ -28,7 +28,7 @@ public class Icons
     private static HashMap<String, BufferedImage> images = new HashMap<>();
     private static List<BufferedImage> backgroundImages;
 
-    public static void load()
+    public static void loadScalingFactor()
     {
         int i = (int)(Math.floor(SubstanceSizeUtils.getPointsToPixelsRatio() * 100) / 1.33);
         if(i == 100)
@@ -40,9 +40,10 @@ public class Icons
         else
             factor = "2";
         LOG.info("Scaling factor : " + (factor.isEmpty() ? "1x" : factor.replace('_', '.') + "x"));
+    }
 
-        // Background images
-        backgroundImages = Arrays.asList(loadImages("images/bg$.jpg", 10));
+    public static void load()
+    {
 
         // 16px icons names
         String[] arr = new String[] {"About", "Audio", "Camera Addon Identification", "Cancel",
@@ -118,6 +119,12 @@ public class Icons
 
     }
 
+    public static void loadBackgrounds()
+    {
+        // Background images
+        backgroundImages = Arrays.asList(loadImages("images/bg$.jpg", 10));
+    }
+
     private static BufferedImage[] loadImages(String string, int length)
     {
         BufferedImage[] array = new BufferedImage[length];
@@ -142,7 +149,7 @@ public class Icons
         }
     }
 
-    private static int applyScaleValue(int[] scaledSizes)
+    public static int applyScaleValue(int[] scaledSizes)
     {
         switch(factor)
         {
@@ -211,6 +218,7 @@ public class Icons
     {
         return Collections.unmodifiableList(backgroundImages);
     }
+
     private static BufferedImage loadImage(String name, int originalSize)
     {
         try

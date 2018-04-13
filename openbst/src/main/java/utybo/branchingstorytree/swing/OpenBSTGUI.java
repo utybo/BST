@@ -29,6 +29,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Locale;
@@ -102,6 +103,7 @@ import org.pushingpixels.substance.api.skin.SubstanceOfficeSilver2007LookAndFeel
 import org.pushingpixels.substance.api.skin.SubstanceRavenLookAndFeel;
 import org.pushingpixels.substance.api.skin.SubstanceSaharaLookAndFeel;
 import org.pushingpixels.substance.api.skin.SubstanceTwilightLookAndFeel;
+import org.pushingpixels.substance.swingx.SubstanceSwingxPlugin;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -215,6 +217,7 @@ public class OpenBSTGUI extends JFrame
             {
                 UIManager.setLookAndFeel(LIGHT_THEME);
                 SubstanceCortex.GlobalScope.setColorizationFactor(1.0D);
+                SubstanceCortex.GlobalScope.registerComponentPlugin(new SubstanceSwingxPlugin());
 
                 if(System.getProperty("os.name").toLowerCase().equals("linux"))
                 {
@@ -400,7 +403,6 @@ public class OpenBSTGUI extends JFrame
 
         setSize((int)(830 * Icons.getScale()), (int)(480 * Icons.getScale()));
         setLocationRelativeTo(null);
-        setVisible(true);
     }
 
     private JMenu createShortMenu()
@@ -953,13 +955,25 @@ public class OpenBSTGUI extends JFrame
     public void addBanner(JBannerPanel banner)
     {
         bannersPanel.add(banner, "grow");
+        if(bannersPanel.getComponents().length > 2)
+        {
+            Component[] toScan = Arrays.copyOf(bannersPanel.getComponents(), bannersPanel.getComponents().length);
+            for(Component c : toScan)
+            {
+                if(c instanceof JBannerPanel)
+                {
+                    if(((JBannerPanel)c).isHideable())
+                        bannersPanel.remove(c);
+                }
+            }
+        }
         banner.revalidate();
         banner.repaint();
+        
         // So... There's a weird bug where the background will keep some bits of older
         // banners that were present at first paint time.
         // This makes sure that after everything is rendered correctly and ready, the
         // background gets repainted fully
-
         // (swing is painful sometimes)
         SwingUtilities.invokeLater(() ->
         {

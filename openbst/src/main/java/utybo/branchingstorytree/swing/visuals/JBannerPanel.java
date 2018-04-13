@@ -30,10 +30,12 @@ public class JBannerPanel extends JPanel
     private final Color c;
     private final Consumer<Boolean> callback = b -> setBackground(
             b ? getColor().darker() : getColor().brighter());
+    private boolean canBeHidden;
 
     public JBannerPanel(Icon icon, Color c, String text, JComponent btn, boolean hideButton,
             JComponent... otherButtons)
     {
+        canBeHidden = hideButton;
         c = new Color(c.getRed(), c.getGreen(), c.getBlue(), 150);
         this.c = c;
         setBackground(c.brighter());
@@ -69,5 +71,10 @@ public class JBannerPanel extends JPanel
     private Color getColor()
     {
         return c;
+    }
+    
+    public boolean isHideable()
+    {
+        return canBeHidden;
     }
 }
