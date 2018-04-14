@@ -32,6 +32,8 @@ import com.google.gson.reflect.TypeToken;
 
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
 import utybo.branchingstorytree.swing.ext.ComparableVersion;
 import utybo.branchingstorytree.swing.impl.IMGClient;
 import utybo.branchingstorytree.swing.utils.Lang;
@@ -127,7 +129,15 @@ public class OpenBST
                 // JFX may think we just ended our application.
                 // OpenBST exits with a dirty System.exit() anyway.
                 Platform.setImplicitExit(false);
+                // Initialize JavaFX
                 new JFXPanel();
+                VisualsUtils.invokeJfxAndWait(() ->
+                {
+                    // Initialize the web engine
+                    new WebEngine();
+                    // Initialize a view
+                    new WebView();
+                });
 
                 LOG.info("Loading icons...");
                 publish(Lang.get("splash.icons"));

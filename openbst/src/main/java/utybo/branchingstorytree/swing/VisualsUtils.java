@@ -15,6 +15,7 @@ import java.awt.FileDialog;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
+import java.util.concurrent.CountDownLatch;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -23,6 +24,8 @@ import javax.swing.SwingUtilities;
 import org.pushingpixels.substance.api.SubstanceCortex;
 import org.pushingpixels.substance.api.font.SubstanceFontUtilities;
 import org.pushingpixels.substance.internal.utils.SubstanceSizeUtils;
+
+import javafx.application.Platform;
 
 public class VisualsUtils
 {
@@ -56,6 +59,39 @@ public class VisualsUtils
             OpenBST.LOG.warn("Swing invocation failed", e);
         }
     }
+    
+    public static void invokeJfxAndWait(Runnable runnable)
+    {
+        if(Platform.isFxApplicationThread())
+        {
+            Platform.runLater(runnable);
+        }
+        else
+        {
+            CountDownLatch latch = new CountDownLatch(1);
+            Platform.runLater(() ->
+            {
+                try
+                {
+                    runnable.run();
+                }
+                finally
+                {
+                    latch.countDown();
+                }
+            });
+            try
+            {
+                latch.await();
+            }
+            catch(InterruptedException e)
+            {
+                OpenBST.LOG.error(e);
+            }
+        }
+
+    }
+
 
     /**
      * Open a prompt asking for a BST File

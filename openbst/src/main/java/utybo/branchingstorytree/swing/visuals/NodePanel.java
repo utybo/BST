@@ -42,6 +42,7 @@ import utybo.branchingstorytree.swing.Icons;
 import utybo.branchingstorytree.swing.Messagers;
 import utybo.branchingstorytree.swing.OpenBST;
 import utybo.branchingstorytree.swing.OpenBSTGUI;
+import utybo.branchingstorytree.swing.VisualsUtils;
 import utybo.branchingstorytree.swing.impl.IMGClient;
 import utybo.branchingstorytree.swing.utils.Lang;
 import utybo.branchingstorytree.swing.utils.MarkupUtils;
@@ -274,17 +275,11 @@ public class NodePanel extends JScrollablePanel
         String s = base.replace("$ADDITIONAL", additional).replace("$COLOR", c)
                 // $EXPERIMENTAL
                 .replace("$CUSTOMCSS", sb.toString());
-        try
+        VisualsUtils.invokeJfxAndWait(() ->
         {
-            jfxRunAndWait(() ->
-            {
-                view.getEngine().loadContent(s);
-            });
-        }
-        catch(InterruptedException e)
-        {
-            OpenBST.LOG.warn("Failed to synchronize", e);
-        }
+            view.getEngine().loadContent(s);
+        });
+
         isAlreadyBuilt = true;
     }
 
@@ -314,30 +309,6 @@ public class NodePanel extends JScrollablePanel
         }
     }
 
-    private void jfxRunAndWait(Runnable runnable) throws InterruptedException
-    {
-        if(Platform.isFxApplicationThread())
-        {
-            Platform.runLater(runnable);
-        }
-        else
-        {
-            CountDownLatch latch = new CountDownLatch(1);
-            Platform.runLater(() ->
-            {
-                try
-                {
-                    runnable.run();
-                }
-                finally
-                {
-                    latch.countDown();
-                }
-            });
-            latch.await();
-        }
-
-    }
 
     public void setText(final String text)
     {

@@ -115,7 +115,7 @@ story.modulerestorefail=Failed to restore the following module : $m
 story.logicalnodedeadend=The logical node (id $n from $f with alias $a) failed to provide a node to go to
 story.experimental=We detected usage of an experimental feature.<p><p>Experimental features can be extremely unstable and dangerous and can disappear at any time, without warning. Please always remember they are here for, well, experimenting and messing around. Never use experimental features inside a real-world use case!<p><p>Detected at line $l from file $f (reason : $w)
 story.experimental.title=Experimental alert
-story.unicodecompat=Non-latin Unicode characters have been detected. OpenBST has automatically changed the font to a more compatible one to try and fix this automatically, but you may see glitches in text (empty squares).
+story.unicodecompat=Non-latin Unicode characters have been detected. OpenBST has automatically changed the font to a more compatible one to try and fix this, but you may see glitches in text (empty squares).
 story.unicodecompat.title=Unicode compatibility
 
 # Node jump screen
@@ -167,9 +167,9 @@ up.message1=Unstable and stable updates are available!<p>You can either continue
 up.message2=An update is available!<p>An unstable update is available. Unstable updates provide great improvements and are constantly updated to provide bugfixes and new features.
 # local version (unstable) < latest stable
 # (unstable version can be in-between the two)
-up.message3=The most recent stable version is available!<p>The most recent stable edition is available. Check it out now to get all the fancy new updates and bug fixes! Stable versions are much better than unstable ones as they are less likely to just randomly crash and ruin hours of work! (New unstable versions are not available yet)
+up.message3=The most recent stable version is available!<p>Check it out now to get all the fancy new updates and bug fixes! Stable versions are much better than unstable ones as they are less likely to just randomly crash and ruin hours of work! (New unstable versions are not available yet)
 # local version (stable) < latest stable
-up.message4="An update is available!<p>A new version of OpenBST is available! Each new version provides new features, bugfixes and more. Check it out now by clickling the button on the right!
+up.message4=An update is available!<p>A new version of OpenBST is available! Each new version provides new features, bugfixes and more. Check it out now by clickling the button on the right!
 # Failed to check for updates
 up.failedmessage=Checking for updates failed. Here are the details on the error.
 up.failedbanner=We are unable to check for updates. Is your Internet connection working properly?
@@ -213,7 +213,7 @@ editor.details.markup=Markup :
 editor.details.font=Font : 
 editor.details.supertools=Supertools : 
 
-editor.details.nsfw=This story is for a mature
+editor.details.nsfw=This story is for a mature audience only
 
 # Node editor
 # The following strings have a trailing space, like this " : "
@@ -248,7 +248,7 @@ splash.launch=Launching...
 
 # Debug dialog
 debug.help=You should include all of the following in bug reports. They provide useful information for debugging purposes.
-debug.logscopied=Logs copied to the clipboard
+debug.logscopied=Logs copied to the clipboard!
 debug.copyfailed=Failed to copy the report to the clipboard. You should still be able to copy it by clicking on the text, pressing Ctrl+A to select all the text, and Ctrl+C to copy it.
 debug.wait=Please wait...
 debug.gathersys=Gathering system information...

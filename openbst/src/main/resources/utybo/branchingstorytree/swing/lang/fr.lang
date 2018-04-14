@@ -6,24 +6,33 @@ author=Traduit en Français par utybo
 
 # General
 title=OpenBST
+copy=Copier
 error=Erreur
 bsterror=Erreur BST
 wait=Patientez...
 hide=Cacher
 cancel=Annuler
+saveas=Sauvegarder sous
+save=Sauvegarder
+play=Jouer
+close=Fermer
 
 # Banner and menu
 banner.title=OpenBST
 banner.titleextended=OpenBST [Cliquez ici pour ouvrir le menu!]
 menu.title=Menu OpenBST
 menu.open=Ouvrir un fichier
+menu.create=Créer une nouvelle histoire
 menu.advanced=Outils avancés
 menu.package=Empaqueter un fichier BST...
+menu.debug=Informations de débug
 menu.about=A propos d'OpenBST
 menu.themes=Thèmes
 menu.themes.dark=Thème sombre
 menu.themes.light=Thème lumineux
 menu.themes.debug=Thème de debug
+menu.themes.morelight=Thèmes lumineux additionnels
+menu.themes.moredark=Thèmes sombres additionnels
 
 # Package tool
 pkg.title=Outil de création de paquets BST
@@ -98,7 +107,10 @@ story.unknowncolor=Couleur inconnue : $c
 story.modulerestorefail=Le module suivant n'a pas pu être restoré : $m
 story.logicalnodedeadend=La node logique (avec id $n depuis $f avec alias $a) n'a pas donné de node où aller ensuite
 story.experimental=Utilisation de fonctionnalités expérimentales détéctée!<p><p>Les fonctionnalités experimentales peuvent être très instables et dangereuses et peuvent disparaître à n'importe quel moment. Rappelez vous qu'elles sont ici pour être testées. N'utilisez jamais ces fonctionnalités dans un environnement réel!
-story.experimental.title=Experimental alert
+story.experimental.title=Alerte de fonctionnalité expérimentale
+story.unicodecompat=Des caractères Unicode non latins ont été détecté. OpenBST a automatiquement changé la police d'écriture pour une police compatible pour tenter de résoudre ce problème automatiquement, même si vous pourriez voir des coquilles dans le texte (rectangles vides).
+story.unicodecompat.title=Compatibilité Unicode
+
 
 
 # Node jump screen
@@ -125,24 +137,112 @@ openbst.discord=Rejoignez nous sur notre serveur Discord! Vous y trouverez de l'
 openbst.discordjoin=Rejoindre
 welcome.reportbugs=Signaler un bug (anglais)
 welcome.ontheedge=Vous utilisez une version instable d'OpenBST. Ne le faites que si vous êtes sûr de vous, et merci de <i>signaler les bugs! (en anglais uniquement)</i>
+welcome.java9warning=<b>Vous utilisez Java 9, ce qui n'est pas supporté.</b>Si vous avez des problèmes visuels, commes du texte trop petit, des visuels floutés ou des icônes pixelisées, merci de retourner à Java 8.
+welcome.java10warning=<b>Vous utilisez Java 10, ce qui n'est pas supporté.</b>Si vous avez des problèmes visuels, commes du texte trop petit, des visuels floutés ou des icônes pixelisées, merci de retourner à Java 8.
+welcome.snapshot=Vous utilisez une Snapshot. Cette version est en développement. Ne soumettez pas de rapports de bug!
 welcome=Bienvenue
 welcome.intro=Bienvenue dans OpenBST. Pour démarrer, ouvrez un fichier en utilisant le bouton ci-dessous
 welcome.open=Ouvrir un fichier...
+welcome.openeditor=Ouvrir en édition...
 welcome.changebackground=Changer d'arrière-plan
 welcome.pixabay=Plus d'images gratuites sur Pixabay
 welcome.credits=OpenBST - Créez des histoires ramifiées facilement
+
+# Update messages
+up.moreinfo=Plus d'informations
+up.moreinfostable=Plus d'informations (stable)
+up.moreinfounstable=Plus d'informations (instable)
+# local version < latest stable < latest unstable
+up.message1=Des mises à jour stables et instables sont disponibles!<p>Vous pouvez soit continuer à utiliser des versions instables en prenant la dernières mise à jour instable, soit retourner à des versions stables plus récentes.
+# latest stable < local version (unstable) < latest unstable
+# e.g :latest stable 1.1, local 2.0-beta1, latest unstable 2.0-beta2
+# this means that a more recent beta of this pre-release version is available
+up.message2=Une mise à jour est disponible!<p>Une version instable est disponible. Les mises à jour instables fournissent de grandes améliorations et sont toujours mises à jour pour fournir les dernières corrections et les dernières fonctionnalités.
+# local version (unstable) < latest stable
+# (unstable version can be in-between the two)
+up.message3=La version stable la plus récente est disponible!<p>Téléchargez la maintenant pour bénéficier des dernières corrections et fonctionnalités! Les versions stables sont bien meilleures que les versions instables, car elles risquent moins de planter aléatoirement et de ruiner des heures de travail! (Les nouvelles versions instables ne sont pas encore disponibles)
+# local version (stable) < latest stable
+up.message4=Une mise à jour est disponible!<p>Une nouvelle version d'OpenBST est disponible! Chaque version ajoute des fonctionnalités, des corrections et plus. Découvrez la maintenant en cliquant sur le bouton à droite!
+# Failed to check for updates
+up.failedmessage=La recherche de mises à jour a échouée. Voici les détails.
+up.failedbanner=Nous sommes incapables de vérifier les mises à jour. Votre connection Internet fonctionne-t-elle?
+up.showdetails=Détails
 
 
 # HTML Security related
 html.jsrequest=<b>Ce fichier souhaite utiliser du JavaScript intégré!</b><p>Vous ne devriez accepter que si vous faites entièrement confiance à ce fichier. Le JavaScript peut être utilisé pour attaquer votre ordinateur et ne peut pas être controllé de manière sécurisée par OpenBST. A utiliser à vos risques et périls.<p><p>Activer le JavaScript intégré?
 html.hrefrequest=<b>Ce fichier souhaite utiliser des ancres HTML intégrées!</b><p>Vous ne devriez accepter que si vous faites entièrement confiance à ce fichier. Les ancres HTML peuvent vous emmener vers des liens trompeurs, et peuvent entièrement casser OpenBST. A utiliser à vos risques et périls.<p><p>Activer les ancres HTML?
-html.jsblock=JS blocked
-html.hrefblock=HTML anchors blocked
-html.jsenabled=JS enabled
-html.hrefenabled=HTML anchors enabled
+html.jsblock=JS bloqué
+html.hrefblock=Ancres HTML bloquées
+html.jsenabled=JS activé
+html.hrefenabled=Ancres HTML activées
+html.securityalert=Alerte de sécurité HTML
 
 # Langcheck
 langcheck=Vérification de complétion des fichiers de langue
 # There is a box right after the following string where the user can choose a language
 langcheck.choose=Comparer l'anglais (en) à
 langcheck.result=<html>Voici les traductions présentes en anglais mais absentes dans le fichier choisi.
+
+# Editor, general
+editor.title=Editing $t by $a 
+editor.exportfail=Failed to export the file
+editor.exportpreview=Export Preview
+editor.previewerror=Unexpected exception during preview creation
+editor.asksave=You are about to close this editor view. Do you wish to save your work before quitting?
+editor.details=Details
+editor.nodes=Nodes
+editor.savefail=Failed to save the file
+editor.saveloc=Save location...
+
+# Editor details
+# The following strings have a space at the end of the string " : "
+# Try to keep them there
+editor.details.name=Titre de l'histoire : 
+editor.details.author=Auteur : 
+editor.details.markup=Format : 
+editor.details.font=Police d'écriture : 
+editor.details.supertools=Superoutils : 
+
+editor.details.nsfw=Cette histoire est destinée a une audience adulte
+
+# Node editor
+# The following strings have a trailing space, like this " : "
+editor.node.script=Script : 
+editor.node.text=Texte : 
+
+editor.node.useintid=Utiliser un ID numérique
+editor.node.usestrid=Utiliser un ID texte
+editor.node.freeid=Cet ID de node est libre.
+editor.node.takenid=Cet ID de node est déjà pris.
+editor.node.options=Options
+editor.node.optsyntax=Pour plus d'informations sur la syntaxe, merci de regarder la Référence ou le Tutoriel
+
+# Nodes editor panel
+editor.panel.text=Ajouter une node textuelle
+editor.panel.virtual=Ajouter une node virtuelle
+editor.panel.logical=Ajouter une node logique
+editor.panel.add=Ajouter une node
+editor.panel.remove=Supprimer
+editor.panel.noselected=Aucune node sélectionnée!
+editor.panel.removeconfirm=Vous allez supprimer cette node :<p>$i : $s<p><p>Êtes vous sûr de la supprimer? Vous ne pourrez pas annuler cela plus tard.
+
+
+# Splashscreen
+splash.loading=Chargement...
+splash.init=Initialisation du lecteur...
+splash.icons=Chargement des icônes...
+splash.loadbg=Chargement des images...
+splash.processbg=Traitement des images...
+splash.launch=Lancement...
+
+
+# Debug dialog
+debug.help=Vous devriez inclure toutes ces informations dans un rapport de bug. Elles donnent des informations utiles pour la résolution de problèmes.
+debug.logscopied=Journaux copiés dans le presse-papier!
+debug.copyfailed=Echec de la copie des journaux dans le presse-papier. Vous devriez être capable de copier le texte en cliquant dessus, en pressant Ctrl+A pour tout sélectionner, et en pressant Ctrl+C pour copier la sélection dans le presse-papier.
+debug.wait=Merci de patienter...
+debug.gathersys=Récupération des informations système...
+debug.getlogs=Récupération des journaux...
+debug.title=Informations de debug
+

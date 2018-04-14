@@ -57,7 +57,8 @@ Less technical explanations for each update available on the [OpenBST website](h
 - *Fixed a (stupid) typo in a class name : Dictionnary -> Dictionary*
 
 ### i18n changes
-- added story.experimental story.experimental.title
+- **NOTE :** for a more detailed list, use the Lang completeness checker tool inside OpenBST (OpenBST menu > Advanced tools)
+- added story.experimental story.experimental.title copy saveas save play close menu.create menu.debug menu.themes.morelight menu.themes.moredark file.error story.experimental story.exeprimental.title story.unicodecompat story.unicodecompat.title welcome.java9warning welcome.java10warning welcome.snapshot welcome.openeditor up.* editor.* splash.* debug.*
 - removed all the html tags that were used for notifications (the new message dialogs automatically adds them where needed)
 
 ## [2.0-beta1] - The 2.0 Beginning
