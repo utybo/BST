@@ -122,7 +122,7 @@ public class OpenBST
             protected Void doInBackground()
             {
                 LOG.trace("Initializing JavaFX");
-                publish("Initializing reader...");
+                publish(Lang.get("splash.init"));
                 // Necessary - because we are killing Scenes all the time with WebViews in NodePanels,
                 // JFX may think we just ended our application.
                 // OpenBST exits with a dirty System.exit() anyway.
@@ -130,22 +130,20 @@ public class OpenBST
                 new JFXPanel();
 
                 LOG.info("Loading icons...");
-                publish("Loading icons...");
+                publish(Lang.get("splash.icons"));
                 long timeAtIconStart = System.currentTimeMillis();
                 Icons.load();
                 LOG.info("Time taken to load icons : "
                         + (System.currentTimeMillis() - timeAtIconStart) + " ms");
 
                 LOG.info("Loading backgrounds...");
-                publish("Loading backgrounds...");
+                publish(Lang.get("splash.loadbg"));
                 Icons.loadBackgrounds();
 
                 // $EXPERIMENTAL
                 LOG.info("Caching backgrounds...");
-                publish("Processing backgrounds...");
+                publish(Lang.get("splash.processbg"));
                 IMGClient.initInternal();
-
-                LOG.trace("Fixing text scaling");
 
                 return null;
             }
@@ -171,7 +169,7 @@ public class OpenBST
 
         VisualsUtils.invokeSwingAndWait(() ->
         {
-            sc.setText("Launching...");
+            sc.setText(Lang.get("splash.launch"));
             sc.stop();
         });
         LOG.trace("Launching app...");

@@ -313,7 +313,7 @@ public class OpenBSTGUI extends JFrame
         {
             bannersPanel.add(new JBannerPanel(new ImageIcon(Icons.getImage("Experiment", 32)),
                     Color.ORANGE,
-                    "You are running a Snapshot. This version is in development. Do not post bug reports!",
+                    Lang.get("welcome.snapshot"),
                     null, false), "grow");
         }
 
@@ -372,7 +372,7 @@ public class OpenBSTGUI extends JFrame
             openStory(VisualsUtils.askForFile(this, Lang.get("file.title")));
         });
 
-        final JButton btnOpenEditor = new JButton("Open Editor");
+        final JButton btnOpenEditor = new JButton(Lang.get("welcome.openeditor"));
         panel.add(btnOpenEditor, "cell 4 1");
         btnOpenEditor.setIcon(new ImageIcon(Icons.getImage("Open", 40)));
         btnOpenEditor.addActionListener(e ->
@@ -442,7 +442,7 @@ public class OpenBSTGUI extends JFrame
 
         shortMenu.addSeparator();
 
-        shortMenu.add(new JMenuItem(new AbstractAction("Edit a new story")
+        shortMenu.add(new JMenuItem(new AbstractAction(Lang.get("menu.create"))
         {
             private static final long serialVersionUID = 1L;
 
@@ -539,7 +539,7 @@ public class OpenBSTGUI extends JFrame
             }
         }));
 
-        additionalMenu.add(new JMenuItem(new AbstractAction("Show debug info")
+        additionalMenu.add(new JMenuItem(new AbstractAction(Lang.get("menu.debug"))
         {
             private static final long serialVersionUID = 1L;
 
@@ -585,7 +585,7 @@ public class OpenBSTGUI extends JFrame
         themesMenu.add(jrbmi);
         themesGroup.add(jrbmi);
 
-        JMenu additionalLightThemesMenu = new JMenu("Additional light themes");
+        JMenu additionalLightThemesMenu = new JMenu(Lang.get("menu.themes.morelight"));
         int j = 3;
         for(Map.Entry<String, LookAndFeel> entry : ADDITIONAL_LIGHT_THEMES.entrySet())
         {
@@ -600,7 +600,7 @@ public class OpenBSTGUI extends JFrame
         }
         themesMenu.add(additionalLightThemesMenu);
 
-        JMenu additionalDarkThemesMenu = new JMenu("Additional dark themes");
+        JMenu additionalDarkThemesMenu = new JMenu(Lang.get("menu.themes.moredark"));
         for(Map.Entry<String, LookAndFeel> entry : ADDITIONAL_DARK_THEMES.entrySet())
         {
             int jf = j;

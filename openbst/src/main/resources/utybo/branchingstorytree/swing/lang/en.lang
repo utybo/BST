@@ -12,6 +12,8 @@ author=Translated in English by utybo
 
 # General
 title=OpenBST
+# this is the verb "to copy" and not the noun "a copy"
+copy=Copy
 error=Error
 bsterror=BST Error
 wait=Please wait...
@@ -27,13 +29,17 @@ banner.title=OpenBST
 banner.titleextended=OpenBST [Click me to open a shortcuts menu!]
 menu.title=OpenBST Menu
 menu.open=Open a file
+menu.create=Create a new story
 menu.advanced=Advanced tools
 menu.package=Package a BST file...
+menu.debug=Show debug information
 menu.about=About OpenBST
 menu.themes=Themes
 menu.themes.dark=Dark theme
 menu.themes.light=Light theme
 menu.themes.debug=Debug theme
+menu.themes.morelight=Additional light themes
+menu.themes.moredark=Additional dark themes
 
 # Package tool
 pkg.title=BST Package Craft Tool
@@ -140,9 +146,11 @@ welcome.reportbugs=Report bugs
 welcome.ontheedge=You are currently running an unstable version of OpenBST. Only do this if you know what you're doing, and <i>please report bugs!</i>
 welcome.java9warning=<b>You are using Java 9, which is not supported.</b> If you see visual problems, such as tiny fonts, blurry visuals or pixelated icons, please return to Java 8.
 welcome.java10warning=<b>You are using Java 10, which is not supported.</b> If you see visual problems, such as tiny fonts, blurry visuals or pixelated icons, please return to Java 8.
+welcome.snapshot=You are running a Snapshot. This version is in development. Do not post bug reports!
 welcome=Welcome
 welcome.intro=Welcome to OpenBST. To get started, please open a file using the button below.
 welcome.open=Open a file...
+welcome.openeditor=Open in editor...
 welcome.changebackground=Change background
 welcome.pixabay=More free pictures on Pixabay
 welcome.credits=OpenBST - Create Branching stories easily
@@ -229,5 +237,21 @@ editor.panel.noselected=No nodes selected!
 editor.panel.removeconfirm=You are about to remove this node :<p>$i : $s<p><p>Are you sure you want to remove it? This cannot be undone later.
 
 
+# Splashscreen
+splash.loading=Loading...
+splash.init=Initializing reader...
+splash.icons=Loading icons...
+splash.loadbg=Loading backgrounds...
+splash.processbg=Processing backgrounds...
+splash.launch=Launching...
 
+
+# Debug dialog
+debug.help=You should include all of the following in bug reports. They provide useful information for debugging purposes.
+debug.logscopied=Logs copied to the clipboard
+debug.copyfailed=Failed to copy the report to the clipboard. You should still be able to copy it by clicking on the text, pressing Ctrl+A to select all the text, and Ctrl+C to copy it.
+debug.wait=Please wait...
+debug.gathersys=Gathering system information...
+debug.getlogs=Getting logs...
+debug.title=Debug Information
 

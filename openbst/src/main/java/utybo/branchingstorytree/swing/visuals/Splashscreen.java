@@ -29,6 +29,7 @@ import utybo.branchingstorytree.swing.OpenBST;
 import utybo.branchingstorytree.swing.OpenBSTGUI;
 import utybo.branchingstorytree.swing.VisualsUtils;
 import utybo.branchingstorytree.swing.utils.BezierEase;
+import utybo.branchingstorytree.swing.utils.Lang;
 
 @SuppressWarnings("serial")
 public class Splashscreen extends JFrame
@@ -100,7 +101,7 @@ public class Splashscreen extends JFrame
         panLogo.setBounds($(0, 0, 400, 100));
         getContentPane().add(panLogo);
 
-        lblText = new JLabel("Loading...");
+        lblText = new JLabel(Lang.get("splash.loading"));
         lblText.setForeground(Color.WHITE);
         lblText.setVerticalAlignment(SwingConstants.BOTTOM);
         lblText.setBounds($(10, 90, 322, 20));
