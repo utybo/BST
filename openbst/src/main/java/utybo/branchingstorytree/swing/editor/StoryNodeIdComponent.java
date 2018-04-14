@@ -26,6 +26,7 @@ import javax.swing.event.DocumentListener;
 
 import net.miginfocom.swing.MigLayout;
 import utybo.branchingstorytree.api.story.StoryNode;
+import utybo.branchingstorytree.swing.utils.Lang;
 
 @SuppressWarnings("serial")
 public class StoryNodeIdComponent extends JPanel
@@ -44,7 +45,7 @@ public class StoryNodeIdComponent extends JPanel
 
         setLayout(new MigLayout("", "[][50px][][][grow]", "[][]"));
 
-        rdbtnUseIntegerId = new JRadioButton("Use integer ID");
+        rdbtnUseIntegerId = new JRadioButton(Lang.get("Use integer ID"));
 
         rdbtnUseIntegerId.setSelected(true);
         buttonGroup.add(rdbtnUseIntegerId);
@@ -65,7 +66,7 @@ public class StoryNodeIdComponent extends JPanel
         Component horizontalStrut = Box.createHorizontalStrut(20);
         add(horizontalStrut, "cell 2 0");
 
-        rdbtnUseStringId = new JRadioButton("Use string ID");
+        rdbtnUseStringId = new JRadioButton(Lang.get("editor.node.usestrid"));
         buttonGroup.add(rdbtnUseStringId);
         add(rdbtnUseStringId, "cell 3 0");
 
@@ -151,13 +152,13 @@ public class StoryNodeIdComponent extends JPanel
 
     public void notifyOk()
     {
-        lblNodeStatus.setText("This node ID is free.");
+        lblNodeStatus.setText(Lang.get("editor.node.freeid"));
         lblNodeStatus.setForeground(Color.GREEN.darker());
     }
 
     public void notifyError()
     {
-        lblNodeStatus.setText("This node ID is already taken.");
+        lblNodeStatus.setText(Lang.get("editor.node.takenid"));
         lblNodeStatus.setForeground(Color.RED.darker());
     }
 

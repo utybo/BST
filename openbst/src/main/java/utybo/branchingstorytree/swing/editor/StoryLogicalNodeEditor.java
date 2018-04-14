@@ -23,6 +23,7 @@ import utybo.branchingstorytree.api.story.logicalnode.LNCondReturn;
 import utybo.branchingstorytree.api.story.logicalnode.LNExec;
 import utybo.branchingstorytree.api.story.logicalnode.LNInstruction;
 import utybo.branchingstorytree.api.story.logicalnode.LNTern;
+import utybo.branchingstorytree.swing.utils.Lang;
 import utybo.branchingstorytree.swing.utils.UndoUtils;
 
 @SuppressWarnings("serial")
@@ -39,7 +40,7 @@ public class StoryLogicalNodeEditor extends StorySingleNodeEditor
         id = new StoryNodeIdComponent(sne);
         add(id, "cell 0 0 2 1,grow");
 
-        JLabel lblText = new JLabel("Script : ");
+        JLabel lblText = new JLabel(Lang.get("editor.node.script"));
         add(lblText, "cell 0 1,alignx trailing,aligny top");
 
         JScrollPane scrollPane = new JScrollPane();

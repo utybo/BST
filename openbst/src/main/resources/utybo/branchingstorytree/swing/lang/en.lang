@@ -17,6 +17,10 @@ bsterror=BST Error
 wait=Please wait...
 hide=Hide
 cancel=Cancel
+saveas=Save as
+save=Save
+play=Play
+close=Close
 
 # Banner and menu
 banner.title=OpenBST
@@ -132,15 +136,36 @@ vwatch.unknown=<no known variables>
 openbst.discord=Join us on our Discord server! You'll find help for creating stories as well as cool community creations and updates on new things coming soon in OpenBST!
 openbst.discordjoin=Join Server
 welcome.reportbugs=Report bugs
-# Non ENglish languages need to note that the bug reports have to be in english
+# Non English languages need to note that the bug reports have to be in english
 welcome.ontheedge=You are currently running an unstable version of OpenBST. Only do this if you know what you're doing, and <i>please report bugs!</i>
 welcome.java9warning=<b>You are using Java 9, which is not supported.</b> If you see visual problems, such as tiny fonts, blurry visuals or pixelated icons, please return to Java 8.
+welcome.java10warning=<b>You are using Java 10, which is not supported.</b> If you see visual problems, such as tiny fonts, blurry visuals or pixelated icons, please return to Java 8.
 welcome=Welcome
 welcome.intro=Welcome to OpenBST. To get started, please open a file using the button below.
 welcome.open=Open a file...
 welcome.changebackground=Change background
 welcome.pixabay=More free pictures on Pixabay
 welcome.credits=OpenBST - Create Branching stories easily
+
+# Update messages
+up.moreinfo=More information
+up.moreinfostable=More information (stable)
+up.moreinfounstable=More information (unstable)
+# local version < latest stable < latest unstable
+up.message1=Unstable and stable updates are available!<p>You can either continue on the unstable path by picking the new unstable version, or return to the stable versions by picking the most recent stable versions.
+# latest stable < local version (unstable) < latest unstable
+# e.g :latest stable 1.1, local 2.0-beta1, latest unstable 2.0-beta2
+# this means that a more recent beta of this pre-release version is available
+up.message2=An update is available!<p>An unstable update is available. Unstable updates provide great improvements and are constantly updated to provide bugfixes and new features.
+# local version (unstable) < latest stable
+# (unstable version can be in-between the two)
+up.message3=The most recent stable version is available!<p>The most recent stable edition is available. Check it out now to get all the fancy new updates and bug fixes! Stable versions are much better than unstable ones as they are less likely to just randomly crash and ruin hours of work! (New unstable versions are not available yet)
+# local version (stable) < latest stable
+up.message4="An update is available!<p>A new version of OpenBST is available! Each new version provides new features, bugfixes and more. Check it out now by clickling the button on the right!
+# Failed to check for updates
+up.failedmessage=Checking for updates failed. Here are the details on the error.
+up.failedbanner=We are unable to check for updates. Is your Internet connection working properly?
+up.showdetails=Show details
 
 
 # HTML Security related
@@ -155,5 +180,54 @@ html.securityalert=HTML Security Alert
 # Langcheck
 langcheck=Lang Completeness Checker
 # There is a box right after the following string where the user can choose a language
+# Inside the GUI it would look like Compare English (en) language file to [  fr  v]
 langcheck.choose=Compare English (en) language file to
 langcheck.result=<html>Here are the strings present in the English language file but missing in the one you chose.
+
+
+# Editor, general
+editor.title=Editing $t by $a 
+editor.exportfail=Failed to export the file
+editor.exportpreview=Export Preview
+editor.previewerror=Unexpected exception during preview creation
+editor.asksave=You are about to close this editor view. Do you wish to save your work before quitting?
+editor.details=Details
+editor.nodes=Nodes
+editor.savefail=Failed to save the file
+editor.saveloc=Save location...
+
+# Editor details
+# The following strings have a space at the end of the string " : "
+# Try to keep them there
+editor.details.name=Story name : 
+editor.details.author=Author : 
+editor.details.markup=Markup : 
+editor.details.font=Font : 
+editor.details.supertools=Supertools : 
+
+editor.details.nsfw=This story is for a mature
+
+# Node editor
+# The following strings have a trailing space, like this " : "
+editor.node.script=Script : 
+editor.node.text=Text : 
+
+editor.node.useintid=Use integer ID
+editor.node.usestrid=Use string ID
+editor.node.freeid=This node ID is free.
+editor.node.takenid=This node ID is already taken.
+editor.node.options=Options
+editor.node.optsyntax=For syntax reference, please check the Reference or the Tutorial
+
+# Nodes editor panel
+editor.panel.text=Add a Text Node
+editor.panel.virtual=Add a Virtual Node
+editor.panel.logical=Add a Logical Node
+editor.panel.add=Add node
+editor.panel.remove=Remove node
+editor.panel.noselected=No nodes selected!
+editor.panel.removeconfirm=You are about to remove this node :<p>$i : $s<p><p>Are you sure you want to remove it? This cannot be undone later.
+
+
+
+

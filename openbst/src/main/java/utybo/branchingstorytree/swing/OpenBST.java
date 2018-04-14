@@ -96,6 +96,11 @@ public class OpenBST
      */
     public static void main(final String[] args)
     {
+        // Before we do anything, setup system properties
+        // First one to ensure Java 9's scaling system gets out of the way
+        System.setProperty("sun.java2d.uiScale", "1.0");
+        // Second one to force hardware acceleration
+        System.setProperty("sun.java2d.opengl", "true");
 
         LOG.info("OpenBST version " + VERSION + ", part of the BST project");
         LOG.trace("[ INIT ]");
@@ -104,12 +109,14 @@ public class OpenBST
 
         LOG.trace("Applying Look and Feel");
         OpenBSTGUI.initializeLaF();
-        
+        VisualsUtils.fixTextFontScaling();
+
         LOG.trace("Loading scaling factor");
         Icons.loadScalingFactor();
-        
+
         Splashscreen sc = Splashscreen.start();
-        SwingWorker<Void, String> sw = new SwingWorker<Void, String>(){
+        SwingWorker<Void, String> sw = new SwingWorker<Void, String>()
+        {
 
             @Override
             protected Void doInBackground()
@@ -126,20 +133,20 @@ public class OpenBST
                 publish("Loading icons...");
                 long timeAtIconStart = System.currentTimeMillis();
                 Icons.load();
-                LOG.info("Time taken to load icons : " + (System.currentTimeMillis() - timeAtIconStart) + " ms");
+                LOG.info("Time taken to load icons : "
+                        + (System.currentTimeMillis() - timeAtIconStart) + " ms");
 
                 LOG.info("Loading backgrounds...");
                 publish("Loading backgrounds...");
                 Icons.loadBackgrounds();
-                
+
                 // $EXPERIMENTAL
                 LOG.info("Caching backgrounds...");
                 publish("Processing backgrounds...");
                 IMGClient.initInternal();
-                
+
                 LOG.trace("Fixing text scaling");
-                VisualsUtils.fixTextFontScaling();
-                
+
                 return null;
             }
 
@@ -149,7 +156,7 @@ public class OpenBST
                 String s = chunks.get(chunks.size() - 1);
                 sc.setText(s);
             }
-            
+
         };
 
         sw.execute();
@@ -159,15 +166,18 @@ public class OpenBST
         }
         catch(InterruptedException | ExecutionException e1)
         {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
+            OpenBST.LOG.error(e1);
         }
-        
-        VisualsUtils.invokeSwingAndWait(() -> sc.setText("Launching..."));
+
+        VisualsUtils.invokeSwingAndWait(() ->
+        {
+            sc.setText("Launching...");
+            sc.stop();
+        });
         LOG.trace("Launching app...");
         OpenBSTGUI.launch();
-        
-        VisualsUtils.invokeSwingAndWait(() -> sc.stop());
+
+        VisualsUtils.invokeSwingAndWait(() -> sc.dispose());
 
         LOG.trace("Checking versions...");
         if(!"<unknown version>".equals(VERSION))
@@ -205,60 +215,55 @@ public class OpenBST
                             {
                                 // local (unstable) < stable < unstable
                                 // Give options for both unstable and stable
-                                JButton stablebtn = new JButton("More information (stable)");
+                                JButton stablebtn = new JButton(Lang.get("up.moreinfostable"));
                                 stablebtn.addActionListener(e ->
                                 {
                                     VisualsUtils.browse(remoteVersion.stableurl);
                                 });
-                                JButton unstablebtn = new JButton("More information (unstable)");
+                                JButton unstablebtn = new JButton(Lang.get("up.moreinfounstable"));
                                 unstablebtn.addActionListener(e ->
                                 {
                                     VisualsUtils.browse(remoteVersion.unstableurl);
                                 });
-                                OpenBSTGUI.getInstance().addBanner(new JBannerPanel(
-                                        new ImageIcon(Icons.getImage("Installing Updates", 48)),
-                                        new Color(142, 255, 159),
-                                        "Unstable and stable updates are available!<p>"
-                                                + "You can either continue on the unstable path by picking the new unstable version, "
-                                                + "or return to the stable versions by picking the most recent stable versions.",
-                                        stablebtn, false, unstablebtn));
+                                OpenBSTGUI.getInstance()
+                                        .addBanner(new JBannerPanel(
+                                                new ImageIcon(
+                                                        Icons.getImage("Installing Updates", 48)),
+                                                new Color(142, 255, 159), Lang.get("up.message1"),
+                                                stablebtn, false, unstablebtn));
                             }
                             else if(remoteStable.compareTo(local) < 0
                                     && local.compareTo(remoteUnstable) < 0)
                             {
                                 // stable < local (unstable) < unstable
-                                JButton unstablebtn = new JButton("More information");
+                                JButton unstablebtn = new JButton(Lang.get("up.moreinfo"));
                                 unstablebtn.addActionListener(e ->
                                 {
                                     VisualsUtils.browse(remoteVersion.unstableurl);
                                 });
-                                OpenBSTGUI.getInstance().addBanner(new JBannerPanel(
-                                        new ImageIcon(Icons.getImage("Installing Updates", 48)),
-                                        new Color(142, 255, 159),
-                                        "An update is available!<p>"
-                                                + "An unstable update is available. Unstable updates provide great improvements "
-                                                + "and are constantly updated to provide bugfixes and new features.",
-                                        unstablebtn, false));
+                                OpenBSTGUI.getInstance()
+                                        .addBanner(new JBannerPanel(
+                                                new ImageIcon(
+                                                        Icons.getImage("Installing Updates", 48)),
+                                                new Color(142, 255, 159), Lang.get("up.message2"),
+                                                unstablebtn, false));
                             }
                             else if(remoteUnstable.compareTo(remoteStable) < 0
                                     && local.compareTo(remoteStable) < 0)
                             {
                                 // local (unstable) < stable
                                 // and unstable < stable
-                                JButton stablebtn = new JButton("More information");
+                                JButton stablebtn = new JButton(Lang.get("up.moreinfo"));
                                 stablebtn.addActionListener(e ->
                                 {
                                     VisualsUtils.browse(remoteVersion.stableurl);
                                 });
-                                OpenBSTGUI.getInstance().addBanner(new JBannerPanel(
-                                        new ImageIcon(Icons.getImage("Installing Updates", 48)),
-                                        new Color(142, 255, 159),
-                                        "The stable version is available!<p>"
-                                                + "The stable update of the unstable version you are running is available. "
-                                                + "Check it out now to get all the fancy new updates and bug fixes! "
-                                                + "Stable versions are much better than unstable ones as they are less likely "
-                                                + "to just randomly crash and ruin hours of work!",
-                                        stablebtn, false));
+                                OpenBSTGUI.getInstance()
+                                        .addBanner(new JBannerPanel(
+                                                new ImageIcon(
+                                                        Icons.getImage("Installing Updates", 48)),
+                                                new Color(142, 255, 159), Lang.get("up.message3"),
+                                                stablebtn, false));
                             }
                         }
                         else
@@ -267,18 +272,17 @@ public class OpenBST
                             if(local.compareTo(remoteStable) < 0)
                             {
                                 // local (stable) < stable
-                                JButton stablebtn = new JButton("More information");
+                                JButton stablebtn = new JButton(Lang.get("up.moreinfo"));
                                 stablebtn.addActionListener(e ->
                                 {
                                     VisualsUtils.browse(remoteVersion.stableurl);
                                 });
-                                OpenBSTGUI.getInstance().addBanner(new JBannerPanel(
-                                        new ImageIcon(Icons.getImage("Installing Updates", 48)),
-                                        new Color(142, 255, 159),
-                                        "An update is available!<p>"
-                                                + "A new version of OpenBST is available! Each new version provides "
-                                                + "new features, bugfixes and more. Check it out now by clickling the button on the right!",
-                                        stablebtn, false));
+                                OpenBSTGUI.getInstance()
+                                        .addBanner(new JBannerPanel(
+                                                new ImageIcon(
+                                                        Icons.getImage("Installing Updates", 48)),
+                                                new Color(142, 255, 159), Lang.get("up.message4"),
+                                                stablebtn, false));
                             }
                         }
                     }
@@ -286,16 +290,14 @@ public class OpenBST
                     catch(InterruptedException | ExecutionException e)
                     {
                         LOG.warn("Failed to read update information", e);
-                        JButton showDetails = new JButton("Show details");
+                        JButton showDetails = new JButton(Lang.get("up.showdetails"));
                         showDetails.addActionListener(ev -> Messagers.showException(
-                                OpenBSTGUI.getInstance(),
-                                "Checking for updates failed. Here are the details on the error.",
-                                e));
-                        OpenBSTGUI.getInstance().addBanner(new JBannerPanel(
-                                new ImageIcon(Icons.getImage("Cancel", 16)),
-                                new Color(255, 144, 144),
-                                "We are unable to check for updates. Is your Internet connection working properly?",
-                                showDetails, false));
+                                OpenBSTGUI.getInstance(), Lang.get("up.failedmessage"), e));
+                        OpenBSTGUI.getInstance()
+                                .addBanner(new JBannerPanel(
+                                        new ImageIcon(Icons.getImage("Cancel", 16)),
+                                        new Color(255, 144, 144), Lang.get("up.failedbanner"),
+                                        showDetails, false));
                     }
                 }
             };

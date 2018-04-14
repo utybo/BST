@@ -321,7 +321,14 @@ public class OpenBSTGUI extends JFrame
         {
             bannersPanel.add(
                     new JBannerPanel(new ImageIcon(Icons.getImage("Attention", 32)),
-                            new Color(255, 50, 50), Lang.get("welcome.java9warning"), null, true),
+                            new Color(255, 50, 50), Lang.get("welcome.java9warning"), null, false),
+                    "grow");
+        }
+        if(System.getProperty("java.specification.version").equals("10"))
+        {
+            bannersPanel.add(
+                    new JBannerPanel(new ImageIcon(Icons.getImage("Attention", 32)),
+                            new Color(255, 50, 50), Lang.get("welcome.java10warning"), null, false),
                     "grow");
         }
 
@@ -957,19 +964,22 @@ public class OpenBSTGUI extends JFrame
         bannersPanel.add(banner, "grow");
         if(bannersPanel.getComponents().length > 2)
         {
-            Component[] toScan = Arrays.copyOf(bannersPanel.getComponents(), bannersPanel.getComponents().length);
+            Component[] toScan = Arrays.copyOf(bannersPanel.getComponents(),
+                    bannersPanel.getComponents().length);
             for(Component c : toScan)
             {
                 if(c instanceof JBannerPanel)
                 {
                     if(((JBannerPanel)c).isHideable())
                         bannersPanel.remove(c);
+                    if(bannersPanel.getComponents().length <= 2)
+                        break;
                 }
             }
         }
         banner.revalidate();
         banner.repaint();
-        
+
         // So... There's a weird bug where the background will keep some bits of older
         // banners that were present at first paint time.
         // This makes sure that after everything is rendered correctly and ready, the

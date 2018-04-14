@@ -19,6 +19,7 @@ import javax.swing.event.DocumentListener;
 import net.miginfocom.swing.MigLayout;
 import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.api.story.TextNode;
+import utybo.branchingstorytree.swing.utils.Lang;
 import utybo.branchingstorytree.swing.utils.UndoUtils;
 
 @SuppressWarnings("serial")
@@ -35,7 +36,7 @@ public class StoryTextNodeEditor extends StorySingleNodeEditor implements Editor
         id = new StoryNodeIdComponent(sne);
         add(id, "cell 0 0 2 1,grow");
 
-        JLabel lblText = new JLabel("Text : ");
+        JLabel lblText = new JLabel(Lang.get("editor.node.text"));
         add(lblText, "cell 0 1,alignx trailing,aligny top");
 
         JScrollPane scrollPane = new JScrollPane();

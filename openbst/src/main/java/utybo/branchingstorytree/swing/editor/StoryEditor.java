@@ -40,6 +40,7 @@ import utybo.branchingstorytree.swing.Icons;
 import utybo.branchingstorytree.swing.Messagers;
 import utybo.branchingstorytree.swing.OpenBST;
 import utybo.branchingstorytree.swing.OpenBSTGUI;
+import utybo.branchingstorytree.swing.utils.Lang;
 
 @SuppressWarnings("serial")
 public class StoryEditor extends JPanel implements EditorControl<BranchingStory>
@@ -57,21 +58,23 @@ public class StoryEditor extends JPanel implements EditorControl<BranchingStory>
         toolBar.setFloatable(false);
         add(toolBar, "cell 0 0,growx");
 
-        JButton btnSaveAs = new JButton("Save as", new ImageIcon(Icons.getImage("Save As", 16)));
+        JButton btnSaveAs = new JButton(Lang.get("saveas"),
+                new ImageIcon(Icons.getImage("Save As", 16)));
         btnSaveAs.addActionListener(e ->
         {
             saveAs();
         });
         toolBar.add(btnSaveAs);
 
-        JButton btnSave = new JButton("Save", new ImageIcon(Icons.getImage("Save", 16)));
+        JButton btnSave = new JButton(Lang.get("save"), new ImageIcon(Icons.getImage("Save", 16)));
         btnSave.addActionListener(e ->
         {
             save();
         });
         toolBar.add(btnSave);
 
-        JButton btnPlay = new JButton("Play", new ImageIcon(Icons.getImage("Circled Play", 16)));
+        JButton btnPlay = new JButton(Lang.get("play"),
+                new ImageIcon(Icons.getImage("Circled Play", 16)));
         btnPlay.addActionListener(ev ->
         {
             try
@@ -88,19 +91,20 @@ public class StoryEditor extends JPanel implements EditorControl<BranchingStory>
             catch(Exception e)
             {
                 OpenBST.LOG.error("Export failed", e);
-                Messagers.showException(OpenBSTGUI.getInstance(), "Failed to export the file", e);
+                Messagers.showException(OpenBSTGUI.getInstance(), Lang.get("editor.exportfail"), e);
             }
         });
         toolBar.add(btnPlay);
 
-        JButton btnFilePreview = new JButton("Export Preview",
+        JButton btnFilePreview = new JButton(Lang.get("editor.exportpreview"),
                 new ImageIcon(Icons.getImage("PreviewText", 16)));
         btnFilePreview.addActionListener(e ->
         {
             try
             {
                 String s = exportToString();
-                JDialog dialog = new JDialog(OpenBSTGUI.getInstance(), "File Preview");
+                JDialog dialog = new JDialog(OpenBSTGUI.getInstance(),
+                        Lang.get("editor.exportpreview"));
                 JTextArea jta = new JTextArea(s);
                 jta.setLineWrap(true);
                 jta.setWrapStyleWord(true);
@@ -114,8 +118,8 @@ public class StoryEditor extends JPanel implements EditorControl<BranchingStory>
             catch(Exception x)
             {
                 OpenBST.LOG.error("Failed to preview", x);
-                Messagers.showException(OpenBSTGUI.getInstance(),
-                        "Unexpected exception during preview creation", x);
+                Messagers.showException(OpenBSTGUI.getInstance(), Lang.get("editor.previewerror"),
+                        x);
             }
         });
         toolBar.add(btnFilePreview);
@@ -123,11 +127,11 @@ public class StoryEditor extends JPanel implements EditorControl<BranchingStory>
         Component horizontalGlue = Box.createHorizontalGlue();
         toolBar.add(horizontalGlue);
 
-        JButton btnClose = new JButton("Close", new ImageIcon(Icons.getImage("Cancel", 16)));
+        JButton btnClose = new JButton(Lang.get("close"),
+                new ImageIcon(Icons.getImage("Cancel", 16)));
         btnClose.addActionListener(e ->
         {
-            int i = Messagers.showConfirm(OpenBSTGUI.getInstance(),
-                    "You are about to close this editor view. Do you wish to save your work before quitting?",
+            int i = Messagers.showConfirm(OpenBSTGUI.getInstance(), Lang.get("editor.asksave"),
                     Messagers.OPTIONS_YES_NO_CANCEL);
             if(i == Messagers.OPTION_YES)
             {
@@ -158,10 +162,10 @@ public class StoryEditor extends JPanel implements EditorControl<BranchingStory>
         tabbedPane.addTab("Beta Warning", new StoryEditorWelcomeScreen());
 
         details = new StoryDetailsEditor(this);
-        tabbedPane.addTab("Details", details);
+        tabbedPane.addTab(Lang.get("editor.details"), details);
 
         nodesEditor = new StoryNodesEditor();
-        tabbedPane.addTab("Nodes", nodesEditor);
+        tabbedPane.addTab(Lang.get("editor.nodes"), nodesEditor);
 
         this.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                 .put(KeyStroke.getKeyStroke("control S"), "doSave");
@@ -218,7 +222,7 @@ public class StoryEditor extends JPanel implements EditorControl<BranchingStory>
             catch(IOException | BSTException e1)
             {
                 OpenBST.LOG.error("Failed saving a file", e1);
-                Messagers.showException(OpenBSTGUI.getInstance(), "Failed to save the file", e1);
+                Messagers.showException(OpenBSTGUI.getInstance(), Lang.get("editor.savefail"), e1);
             }
         }
         return false;
@@ -235,7 +239,7 @@ public class StoryEditor extends JPanel implements EditorControl<BranchingStory>
 
     public boolean saveAs()
     {
-        FileDialog fd = new FileDialog(OpenBSTGUI.getInstance(), "Save location...",
+        FileDialog fd = new FileDialog(OpenBSTGUI.getInstance(), Lang.get("editor.saveloc"),
                 FileDialog.SAVE);
         fd.setLocationRelativeTo(OpenBSTGUI.getInstance());
         fd.setVisible(true);
@@ -253,7 +257,7 @@ public class StoryEditor extends JPanel implements EditorControl<BranchingStory>
             catch(IOException | BSTException e1)
             {
                 OpenBST.LOG.error("Failed saving a file", e1);
-                Messagers.showException(OpenBSTGUI.getInstance(), "Failed to save the file", e1);
+                Messagers.showException(OpenBSTGUI.getInstance(), Lang.get("editor.savefail"), e1);
             }
         }
         return false;
@@ -266,6 +270,6 @@ public class StoryEditor extends JPanel implements EditorControl<BranchingStory>
 
     public String getTitle()
     {
-        return "Editor : " + details.getTitle() + " by " + details.getAuthor();
+        return Lang.get("editor.title").replace("$t", details.getTitle()).replace("$a", details.getAuthor());
     }
 }

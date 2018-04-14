@@ -4,13 +4,15 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Rectangle;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JWindow;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -23,12 +25,13 @@ import org.pushingpixels.trident.Timeline;
 import org.pushingpixels.trident.Timeline.RepeatBehavior;
 
 import utybo.branchingstorytree.swing.Icons;
+import utybo.branchingstorytree.swing.OpenBST;
 import utybo.branchingstorytree.swing.OpenBSTGUI;
 import utybo.branchingstorytree.swing.VisualsUtils;
 import utybo.branchingstorytree.swing.utils.BezierEase;
 
 @SuppressWarnings("serial")
-public class Splashscreen extends JWindow
+public class Splashscreen extends JFrame
 {
     public static void main(String[] args)
     {
@@ -38,6 +41,7 @@ public class Splashscreen extends JWindow
             {
                 UIManager.setLookAndFeel(new SubstanceBusinessBlackSteelLookAndFeel());
                 SubstanceCortex.GlobalScope.setColorizationFactor(1.0D);
+                Icons.loadScalingFactor();
             }
             catch(UnsupportedLookAndFeelException e)
             {
@@ -59,9 +63,19 @@ public class Splashscreen extends JWindow
 
     public Splashscreen()
     {
+        setUndecorated(true);
+        try
+        {
+            setIconImage(ImageIO.read(Splashscreen.class
+                    .getResourceAsStream("/utybo/branchingstorytree/swing/logos/Logo48.png")));
+        }
+        catch(IOException e)
+        {
+            OpenBST.LOG.error(e);
+        }
         setSize($(400, 120));
+        System.out.println(getSize());
         setLocationRelativeTo(null);
-        //        setUndecorated(true);
         getContentPane().setLayout(null);
 
         getContentPane().setBackground(OpenBSTGUI.OPENBST_BLUE);
@@ -71,9 +85,16 @@ public class Splashscreen extends JWindow
         lblLogo = new JLabel();
         lblLogo.setHorizontalAlignment(SwingConstants.CENTER);
         // We cannot use Icons.getImage because it is not loaded at this point.
-        lblLogo.setIcon(new ImageIcon(
-                Splashscreen.class.getResource("/utybo/branchingstorytree/swing/logos/FullLogoWhite"
-                        + Icons.applyScaleValue(new int[] {60, 75, 90, 120}) + ".png")));
+        try
+        {
+            lblLogo.setIcon(new ImageIcon(ImageIO.read(Splashscreen.class
+                    .getResourceAsStream("/utybo/branchingstorytree/swing/logos/FullLogoWhite"
+                            + Icons.applyScaleValue(new int[] {60, 75, 90, 120}) + ".png"))));
+        }
+        catch(IOException e)
+        {
+            OpenBST.LOG.error(e);
+        }
         panLogo.setLayout(new BorderLayout());
         panLogo.add(lblLogo);
         panLogo.setBounds($(0, 0, 400, 100));
@@ -88,9 +109,16 @@ public class Splashscreen extends JWindow
         panZrrk = new JXPanel();
         panZrrk.setBackground(new Color(0, 0, 0, 0));
         lblZrrk = new JLabel();
-        lblZrrk.setIcon(new ImageIcon(
-                Splashscreen.class.getResource("/utybo/branchingstorytree/swing/logos/minizrrk"
-                        + Icons.applyScaleValue(new int[] {16, 20, 24, 32}) + ".png")));
+        try
+        {
+            lblZrrk.setIcon(new ImageIcon(ImageIO.read(Splashscreen.class
+                    .getResourceAsStream("/utybo/branchingstorytree/swing/logos/minizrrk"
+                            + Icons.applyScaleValue(new int[] {16, 20, 24, 32}) + ".png"))));
+        }
+        catch(IOException e)
+        {
+            e.printStackTrace();
+        }
         panZrrk.setLayout(new BorderLayout());
         panZrrk.add(lblZrrk);
         panZrrk.setBounds($(342, 94, 48, 16));
@@ -121,7 +149,7 @@ public class Splashscreen extends JWindow
                 finalLogoBounds.height);
         panLogo.setBounds(origLogoBounds);
 
-        float finalAlpha = 1F;
+        float finalAlpha = 0.99F;
         float origAlpha = 0F;
         panLogo.setAlpha(origAlpha);
 
@@ -141,7 +169,7 @@ public class Splashscreen extends JWindow
         tl2 = new Timeline(panZrrk);
         tl2.setDuration(300L);
         tl2.setEase(new BezierEase(.25F, .1F, .25F, 1F));
-        tl2.addPropertyToInterpolate("alpha", 0.2F, 1F);
+        tl2.addPropertyToInterpolate("alpha", 0.2F, .99F);
     }
 
     public void play()
@@ -158,6 +186,7 @@ public class Splashscreen extends JWindow
             Splashscreen s = new Splashscreen();
             s.setVisible(true);
             s.play();
+            s.requestFocus();
             sc.add(s);
         });
         return sc.get(0);
@@ -165,9 +194,9 @@ public class Splashscreen extends JWindow
 
     public void stop()
     {
+        // Used to let the render of the app breathe
         timeline.end();
         tl2.end();
-        dispose();
     }
 
     public void setText(String text)
