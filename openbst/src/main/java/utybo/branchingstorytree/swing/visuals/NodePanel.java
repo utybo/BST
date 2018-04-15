@@ -10,15 +10,12 @@ package utybo.branchingstorytree.swing.visuals;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.concurrent.CountDownLatch;
 import java.util.function.Consumer;
 
-import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
 
@@ -44,6 +41,8 @@ import utybo.branchingstorytree.api.story.TextNode;
 import utybo.branchingstorytree.swing.Icons;
 import utybo.branchingstorytree.swing.Messagers;
 import utybo.branchingstorytree.swing.OpenBST;
+import utybo.branchingstorytree.swing.OpenBSTGUI;
+import utybo.branchingstorytree.swing.VisualsUtils;
 import utybo.branchingstorytree.swing.impl.IMGClient;
 import utybo.branchingstorytree.swing.utils.Lang;
 import utybo.branchingstorytree.swing.utils.MarkupUtils;
@@ -118,8 +117,8 @@ public class NodePanel extends JScrollablePanel
 
     public NodePanel(BranchingStory story, StoryPanel parent, final IMGClient imageClient)
     {
-        OpenBST.getInstance().addDarkModeCallback(callback);
-        callback.accept(OpenBST.getInstance().isDark());
+        OpenBSTGUI.getInstance().addDarkModeCallback(callback);
+        callback.accept(OpenBSTGUI.getInstance().isDark());
         this.parent = parent;
         this.imageClient = imageClient;
         setLayout(new BorderLayout());
@@ -134,7 +133,7 @@ public class NodePanel extends JScrollablePanel
             {
                 view = new WebView();
                 view.getEngine().setOnAlert(e -> SwingUtilities.invokeLater(
-                        () -> Messagers.showMessage(OpenBST.getInstance(), e.getData())));
+                        () -> Messagers.showMessage(OpenBSTGUI.getInstance(), e.getData())));
                 view.getEngine().getLoadWorker().stateProperty()
                         .addListener((obs, oldState, newState) ->
                         {
@@ -161,7 +160,7 @@ public class NodePanel extends JScrollablePanel
                         });
 
                 Scene sc = new Scene(view);
-                if(!OpenBST.getInstance().isDark())
+                if(!OpenBSTGUI.getInstance().isDark())
                     view.setFontSmoothingType(FontSmoothingType.LCD);
                 else
                     view.setFontSmoothingType(FontSmoothingType.GRAY);
@@ -247,7 +246,7 @@ public class NodePanel extends JScrollablePanel
         if(imageClient.getCurrentBackground() != null && backgroundVisible)
         {
             // Inject background (base64) and add the background class to the body
-            base = base.replace("$b64bg", b64bg()).replace("$bbg", "bg");
+            base = base.replace("$b64bg", imageClient.getBase64Background()).replace("$bbg", "bg");
             additional = isDark ? "background-color:rgba(0,0,0,0.66)"
                     : "background-color:rgba(255,255,255,0.66)";
         }
@@ -276,17 +275,11 @@ public class NodePanel extends JScrollablePanel
         String s = base.replace("$ADDITIONAL", additional).replace("$COLOR", c)
                 // $EXPERIMENTAL
                 .replace("$CUSTOMCSS", sb.toString());
-        try
+        VisualsUtils.invokeJfxAndWait(() ->
         {
-            jfxRunAndWait(() ->
-            {
-                view.getEngine().loadContent(s);
-            });
-        }
-        catch(InterruptedException e)
-        {
-            OpenBST.LOG.warn("Failed to synchronize", e);
-        }
+            view.getEngine().loadContent(s);
+        });
+
         isAlreadyBuilt = true;
     }
 
@@ -316,44 +309,6 @@ public class NodePanel extends JScrollablePanel
         }
     }
 
-    private String b64bg()
-    {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        try
-        {
-            ImageIO.write(imageClient.getCurrentBackground(), "PNG", baos);
-        }
-        catch(IOException e)
-        {
-            OpenBST.LOG.warn("Failed to create Base64 background", e);
-        }
-        return Base64.getMimeEncoder().encodeToString(baos.toByteArray()).replaceAll("[\n\r]", "");
-    }
-
-    private void jfxRunAndWait(Runnable runnable) throws InterruptedException
-    {
-        if(Platform.isFxApplicationThread())
-        {
-            Platform.runLater(runnable);
-        }
-        else
-        {
-            CountDownLatch latch = new CountDownLatch(1);
-            Platform.runLater(() ->
-            {
-                try
-                {
-                    runnable.run();
-                }
-                finally
-                {
-                    latch.countDown();
-                }
-            });
-            latch.await();
-        }
-
-    }
 
     public void setText(final String text)
     {
@@ -377,7 +332,7 @@ public class NodePanel extends JScrollablePanel
                     | SecurityException e)
             {
                 OpenBST.LOG.warn("Color does not exist : " + color, e);
-                SwingUtilities.invokeLater(() -> Messagers.showMessage(OpenBST.getInstance(),
+                SwingUtilities.invokeLater(() -> Messagers.showMessage(OpenBSTGUI.getInstance(),
                         Lang.get("story.unknowncolor").replace("$c", color), Messagers.TYPE_ERROR));
             }
         }
@@ -394,7 +349,7 @@ public class NodePanel extends JScrollablePanel
     public void setBackgroundVisible(final boolean selected)
     {
         backgroundVisible = selected;
-        repaint();
+        build();
     }
 
     public void setJSEnabled(boolean b)
@@ -441,7 +396,7 @@ public class NodePanel extends JScrollablePanel
 
     public void dispose()
     {
-        OpenBST.getInstance().removeDarkModeCallbback(callback);
+        OpenBSTGUI.getInstance().removeDarkModeCallbback(callback);
     }
 
     @Experimental

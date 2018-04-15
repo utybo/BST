@@ -41,9 +41,10 @@ import utybo.branchingstorytree.api.story.TextNode;
 import utybo.branchingstorytree.api.story.VirtualNode;
 import utybo.branchingstorytree.swing.Icons;
 import utybo.branchingstorytree.swing.Messagers;
-import utybo.branchingstorytree.swing.OpenBST;
+import utybo.branchingstorytree.swing.OpenBSTGUI;
 import utybo.branchingstorytree.swing.editor.StorySingleNodeEditor.Status;
 import utybo.branchingstorytree.swing.utils.AlphanumComparator;
+import utybo.branchingstorytree.swing.utils.Lang;
 import utybo.branchingstorytree.swing.visuals.JScrollablePanel;
 import utybo.branchingstorytree.swing.visuals.JScrollablePanel.ScrollableSizeHint;
 
@@ -117,7 +118,7 @@ public class StoryNodesEditor extends JPanel implements EditorControl<Collection
         add(panel, "cell 0 1 2 1,alignx leading,growy");
 
         JPopupMenu createMenu = new JPopupMenu();
-        createMenu.add(new AbstractAction("Add a Text Node", //
+        createMenu.add(new AbstractAction(Lang.get("editor.panel.text"), //
                 new ImageIcon(Icons.getImage("TextNode", 16)))
         {
             @Override
@@ -126,7 +127,7 @@ public class StoryNodesEditor extends JPanel implements EditorControl<Collection
                 addNode(new StoryTextNodeEditor(StoryNodesEditor.this));
             }
         });
-        createMenu.add(new AbstractAction("Add a Virtual Node",
+        createMenu.add(new AbstractAction(Lang.get("editor.panel.virtual"),
                 new ImageIcon(Icons.getImage("VirtualNode", 16)))
         {
 
@@ -147,7 +148,7 @@ public class StoryNodesEditor extends JPanel implements EditorControl<Collection
             }
         });
 
-        JButton btnAddNode = new JButton("Add node");
+        JButton btnAddNode = new JButton(Lang.get("editor.panel.add"));
         btnAddNode.addMouseListener(new MouseAdapter()
         {
             @Override
@@ -158,7 +159,7 @@ public class StoryNodesEditor extends JPanel implements EditorControl<Collection
         });
         panel.add(btnAddNode);
 
-        JButton btnRemoveNode = new JButton("Remove node");
+        JButton btnRemoveNode = new JButton(Lang.get("editor.panel.remove"));
         btnRemoveNode.addActionListener(e -> removeNode());
         panel.add(btnRemoveNode);
 
@@ -169,16 +170,16 @@ public class StoryNodesEditor extends JPanel implements EditorControl<Collection
         StorySingleNodeEditor ssne = jlist.getSelectedValue();
         if(ssne == null)
         {
-            Messagers.showMessage(OpenBST.getInstance(), "No nodes selected!",
+            Messagers.showMessage(OpenBSTGUI.getInstance(), Lang.get("editor.panel.noselected"),
                     Messagers.TYPE_ERROR);
             return;
         }
         else
         {
-            int i = Messagers.showConfirm(OpenBST.getInstance(),
-                    "<html>You are about to remove this node :<p>" + ssne.getIdentifier() + " : "
-                            + StringEscapeUtils.escapeHtml(ssne.getSummary())
-                            + "<p><p>Are you sure you want to remove it? This cannot be undone later.",
+            int i = Messagers.showConfirm(OpenBSTGUI.getInstance(),
+                    "<html>" + Lang.get("editor.panel.removeconfirm")
+                            .replace("$i", ssne.getIdentifier())
+                            .replace("$s", StringEscapeUtils.escapeHtml(ssne.getSummary())),
                     Messagers.OPTIONS_YES_NO);
             if(i == Messagers.OPTION_YES)
             {
@@ -300,7 +301,7 @@ public class StoryNodesEditor extends JPanel implements EditorControl<Collection
     {
         ArrayList<StorySingleNodeEditor> seen = new ArrayList<>();
         // Because the algorithm used can mark errors twice we use a set to ensure
-        // it only contains every errored element once
+        // it only contains each errored element once
         LinkedHashSet<StorySingleNodeEditor> toMarkAsError = new LinkedHashSet<>();
         for(StorySingleNodeEditor ssne : list)
         {

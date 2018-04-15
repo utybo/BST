@@ -18,7 +18,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import net.miginfocom.swing.MigLayout;
-import utybo.branchingstorytree.swing.OpenBST;
+import utybo.branchingstorytree.swing.OpenBSTGUI;
 import utybo.branchingstorytree.swing.utils.Lang;
 
 public class JBannerPanel extends JPanel
@@ -30,13 +30,16 @@ public class JBannerPanel extends JPanel
     private final Color c;
     private final Consumer<Boolean> callback = b -> setBackground(
             b ? getColor().darker() : getColor().brighter());
+    private boolean canBeHidden;
 
-    public JBannerPanel(Icon icon, Color c, String text, JComponent btn, boolean hideButton)
+    public JBannerPanel(Icon icon, Color c, String text, JComponent btn, boolean hideButton,
+            JComponent... otherButtons)
     {
+        canBeHidden = hideButton;
         c = new Color(c.getRed(), c.getGreen(), c.getBlue(), 150);
         this.c = c;
         setBackground(c.brighter());
-        OpenBST.getInstance().addDarkModeCallback(callback);
+        OpenBSTGUI.getInstance().addDarkModeCallback(callback);
         setLayout(new MigLayout("gap 10px", "[][grow][]", "[]"));
 
         JLabel label = new JLabel(icon);
@@ -49,12 +52,15 @@ public class JBannerPanel extends JPanel
         btnHide.addActionListener(e ->
         {
             setVisible(false);
-            OpenBST.getInstance().removeDarkModeCallbback(callback);
+            OpenBSTGUI.getInstance().removeDarkModeCallbback(callback);
         });
 
         if(btn != null)
         {
             this.add(btn, "flowy,cell 2 0,alignx center, aligny center");
+            if(otherButtons.length > 0)
+                for(JComponent cx : otherButtons)
+                    this.add(cx, "cell 2 0,alignx center, aligny center");
         }
         if(hideButton)
         {
@@ -65,5 +71,10 @@ public class JBannerPanel extends JPanel
     private Color getColor()
     {
         return c;
+    }
+    
+    public boolean isHideable()
+    {
+        return canBeHidden;
     }
 }

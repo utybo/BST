@@ -21,6 +21,7 @@ import javax.swing.border.TitledBorder;
 import net.miginfocom.swing.MigLayout;
 import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.api.story.NodeOption;
+import utybo.branchingstorytree.swing.utils.Lang;
 import utybo.branchingstorytree.swing.utils.UndoUtils;
 
 @SuppressWarnings("serial")
@@ -30,12 +31,11 @@ public class StoryOptionsEditor extends JPanel implements EditorControl<List<Nod
 
     public StoryOptionsEditor()
     {
-        setBorder(new TitledBorder(null, "Options", TitledBorder.LEADING, TitledBorder.TOP, null,
+        setBorder(new TitledBorder(null, Lang.get("editor.node.options"), TitledBorder.LEADING, TitledBorder.TOP, null,
                 null));
         setLayout(new MigLayout("", "[grow]", "[][grow]"));
 
-        JLabel lblForSyntaxReference = new JLabel(
-                "For syntax reference, please check the Reference or the Tutorial");
+        JLabel lblForSyntaxReference = new JLabel(Lang.get("editor.node.optsyntax"));
         add(lblForSyntaxReference, "cell 0 0");
 
         JScrollPane scrollPane = new JScrollPane();

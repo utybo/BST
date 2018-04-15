@@ -97,7 +97,7 @@ public class CheckerDescriptor
     public boolean check() throws BSTException
     {
         if(checker.isExperimental())
-            client.warnExperimental(debugLine, story.getTag("__sourcename"));
+            client.warnExperimental(debugLine, story.getTag("__sourcename"), head);
         return checker.check(head, desc, debugLine, story, client);
     }
 

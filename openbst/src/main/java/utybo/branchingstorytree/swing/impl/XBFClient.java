@@ -25,7 +25,7 @@ import utybo.branchingstorytree.api.script.Dictionary;
 import utybo.branchingstorytree.api.story.BranchingStory;
 import utybo.branchingstorytree.swing.Icons;
 import utybo.branchingstorytree.swing.Messagers;
-import utybo.branchingstorytree.swing.OpenBST;
+import utybo.branchingstorytree.swing.OpenBSTGUI;
 import utybo.branchingstorytree.swing.utils.Lang;
 import utybo.branchingstorytree.swing.utils.LanguageUtils;
 import utybo.branchingstorytree.swing.visuals.StoryPanel;
@@ -56,7 +56,7 @@ public class XBFClient implements XBFHandler
             {
                 if((int)bs.getRegistry().get("__nonlatinwarned", 0) == 0)
                 {
-                    Messagers.showMessage(OpenBST.getInstance(), Lang.get("story.unicodecompat"),
+                    Messagers.showMessage(OpenBSTGUI.getInstance(), Lang.get("story.unicodecompat"),
                             Messagers.TYPE_INFO, Lang.get("story.unicodecompat.title"),
                             new ImageIcon(Icons.getImage("LanguageError", 48)));
                 }

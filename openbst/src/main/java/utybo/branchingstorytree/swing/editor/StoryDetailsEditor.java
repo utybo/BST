@@ -21,6 +21,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import net.miginfocom.swing.MigLayout;
+import utybo.branchingstorytree.swing.utils.Lang;
 
 @SuppressWarnings("serial")
 public class StoryDetailsEditor extends JPanel implements EditorControl<Map<String, String>>
@@ -36,7 +37,7 @@ public class StoryDetailsEditor extends JPanel implements EditorControl<Map<Stri
     {
         setLayout(new MigLayout("", "[][grow]", "[][][][][][][]"));
 
-        JLabel lblStoryName = new JLabel("Story name : ");
+        JLabel lblStoryName = new JLabel(Lang.get("editor.details.name"));
         add(lblStoryName, "cell 0 0,alignx trailing");
 
         storyName = new JTextField();
@@ -64,7 +65,7 @@ public class StoryDetailsEditor extends JPanel implements EditorControl<Map<Stri
         add(storyName, "cell 1 0,growx");
         storyName.setColumns(10);
 
-        JLabel lblAuthor = new JLabel("Author : ");
+        JLabel lblAuthor = new JLabel(Lang.get("editor.details.author"));
         add(lblAuthor, "cell 0 1,alignx trailing");
 
         author = new JTextField();
@@ -95,7 +96,7 @@ public class StoryDetailsEditor extends JPanel implements EditorControl<Map<Stri
         JSeparator separator = new JSeparator();
         add(separator, "cell 0 2 2 1,growx");
 
-        JLabel lblMarkup = new JLabel("Markup : ");
+        JLabel lblMarkup = new JLabel(Lang.get("editor.details.markup"));
         add(lblMarkup, "cell 0 3,alignx trailing");
 
         markup = new JComboBox<String>();
@@ -103,7 +104,7 @@ public class StoryDetailsEditor extends JPanel implements EditorControl<Map<Stri
         markup.setEditable(true);
         add(markup, "cell 1 3,growx");
 
-        JLabel lblFont = new JLabel("Font : ");
+        JLabel lblFont = new JLabel(Lang.get("editor.details.font"));
         add(lblFont, "cell 0 4,alignx trailing");
 
         font = new JComboBox<String>();
@@ -111,7 +112,7 @@ public class StoryDetailsEditor extends JPanel implements EditorControl<Map<Stri
         font.setModel(new DefaultComboBoxModel<>(new String[] {"libre_baskerville", "ubuntu"}));
         add(font, "cell 1 4,growx");
 
-        JLabel lblSupertools = new JLabel("Supertools : ");
+        JLabel lblSupertools = new JLabel(Lang.get("editor.details.name"));
         add(lblSupertools, "flowy,cell 0 5,alignx trailing");
 
         supertools = new JComboBox<String>();
@@ -119,7 +120,7 @@ public class StoryDetailsEditor extends JPanel implements EditorControl<Map<Stri
                 new String[] {"all", "hidecheat", "savestate", "savestatenoio", "none"}));
         add(supertools, "cell 1 5,growx");
 
-        nsfw = new JCheckBox("This story is for a mature audience only");
+        nsfw = new JCheckBox(Lang.get("editor.details.nsfw"));
         add(nsfw, "cell 0 6 2 1");
 
     }

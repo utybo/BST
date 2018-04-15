@@ -15,6 +15,7 @@ import utybo.branchingstorytree.htb.HTBHandler;
 import utybo.branchingstorytree.swing.Icons;
 import utybo.branchingstorytree.swing.Messagers;
 import utybo.branchingstorytree.swing.OpenBST;
+import utybo.branchingstorytree.swing.OpenBSTGUI;
 import utybo.branchingstorytree.swing.utils.Lang;
 import utybo.branchingstorytree.swing.visuals.NodePanel;
 import utybo.branchingstorytree.swing.visuals.StoryPanel;
@@ -23,7 +24,7 @@ import utybo.branchingstorytree.xsf.XSFHandler;
 
 public class TabClient implements BSTClient
 {
-    private final OpenBST instance;
+    private final OpenBSTGUI instance;
     private StoryPanel tab;
     private TabUIB uibHandler;
     private BRMAdvancedHandler brmClient;
@@ -35,7 +36,7 @@ public class TabClient implements BSTClient
     private XSFClient xsfClient = new XSFClient();
     private boolean isExperimental;
 
-    public TabClient(final OpenBST instance)
+    public TabClient(final OpenBSTGUI instance)
     {
         this.instance = instance;
         bdfClient = new BDFClient();
@@ -130,17 +131,23 @@ public class TabClient implements BSTClient
     {
         OpenBST.LOG.warn(string);
     }
+    
+    public void error(String string)
+    {
+        OpenBST.LOG.error(string);
+        Messagers.showMessage(OpenBSTGUI.getInstance(), string, Messagers.TYPE_ERROR);
+    }
 
     @Override
-    public void warnExperimental(int line, String from)
+    public void warnExperimental(int line, String from, String what)
     {
         if(!isExperimental)
         {
             isExperimental = true;
-            Messagers.showMessage(OpenBST.getInstance(),
+            Messagers.showMessage(OpenBSTGUI.getInstance(),
                     "<html><body style='width:" + (int)(Icons.getScale() * 300) + "px'>"
                             + Lang.get("story.experimental").replace("$l", "" + line).replace("$f",
-                                    from),
+                                    from).replace("$w", what),
                     Messagers.TYPE_WARNING, Lang.get("story.experimental.title"),
                     new ImageIcon(Icons.getImage("Experiment", 48)));
         }

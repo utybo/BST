@@ -8,9 +8,10 @@
  */
 package utybo.branchingstorytree.swing.editor;
 
-import javax.swing.JPanel;
-import net.miginfocom.swing.MigLayout;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
+
+import net.miginfocom.swing.MigLayout;
 
 @SuppressWarnings("serial")
 public class StoryEditorWelcomeScreen extends JPanel

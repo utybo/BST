@@ -38,6 +38,7 @@ import org.apache.commons.io.IOUtils;
 import net.miginfocom.swing.MigLayout;
 import utybo.branchingstorytree.swing.Icons;
 import utybo.branchingstorytree.swing.OpenBST;
+import utybo.branchingstorytree.swing.OpenBSTGUI;
 import utybo.branchingstorytree.swing.utils.Lang;
 
 public class AboutDialog extends JDialog
@@ -48,14 +49,14 @@ public class AboutDialog extends JDialog
     private static final long serialVersionUID = 1L;
 
     @SuppressWarnings("unchecked")
-    public AboutDialog(OpenBST parent)
+    public AboutDialog(OpenBSTGUI parent)
     {
         super(parent);
         setTitle(Lang.get("about.title"));
         setModalityType(ModalityType.APPLICATION_MODAL);
 
         JPanel banner = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        banner.setBackground(OpenBST.OPENBST_BLUE);
+        banner.setBackground(OpenBSTGUI.OPENBST_BLUE);
         JLabel lblOpenbst = new JLabel(new ImageIcon(Icons.getImage("FullLogoWhite", 48)));
         lblOpenbst.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         banner.add(lblOpenbst, "flowx,cell 0 0,alignx center");
@@ -71,7 +72,7 @@ public class AboutDialog extends JDialog
         Map attrs = f.getAttributes();
         attrs.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
         lblWebsite.setFont(f.deriveFont(attrs));
-        lblWebsite.setForeground(OpenBST.OPENBST_BLUE);
+        lblWebsite.setForeground(OpenBSTGUI.OPENBST_BLUE);
         lblWebsite.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         lblWebsite.addMouseListener(new MouseAdapter()
         {
@@ -94,7 +95,7 @@ public class AboutDialog extends JDialog
         });
         pan.add(lblWebsite, "cell 0 0,alignx center");
 
-        JLabel lblVersion = new JLabel(Lang.get("about.version").replace("$v", OpenBST.version));
+        JLabel lblVersion = new JLabel(Lang.get("about.version").replace("$v", OpenBST.VERSION));
         pan.add(lblVersion, "flowy,cell 0 1");
 
         JScrollPane scrollPane = new JScrollPane();
@@ -105,7 +106,8 @@ public class AboutDialog extends JDialog
         textArea.setMargin(new Insets(5, 5, 5, 5));
         textArea.setLineWrap(true);
         textArea.setWrapStyleWord(true);
-        textArea.setFont(new Font(textArea.getFont().getFontName(), Font.PLAIN, (int)(Icons.getScale() * 11)));
+        textArea.setFont(new Font(textArea.getFont().getFontName(), Font.PLAIN,
+                (int)(Icons.getScale() * 11)));
 
         try(InputStream in = getClass()
                 .getResourceAsStream("/utybo/branchingstorytree/swing/about.txt");)

@@ -59,6 +59,8 @@ import utybo.branchingstorytree.api.story.TextNode;
 import utybo.branchingstorytree.swing.Icons;
 import utybo.branchingstorytree.swing.Messagers;
 import utybo.branchingstorytree.swing.OpenBST;
+import utybo.branchingstorytree.swing.OpenBSTGUI;
+import utybo.branchingstorytree.swing.impl.IMGClient;
 import utybo.branchingstorytree.swing.impl.SSBClient;
 import utybo.branchingstorytree.swing.impl.TabClient;
 import utybo.branchingstorytree.swing.utils.Lang;
@@ -106,7 +108,7 @@ public class StoryPanel extends JPanel
     /**
      * The OpenBST window
      */
-    protected OpenBST parentWindow;
+    protected OpenBSTGUI parentWindow;
 
     /**
      * The node panel the text is displayed in
@@ -142,7 +144,7 @@ public class StoryPanel extends JPanel
      * @param client
      *            the client that will be linked to this story
      */
-    public StoryPanel(final BranchingStory story, final OpenBST parentWindow, final File f,
+    public StoryPanel(final BranchingStory story, final OpenBSTGUI parentWindow, final File f,
             final TabClient client)
     {
         LOG.trace("=> Initial setup");
@@ -168,10 +170,99 @@ public class StoryPanel extends JPanel
         client.setNodePanel(nodePanel);
         nodePanel.setScrollableWidth(ScrollableSizeHint.FIT);
         nodePanel.setScrollableHeight(ScrollableSizeHint.STRETCH);
-        //        scrollPane.setViewportView(nodePanel);
         add(nodePanel, "grow, pushy, wrap");
 
         add(optionPanel, "growx");
+    }
+
+    /**
+     * Get the file the story is from
+     *
+     * @return the file originally put in the constructor
+     */
+    public File getBSTFile()
+    {
+        return bstFile;
+    }
+
+    public JButton getHrefHint()
+    {
+        return hrefHint;
+    }
+
+    public JButton getJSHint()
+    {
+        return jsHint;
+    }
+
+    public BranchingStory getStory()
+    {
+        return story;
+    }
+
+    /**
+     * Get the title of this story, used to get the title for the tab
+     *
+     * @return
+     */
+    public String getTitle()
+    {
+        final HashMap<String, String> tagMap = story.getTagMap();
+        return Lang.get("story.title")
+                .replace("$t", tagMap.getOrDefault("title", Lang.get("story.missingtitle")))
+                .replace("$a", tagMap.getOrDefault("author", Lang.get("story.missingauthor")));
+    }
+
+    public JPanel getUIBPanel()
+    {
+        return uibPanel;
+    }
+
+    /**
+     * Check if there is anything to do after creation and we can continue
+     * running the story
+     *
+     * @return true if we can continue running the story, false otherwise
+     */
+    public boolean postCreation()
+    {
+        LOG.trace("NSFW warning check");
+        if(story.hasTag("nsfw"))
+        {
+            if(Messagers.showConfirm(parentWindow, Lang.get("story.nsfw"), Messagers.OPTIONS_YES_NO,
+                    Messagers.TYPE_WARNING, Lang.get("story.nsfw.title")) != Messagers.OPTION_OK)
+            {
+                LOG.trace("=> Close");
+                return false;
+            }
+            else if(nodeIdLabel != null)
+            {
+                nodeIdLabel.setEnabled(true);
+                nodeIdLabel.setForeground(Color.RED);
+            }
+        }
+        LOG.trace("Font compatibility check");
+        if(!story.hasTag("font")) // If no fonts are forced
+        {
+            if(LanguageUtils.checkNonLatin(story))
+            {
+                Messagers.showMessage(OpenBSTGUI.getInstance(), Lang.get("story.unicodecompat"),
+                        Messagers.TYPE_INFO, Lang.get("story.unicodecompat.title"),
+                        new ImageIcon(Icons.getImage("LanguageError", 48)));
+                story.getRegistry().put("__nonlatin_" + story.getTag("__sourcename"), 1);
+                story.getRegistry().put("__nonlatinwarned", 1);
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Setup of the story. This can be ran again if the story changed
+     */
+    public void setupStory()
+    {
+        LOG.trace("Displaying first node");
+        showNode(story.getInitialNode());
     }
 
     /**
@@ -457,14 +548,7 @@ public class StoryPanel extends JPanel
         backgroundButton = toolBar.add(new AbstractAction(Lang.get("story.seebackground"),
                 new ImageIcon(Icons.getImage("Picture", 16)))
         {
-
-            /**
-             *
-             */
             private static final long serialVersionUID = 1L;
-            private Dimension previousBounds;
-            private Image previousImage;
-            private int x, y;
 
             @Override
             public void actionPerformed(final ActionEvent e)
@@ -472,10 +556,30 @@ public class StoryPanel extends JPanel
                 final JDialog dialog = new JDialog(parentWindow);
                 dialog.getContentPane().add(new JPanel()
                 {
+                    private Dimension previousBounds;
+                    private Image previousImage;
+                    private int x, y;
+
                     /**
                      *
                      */
                     private static final long serialVersionUID = 1L;
+
+                    private double getScaleFactor(final int iMasterSize, final int iTargetSize)
+                    {
+                        return (double)iTargetSize / (double)iMasterSize;
+                    }
+
+                    private double getScaleFactorToFit(final Dimension masterSize,
+                            final Dimension targetSize)
+                    {
+                        final double dScaleWidth = getScaleFactor(masterSize.width,
+                                targetSize.width);
+                        final double dScaleHeight = getScaleFactor(masterSize.height,
+                                targetSize.height);
+                        final double dScale = Math.min(dScaleHeight, dScaleWidth);
+                        return dScale;
+                    }
 
                     @Override
                     protected void paintComponent(final Graphics g)
@@ -493,18 +597,10 @@ public class StoryPanel extends JPanel
                         {
                             final BufferedImage bi = client.getIMGHandler().getCurrentBackground();
                             double scaleFactor = 1d;
-                            if(bi.getWidth() > bi.getHeight())
-                            {
-                                scaleFactor = getScaleFactorToFit(
-                                        new Dimension(bi.getWidth(), bi.getHeight()),
-                                        getParent().getSize());
-                            }
-                            else if(bi.getHeight() > bi.getWidth())
-                            {
-                                scaleFactor = getScaleFactorToFit(
-                                        new Dimension(bi.getWidth(), bi.getHeight()),
-                                        getParent().getSize());
-                            }
+                            scaleFactor = getScaleFactorToFit(
+                                    new Dimension(bi.getWidth(), bi.getHeight()),
+                                    getParent().getSize());
+
                             final int scaleWidth = (int)Math.round(bi.getWidth() * scaleFactor);
                             final int scaleHeight = (int)Math.round(bi.getHeight() * scaleFactor);
 
@@ -518,24 +614,6 @@ public class StoryPanel extends JPanel
                         }
 
                         g.drawImage(image, x, y, this);
-                    }
-
-                    private double getScaleFactorToFit(final Dimension masterSize,
-                            final Dimension targetSize)
-                    {
-                        final double dScaleWidth = getScaleFactor(masterSize.width,
-                                targetSize.width);
-                        final double dScaleHeight = getScaleFactor(masterSize.height,
-                                targetSize.height);
-                        final double dScale = Math.min(dScaleHeight, dScaleWidth);
-                        return dScale;
-                    }
-
-                    private double getScaleFactor(final int iMasterSize, final int iTargetSize)
-                    {
-                        double dScale = 1;
-                        dScale = (double)iTargetSize / (double)iMasterSize;
-                        return dScale;
                     }
                 });
                 dialog.setTitle(Lang.get("story.background"));
@@ -596,6 +674,23 @@ public class StoryPanel extends JPanel
     }
 
     /**
+     * Triggered when an option is selected
+     *
+     * @param nodeOption
+     *            The option selected
+     * @throws BSTException
+     */
+    private void optionSelected(final NodeOption nodeOption) throws BSTException
+    {
+        final StoryNode nextNode = nodeOption.getNextNode(currentNode.getStory());
+        for(final ActionDescriptor oa : nodeOption.getDoOnClickActions())
+        {
+            oa.exec();
+        }
+        showNode(nextNode);
+    }
+
+    /**
      * Read the toolbar level
      *
      * @return an integer that represents the level specified in the
@@ -626,120 +721,28 @@ public class StoryPanel extends JPanel
     }
 
     /**
-     * Restore a previous save state by applying it to the story first and
-     * showing the node stored
-     *
-     * @param ss
+     * Internal reset (subroutine method)
      */
-    protected void restoreSaveState(final SaveState ss)
+    private void reset()
     {
-        OpenBST.LOG.trace("Restoring from " + ss.getFrom() + " id " + ss.getNodeId());
+        LOG.trace("=> Performing internal reset");
+        story.reset();
 
-        ss.applySaveState(story);
+        client.getUIBarHandler().resetUib();
+        client.getIMGHandler().reset();
+        client.getSSBHandler().reset();
+        client.getBDFHandler().reset();
 
-        // Also notify modules that need to restore their state
-        client.getSSBHandler().restoreSaveState();
-        client.getIMGHandler().restoreSaveState();
-        new Thread(() ->
-        {
-            try
-            {
-                // BRM needs to be reset on anything but the EDT, thus we need
-                // to launch it in a separate thread.
-                // Fear not, its progress monitor blocks interaction with the application
-                client.getBRMHandler().restoreSaveState();
-            }
-            catch(final BSTException e)
-            {
-                LOG.error("Error on BRM restore attempt", e);
-                SwingUtilities.invokeLater(() -> Messagers.showException(OpenBST.getInstance(),
-                        Lang.get("story.modulerestorefail").replace("$m", "BRM"), e));
-            }
-        }).start();;
-
-        try
-        {
-            client.getUIBarHandler().restoreState();
-        }
-        catch(final BSTException e)
-        {
-            LOG.error("Error on UIB restore attempt", e);
-            SwingUtilities.invokeLater(() -> Messagers.showException(OpenBST.getInstance(),
-                    Lang.get("story.modulerestorefail").replace("$m", "UIB"), e));
-        }
-        String from = ss.getFrom();
-        if(from == null || "<main>".equals(from))
-        {
-            showNode(story.getNode(ss.getNodeId()));
-        }
-        else
-        {
-            BranchingStory bs = client.getXBFHandler().getAdditionalStory(from);
-            if(bs == null)
-            {
-                LOG.error("Unknown story : " + from);
-                Messagers.showMessage(OpenBST.getInstance(),
-                        Lang.get("story.unknownstory").replace("$s", from), Messagers.TYPE_ERROR);
-            }
-            else
-            {
-                StoryNode node = bs.getNode(ss.getNodeId());
-                if(node == null)
-                {
-                    LOG.error("Unknown node (id " + ss.getNodeId() + " from " + from + ")");
-                    Messagers
-                            .showMessage(OpenBST.getInstance(),
-                                    Lang.get("story.missingnode").replace("$n", "" + ss.getNodeId())
-                                            .replace("$a", "?").replace("$f", from),
-                                    Messagers.TYPE_ERROR);
-                }
-                else
-                {
-                    showNode(node);
-                }
-            }
-        }
-    }
-
-    /**
-     * Setup of the story. This can be ran again if the story changed
-     */
-    public void setupStory()
-    {
-        LOG.trace("Displaying first node");
+        LOG.trace("=> Processing initial node again");
         showNode(story.getInitialNode());
     }
 
     /**
-     * Reload the file (not clean, this is a subroutine method part of the
-     * entire reloading process)
+     * Reset all the options and return to a clean state for the options panel
      */
-    protected void reload(Consumer<BranchingStory> callback)
+    private void resetOptions()
     {
-        parentWindow.loadFile(bstFile, client, bs ->
-        {
-            story = bs;
-            try
-            {
-                client.getBRMHandler().load();
-            }
-            catch(BSTException e)
-            {
-                OpenBST.LOG.error("Failed to reload resources", e);
-            }
-            try
-            {
-                SwingUtilities.invokeAndWait(() ->
-                {
-                    setupStory();
-                    callback.accept(bs);
-                });
-            }
-            catch(Exception e)
-            {
-                OpenBST.LOG.error("Failed to setup story", e);
-            }
-        });
+        optionPanel.removeAll();
     }
 
     /**
@@ -756,7 +759,7 @@ public class StoryPanel extends JPanel
             // This should never happen
 
             LOG.error("Tried to show a null node!");
-            Messagers.showMessage(OpenBST.getInstance(), Lang.get("story.nullnode"),
+            Messagers.showMessage(OpenBSTGUI.getInstance(), Lang.get("story.nullnode"),
                     Messagers.TYPE_ERROR);
             return;
         }
@@ -783,7 +786,7 @@ public class StoryPanel extends JPanel
                 LOG.trace("=> Logical node result : " + (node == null ? "null" : node.getId()));
                 if(node == null)
                 {
-                    Messagers.showMessage(OpenBST.getInstance(),
+                    Messagers.showMessage(OpenBSTGUI.getInstance(),
                             Lang.get("story.logicalnodedeadend")
                                     .replace("$n", "" + storyNode.getId())
                                     .replace("$f", storyNode.getStory().getTag("__sourcename"))
@@ -823,12 +826,12 @@ public class StoryPanel extends JPanel
             final String s = Lang.get("story.error2").replace("$n", "" + currentNode.getId())
                     .replace("$a", currentNode.getTagOrDefault("alias", "<none>"))
                     .replace("$m", e.getMessage()).replace("$l", e.getWhere() + "");
-            Messagers.showException(OpenBST.getInstance(), s, e);
+            Messagers.showException(OpenBSTGUI.getInstance(), s, e);
         }
         catch(final Exception e)
         {
             LOG.error("Encountered a generic exception while trying to show a node", e);
-            Messagers.showException(OpenBST.getInstance(),
+            Messagers.showException(OpenBSTGUI.getInstance(),
                     Lang.get("story.error").replace("$n", "" + currentNode.getId())
                             .replace("$a", currentNode.getTagOrDefault("alias", "<none>"))
                             .replace("$f", storyNode.getStory().getTag("__sourcename"))
@@ -878,13 +881,13 @@ public class StoryPanel extends JPanel
                         if(currentNode == null)
                         {
                             LOG.debug("=> It was the initial node");
-                            Messagers.showMessage(OpenBST.getInstance(),
+                            Messagers.showMessage(OpenBSTGUI.getInstance(),
                                     Lang.get("story.missinginitial"), Messagers.TYPE_ERROR);
                             return;
                         }
                         else
                         {
-                            Messagers.showMessage(OpenBST.getInstance(),
+                            Messagers.showMessage(OpenBSTGUI.getInstance(),
                                     Lang.get("story.missingnode").replace("$n", "" + e.getId())
                                             .replace("$f", "" + e.getSourceFile())
                                             .replace("$a", "<none>"),
@@ -895,7 +898,7 @@ public class StoryPanel extends JPanel
                     catch(final BSTException e)
                     {
                         LOG.error("Encountered an error while triggering option", e);
-                        Messagers.showMessage(OpenBST.getInstance(), Lang.get("story.error")
+                        Messagers.showMessage(OpenBSTGUI.getInstance(), Lang.get("story.error")
                                 .replace("$n", "" + currentNode.getId())
                                 .replace("$a", currentNode.getTagOrDefault("alias", "<none>"))
                                 .replace("$f", e.getSourceFile()).replace("$m", e.getMessage()),
@@ -960,99 +963,124 @@ public class StoryPanel extends JPanel
             optionPanel.add(button, "grow");
         }
 
+        optionPanel.revalidate();
+        optionPanel.repaint();
+
     }
 
     /**
-     * Internal reset (subroutine method)
+     * Reload the file (not clean, this is a subroutine method part of the
+     * entire reloading process)
      */
-    private void reset()
+    protected void reload(Consumer<BranchingStory> callback)
     {
-        LOG.trace("=> Performing internal reset");
-        story.reset();
-
-        client.getUIBarHandler().resetUib();
-        client.getIMGHandler().reset();
-        client.getSSBHandler().reset();
-        client.getBDFHandler().reset();
-
-        LOG.trace("=> Processing initial node again");
-        showNode(story.getInitialNode());
-    }
-
-    /**
-     * Reset all the options and return to a clean state for the options panel
-     */
-    private void resetOptions()
-    {
-        optionPanel.removeAll();
-    }
-
-    /**
-     * Triggered when an option is selected
-     *
-     * @param nodeOption
-     *            The option selected
-     * @throws BSTException
-     */
-    private void optionSelected(final NodeOption nodeOption) throws BSTException
-    {
-        final StoryNode nextNode = nodeOption.getNextNode(currentNode.getStory());
-        for(final ActionDescriptor oa : nodeOption.getDoOnClickActions())
+        parentWindow.loadFile(bstFile, client, bs ->
         {
-            oa.exec();
-        }
-        showNode(nextNode);
+            story = bs;
+            try
+            {
+                client.getBRMHandler().load();
+                if(Boolean.parseBoolean(story.getTagOrDefault("img_requireinternal", "false")))
+                    IMGClient.initInternal();
+            }
+            catch(BSTException e)
+            {
+                OpenBST.LOG.error("Failed to reload resources", e);
+            }
+            try
+            {
+                SwingUtilities.invokeAndWait(() ->
+                {
+                    setupStory();
+                    callback.accept(bs);
+                });
+            }
+            catch(Exception e)
+            {
+                OpenBST.LOG.error("Failed to setup story", e);
+            }
+        });
     }
 
     /**
-     * Get the title of this story, used to get the title for the tab
+     * Restore a previous save state by applying it to the story first and
+     * showing the node stored
      *
-     * @return
+     * @param ss
      */
-    public String getTitle()
+    protected void restoreSaveState(final SaveState ss)
     {
-        final HashMap<String, String> tagMap = story.getTagMap();
-        return Lang.get("story.title")
-                .replace("$t", tagMap.getOrDefault("title", Lang.get("story.missingtitle")))
-                .replace("$a", tagMap.getOrDefault("author", Lang.get("story.missingauthor")));
+        OpenBST.LOG.trace("Restoring from " + ss.getFrom() + " id " + ss.getNodeId());
+
+        ss.applySaveState(story);
+
+        // Also notify modules that need to restore their state
+        client.getSSBHandler().restoreSaveState();
+        client.getIMGHandler().restoreSaveState();
+        new Thread(() ->
+        {
+            try
+            {
+                // BRM needs to be reset on anything but the EDT, thus we need
+                // to launch it in a separate thread.
+                // Fear not, its progress monitor blocks interaction with the application
+                client.getBRMHandler().restoreSaveState();
+            }
+            catch(final BSTException e)
+            {
+                LOG.error("Error on BRM restore attempt", e);
+                SwingUtilities.invokeLater(() -> Messagers.showException(OpenBSTGUI.getInstance(),
+                        Lang.get("story.modulerestorefail").replace("$m", "BRM"), e));
+            }
+        }).start();;
+
+        try
+        {
+            client.getUIBarHandler().restoreState();
+        }
+        catch(final BSTException e)
+        {
+            LOG.error("Error on UIB restore attempt", e);
+            SwingUtilities.invokeLater(() -> Messagers.showException(OpenBSTGUI.getInstance(),
+                    Lang.get("story.modulerestorefail").replace("$m", "UIB"), e));
+        }
+        String from = ss.getFrom();
+        if(from == null || "<main>".equals(from))
+        {
+            showNode(story.getNode(ss.getNodeId()));
+        }
+        else
+        {
+            BranchingStory bs = client.getXBFHandler().getAdditionalStory(from);
+            if(bs == null)
+            {
+                LOG.error("Unknown story : " + from);
+                Messagers.showMessage(OpenBSTGUI.getInstance(),
+                        Lang.get("story.unknownstory").replace("$s", from), Messagers.TYPE_ERROR);
+            }
+            else
+            {
+                StoryNode node = bs.getNode(ss.getNodeId());
+                if(node == null)
+                {
+                    LOG.error("Unknown node (id " + ss.getNodeId() + " from " + from + ")");
+                    Messagers
+                            .showMessage(OpenBSTGUI.getInstance(),
+                                    Lang.get("story.missingnode").replace("$n", "" + ss.getNodeId())
+                                            .replace("$a", "?").replace("$f", from),
+                                    Messagers.TYPE_ERROR);
+                }
+                else
+                {
+                    showNode(node);
+                }
+            }
+        }
     }
 
-    /**
-     * Check if there is anything to do after creation and we can continue
-     * running the story
-     *
-     * @return true if we can continue running the story, false otherwise
-     */
-    public boolean postCreation()
+    public TabClient getClient()
     {
-        LOG.trace("NSFW warning check");
-        if(story.hasTag("nsfw"))
-        {
-            if(Messagers.showConfirm(parentWindow, Lang.get("story.nsfw"), Messagers.OPTIONS_YES_NO,
-                    Messagers.TYPE_WARNING, Lang.get("story.nsfw.title")) != Messagers.OPTION_OK)
-            {
-                LOG.trace("=> Close");
-                return false;
-            }
-            else if(nodeIdLabel != null)
-            {
-                nodeIdLabel.setEnabled(true);
-                nodeIdLabel.setForeground(Color.RED);
-            }
-        }
-        LOG.trace("Font compatibility check");
-        if(!story.hasTag("font")) // If no fonts are forced
-        {
-            if(LanguageUtils.checkNonLatin(story))
-            {
-                Messagers.showMessage(OpenBST.getInstance(), Lang.get("story.unicodecompat"),
-                        Messagers.TYPE_INFO, Lang.get("story.unicodecompat.title"),
-                        new ImageIcon(Icons.getImage("LanguageError", 48)));
-                story.getRegistry().put("__nonlatin_" + story.getTag("__sourcename"), 1);
-                story.getRegistry().put("__nonlatinwarned", 1);
-            }
-        }
-        return true;
+        return client;
     }
 
     /**
@@ -1064,35 +1092,5 @@ public class StoryPanel extends JPanel
         variableWatcherButton.setSelected(false);
         variableWatcher.deathNotified();
         variableWatcher.dispose();
-    }
-
-    /**
-     * Get the file the story is from
-     *
-     * @return the file originally put in the constructor
-     */
-    public File getBSTFile()
-    {
-        return bstFile;
-    }
-
-    public BranchingStory getStory()
-    {
-        return story;
-    }
-
-    public JPanel getUIBPanel()
-    {
-        return uibPanel;
-    }
-
-    public JButton getJSHint()
-    {
-        return jsHint;
-    }
-
-    public JButton getHrefHint()
-    {
-        return hrefHint;
     }
 }

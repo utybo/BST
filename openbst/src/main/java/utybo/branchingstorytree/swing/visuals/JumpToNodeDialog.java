@@ -33,7 +33,7 @@ import net.miginfocom.swing.MigLayout;
 import utybo.branchingstorytree.api.story.BranchingStory;
 import utybo.branchingstorytree.api.story.StoryNode;
 import utybo.branchingstorytree.swing.Icons;
-import utybo.branchingstorytree.swing.OpenBST;
+import utybo.branchingstorytree.swing.OpenBSTGUI;
 import utybo.branchingstorytree.swing.impl.TabClient;
 import utybo.branchingstorytree.swing.utils.Lang;
 
@@ -56,7 +56,7 @@ public class JumpToNodeDialog extends JDialog
     public JumpToNodeDialog(TabClient client, BranchingStory mainStory,
             Consumer<StoryNode> callback)
     {
-        super(OpenBST.getInstance());
+        super(OpenBSTGUI.getInstance());
         this.client = client;
         this.mainStory = mainStory;
         setModalityType(ModalityType.DOCUMENT_MODAL);
@@ -158,7 +158,7 @@ public class JumpToNodeDialog extends JDialog
         updateExistanceInfo();
 
         pack();
-        setLocationRelativeTo(OpenBST.getInstance());
+        setLocationRelativeTo(OpenBSTGUI.getInstance());
     }
 
     private StoryNode updateExistanceInfo()
@@ -193,7 +193,7 @@ public class JumpToNodeDialog extends JDialog
         btnOk.setEnabled(exists);
         lblNodeExistanceInfo.setText(Lang.get(exists ? "nodejump.exists" : "nodejump.notexists"));
         lblNodeExistanceInfo.setForeground(
-                exists ? (OpenBST.getInstance().isDark() ? Color.GREEN : Color.GREEN.darker())
+                exists ? (OpenBSTGUI.getInstance().isDark() ? Color.GREEN : Color.GREEN.darker())
                         : Color.RED);
 
         return sn;

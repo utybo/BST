@@ -29,7 +29,7 @@ import javax.swing.SwingWorker;
 import net.miginfocom.swing.MigLayout;
 import utybo.branchingstorytree.swing.Icons;
 import utybo.branchingstorytree.swing.Messagers;
-import utybo.branchingstorytree.swing.OpenBST;
+import utybo.branchingstorytree.swing.OpenBSTGUI;
 import utybo.branchingstorytree.swing.utils.BSTPackager;
 import utybo.branchingstorytree.swing.utils.Lang;
 
@@ -46,7 +46,7 @@ public class PackageDialog extends JDialog
     /**
      * Create the dialog.
      */
-    public PackageDialog(OpenBST parent)
+    public PackageDialog(OpenBSTGUI parent)
     {
         super(parent);
         setModalityType(ModalityType.APPLICATION_MODAL);

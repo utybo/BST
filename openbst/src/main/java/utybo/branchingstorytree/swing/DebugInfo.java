@@ -31,6 +31,7 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingWorker;
 
 import net.miginfocom.swing.MigLayout;
+import utybo.branchingstorytree.swing.utils.Lang;
 
 public class DebugInfo extends JDialog
 {
@@ -47,11 +48,10 @@ public class DebugInfo extends JDialog
         JLabel lblIcon = new JLabel(new ImageIcon(Icons.getImage("Code", 40)));
         contentPanel.add(lblIcon, "cell 0 0");
 
-        JLabel lblInfo = new JLabel("<html>You should include all of the following in bug reports. "
-                + "They provide useful information for debugging purposes.");
+        JLabel lblInfo = new JLabel("<html>" + Lang.get("debug.help"));
         contentPanel.add(lblInfo, "cell 1 0");
 
-        JButton btnCopy = new JButton("Copy",
+        JButton btnCopy = new JButton(Lang.get("copytoclipboard"),
                 new ImageIcon(Icons.getImage("Copy To Clipboard", 16)));
         btnCopy.addActionListener(e ->
         {
@@ -59,16 +59,14 @@ public class DebugInfo extends JDialog
             {
                 StringSelection ss = new StringSelection(text);
                 Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ss, ss);
-                Messagers.showMessage(OpenBST.getInstance(), "Logs copied to the clipboard",
+                Messagers.showMessage(OpenBSTGUI.getInstance(), Lang.get("debug.logscopied"),
                         Messagers.TYPE_OK);
             }
             catch(Exception ex)
             {
                 OpenBST.LOG.error("Failed to copy logs to clipboard", ex);
-                Messagers.showMessage(OpenBST.getInstance(),
-                        "Failed to copy the report to the clipboard. "
-                                + "You should still be able to copy it by clicking on the text, "
-                                + "pressing Ctrl+A to select all the text, and Ctrl+C to copy it.",
+                Messagers.showMessage(OpenBSTGUI.getInstance(),
+                        Lang.get("debug.copyfailed"),
                         Messagers.TYPE_ERROR);
             }
         });
@@ -82,7 +80,7 @@ public class DebugInfo extends JDialog
         switcherPanel.add(waitingPanel, "wait");
         waitingPanel.setLayout(new MigLayout("ay center", "[418px]", "[][14px]"));
 
-        JLabel lblPleaseWait = new JLabel("Please wait...");
+        JLabel lblPleaseWait = new JLabel(Lang.get("debug.wait"));
         waitingPanel.add(lblPleaseWait, "cell 0 0,alignx center");
 
         JProgressBar progressBar = new JProgressBar();
@@ -113,7 +111,7 @@ public class DebugInfo extends JDialog
             protected String doInBackground() throws Exception
             {
                 StringBuilder sb = new StringBuilder();
-                publish("Gathering system information...");
+                publish(Lang.get("debug.gathersys"));
                 sb.append("--- SYSTEM PROPERTIES ---\n");
                 String[] properties = new String[] {"file.separator", "java.home", "java.vendor",
                         "java.vendor.url", "java.version", "os.arch", "os.name", "os.version",
@@ -122,7 +120,7 @@ public class DebugInfo extends JDialog
                     sb.append(s + " : " + System.getProperty(s) + "\n");
 
                 sb.append("\n");
-                publish("Getting logs...");
+                publish(Lang.get("debug.getlogs"));
                 sb.append("--- LOGS ---\n");
                 sb.append(OpenBST.getAllLogs());
 
@@ -157,6 +155,7 @@ public class DebugInfo extends JDialog
             }
         };
 
+        setTitle(Lang.get("debug.title"));
         setSize((int)(400 * Icons.getScale()), (int)(300 * Icons.getScale()));
         setLocationRelativeTo(parent);
         setModalityType(ModalityType.APPLICATION_MODAL);

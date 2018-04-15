@@ -8,136 +8,38 @@
  */
 package utybo.branchingstorytree.swing;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.Desktop;
-import java.awt.Dialog.ModalityType;
-import java.awt.Dimension;
-import java.awt.FileDialog;
-import java.awt.Image;
-import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.image.BufferedImage;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
-import java.lang.reflect.InvocationTargetException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Random;
-import java.util.TreeMap;
-import java.util.Vector;
 import java.util.concurrent.ExecutionException;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 
-import javax.imageio.ImageIO;
-import javax.swing.AbstractAction;
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JRadioButtonMenuItem;
-import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
-import javax.swing.JTabbedPane;
-import javax.swing.JTextArea;
-import javax.swing.LookAndFeel;
-import javax.swing.ProgressMonitorInputStream;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
-import javax.swing.WindowConstants;
-import javax.swing.plaf.metal.MetalLookAndFeel;
 
-import org.apache.commons.compress.compressors.xz.XZCompressorInputStream;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.pushingpixels.substance.api.SubstanceCortex;
-import org.pushingpixels.substance.api.SubstanceLookAndFeel;
-import org.pushingpixels.substance.api.SubstanceSkin;
-import org.pushingpixels.substance.api.SubstanceSlices.DecorationAreaType;
-import org.pushingpixels.substance.api.font.SubstanceFontUtilities;
-import org.pushingpixels.substance.api.painter.overlay.SubstanceOverlayPainter;
-import org.pushingpixels.substance.api.skin.BusinessSkin;
-import org.pushingpixels.substance.api.skin.SubstanceAutumnLookAndFeel;
-import org.pushingpixels.substance.api.skin.SubstanceBusinessBlackSteelLookAndFeel;
-import org.pushingpixels.substance.api.skin.SubstanceBusinessBlueSteelLookAndFeel;
-import org.pushingpixels.substance.api.skin.SubstanceCeruleanLookAndFeel;
-import org.pushingpixels.substance.api.skin.SubstanceCremeCoffeeLookAndFeel;
-import org.pushingpixels.substance.api.skin.SubstanceCremeLookAndFeel;
-import org.pushingpixels.substance.api.skin.SubstanceDustCoffeeLookAndFeel;
-import org.pushingpixels.substance.api.skin.SubstanceDustLookAndFeel;
-import org.pushingpixels.substance.api.skin.SubstanceGeminiLookAndFeel;
-import org.pushingpixels.substance.api.skin.SubstanceGraphiteAquaLookAndFeel;
-import org.pushingpixels.substance.api.skin.SubstanceGraphiteChalkLookAndFeel;
-import org.pushingpixels.substance.api.skin.SubstanceGraphiteGlassLookAndFeel;
-import org.pushingpixels.substance.api.skin.SubstanceGraphiteGoldLookAndFeel;
-import org.pushingpixels.substance.api.skin.SubstanceGraphiteLookAndFeel;
-import org.pushingpixels.substance.api.skin.SubstanceMagellanLookAndFeel;
-import org.pushingpixels.substance.api.skin.SubstanceMarinerLookAndFeel;
-import org.pushingpixels.substance.api.skin.SubstanceModerateLookAndFeel;
-import org.pushingpixels.substance.api.skin.SubstanceNebulaBrickWallLookAndFeel;
-import org.pushingpixels.substance.api.skin.SubstanceNebulaLookAndFeel;
-import org.pushingpixels.substance.api.skin.SubstanceOfficeBlack2007LookAndFeel;
-import org.pushingpixels.substance.api.skin.SubstanceOfficeBlue2007LookAndFeel;
-import org.pushingpixels.substance.api.skin.SubstanceOfficeSilver2007LookAndFeel;
-import org.pushingpixels.substance.api.skin.SubstanceRavenLookAndFeel;
-import org.pushingpixels.substance.api.skin.SubstanceSaharaLookAndFeel;
-import org.pushingpixels.substance.api.skin.SubstanceTwilightLookAndFeel;
-import org.pushingpixels.substance.internal.utils.SubstanceSizeUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
-import net.miginfocom.swing.MigLayout;
-import utybo.branchingstorytree.api.BSTException;
-import utybo.branchingstorytree.api.BranchingStoryTreeParser;
-import utybo.branchingstorytree.api.script.Dictionary;
-import utybo.branchingstorytree.api.story.BranchingStory;
-import utybo.branchingstorytree.swing.editor.StoryEditor;
-import utybo.branchingstorytree.swing.impl.BRMFileClient;
-import utybo.branchingstorytree.swing.impl.TabClient;
-import utybo.branchingstorytree.swing.utils.BSTPackager;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
+import utybo.branchingstorytree.swing.ext.ComparableVersion;
+import utybo.branchingstorytree.swing.impl.IMGClient;
 import utybo.branchingstorytree.swing.utils.Lang;
 import utybo.branchingstorytree.swing.utils.OutputStreamToOutputAndPrint;
-import utybo.branchingstorytree.swing.utils.Lang.UnrespectedModelException;
-import utybo.branchingstorytree.swing.visuals.AboutDialog;
-import utybo.branchingstorytree.swing.visuals.JBackgroundPanel;
 import utybo.branchingstorytree.swing.visuals.JBannerPanel;
-import utybo.branchingstorytree.swing.visuals.PackageDialog;
-import utybo.branchingstorytree.swing.visuals.StoryPanel;
+import utybo.branchingstorytree.swing.visuals.Splashscreen;
 
 /**
  * OpenBST is an open source implementation of the BST language that aims to be
@@ -148,29 +50,29 @@ import utybo.branchingstorytree.swing.visuals.StoryPanel;
  * @author utybo
  *
  */
-public class OpenBST extends JFrame
+public class OpenBST
 {
     /**
      * Version number of OpenBST
      */
-    public static final String version;
+    public static final String VERSION;
     static
     {
         String s = OpenBST.class.getPackage().getImplementationVersion();
         if(s == null)
         {
-            version = "<unknown version>";
+            VERSION = "<unknown version>";
         }
         else
         {
-            version = s;
+            VERSION = s;
         }
     }
-    private static final long serialVersionUID = 1L;
 
     public static final Logger LOG;
     private static ByteArrayOutputStream logOutput;
-    static {
+    static
+    {
         logOutput = new ByteArrayOutputStream();
 
         PrintStream sysout = System.out;
@@ -182,90 +84,11 @@ public class OpenBST extends JFrame
         OutputStreamToOutputAndPrint newerr = new OutputStreamToOutputAndPrint(logOutput, syserr);
         PrintStream pserr = new PrintStream(newerr);
         System.setErr(pserr);
-        
+
         LOG = LogManager.getLogger("OpenBST");
     }
 
-    /**
-     * The parser that will be reused throughout the entire session.
-     */
-    private final BranchingStoryTreeParser parser = new BranchingStoryTreeParser();
-
-    /**
-     * The JFrame instance
-     */
-    private static OpenBST instance;
-
-    private static final Random RANDOM = new Random();
-
-    public static final Color OPENBST_BLUE = new Color(33, 150, 243);
-
-    public static final SubstanceLookAndFeel DARK_THEME = new SubstanceGraphiteGoldLookAndFeel();
-    public static final SubstanceLookAndFeel LIGHT_THEME;
-    public static final LookAndFeel DEBUG_THEME = new MetalLookAndFeel();
-
-    public static final Map<String, LookAndFeel> ADDITIONAL_LIGHT_THEMES, ADDITIONAL_DARK_THEMES;
-    //    public static final Map<String, LookAndFeel> ADDITIONAL_THEMES;
-    static
-    {
-        SubstanceSkin skin = new BusinessSkin();
-        for(SubstanceOverlayPainter op : new ArrayList<>(
-                skin.getOverlayPainters(DecorationAreaType.TOOLBAR)))
-        {
-            skin.removeOverlayPainter(op, DecorationAreaType.TOOLBAR);
-        }
-        LIGHT_THEME = new SubstanceLookAndFeel(skin)
-        {
-            private static final long serialVersionUID = 1L;
-        };
-
-        TreeMap<String, LookAndFeel> mapl = new TreeMap<>();
-        TreeMap<String, LookAndFeel> mapd = new TreeMap<>();
-        mapl.put("Autumn", new SubstanceAutumnLookAndFeel());
-        mapl.put("Business Black Steel", new SubstanceBusinessBlackSteelLookAndFeel());
-        mapl.put("Business Blue Steel", new SubstanceBusinessBlueSteelLookAndFeel());
-        mapl.put("Cerulean", new SubstanceCeruleanLookAndFeel());
-        mapl.put("Creme Coffee", new SubstanceCremeCoffeeLookAndFeel());
-        mapl.put("Creme", new SubstanceCremeLookAndFeel());
-        mapl.put("Dust Coffee", new SubstanceDustCoffeeLookAndFeel());
-        mapl.put("Dust", new SubstanceDustLookAndFeel());
-        mapl.put("Gemini", new SubstanceGeminiLookAndFeel());
-        mapd.put("Graphite Aqua", new SubstanceGraphiteAquaLookAndFeel());
-        mapd.put("Graphite Chalk", new SubstanceGraphiteChalkLookAndFeel());
-        mapd.put("Graphite Glass", new SubstanceGraphiteGlassLookAndFeel());
-        mapd.put("Graphite", new SubstanceGraphiteLookAndFeel());
-        mapd.put("Magellan", new SubstanceMagellanLookAndFeel());
-        mapl.put("Mariner", new SubstanceMarinerLookAndFeel());
-        mapl.put("Moderate", new SubstanceModerateLookAndFeel());
-        mapl.put("Nebula Brick Wall", new SubstanceNebulaBrickWallLookAndFeel());
-        mapl.put("Nebula", new SubstanceNebulaLookAndFeel());
-        mapl.put("Office 2007 (Black)", new SubstanceOfficeBlack2007LookAndFeel());
-        mapl.put("Office 2007 (Blue)", new SubstanceOfficeBlue2007LookAndFeel());
-        mapl.put("Office 2007 (Silver)", new SubstanceOfficeSilver2007LookAndFeel());
-        mapd.put("Raven", new SubstanceRavenLookAndFeel());
-        mapl.put("Sahara", new SubstanceSaharaLookAndFeel());
-        mapd.put("Twilight", new SubstanceTwilightLookAndFeel());
-        //        ADDITIONAL_THEMES = Collections.unmodifiableMap(map);
-        ADDITIONAL_LIGHT_THEMES = Collections.unmodifiableMap(mapl);
-        ADDITIONAL_DARK_THEMES = Collections.unmodifiableMap(mapd);
-    }
-
     // --- IMAGES ---
-
-    public final static List<BufferedImage> bgImages = Collections
-            .unmodifiableList(Arrays.asList(loadImages("images/bg$.jpg", 8)));
-
-    /**
-     * Container for all the tabs
-     */
-    private final JTabbedPane container;
-
-    private final JBackgroundPanel background;
-
-    private int selectedTheme = 1;
-    private boolean dark = false;
-    private static final Color DISCORD_COLOR = new Color(114, 137, 218);
-    private final LinkedList<Consumer<Boolean>> darkModeCallbacks = new LinkedList<>();
 
     /**
      * Launch OpenBST
@@ -275,245 +98,230 @@ public class OpenBST extends JFrame
      */
     public static void main(final String[] args)
     {
+        // Before we do anything, setup system properties
+        // First one to ensure Java 9's scaling system gets out of the way
+        System.setProperty("sun.java2d.uiScale", "1.0");
+        // Second one to force hardware acceleration
+        System.setProperty("sun.java2d.opengl", "true");
 
-
-        LOG.info("OpenBST version " + version + ", part of the BST project");
+        LOG.info("OpenBST version " + VERSION + ", part of the BST project");
         LOG.trace("[ INIT ]");
-        LOG.info("ééé\"\"");
         LOG.trace("Loading language files");
         loadLang(args.length > 0 ? args[0] : null);
 
-        LOG.trace("Initializing JavaFX");
-        new JFXPanel();
-        Platform.setImplicitExit(false);
-        // Necessary - because we are killing Scenes all the time with WebViews in NodePanels,
-        // JFX may think we just ended our application.
-        // OpenBST exits with a dirty System.exit() anyway.
         LOG.trace("Applying Look and Feel");
-        invokeSwingAndWait(() ->
+        OpenBSTGUI.initializeLaF();
+        VisualsUtils.fixTextFontScaling();
+
+        LOG.trace("Loading scaling factor");
+        Icons.loadScalingFactor();
+
+        Splashscreen sc = Splashscreen.start();
+        SwingWorker<Void, String> sw = new SwingWorker<Void, String>()
         {
-            try
+
+            @Override
+            protected Void doInBackground()
             {
-                UIManager.setLookAndFeel(LIGHT_THEME);
-                SubstanceCortex.GlobalScope.setColorizationFactor(1.0D);
-
-                if(System.getProperty("os.name").toLowerCase().equals("linux"))
+                LOG.trace("Initializing JavaFX");
+                publish(Lang.get("splash.init"));
+                // Necessary - because we are killing Scenes all the time with WebViews in NodePanels,
+                // JFX may think we just ended our application.
+                // OpenBST exits with a dirty System.exit() anyway.
+                Platform.setImplicitExit(false);
+                // Initialize JavaFX
+                new JFXPanel();
+                VisualsUtils.invokeJfxAndWait(() ->
                 {
-                    // Try to apply GNOME Shell fix
-                    try
-                    {
-                        final Toolkit xToolkit = Toolkit.getDefaultToolkit();
-                        final java.lang.reflect.Field awtAppClassNameField = xToolkit.getClass()
-                                .getDeclaredField("awtAppClassName");
-                        awtAppClassNameField.setAccessible(true);
-                        awtAppClassNameField.set(xToolkit, Lang.get("title"));
-                        awtAppClassNameField.setAccessible(false);
-                    }
-                    catch(final Exception e)
-                    {
-                        LOG.warn("Could not apply X fix", e);
-                    }
-                }
+                    // Initialize the web engine
+                    new WebEngine();
+                    // Initialize a view
+                    new WebView();
+                });
 
+                LOG.info("Loading icons...");
+                publish(Lang.get("splash.icons"));
+                long timeAtIconStart = System.currentTimeMillis();
+                Icons.load();
+                LOG.info("Time taken to load icons : "
+                        + (System.currentTimeMillis() - timeAtIconStart) + " ms");
+
+                LOG.info("Loading backgrounds...");
+                publish(Lang.get("splash.loadbg"));
+                Icons.loadBackgrounds();
+
+                // $EXPERIMENTAL
+                LOG.info("Caching backgrounds...");
+                publish(Lang.get("splash.processbg"));
+                IMGClient.initInternal();
+
+                return null;
             }
-            catch(final Exception e)
+
+            @Override
+            protected void process(List<String> chunks)
             {
-                LOG.warn("Could not apply Substance LaF, falling back to system LaF", e);
-                try
-                {
-                    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-                }
-                catch(final Exception e1)
-                {
-                    LOG.warn(
-                            "Failed to load System LaF as well, falling back to keeping the default LaF",
-                            e1);
-                }
+                String s = chunks.get(chunks.size() - 1);
+                sc.setText(s);
             }
 
-            LOG.info("Loading icons...");
-            Icons.load();
+        };
 
-            LOG.trace("Fixing text scaling");
-            if(new JLabel("AAA").getFont().getSize() <= 12)
-                SubstanceCortex.GlobalScope
-                        .setFontPolicy(SubstanceFontUtilities.getScaledFontPolicy(
-                                (float)(SubstanceSizeUtils.getPointsToPixelsRatio()) / 1.33F));
-
-            LOG.trace("Opening OpenBST...");
-            new OpenBST();
-        });
-
-    }
-
-    private static BufferedImage[] loadImages(String string, int length)
-    {
-        BufferedImage[] array = new BufferedImage[length];
-        for(int i = 0; i < length; i++)
-        {
-            array[i] = loadXZImage(string.replace("$", "" + i));
-        }
-        return array;
-    }
-
-    private static void invokeSwingAndWait(Runnable r)
-    {
+        sw.execute();
         try
         {
-            SwingUtilities.invokeAndWait(r);
+            sw.get();
         }
-        catch(InvocationTargetException | InterruptedException e)
+        catch(InterruptedException | ExecutionException e1)
         {
-            LOG.warn("Swing invocation failed", e);
+            OpenBST.LOG.error(e1);
+        }
+
+        VisualsUtils.invokeSwingAndWait(() ->
+        {
+            sc.setText(Lang.get("splash.launch"));
+            sc.stop();
+        });
+        LOG.trace("Launching app...");
+        OpenBSTGUI.launch();
+
+        VisualsUtils.invokeSwingAndWait(() -> sc.dispose());
+
+        LOG.trace("Checking versions...");
+        if(!"<unknown version>".equals(VERSION))
+        {
+            SwingWorker<UpdateInfo, Void> worker = new SwingWorker<UpdateInfo, Void>()
+            {
+
+                @Override
+                protected UpdateInfo doInBackground() throws Exception
+                {
+                    URL updateInfoSite = new URL("https://utybo.github.io/BST/version.json");
+                    UpdateInfo info = new Gson().fromJson(new InputStreamReader(
+                            updateInfoSite.openStream(), StandardCharsets.UTF_8), UpdateInfo.class);
+                    return info;
+                }
+
+                @Override
+                protected void done()
+                {
+                    try
+                    {
+                        UpdateInfo remoteVersion = this.get();
+                        ComparableVersion remoteUnstable = new ComparableVersion(
+                                remoteVersion.unstable),
+                                remoteStable = new ComparableVersion(remoteVersion.stable);
+                        ComparableVersion local = new ComparableVersion(
+                                VERSION.substring(0, VERSION.length() - 1));
+
+                        if(VERSION.endsWith("u"))
+                        {
+                            // Local version is unstable
+                            // Show updates to either the most recent unstable or the most recent stable
+                            if(local.compareTo(remoteStable) < 0
+                                    && remoteStable.compareTo(remoteUnstable) < 0)
+                            {
+                                // local (unstable) < stable < unstable
+                                // Give options for both unstable and stable
+                                JButton stablebtn = new JButton(Lang.get("up.moreinfostable"));
+                                stablebtn.addActionListener(e ->
+                                {
+                                    VisualsUtils.browse(remoteVersion.stableurl);
+                                });
+                                JButton unstablebtn = new JButton(Lang.get("up.moreinfounstable"));
+                                unstablebtn.addActionListener(e ->
+                                {
+                                    VisualsUtils.browse(remoteVersion.unstableurl);
+                                });
+                                OpenBSTGUI.getInstance()
+                                        .addBanner(new JBannerPanel(
+                                                new ImageIcon(
+                                                        Icons.getImage("Installing Updates", 48)),
+                                                new Color(142, 255, 159), Lang.get("up.message1"),
+                                                stablebtn, false, unstablebtn));
+                            }
+                            else if(remoteStable.compareTo(local) < 0
+                                    && local.compareTo(remoteUnstable) < 0)
+                            {
+                                // stable < local (unstable) < unstable
+                                JButton unstablebtn = new JButton(Lang.get("up.moreinfo"));
+                                unstablebtn.addActionListener(e ->
+                                {
+                                    VisualsUtils.browse(remoteVersion.unstableurl);
+                                });
+                                OpenBSTGUI.getInstance()
+                                        .addBanner(new JBannerPanel(
+                                                new ImageIcon(
+                                                        Icons.getImage("Installing Updates", 48)),
+                                                new Color(142, 255, 159), Lang.get("up.message2"),
+                                                unstablebtn, false));
+                            }
+                            else if(remoteUnstable.compareTo(remoteStable) < 0
+                                    && local.compareTo(remoteStable) < 0)
+                            {
+                                // local (unstable) < stable
+                                // and unstable < stable
+                                JButton stablebtn = new JButton(Lang.get("up.moreinfo"));
+                                stablebtn.addActionListener(e ->
+                                {
+                                    VisualsUtils.browse(remoteVersion.stableurl);
+                                });
+                                OpenBSTGUI.getInstance()
+                                        .addBanner(new JBannerPanel(
+                                                new ImageIcon(
+                                                        Icons.getImage("Installing Updates", 48)),
+                                                new Color(142, 255, 159), Lang.get("up.message3"),
+                                                stablebtn, false));
+                            }
+                        }
+                        else
+                        {
+                            // If we're not running an unstable version, the only interesting case is local < stable
+                            if(local.compareTo(remoteStable) < 0)
+                            {
+                                // local (stable) < stable
+                                JButton stablebtn = new JButton(Lang.get("up.moreinfo"));
+                                stablebtn.addActionListener(e ->
+                                {
+                                    VisualsUtils.browse(remoteVersion.stableurl);
+                                });
+                                OpenBSTGUI.getInstance()
+                                        .addBanner(new JBannerPanel(
+                                                new ImageIcon(
+                                                        Icons.getImage("Installing Updates", 48)),
+                                                new Color(142, 255, 159), Lang.get("up.message4"),
+                                                stablebtn, false));
+                            }
+                        }
+                    }
+
+                    catch(InterruptedException | ExecutionException e)
+                    {
+                        LOG.warn("Failed to read update information", e);
+                        JButton showDetails = new JButton(Lang.get("up.showdetails"));
+                        showDetails.addActionListener(ev -> Messagers.showException(
+                                OpenBSTGUI.getInstance(), Lang.get("up.failedmessage"), e));
+                        OpenBSTGUI.getInstance()
+                                .addBanner(new JBannerPanel(
+                                        new ImageIcon(Icons.getImage("Cancel", 16)),
+                                        new Color(255, 144, 144), Lang.get("up.failedbanner"),
+                                        showDetails, false));
+                    }
+                }
+            };
+            worker.execute();
         }
     }
 
-    /**
-     * Open a prompt asking for a BST File
-     *
-     * @return The file selected, or null if none was chosen/the dialog was
-     *         closed
-     */
-    private File askForFile()
+    public static class UpdateInfo
     {
-        final FileDialog jfc = new FileDialog(instance);
-        jfc.setTitle(Lang.get("file.title"));
-        jfc.setLocationRelativeTo(instance);
-        jfc.setVisible(true);
-        if(jfc.getFile() != null)
-        {
-            LOG.trace("File selected");
-            final File file = new File(jfc.getDirectory() + jfc.getFile());
-            LOG.debug("[ LAUNCHING ]");
-            return file;
-        }
-        else
-        {
-            LOG.trace("No file selected.");
-            return null;
-        }
-    }
-
-    /**
-     * Load and parse a file, using appropriate dialogs if an error occurs to
-     * inform the user and even give him the option to reload the file
-     *
-     * @param file
-     *            The file to load
-     * @param client
-     *            The BST Client. This is required for parsing the file
-     * @return
-     */
-    public void loadFile(final File file, final TabClient client, Consumer<BranchingStory> callback)
-    {
-        SwingWorker<BranchingStory, Object> worker = new SwingWorker<BranchingStory, Object>()
-        {
-            @Override
-            protected BranchingStory doInBackground() throws Exception
-            {
-                try
-                {
-                    LOG.trace("Parsing story");
-                    String ext = FilenameUtils.getExtension(file.getName());
-                    BranchingStory bs = null;
-                    if(ext.equals("bsp"))
-                    {
-                        bs = BSTPackager.fromPackage(new ProgressMonitorInputStream(instance,
-                                "Opening " + file.getName() + "...", new FileInputStream(file)),
-                                client);
-                    }
-                    else
-                    {
-                        bs = parser.parse(
-                                new BufferedReader(new InputStreamReader(
-                                        new ProgressMonitorInputStream(instance,
-                                                "Opening " + file.getName() + "...",
-                                                new FileInputStream(file)),
-                                        Charset.forName("UTF-8"))),
-                                new Dictionary(), client, "<main>");
-                        client.setBRMHandler(new BRMFileClient(file, client, bs));
-                    }
-                    callback.accept(bs);
-                    return bs;
-                }
-                catch(final IOException e)
-                {
-                    LOG.error("IOException caught", e);
-                    showException(instance,
-                            Lang.get("file.error").replace("$e", e.getClass().getSimpleName())
-                                    .replace("$m", e.getMessage()),
-                            e);
-                    return null;
-                }
-                catch(final BSTException e)
-                {
-                    LOG.error("BSTException caught", e);
-                    String s = "<html>" + Lang.get("file.bsterror.1");
-                    s += Lang.get("file.bsterror.2");
-                    s += Lang.get("file.bsterror.3").replace("$l", "" + e.getWhere()).replace("$f",
-                            "[main]");
-                    if(e.getCause() != null)
-                    {
-                        s += Lang.get("file.bsterror.4")
-                                .replace("$e", e.getCause().getClass().getSimpleName())
-                                .replace("$m", e.getCause().getMessage());
-                    }
-                    s += Lang.get("file.bsterror.5").replace("$m", "" + e.getMessage());
-                    s += Lang.get("file.bsterror.6");
-                    String s2 = s;
-                    if(doAndReturn(() -> Messagers.showConfirm(instance, s2,
-                            Messagers.OPTIONS_YES_NO, Messagers.TYPE_ERROR,
-                            Lang.get("bsterror"))) == Messagers.OPTION_YES)
-                    {
-                        LOG.debug("Reloading");
-                        return doInBackground();
-                    }
-                    return null;
-                }
-                catch(final Exception e)
-                {
-                    LOG.error("Random exception caught", e);
-                    showException(instance, Lang.get("file.crash"), e);
-                    return null;
-                }
-
-            }
-
-            private <T> T doAndReturn(Supplier<T> supplier)
-            {
-                ArrayList<T> l = new ArrayList<>();
-                invokeSwingAndWait(() ->
-                {
-                    l.add(supplier.get());
-                });
-                return l.size() == 0 ? null : l.get(0);
-            }
-
-            @Override
-            protected void done()
-            {
-                try
-                {
-                    get();
-                }
-                catch(InterruptedException e)
-                {
-                    // Shouldn't happen
-                }
-                catch(ExecutionException e)
-                {
-                    LOG.error("Random exception caught", e);
-                    Messagers.showException(instance, Lang.get("file.crash"), e);
-                }
-            }
-        };
-        worker.execute();
+        private String stable, stableurl, unstable, unstableurl;
     }
 
     /**
      * Load the default language (which should be English) as well as the user's
-     * language.. We avoid loading all the langauge files to avoid having our
-     * RAM usage blowing up
+     * language. We avoid loading all the language files to avoid having our RAM
+     * usage blowing up.
      *
      * @param userCustomLanguage
      *            The language to use in the application, which must be one
@@ -559,630 +367,6 @@ public class OpenBST extends JFrame
         });
     }
 
-    private static BufferedImage loadXZImage(String path)
-    {
-        try
-        {
-            return ImageIO.read(new XZCompressorInputStream(OpenBST.class
-                    .getResourceAsStream("/utybo/branchingstorytree/swing/" + path + ".xz")));
-        }
-        catch(Exception e)
-        {
-            LOG.warn("Failed to load image at path " + path, e);
-            return null;
-        }
-    }
-
-    /**
-     * Add a story by creating a tab and initializing its panel. Also triggers
-     * post-creation events (such as NSFW warnings)
-     *
-     * @param story
-     *            The story to create a tab for
-     * @param file
-     *            The file the story was loaded from
-     * @param client
-     *            The client to use
-     * @return
-     */
-    private StoryPanel addStory(final BranchingStory story, final File file, final TabClient client)
-    {
-        LOG.trace("Creating tab");
-        final StoryPanel sp = new StoryPanel(story, this, file, client);
-        container.addTab(sp.getTitle(), null, sp, null);
-        container.setSelectedIndex(container.getTabCount() - 1);
-        if(!sp.postCreation())
-        {
-            container.removeTabAt(container.getTabCount() - 1);
-            return null;
-        }
-        else
-        {
-            return sp;
-        }
-    }
-
-    /**
-     * Load all the icons and initialize the frame
-     */
-    @SuppressFBWarnings("ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD")
-    public OpenBST()
-    {
-        instance = this;
-        UIManager.put("OptionPane.errorIcon", new ImageIcon(Icons.getImage("Cancel", 48)));
-        UIManager.put("OptionPane.informationIcon", new ImageIcon(Icons.getImage("About", 48)));
-        UIManager.put("OptionPane.questionIcon", new ImageIcon(Icons.getImage("Rename", 48)));
-        UIManager.put("OptionPane.warningIcon", new ImageIcon(Icons.getImage("Error", 48)));
-
-        BorderLayout borderLayout = new BorderLayout();
-        borderLayout.setVgap(4);
-        getContentPane().setLayout(borderLayout);
-        setIconImage(Icons.getImage("Logo", 48));
-        setTitle("OpenBST " + version);
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-
-        JMenuBar jmb = new JMenuBar();
-        jmb.setBackground(OPENBST_BLUE);
-        jmb.add(Box.createHorizontalGlue());
-        jmb.add(createShortMenu());
-        jmb.add(Box.createHorizontalGlue());
-        this.setJMenuBar(jmb);
-
-        addDarkModeCallback(b ->
-        {
-            jmb.setBackground(b ? OPENBST_BLUE.darker().darker() : OPENBST_BLUE);
-        });
-
-        container = new JTabbedPane();
-        getContentPane().add(container, BorderLayout.CENTER);
-
-        final JBackgroundPanel welcomeContentPanel = new JBackgroundPanel(
-                bgImages.get(RANDOM.nextInt(bgImages.size())), Image.SCALE_FAST);
-        background = welcomeContentPanel;
-
-        welcomeContentPanel.setLayout(new MigLayout("hidemode 2", "[grow,center]", "[][grow][]"));
-        container.add(welcomeContentPanel);
-        container.setTitleAt(0, Lang.get("welcome"));
-
-        JPanel bannersPanel = new JPanel(new MigLayout("hidemode 2, gap 0px, fill, wrap 1, ins 0"));
-        bannersPanel.setBackground(new Color(0, 0, 0, 0));
-        welcomeContentPanel.add(bannersPanel, "cell 0 0,grow");
-
-        if(version.endsWith("u"))
-        {
-            JButton btnReportBugs = new JButton(Lang.get("welcome.reportbugs"));
-            btnReportBugs.addActionListener(e ->
-            {
-                try
-                {
-                    Desktop.getDesktop()
-                            .browse(new URL("https://github.com/utybo/BST/issues").toURI());
-                }
-                catch(Exception e1)
-                {
-                    LOG.error("Exception during link opening", e1);
-                }
-            });
-            bannersPanel.add(new JBannerPanel(new ImageIcon(Icons.getImage("Experiment", 32)),
-                    Color.YELLOW, Lang.get("welcome.ontheedge"), btnReportBugs, false), "grow");
-        }
-        else if(version.contains("SNAPSHOT"))
-        {
-            bannersPanel.add(new JBannerPanel(new ImageIcon(Icons.getImage("Experiment", 32)),
-                    Color.ORANGE,
-                    "You are running a Snapshot. This version is in development. Do not post bug reports!",
-                    null, false), "grow");
-        }
-
-        if(System.getProperty("java.specification.version").equals("9"))
-        {
-            bannersPanel.add(
-                    new JBannerPanel(new ImageIcon(Icons.getImage("Attention", 32)),
-                            new Color(255, 50, 50), Lang.get("welcome.java9warning"), null, true),
-                    "grow");
-        }
-
-        JButton btnJoinDiscord = new JButton(Lang.get("openbst.discordjoin"));
-        btnJoinDiscord.addActionListener(e ->
-        {
-            try
-            {
-                Desktop.getDesktop().browse(new URL("https://discord.gg/6SVDCMM").toURI());
-            }
-            catch(Exception e1)
-            {
-                LOG.error("Exception during link opening", e1);
-            }
-        });
-        bannersPanel.add(new JBannerPanel(new ImageIcon(Icons.getImage("Discord", 48)),
-                DISCORD_COLOR, Lang.get("openbst.discord"), btnJoinDiscord, true), "grow");
-
-        JPanel panel = new JPanel();
-        panel.setBackground(new Color(0, 0, 0, 0));
-        welcomeContentPanel.add(panel, "flowx,cell 0 1,growx,aligny center");
-        panel.setLayout(new MigLayout("", "[40%][][][][60%,growprio 50]", "[][grow]"));
-
-        final JLabel lblOpenbst = new JLabel(new ImageIcon(Icons.getImage("FullLogo", 48)));
-        addDarkModeCallback(b -> lblOpenbst.setIcon(new ImageIcon(
-                b ? Icons.getImage("FullLogoWhite", 48) : Icons.getImage("FullLogo", 48))));
-        panel.add(lblOpenbst, "flowx,cell 0 0 1 2,alignx trailing,aligny center");
-
-        JSeparator separator = new JSeparator();
-        separator.setOrientation(SwingConstants.VERTICAL);
-        panel.add(separator, "cell 2 0 1 2,growy");
-
-        final JLabel lblWelcomeToOpenbst = new JLabel("<html>" + Lang.get("welcome.intro"));
-        lblWelcomeToOpenbst.setMaximumSize(new Dimension(350, 999999));
-        panel.add(lblWelcomeToOpenbst, "cell 4 0");
-
-        Component horizontalStrut = Box.createHorizontalStrut(10);
-        panel.add(horizontalStrut, "cell 1 1");
-
-        Component horizontalStrut_1 = Box.createHorizontalStrut(10);
-        panel.add(horizontalStrut_1, "cell 3 1");
-
-        final JButton btnOpenAFile = new JButton(Lang.get("welcome.open"));
-        panel.add(btnOpenAFile, "flowx,cell 4 1");
-        btnOpenAFile.setIcon(new ImageIcon(Icons.getImage("Open", 40)));
-        btnOpenAFile.addActionListener(e ->
-        {
-            clickOpenStory(askForFile());
-        });
-
-        final JButton btnOpenEditor = new JButton("Open Editor");
-        panel.add(btnOpenEditor, "cell 4 1");
-        btnOpenEditor.setIcon(new ImageIcon(Icons.getImage("Open", 40)));
-        btnOpenEditor.addActionListener(e ->
-        {
-            clickOpenEditor(askForFile());
-        });
-
-        JButton btnChangeBackground = new JButton(Lang.get("welcome.changebackground"),
-                new ImageIcon(Icons.getImage("Change Theme", 16)));
-        btnChangeBackground.addActionListener(e ->
-        {
-            BufferedImage prev = background.getImage();
-            BufferedImage next;
-            do
-            {
-                next = bgImages.get(RANDOM.nextInt(bgImages.size()));
-            }
-            while(prev == next);
-            background.setImage(next);
-        });
-        welcomeContentPanel.add(btnChangeBackground, "flowx,cell 0 2,alignx left");
-
-        JButton btnWelcomepixabay = new JButton(Lang.get("welcome.pixabay"),
-                new ImageIcon(Icons.getImage("External Link", 16)));
-        btnWelcomepixabay.addActionListener(e ->
-        {
-            try
-            {
-                Desktop.getDesktop().browse(new URL("https://pixabay.com").toURI());
-            }
-            catch(IOException | URISyntaxException e1)
-            {
-                LOG.warn("Failed to browse to Pixabay website", e1);
-            }
-        });
-        welcomeContentPanel.add(btnWelcomepixabay, "cell 0 2");
-
-        JLabel creds = new JLabel(Lang.get("welcome.credits"));
-        creds.setEnabled(false);
-        welcomeContentPanel.add(creds, "cell 0 2, gapbefore 10px");
-
-        setSize((int)(830 * Icons.getScale()), (int)(480 * Icons.getScale()));
-        setLocationRelativeTo(null);
-        setVisible(true);
-    }
-
-    private void clickOpenEditor(File f)
-    {
-        if(f != null)
-        {
-            final TabClient client = new TabClient(instance);
-            loadFile(f, client, new Consumer<BranchingStory>()
-            {
-                @Override
-                public void accept(BranchingStory bs)
-                {
-                    try
-                    {
-                        SwingUtilities.invokeAndWait(() ->
-                        {
-                            try
-                            {
-                                StoryEditor se = new StoryEditor(bs);
-                                container.addTab(se.getTitle(), se);
-                                container.setSelectedComponent(se);
-                            }
-                            catch(Exception e)
-                            {
-                                LOG.error("Error on story editor init", e);
-                                Messagers.showException(OpenBST.this,
-                                        "Error while creating the Story Editor ("
-                                                + e.getClass().getSimpleName() + " : "
-                                                + e.getMessage() + ")",
-                                        e);
-                            }
-                        });
-                    }
-                    catch(Exception e)
-                    {
-                        LOG.error(e);
-                    }
-                }
-            });
-        }
-    }
-
-    private void clickNewEditor()
-    {
-        try
-        {
-            StoryEditor se = new StoryEditor(new BranchingStory());
-            container.addTab("Editor", se);
-            container.setSelectedComponent(se);
-        }
-        catch(Exception e)
-        {
-            LOG.error("Error on story editor init", e);
-            Messagers.showException(OpenBST.this, "Error while creating the Story Editor ("
-                    + e.getClass().getSimpleName() + " : " + e.getMessage() + ")", e);
-        }
-    }
-
-    /**
-     * Remove a panel from the tabs
-     */
-    public void removeTab(final JPanel panel)
-    {
-        container.remove(panel);
-    }
-
-    public void clickOpenStory(File f)
-    {
-        if(f != null)
-        {
-            final TabClient client = new TabClient(instance);
-            loadFile(f, client, new Consumer<BranchingStory>()
-            {
-                private StoryPanel sp;
-
-                @Override
-                public void accept(BranchingStory bs)
-                {
-                    if(bs != null)
-                    {
-                        try
-                        {
-                            SwingUtilities.invokeAndWait(() -> sp = addStory(bs, f, client));
-                            if(sp != null)
-                            {
-                                try
-                                {
-                                    client.getBRMHandler().load();
-                                }
-                                catch(BSTException e)
-                                {
-                                    LOG.error("Exception caught while loading resources", e);
-                                    showException(instance,
-                                            Lang.get("file.resourceerror")
-                                                    .replace("$e", whichCause(e))
-                                                    .replace("$m", whichMessage(e)),
-                                            e);
-                                }
-                                SwingUtilities.invokeAndWait(() -> sp.setupStory());
-                            }
-                        }
-                        catch(InvocationTargetException | InterruptedException e)
-                        {
-                            LOG.warn("Swing invocation exception", e);
-                        }
-
-                    }
-                }
-
-                private String whichMessage(BSTException e)
-                {
-                    if(e.getCause() != null)
-                    {
-                        return e.getCause().getMessage();
-                    }
-                    else
-                    {
-                        return e.getMessage();
-                    }
-                }
-
-                private String whichCause(BSTException e)
-                {
-                    if(e.getCause() != null)
-                    {
-                        return e.getCause().getClass().getSimpleName();
-                    }
-                    else
-                    {
-                        return e.getClass().getSimpleName();
-                    }
-                }
-            });
-        }
-    }
-
-    private JMenu createShortMenu()
-    {
-        JMenu shortMenu = new JMenu();
-        addDarkModeCallback(b ->
-        {
-            shortMenu.setBackground(b ? OPENBST_BLUE.darker().darker() : OPENBST_BLUE.brighter());
-            shortMenu.setForeground(b ? Color.WHITE : OPENBST_BLUE);
-        });
-        shortMenu.setBackground(OPENBST_BLUE.brighter());
-        shortMenu.setForeground(OPENBST_BLUE);
-        shortMenu.setText(Lang.get("banner.title"));
-        shortMenu.setIcon(new ImageIcon(Icons.getImage("Logo", 16)));
-        JMenuItem label = new JMenuItem(Lang.get("menu.title"));
-        label.setEnabled(false);
-        shortMenu.add(label);
-        shortMenu.addSeparator();
-        shortMenu.add(new JMenuItem(
-                new AbstractAction(Lang.get("menu.open"), new ImageIcon(Icons.getImage("Open", 16)))
-                {
-                    private static final long serialVersionUID = 1L;
-
-                    @Override
-                    public void actionPerformed(ActionEvent e)
-                    {
-                        clickOpenStory(askForFile());
-                    }
-                }));
-
-        shortMenu.addSeparator();
-
-        shortMenu.add(new JMenuItem(new AbstractAction("Edit a new story")
-        {
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                clickNewEditor();
-            }
-        }));
-
-        JMenu additionalMenu = new JMenu(Lang.get("menu.advanced"));
-        shortMenu.add(additionalMenu);
-
-        additionalMenu.add(new JMenuItem(new AbstractAction(Lang.get("menu.package"),
-                new ImageIcon(Icons.getImage("Open Archive", 16)))
-        {
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                new PackageDialog(instance).setVisible(true);
-            }
-        }));
-        additionalMenu.add(new JMenuItem(new AbstractAction(Lang.get("langcheck"))
-        {
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                final Map<String, String> languages = new Gson()
-                        .fromJson(
-                                new InputStreamReader(
-                                        OpenBST.class.getResourceAsStream(
-                                                "/utybo/branchingstorytree/swing/lang/langs.json"),
-                                        StandardCharsets.UTF_8),
-                                new TypeToken<Map<String, String>>()
-                                {}.getType());
-                languages.remove("en");
-                languages.remove("default");
-                JComboBox<String> jcb = new JComboBox<>(new Vector<>(languages.keySet()));
-                JPanel panel = new JPanel();
-                panel.add(new JLabel(Lang.get("langcheck.choose")));
-                panel.add(jcb);
-                int result = JOptionPane.showOptionDialog(OpenBST.this, panel,
-                        Lang.get("langcheck"), JOptionPane.OK_CANCEL_OPTION,
-                        JOptionPane.QUESTION_MESSAGE, null, null, null);
-                if(result == JOptionPane.OK_OPTION)
-                {
-                    Locale selected = new Locale((String)jcb.getSelectedItem());
-                    if(!Lang.getMap().keySet().contains(selected))
-                    {
-                        try
-                        {
-                            Lang.loadTranslationsFromFile(selected, OpenBST.class
-                                    .getResourceAsStream("/utybo/branchingstorytree/swing/lang/"
-                                            + languages.get(jcb.getSelectedItem().toString())));
-                        }
-                        catch(UnrespectedModelException | IOException e1)
-                        {
-                            LOG.warn("Failed to load translation file", e1);
-                        }
-                    }
-                    ArrayList<String> list = new ArrayList<>();
-                    Lang.getLocaleMap(Locale.ENGLISH).forEach((k, v) ->
-                    {
-                        if(!Lang.getLocaleMap(selected).containsKey(k))
-                        {
-                            list.add(k + "\n");
-                        }
-                    });
-                    StringBuilder sb = new StringBuilder();
-                    Collections.sort(list);
-                    list.forEach(s -> sb.append(s));
-                    JDialog dialog = new JDialog(OpenBST.this, Lang.get("langcheck"));
-                    dialog.getContentPane().setLayout(new MigLayout());
-                    dialog.getContentPane().add(new JLabel(Lang.get("langcheck.result")),
-                            "pushx, growx, wrap");
-                    JTextArea area = new JTextArea();
-                    area.setLineWrap(true);
-                    area.setWrapStyleWord(true);
-                    area.setText(sb.toString());
-                    area.setEditable(false);
-                    area.setBorder(BorderFactory.createLoweredBevelBorder());
-                    JScrollPane jsp = new JScrollPane(area);
-                    jsp.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-                    dialog.getContentPane().add(jsp, "pushx, pushy, growx, growy");
-                    dialog.setSize((int)(Icons.getScale() * 300), (int)(Icons.getScale() * 300));
-                    dialog.setLocationRelativeTo(OpenBST.this);
-                    dialog.setModalityType(ModalityType.APPLICATION_MODAL);
-                    dialog.setVisible(true);
-                }
-            }
-        }));
-
-        additionalMenu.add(new JMenuItem(new AbstractAction("Show debug info")
-        {
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                DebugInfo.launch(OpenBST.this);
-            }
-        }));
-
-        shortMenu.addSeparator();
-
-        JMenu themesMenu = new JMenu(Lang.get("menu.themes"));
-        shortMenu.add(themesMenu);
-        themesMenu.setIcon(new ImageIcon(Icons.getImage("Color Wheel", 16)));
-        ButtonGroup themesGroup = new ButtonGroup();
-        JRadioButtonMenuItem jrbmi;
-
-        jrbmi = new JRadioButtonMenuItem(Lang.get("menu.themes.dark"));
-        if(0 == selectedTheme)
-        {
-            jrbmi.setSelected(true);
-        }
-        jrbmi.addActionListener(e -> switchLaF(0, DARK_THEME));
-        themesMenu.add(jrbmi);
-        themesGroup.add(jrbmi);
-
-        jrbmi = new JRadioButtonMenuItem(Lang.get("menu.themes.light"));
-        if(1 == selectedTheme)
-        {
-            jrbmi.setSelected(true);
-        }
-        jrbmi.addActionListener(e -> switchLaF(1, LIGHT_THEME));
-        themesMenu.add(jrbmi);
-        themesGroup.add(jrbmi);
-
-        jrbmi = new JRadioButtonMenuItem(Lang.get("menu.themes.debug"));
-        if(2 == selectedTheme)
-        {
-            jrbmi.setSelected(true);
-        }
-        jrbmi.addActionListener(e -> switchLaF(2, DEBUG_THEME));
-        themesMenu.add(jrbmi);
-        themesGroup.add(jrbmi);
-
-        JMenu additionalLightThemesMenu = new JMenu("Additional light themes");
-        int j = 3;
-        for(Map.Entry<String, LookAndFeel> entry : ADDITIONAL_LIGHT_THEMES.entrySet())
-        {
-            int jf = j;
-            jrbmi = new JRadioButtonMenuItem(entry.getKey());
-            if(j == selectedTheme)
-                jrbmi.setSelected(true);
-            jrbmi.addActionListener(e -> switchLaF(jf, entry.getValue()));
-            additionalLightThemesMenu.add(jrbmi);
-            themesGroup.add(jrbmi);
-            j++;
-        }
-        themesMenu.add(additionalLightThemesMenu);
-
-        JMenu additionalDarkThemesMenu = new JMenu("Additional dark themes");
-        for(Map.Entry<String, LookAndFeel> entry : ADDITIONAL_DARK_THEMES.entrySet())
-        {
-            int jf = j;
-            jrbmi = new JRadioButtonMenuItem(entry.getKey());
-            if(j == selectedTheme)
-                jrbmi.setSelected(true);
-            jrbmi.addActionListener(e -> switchLaF(jf, entry.getValue()));
-            additionalDarkThemesMenu.add(jrbmi);
-            themesGroup.add(jrbmi);
-            j++;
-        }
-        themesMenu.add(additionalDarkThemesMenu);
-
-        shortMenu.add(new JMenuItem(new AbstractAction(Lang.get("menu.about"),
-                new ImageIcon(Icons.getImage("About", 16)))
-        {
-            /**
-             *
-             */
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                new AboutDialog(instance).setVisible(true);
-            }
-        }));
-
-        return shortMenu;
-    }
-
-    private void switchLaF(int id, LookAndFeel laf)
-    {
-        try
-        {
-            dark = id == 0 || ADDITIONAL_DARK_THEMES.containsValue(laf);
-            UIManager.setLookAndFeel(laf);
-            SwingUtilities.updateComponentTreeUI(instance);
-            background.setDark(dark);
-            darkModeCallbacks.forEach(a -> a.accept(dark));
-            selectedTheme = id;
-        }
-        catch(UnsupportedLookAndFeelException e)
-        {
-            LOG.warn("Unsupported LaF", e);
-        }
-    }
-
-    public static OpenBST getInstance()
-    {
-        return instance;
-    }
-
-    protected void showMessage(OpenBST obst, String msg, int type)
-    {
-        invokeSwingAndWait(() -> Messagers.showMessage(obst, msg, type));
-    }
-
-    protected void showException(OpenBST obst, String msg, Exception e)
-    {
-        invokeSwingAndWait(() -> Messagers.showException(obst, msg, e));
-    }
-
-    public void addDarkModeCallback(Consumer<Boolean> callback)
-    {
-        darkModeCallbacks.add(callback);
-    }
-
-    public void removeDarkModeCallbback(Consumer<Boolean> callback)
-    {
-        darkModeCallbacks.remove(callback);
-    }
-
-    public Boolean isDark()
-    {
-        return dark;
-    }
-
-    public void setTabName(JPanel panel, String string)
-    {
-        if(container.indexOfComponent(panel) != -1)
-            container.setTitleAt(container.indexOfComponent(panel), string);
-    }
-    
     public static String getAllLogs()
     {
         return logOutput.toString(Charset.defaultCharset());
