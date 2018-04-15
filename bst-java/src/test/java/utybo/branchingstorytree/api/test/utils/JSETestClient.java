@@ -8,7 +8,11 @@
  */
 package utybo.branchingstorytree.api.test.utils;
 
+import java.io.InputStream;
+
 import utybo.branchingstorytree.api.BSTClient;
+import utybo.branchingstorytree.api.BSTException;
+import utybo.branchingstorytree.htb.HTBHandler;
 
 public class JSETestClient implements BSTClient
 {
@@ -21,5 +25,47 @@ public class JSETestClient implements BSTClient
     @Override
     public void exit()
     {}
+
+    @Override
+    public HTBHandler getHTBHandler()
+    {
+        return new HTBHandler()
+        {
+
+            @Override
+            public void load(InputStream in, String name) throws BSTException
+            {}
+
+            @Override
+            public boolean requestJSAccess()
+            {
+                return true;
+            }
+
+            @Override
+            public boolean requestHrefAccess()
+            {
+                return true;
+            }
+
+            @Override
+            public boolean hasResource(String resource)
+            {
+                return false;
+            }
+
+            @Override
+            public String getAsString(String resource)
+            {
+                return null;
+            }
+
+            @Override
+            public String getAsBase64(String resource)
+            {
+                return null;
+            }
+        };
+    }
 
 }

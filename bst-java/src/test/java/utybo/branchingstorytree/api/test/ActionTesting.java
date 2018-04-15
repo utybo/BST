@@ -42,13 +42,6 @@ public class ActionTesting
     }
 
     @Test
-    public void testFastJse()
-            throws InstantiationException, IllegalAccessException, IOException, BSTException
-    {
-        testFile("jse_fast.bst", new JSETestClient());
-    }
-
-    @Test
     public void testOperations()
             throws InstantiationException, IllegalAccessException, IOException, BSTException
     {
