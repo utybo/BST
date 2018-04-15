@@ -31,7 +31,10 @@ public class XSFAction implements ScriptAction
         }
         if(xsf == null)
             throw new BSTException(line, "XSF is not supported.", story);
-        Object ret = xsf.invokeScript(bits[0], bits[1], new XSFBridge(story, client, line), story, line);
+        if(!client.getHTBHandler().requestJSAccess())
+            throw new BSTException(line, "Javascript access denied", story);
+        Object ret = xsf.invokeScript(bits[0], bits[1], new XSFBridge(story, client, line), story,
+                line);
         if(bits.length == 3 && ret != null)
             convertAndSaveVariable(bits[2], ret, story.getRegistry());
     }
@@ -41,7 +44,7 @@ public class XSFAction implements ScriptAction
     {
         return new String[] {"xsf_exec"};
     }
-    
+
     protected static void convertAndSaveVariable(String varName, Object obj, VariableRegistry reg)
     {
         if(obj instanceof Number)

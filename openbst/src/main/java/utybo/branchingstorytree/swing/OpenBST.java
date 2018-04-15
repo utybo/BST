@@ -11,12 +11,15 @@ package utybo.branchingstorytree.swing;
 import java.awt.Color;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
+import java.lang.reflect.Type;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.concurrent.ExecutionException;
 
 import javax.swing.ImageIcon;
@@ -34,8 +37,10 @@ import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
+import utybo.branchingstorytree.api.Experimental;
 import utybo.branchingstorytree.swing.ext.ComparableVersion;
 import utybo.branchingstorytree.swing.impl.IMGClient;
+import utybo.branchingstorytree.swing.utils.AlphanumComparator;
 import utybo.branchingstorytree.swing.utils.Lang;
 import utybo.branchingstorytree.swing.utils.OutputStreamToOutputAndPrint;
 import utybo.branchingstorytree.swing.visuals.JBannerPanel;
@@ -68,6 +73,8 @@ public class OpenBST
             VERSION = s;
         }
     }
+
+    private static Map<String, String> internalFiles;
 
     public static final Logger LOG;
     private static ByteArrayOutputStream logOutput;
@@ -155,6 +162,11 @@ public class OpenBST
                 publish(Lang.get("splash.processbg"));
                 IMGClient.initInternal();
 
+                // $EXPERIMENTAL
+                LOG.info("Loading internal BTS files...");
+                publish(Lang.get("splash.loadinternalbst"));
+                loadInternalBSTFiles();
+
                 return null;
             }
 
@@ -180,6 +192,7 @@ public class OpenBST
         VisualsUtils.invokeSwingAndWait(() ->
         {
             sc.setText(Lang.get("splash.launch"));
+            sc.lock();
             sc.stop();
         });
         LOG.trace("Launching app...");
@@ -371,4 +384,25 @@ public class OpenBST
     {
         return logOutput.toString(Charset.defaultCharset());
     }
+
+    @Experimental
+    private static void loadInternalBSTFiles()
+    {
+        Type type = new TypeToken<Map<String, String>>()
+        {}.getType();
+        internalFiles = new TreeMap<String, String>(new AlphanumComparator());
+        internalFiles.putAll(new Gson()
+                .fromJson(new InputStreamReader(OpenBST.class.getResourceAsStream("/bst/list.json"),
+                        StandardCharsets.UTF_8), type));
+
+    }
+
+    @Experimental
+    public static Map<String, String> getInternalFiles()
+    {
+        return Collections.unmodifiableMap(internalFiles);
+    }
+
+    private OpenBST()
+    {}
 }

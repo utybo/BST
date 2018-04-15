@@ -22,7 +22,7 @@ public class HTBAction implements ScriptAction
     {
         if(client.getHTBHandler() == null)
         {
-            throw new BSTException(line, "HTB and is not supported.", story.getTag("__sourcename"));
+            throw new BSTException(line, "HTB is not supported.", story.getTag("__sourcename"));
         }
         switch(head)
         {

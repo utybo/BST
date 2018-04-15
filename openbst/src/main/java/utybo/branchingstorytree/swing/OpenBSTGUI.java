@@ -23,7 +23,9 @@ import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
@@ -34,6 +36,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.Vector;
 import java.util.concurrent.ExecutionException;
@@ -72,6 +75,7 @@ import javax.swing.WindowConstants;
 import javax.swing.plaf.metal.MetalLookAndFeel;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
 import org.pushingpixels.substance.api.SubstanceCortex;
 import org.pushingpixels.substance.api.SubstanceLookAndFeel;
 import org.pushingpixels.substance.api.SubstanceSkin;
@@ -312,9 +316,7 @@ public class OpenBSTGUI extends JFrame
         else if(OpenBST.VERSION.contains("SNAPSHOT"))
         {
             bannersPanel.add(new JBannerPanel(new ImageIcon(Icons.getImage("Experiment", 32)),
-                    Color.ORANGE,
-                    Lang.get("welcome.snapshot"),
-                    null, false), "grow");
+                    Color.ORANGE, Lang.get("welcome.snapshot"), null, false), "grow");
         }
 
         if(System.getProperty("java.specification.version").equals("9"))
@@ -549,6 +551,42 @@ public class OpenBSTGUI extends JFrame
                 DebugInfo.launch(OpenBSTGUI.this);
             }
         }));
+
+        JMenu includedFiles = new JMenu("Included BST files");
+
+        for(Entry<String, String> entry : OpenBST.getInternalFiles().entrySet())
+        {
+            JMenuItem jmi = new JMenuItem(entry.getKey());
+            jmi.addActionListener(ev ->
+            {
+                String path = "/bst/" + entry.getValue();
+                InputStream is = OpenBSTGUI.class.getResourceAsStream(path);
+                ProgressMonitorInputStream pmis = new ProgressMonitorInputStream(OpenBSTGUI.this,
+                        "Extracting...", is);
+                new Thread(() ->
+                {
+                    try
+                    {
+                        File f = File.createTempFile("openbstinternal", ".bsp");
+                        FileOutputStream fos = new FileOutputStream(f);
+                        IOUtils.copy(pmis, fos);
+                        openStory(f);
+                    }
+                    catch(final IOException e)
+                    {
+                        LOG.error("IOException caught", e);
+                        showException(
+                                Lang.get("file.error").replace("$e", e.getClass().getSimpleName())
+                                        .replace("$m", e.getMessage()),
+                                e);
+                    }
+
+                }).start();
+
+            });
+            includedFiles.add(jmi);
+        }
+        additionalMenu.add(includedFiles);
 
         shortMenu.addSeparator();
 

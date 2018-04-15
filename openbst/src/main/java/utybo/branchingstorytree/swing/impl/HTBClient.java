@@ -32,6 +32,7 @@ public class HTBClient implements HTBHandler
 {
     private final HashMap<String, byte[]> map = new HashMap<>();
     private final NodePanel nodePanel;
+    private Boolean js = null, anchors = null;
 
     public HTBClient(NodePanel panel)
     {
@@ -68,41 +69,53 @@ public class HTBClient implements HTBHandler
     @Override
     public boolean requestJSAccess()
     {
-        int result = Messagers.showConfirm(OpenBSTGUI.getInstance(),
-                "<html><body style='width:" + (int)(Icons.getScale() * 300) + "px'>"
-                        + Lang.get("html.jsrequest"),
-                Messagers.TYPE_QUESTION, Messagers.OPTIONS_YES_NO, Lang.get("html.securityalert"),
-                new ImageIcon(Icons.getImage("JSAlert", 48)));
-        if(result == Messagers.OPTION_YES)
+        if(js == null)
         {
-            nodePanel.setJSEnabled(true);
-            return true;
+            int result = Messagers.showConfirm(OpenBSTGUI.getInstance(),
+                    "<html><body style='width:" + (int)(Icons.getScale() * 300) + "px'>"
+                            + Lang.get("html.jsrequest"),
+                    Messagers.OPTIONS_YES_NO, Messagers.TYPE_QUESTION,
+                    Lang.get("html.securityalert"), new ImageIcon(Icons.getImage("JSAlert", 48)));
+            if(result == Messagers.OPTION_YES)
+            {
+                js = true;
+                nodePanel.setJSEnabled(true);
+                return true;
+            }
+            else
+            {
+                js = false;
+                nodePanel.setJSEnabled(false);
+                return false;
+            }
         }
         else
-        {
-            nodePanel.setJSEnabled(false);
-            return false;
-        }
+            return js;
     }
 
     @Override
     public boolean requestHrefAccess()
     {
-        int result = Messagers.showConfirm(OpenBSTGUI.getInstance(),
-                "<html><body style='width:" + (int)(Icons.getScale() * 300) + "px'>"
-                        + Lang.get("html.htmlrequest"),
-                Messagers.TYPE_QUESTION, Messagers.OPTIONS_YES_NO, Lang.get("html.securityalert"),
-                new ImageIcon(Icons.getImage("JSAlert", 48)));
-        if(result == Messagers.OPTION_YES)
+        if(anchors == null)
         {
-            nodePanel.setHrefEnabled(true);
-            return true;
+            int result = Messagers.showConfirm(OpenBSTGUI.getInstance(),
+                    "<html><body style='width:" + (int)(Icons.getScale() * 300) + "px'>"
+                            + Lang.get("html.htmlrequest"),
+                    Messagers.OPTIONS_YES_NO, Messagers.TYPE_QUESTION,
+                    Lang.get("html.securityalert"), new ImageIcon(Icons.getImage("JSAlert", 48)));
+            if(result == Messagers.OPTION_YES)
+            {
+                nodePanel.setHrefEnabled(true);
+                return true;
+            }
+            else
+            {
+                nodePanel.setHrefEnabled(false);
+                return false;
+            }
         }
         else
-        {
-            nodePanel.setHrefEnabled(false);
-            return false;
-        }
+            return anchors;
     }
 
     @Override

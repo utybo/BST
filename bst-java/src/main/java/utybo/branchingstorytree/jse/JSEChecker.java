@@ -26,6 +26,8 @@ public class JSEChecker implements ScriptChecker
             final BranchingStory story, final BSTClient client) throws BSTException
     {
         final VariableRegistry registry = story.getRegistry();
+        if(!client.getHTBHandler().requestJSAccess())
+            throw new BSTException(line, "Javascript access denied", story);
         ScriptEngine engine = new ScriptEngineManager().getEngineByName("JavaScript");
         JSEAction.applyReg(engine, registry, line, story);
         try

@@ -69,6 +69,7 @@ public class Splashscreen extends JFrame
     private JLabel lblText;
     private final JLabel lblZrrk;
     private JXPanel panLogo, panZrrk;
+    private boolean locked = false;
 
     public Splashscreen()
     {
@@ -83,7 +84,6 @@ public class Splashscreen extends JFrame
             OpenBST.LOG.error(e);
         }
         setSize($(400, 120));
-        System.out.println(getSize());
         setLocationRelativeTo(null);
         getContentPane().setLayout(null);
 
@@ -210,6 +210,12 @@ public class Splashscreen extends JFrame
 
     public void setText(String text)
     {
-        lblText.setText(text);
+        if(!locked)
+            lblText.setText(text);
+    }
+
+    public void lock()
+    {
+        locked = true;
     }
 }

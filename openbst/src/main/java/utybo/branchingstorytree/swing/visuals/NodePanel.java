@@ -158,7 +158,7 @@ public class NodePanel extends JScrollablePanel
                                 }
                             }
                         });
-
+                view.setZoom((double)Icons.getScale());
                 Scene sc = new Scene(view);
                 if(!OpenBSTGUI.getInstance().isDark())
                     view.setFontSmoothingType(FontSmoothingType.LCD);
