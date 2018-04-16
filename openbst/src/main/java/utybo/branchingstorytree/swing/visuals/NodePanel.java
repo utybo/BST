@@ -49,26 +49,14 @@ import utybo.branchingstorytree.swing.utils.MarkupUtils;
 
 public class NodePanel extends JScrollablePanel
 {
-    private static final String FONT_STYLE, STYLE;
+    private static final String FONT_UBUNTU, FONT_LIBRE_BASKERVILLE, STYLE;
 
     static
     {
-        String s;
-        try
-        {
-            s = IOUtils.toString(
-                    new XZCompressorInputStream(NodePanel.class.getResourceAsStream(
-                            "/utybo/branchingstorytree/swing/font/fonts.css.xz")),
-                    StandardCharsets.UTF_8);
-        }
-        catch(IOException e)
-        {
-            OpenBST.LOG.warn("Failed to load fonts CSS file", e);
-            s = "";
-        }
+        FONT_UBUNTU = loadFont("ubuntu");
+        FONT_LIBRE_BASKERVILLE = loadFont("libre_baskerville");
 
-        FONT_STYLE = s;
-
+        String s = null;
         try
         {
             s = IOUtils.toString(NodePanel.class.getResourceAsStream(
@@ -172,7 +160,7 @@ public class NodePanel extends JScrollablePanel
                                             "/utybo/branchingstorytree/swing/html/error.html"),
                                     StandardCharsets.UTF_8)
                             .replace("$MSG", Lang.get("story.problem"))
-                            .replace("$STYLE", FONT_STYLE));
+                            .replace("$STYLE", FONT_UBUNTU));
                 }
                 catch(IOException e)
                 {
@@ -193,6 +181,24 @@ public class NodePanel extends JScrollablePanel
         {
             OpenBST.LOG.warn("Synchronization failed", e);
         }
+    }
+
+    private static String loadFont(String name)
+    {
+        String s;
+        try
+        {
+            s = IOUtils.toString(
+                    new XZCompressorInputStream(NodePanel.class.getResourceAsStream(
+                            "/utybo/branchingstorytree/swing/font/" + name + ".css.xz")),
+                    StandardCharsets.UTF_8);
+        }
+        catch(IOException e)
+        {
+            OpenBST.LOG.warn("Failed to load fonts CSS file", e);
+            s = "";
+        }
+        return s;
     }
 
     public void applyNode(final BranchingStory story, final TextNode textNode) throws BSTException
@@ -236,7 +242,7 @@ public class NodePanel extends JScrollablePanel
     {
         // Build the base, with fonts and style (injecting font info)
         String base = "<head><meta charset=\"utf-8\"/>" //
-                + "<style type='text/css'>" + FONT_STYLE + "</style>" //
+                + "<style type='text/css'>" + getCurrentFontCss() + "</style>" //
                 + "<style type='text/css'>" + STYLE.replace("$f", getCurrentFont()) + "</style>" //
                 + "$CUSTOMCSS" + "</head>" //
                 + "<body class='$bbg" + (isDark ? " dark" : "") + "'>" + "<div class='storydiv'>" //
@@ -283,6 +289,17 @@ public class NodePanel extends JScrollablePanel
         isAlreadyBuilt = true;
     }
 
+    private String getCurrentFontCss()
+    {
+        String fontName = getCurrentFont().toLowerCase();
+        if(fontName.equals("ubuntu"))
+            return FONT_UBUNTU;
+        else if(fontName.contains("baskerville"))
+            return FONT_LIBRE_BASKERVILLE;
+        else
+            return "";
+    }
+
     private String getCurrentFont()
     {
         if((int)parent.currentNode.getStory().getRegistry()
@@ -308,7 +325,6 @@ public class NodePanel extends JScrollablePanel
             return defaultFont;
         }
     }
-
 
     public void setText(final String text)
     {

@@ -305,7 +305,7 @@ public class StoryPanel extends JPanel
                     if(Messagers.showConfirm(parentWindow,
                             "<html><body style='width: " + (int)(Icons.getScale() * 300) + "'>"
                                     + Lang.get("story.restoress.confirm"),
-                            Messagers.TYPE_WARNING, Messagers.OPTIONS_YES_NO,
+                            Messagers.OPTIONS_YES_NO, Messagers.TYPE_WARNING,
                             Lang.get("story.restoress"),
                             new ImageIcon(Icons.getImage("Undo", 40))) == Messagers.OPTION_YES)
                     {
@@ -649,14 +649,7 @@ public class StoryPanel extends JPanel
             @Override
             public void actionPerformed(final ActionEvent e)
             {
-                if(Messagers.showConfirm(parentWindow, "<html>" + Lang.get("story.close.confirm"),
-                        Messagers.OPTIONS_YES_NO, Messagers.TYPE_WARNING, Lang.get("story.close"),
-                        new ImageIcon(Icons.getImage("Cancel", 40))) == Messagers.OPTION_YES)
-                {
-                    client.getSSBHandler().shutdown();
-                    nodePanel.dispose();
-                    parentWindow.removeTab(StoryPanel.this);
-                }
+                askClose();
             }
         });
 
@@ -1092,5 +1085,20 @@ public class StoryPanel extends JPanel
         variableWatcherButton.setSelected(false);
         variableWatcher.deathNotified();
         variableWatcher.dispose();
+    }
+    
+    public boolean askClose()
+    {
+        if(Messagers.showConfirm(parentWindow, "<html>" + Lang.get("story.close.confirm"),
+                Messagers.OPTIONS_YES_NO, Messagers.TYPE_WARNING, Lang.get("story.close"),
+                new ImageIcon(Icons.getImage("Cancel", 40))) == Messagers.OPTION_YES)
+        {
+            client.getSSBHandler().shutdown();
+            nodePanel.dispose();
+            parentWindow.removeTab(this);
+            return true;
+        }
+        return false;
+        
     }
 }

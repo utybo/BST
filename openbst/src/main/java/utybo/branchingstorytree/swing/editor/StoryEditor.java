@@ -131,17 +131,7 @@ public class StoryEditor extends JPanel implements EditorControl<BranchingStory>
                 new ImageIcon(Icons.getImage("Cancel", 16)));
         btnClose.addActionListener(e ->
         {
-            int i = Messagers.showConfirm(OpenBSTGUI.getInstance(), Lang.get("editor.asksave"),
-                    Messagers.OPTIONS_YES_NO_CANCEL);
-            if(i == Messagers.OPTION_YES)
-            {
-                if(save())
-                    OpenBSTGUI.getInstance().removeTab(this);
-            }
-            else if(i == Messagers.OPTION_NO)
-                OpenBSTGUI.getInstance().removeTab(this);
-            else
-                return;
+            askClose();
         });
         toolBar.add(btnClose);
 
@@ -180,6 +170,28 @@ public class StoryEditor extends JPanel implements EditorControl<BranchingStory>
         });
 
         importFrom(baseStory);
+    }
+
+    public boolean askClose()
+    {
+        int i = Messagers.showConfirm(OpenBSTGUI.getInstance(), Lang.get("editor.asksave"),
+                Messagers.OPTIONS_YES_NO_CANCEL);
+        if(i == Messagers.OPTION_YES)
+        {
+            if(save())
+            {
+                OpenBSTGUI.getInstance().removeTab(this);
+                return true;
+            }
+        }
+        else if(i == Messagers.OPTION_NO)
+        {
+            OpenBSTGUI.getInstance().removeTab(this);
+            return true;
+        }
+        else
+            return false;
+        return false;
     }
 
     @Override
@@ -270,6 +282,7 @@ public class StoryEditor extends JPanel implements EditorControl<BranchingStory>
 
     public String getTitle()
     {
-        return Lang.get("editor.title").replace("$t", details.getTitle()).replace("$a", details.getAuthor());
+        return Lang.get("editor.title").replace("$t", details.getTitle()).replace("$a",
+                details.getAuthor());
     }
 }

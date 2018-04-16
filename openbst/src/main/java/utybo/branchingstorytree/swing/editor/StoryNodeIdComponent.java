@@ -45,7 +45,7 @@ public class StoryNodeIdComponent extends JPanel
 
         setLayout(new MigLayout("", "[][50px][][][grow]", "[][]"));
 
-        rdbtnUseIntegerId = new JRadioButton(Lang.get("Use integer ID"));
+        rdbtnUseIntegerId = new JRadioButton(Lang.get(Lang.get("editor.node.useintid")));
 
         rdbtnUseIntegerId.setSelected(true);
         buttonGroup.add(rdbtnUseIntegerId);

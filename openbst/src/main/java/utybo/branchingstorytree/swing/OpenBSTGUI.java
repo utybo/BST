@@ -19,6 +19,10 @@ import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
@@ -28,7 +32,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -274,7 +277,48 @@ public class OpenBSTGUI extends JFrame
         getContentPane().setLayout(borderLayout);
         setIconImage(Icons.getImage("Logo", 48));
         setTitle("OpenBST " + OpenBST.VERSION);
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+        addWindowListener(new WindowAdapter()
+        {
+
+            @Override
+            public void windowClosing(WindowEvent e)
+            {
+                boolean cancelled = false;
+                for(Component c : container.getComponents())
+                {
+                    if(c instanceof StoryPanel)
+                    {
+                        container.setSelectedComponent(c);
+                        if(((StoryPanel)c).askClose())
+                        {
+                            continue;
+                        }
+                        else
+                        {
+                            cancelled = true;
+                            break;
+                        }
+                    }
+                    else if(c instanceof StoryEditor)
+                    {
+                        container.setSelectedComponent(c);
+                        if(((StoryEditor)c).askClose())
+                        {
+                            continue;
+                        }
+                        else
+                        {
+                            cancelled = true;
+                            break;
+                        }
+                    }
+                }
+                if(!cancelled)
+                    System.exit(0);
+            }
+
+        });
 
         JMenuBar jmb = new JMenuBar();
         jmb.setBackground(OPENBST_BLUE);
@@ -289,6 +333,33 @@ public class OpenBSTGUI extends JFrame
         });
 
         container = new JTabbedPane();
+        container.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
+        container.addMouseListener(new MouseAdapter()
+        {
+            @Override
+            public void mouseClicked(final MouseEvent e)
+            {
+                if(SwingUtilities.isMiddleMouseButton(e))
+                {
+                    final int i = container.indexAtLocation(e.getX(), e.getY());
+                    System.out.println(i);
+                    if(i > -1)
+                    {
+                        Component c = container.getComponentAt(i);
+                        if(c instanceof StoryPanel)
+                        {
+                            container.setSelectedComponent(c);
+                            ((StoryPanel)c).askClose();
+                        }
+                        else if(c instanceof StoryEditor)
+                        {
+                            container.setSelectedComponent(c);
+                            ((StoryEditor)c).askClose();
+                        }
+                    }
+                }
+            }
+        });
         getContentPane().add(container, BorderLayout.CENTER);
 
         final JBackgroundPanel welcomeContentPanel = new JBackgroundPanel(
@@ -868,7 +939,7 @@ public class OpenBSTGUI extends JFrame
                                         new ProgressMonitorInputStream(instance,
                                                 "Opening " + file.getName() + "...",
                                                 new FileInputStream(file)),
-                                        Charset.forName("UTF-8"))),
+                                        StandardCharsets.UTF_8)),
                                 new Dictionary(), client, "<main>");
                         client.setBRMHandler(new BRMFileClient(file, client, bs));
                     }
