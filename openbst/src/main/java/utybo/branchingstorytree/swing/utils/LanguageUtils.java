@@ -15,6 +15,7 @@ import utybo.branchingstorytree.api.story.NodeOption;
 import utybo.branchingstorytree.api.story.StoryNode;
 import utybo.branchingstorytree.api.story.TextNode;
 import utybo.branchingstorytree.api.story.VirtualNode;
+import utybo.branchingstorytree.swing.OpenBST;
 
 public class LanguageUtils
 {
@@ -30,7 +31,12 @@ public class LanguageUtils
         {
             hasNonLatin = checkNonLatin(e.getValue());
             if(hasNonLatin)
+            {
+                OpenBST.LOG.info("Found non-latin in tags : " + e.getValue());
+                OpenBST.LOG
+                        .info("Non latin characters : " + getAllNonLatinCharacters(e.getValue()));
                 break;
+            }
         }
         if(!hasNonLatin) // Nothing detected in tags, check nodes
         {
@@ -40,7 +46,14 @@ public class LanguageUtils
                 {
                     hasNonLatin = checkNonLatin(((VirtualNode)sn).getText());
                     if(hasNonLatin)
+                    {
+                        OpenBST.LOG.info("Found non-latin in node " + sn.getId() + "("
+                                + sn.getTagOrDefault("alias", "<none>") + ") : "
+                                + ((VirtualNode)sn).getText());
+                        OpenBST.LOG.info("Non latin characters : "
+                                + getAllNonLatinCharacters(((VirtualNode)sn).getText()));
                         break;
+                    }
                 }
                 if(sn instanceof TextNode) // TextNode => check options
                 {
@@ -48,7 +61,16 @@ public class LanguageUtils
                     {
                         hasNonLatin = checkNonLatin(o.getText());
                         if(hasNonLatin)
+                        {
+
+                            OpenBST.LOG.info("Found non-latin in node " + sn.getId() + "("
+                                    + sn.getTagOrDefault("alias", "<none>") + ") option : "
+                                    + o.getText());
+
+                            OpenBST.LOG.info("Non latin characters : "
+                                    + getAllNonLatinCharacters(o.getText()));
                             break;
+                        }
                     }
                     if(hasNonLatin)
                         break;
@@ -63,12 +85,23 @@ public class LanguageUtils
     {
         for(char c : s.toCharArray())
         {
-            if(c < 0x21 || c > 0x17f)
+            if(c > 0x17f)
             {
                 return true;
             }
         }
         return false;
+    }
+
+    public static String getAllNonLatinCharacters(final String s)
+    {
+        String sx = "";
+        for(char c : s.toCharArray())
+        {
+            if(c > 0x17f)
+                sx += c;
+        }
+        return sx;
     }
 
 }
