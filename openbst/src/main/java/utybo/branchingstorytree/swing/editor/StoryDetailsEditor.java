@@ -109,10 +109,11 @@ public class StoryDetailsEditor extends JPanel implements EditorControl<Map<Stri
 
         font = new JComboBox<String>();
         font.setEditable(true);
-        font.setModel(new DefaultComboBoxModel<>(new String[] {"libre_baskerville", "ubuntu"}));
+        font.setModel(new DefaultComboBoxModel<>(
+                new String[] {"[default]", "libre_baskerville", "ubuntu"}));
         add(font, "cell 1 4,growx");
 
-        JLabel lblSupertools = new JLabel(Lang.get("editor.details.name"));
+        JLabel lblSupertools = new JLabel(Lang.get("editor.details.supertools"));
         add(lblSupertools, "flowy,cell 0 5,alignx trailing");
 
         supertools = new JComboBox<String>();
@@ -131,7 +132,7 @@ public class StoryDetailsEditor extends JPanel implements EditorControl<Map<Stri
         storyName.setText(from.getOrDefault("title", ""));
         author.setText(from.getOrDefault("author", ""));
         markup.setSelectedItem(from.getOrDefault("markup", "none"));
-        font.setSelectedItem(from.getOrDefault("font", "libre_baskerville"));
+        font.setSelectedItem(from.getOrDefault("font", "[default]"));
         supertools.setSelectedItem(from.getOrDefault("supertools", "all"));
         nsfw.setSelected(Boolean.parseBoolean(from.getOrDefault("nsfw", "false")));
     }
@@ -161,7 +162,7 @@ public class StoryDetailsEditor extends JPanel implements EditorControl<Map<Stri
         // Using a font like this bypasses the non-latin character checker which
         // switches to a compatible font.
         if(!font.getSelectedItem().toString().isEmpty()
-                && "libre_baskerville".equals(font.getSelectedItem().toString()))
+                && !("[default]".equals(font.getSelectedItem().toString())))
             sb.append("font=" + font.getSelectedItem().toString() + "\n");
 
         if(!supertools.getSelectedItem().toString().isEmpty())
