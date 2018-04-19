@@ -12,7 +12,10 @@ Unstable versions will appear inside OpenBST with a "u" at the end and a warning
 
 Less technical explanations for each update available on the [OpenBST website](https://utybo.github.io/BST/)
 
-## [2.0-beta2] (Unreleased) - 2.0 with HiDPI Glory, and an editor
+## [2.0-beta3] (Unreleased)
+### Added
+
+## [2.0-beta2] (Unreleased) - Now with HiDPI Glory, and an editor
 ### Added
 - **An editor was added.** You can now create and edit BST files directly from inside OpenBST!
 - **Experimental features were added.** They provide cool features, but can be very unstable and may disappear at any time. A warning is issued every time you call an experimental function.
@@ -24,9 +27,10 @@ Less technical explanations for each update available on the [OpenBST website](h
 - Added better message dialogs. Just fancy stuff, but hey, at least errors are shown more consistently!
 - Options now support variables
 - 2 new, beautiful backgrounds have been added!
+- You can now middle click on a tab to close it
 - Additional themes from Substance are now supported, although they are not considered to be official ones.
+- Internal BST files have been added. They allow you to try some internal features. At the moment only one file is here, specifically made for internal showing backgrounds
 - Added new experimental features for HTB : custom CSS files.
-- Added a new Experimental Warning icon
 - Added a new experimental feature for IMG : using the internal backgrounds.
 - *Note on experimental features : See the javadoc for the @Experimental annotation which explains the general contracts around experimental elements*
 - *Added warnExperimental(line, from) inside BSTClient in bst-java*	 
@@ -35,31 +39,35 @@ Less technical explanations for each update available on the [OpenBST website](h
 
 ### Changed
 - **All icons have been changed to Icons8's Color set.** This improves consistency.
+- **OpenBST now uses the hardware-accelerated OpenGL pipe for its interface rendering.** This speeds everything up. The GUI toolkit is still Swing, but a switch has been activated that makes Swing use hardware acceleration. Sounds nice to me.
 - Large resources are now compressed (with XZ) to avoid massive file sizes.
+- Only the correct fonts are loaded now. Previously, ALL fonts (Libre Baskerville AND Ubuntu font) were loaded, regardless of which font was actually used by the file.
 - IMG now automatically caches images into the Base64 format, which makes selecting an option *much* faster now.
 - All common image types should be supported now.
-- The option buttons system has been reworked to be much more dynamic
+- The option buttons system has been reworked to be much more dynamic and much less buggy
+- The about.txt file (which is used inside the About dialog) was improved
 - *Most NNDs and NodeOption now publicly expose their variables to allow for easier recreating of text*
 - *Code related to the user interface and code related to the main routines of OpenBST have been separated from the OpenBST class to OpenBST and OpenBSTGUI*
 
-### Deprecated
+### Security
+- Fixed a giant security issue with Nashorn JavaScript use. All actions that use Nashorn now go through a dialog to check whether the end users actually wants to run abritrary code or not.
 
 ### Removed
+- The Ubuntu Light and Ubuntu Semi-Bold fonts have been removed. They were simply not useful, increased load times and the size of OpenBST as a whole. File an issue if you wish to have them back.
 - *Removed most of the leftovers from JSE's old manual update system. JSE does not need to be implemented by clients anymore.*
+
 ### Fixed
+- **ALL anti-aliasing issues have been fixed.** Fonts now look buttery smooth. We are now using WOFF2 fonts directly provided by Google Fonts.
 - **OpenBST is now compatible with non-latin languages.**
-- Fonts no longer look like trash inside story panels. This was caused by a crappy, wonky and potentially license-breaking WOFF+WOFF2 conversion from TTF or OTF.
 - Fixed options not working at all in some cases.
 - Fixed the background visibility button not working
 - Fixed the Show Background button only showing the first background it has ever showed.
 - Fixed font size on the error screen
-- Fixed a typo in French language file.
 - *Fixed a (stupid) typo in a class name : Dictionnary -> Dictionary*
 
 ### i18n changes
-- **NOTE :** for a more detailed list, use the Lang completeness checker tool inside OpenBST (OpenBST menu > Advanced tools)
-- added story.experimental story.experimental.title copy saveas save play close menu.create menu.debug menu.themes.morelight menu.themes.moredark file.error story.experimental story.exeprimental.title story.unicodecompat story.unicodecompat.title welcome.java9warning welcome.java10warning welcome.snapshot welcome.openeditor up.* editor.* splash.* debug.*
-- removed all the html tags that were used for notifications (the new message dialogs automatically adds them where needed)
+- **STRINGS WERE ADDED :** for a detailed list of strings missing in your language, use the Lang completeness checker tool inside OpenBST (OpenBST menu > Advanced tools)
+- removed all the html tags that were used for notifications (the new message dialogs automatically adds them where needed) [All language files have been adapted]
 
 ## [2.0-beta1] - The 2.0 Beginning
 ### Added
@@ -97,6 +105,7 @@ Less technical explanations for each update available on the [OpenBST website](h
 - Error page is now fully HTML and also much more swag
 - Brand new node jump dialog box that looks nice!
 - Icon sizes are smaller for a few dialog boxes as they were way too big before
+- *Two divs were used in the node's HTML translation, which was stupid, since we could put everything into one div. The HTML translation is now less stupid, and only uses one div.*
 - *BRM Loading mechanism is much more flexible now (e.g InputStream loading)*
 - *All modules were adapted to this new loading mechanism to add compatibility with BRM. This may break APIs.*
 - *MAJOR API BREAK : Almost everything now has additional context requirements due to the addition of XBF, which now means you can have multiple BranchingStories for one file.*
@@ -139,4 +148,5 @@ Less technical explanations for each update available on the [OpenBST website](h
 
 [2.0]: https://github.com/utybo/BST/compare/v1.1...dev
 [2.0-beta1]: https://github.com/utybo/BST/compare/v1.1...v2.0-beta1
-[2.0-beta2]: https://github.com/utybo/BST/compare/v.2.0-beta1...dev
+[2.0-beta2]: https://github.com/utybo/BST/compare/v2.0-beta1...v2.0-beta2
+[2.0-beta3]: https://github.com/utybo/BST/compare/v2.0-beta2...dev
