@@ -20,7 +20,7 @@ import org.junit.Test;
 import utybo.branchingstorytree.api.BSTClient;
 import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.api.BranchingStoryTreeParser;
-import utybo.branchingstorytree.api.script.Dictionnary;
+import utybo.branchingstorytree.api.script.Dictionary;
 import utybo.branchingstorytree.api.story.BranchingStory;
 import utybo.branchingstorytree.api.story.LogicalNode;
 import utybo.branchingstorytree.api.story.StoryNode;
@@ -30,7 +30,7 @@ import utybo.branchingstorytree.xbf.XBFHandler;
 
 public class XBFTest
 {
-    private static Dictionnary dict;
+    private static Dictionary dict;
 
     private static BranchingStoryTreeParser parser = new BranchingStoryTreeParser();
 
@@ -45,7 +45,9 @@ public class XBFTest
         {
             try
             {
-                BranchingStory bs = parser.parse(new BufferedReader(new InputStreamReader(in, "UTF-8")), dict, this, name, mainStory.getRegistry());
+                BranchingStory bs = parser.parse(
+                        new BufferedReader(new InputStreamReader(in, "UTF-8")), dict, this, name,
+                        mainStory.getRegistry());
                 stories.put(name, bs);
             }
             catch(Exception e)
@@ -63,7 +65,9 @@ public class XBFTest
         @Override
         public void loadAuto() throws BSTException
         {
-            load(getClass().getResourceAsStream("/utybo/branchingstorytree/api/test/xbf/resources/xbf/additional.bst"), "additional");
+            load(getClass().getResourceAsStream(
+                    "/utybo/branchingstorytree/api/test/xbf/resources/xbf/additional.bst"),
+                    "additional");
         }
 
         @Override
@@ -105,9 +109,12 @@ public class XBFTest
     @Test
     public void testXBF() throws Exception
     {
-        dict = new Dictionnary();
+        dict = new Dictionary();
         XBFTestClient client = new XBFTestClient();
-        mainStory = parser.parse(new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/utybo/branchingstorytree/api/test/xbf/test.xbf"))), dict, client, "test");
+        mainStory = parser.parse(
+                new BufferedReader(new InputStreamReader(getClass()
+                        .getResourceAsStream("/utybo/branchingstorytree/api/test/xbf/test.xbf"))),
+                dict, client, "test");
         client.loadAuto();
         StoryNode sn = ((LogicalNode)mainStory.getInitialNode()).solve(mainStory);
         System.out.println(mainStory.getRegistry().dump());

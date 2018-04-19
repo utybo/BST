@@ -19,7 +19,7 @@ import org.junit.Test;
 import utybo.branchingstorytree.api.BSTClient;
 import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.api.BranchingStoryTreeParser;
-import utybo.branchingstorytree.api.script.Dictionnary;
+import utybo.branchingstorytree.api.script.Dictionary;
 import utybo.branchingstorytree.api.story.BranchingStory;
 import utybo.branchingstorytree.api.story.LogicalNode;
 import utybo.branchingstorytree.api.story.StoryNode;
@@ -56,7 +56,9 @@ public class ModuleBDFTesting
         {
             try
             {
-                bdfFiles.put(name, BDFParser.parse(new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(pathToResource))), name));
+                bdfFiles.put(name, BDFParser.parse(new BufferedReader(
+                        new InputStreamReader(getClass().getResourceAsStream(pathToResource))),
+                        name));
                 assert bdfFiles.containsKey(name);
             }
             catch(final IOException e)
@@ -98,15 +100,20 @@ public class ModuleBDFTesting
     }
 
     @Test
-    public void testBDF() throws InstantiationException, IllegalAccessException, IOException, BSTException
+    public void testBDF()
+            throws InstantiationException, IllegalAccessException, IOException, BSTException
     {
         testFile("module_bdf.bst", new BDFClient());
     }
 
-    public static void testFile(final String path, final BSTClient client) throws IOException, BSTException, InstantiationException, IllegalAccessException
+    public static void testFile(final String path, final BSTClient client)
+            throws IOException, BSTException, InstantiationException, IllegalAccessException
     {
-        final Dictionnary d = new Dictionnary();
-        final BranchingStory story = new BranchingStoryTreeParser().parse(new BufferedReader(new InputStreamReader(ActionTesting.class.getResourceAsStream("/utybo/branchingstorytree/api/test/files/" + path))), d, client, path);
+        final Dictionary d = new Dictionary();
+        final BranchingStory story = new BranchingStoryTreeParser().parse(
+                new BufferedReader(new InputStreamReader(ActionTesting.class
+                        .getResourceAsStream("/utybo/branchingstorytree/api/test/files/" + path))),
+                d, client, path);
         StoryNode node = story.getInitialNode();
         while(node != null)
         {

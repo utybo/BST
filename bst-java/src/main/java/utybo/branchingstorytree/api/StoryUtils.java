@@ -39,9 +39,16 @@ public class StoryUtils
      * @throws BSTException
      *             If an exception occurs while solving
      */
-    public static String solveVariables(final VirtualNode virtualNode, final BranchingStory story) throws NodeNotFoundException, BSTException
+    public static String solveVariables(final VirtualNode node, final BranchingStory story)
+            throws NodeNotFoundException, BSTException
     {
-        String text = virtualNode.getText();
+        return solveVariables(node.getText(), story);
+    }
+
+    public static String solveVariables(final String s, final BranchingStory story)
+            throws NodeNotFoundException, BSTException
+    {
+        String text = s;
         final Pattern vp = Pattern.compile("\\$\\{(([\\&\\>]\\d+)|([\\w_]+))\\}");
         final Matcher vn = vp.matcher(text);
         while(vn.find())
@@ -50,21 +57,23 @@ public class StoryUtils
             final String varName = toReplace.substring(2, toReplace.length() - 1);
             if(varName.startsWith(">"))
             {
-                final String s = varName.substring(1);
-                StoryNode node = parseNode(s, story);
+                final String str = varName.substring(1);
+                StoryNode node = parseNode(str, story);
                 if(!(node instanceof VirtualNode))
                 {
-                    throw new BSTException(-1, "Node is not a virtual node : " + node.getId(), story);
+                    throw new BSTException(-1, "Node is not a virtual node : " + node.getId(),
+                            story);
                 }
                 text = text.replace(toReplace, ((VirtualNode)node).getText());
             }
             else if(varName.startsWith("&"))
             {
-                final String s = varName.substring(1);
-                StoryNode i = parseNode(s, story);
+                final String str = varName.substring(1);
+                StoryNode i = parseNode(str, story);
                 if(!(i instanceof LogicalNode))
                 {
-                    throw new BSTException(-1, "Node " + i.getId() + " (alias : " + i.getTag("alias") + ") is not a logical node", story);
+                    throw new BSTException(-1, "Node " + i.getId() + " (alias : "
+                            + i.getTag("alias") + ") is not a logical node", story);
                 }
                 final LogicalNode ln = (LogicalNode)i;
                 i = ln.solve(story);
@@ -81,7 +90,8 @@ public class StoryUtils
             }
             else
             {
-                text = vn.replaceFirst(story.getRegistry().get(varName, Integer.valueOf(0)).toString());
+                text = vn.replaceFirst(
+                        story.getRegistry().get(varName, Integer.valueOf(0)).toString());
             }
             vn.reset(text);
         }
@@ -89,7 +99,8 @@ public class StoryUtils
         return text;
     }
 
-    public static StoryNode parseNode(String toParse, BranchingStory story) throws NodeNotFoundException, BSTException
+    public static StoryNode parseNode(String toParse, BranchingStory story)
+            throws NodeNotFoundException, BSTException
     {
         StoryNode sn = null;
         Matcher m = NUMBER_PATTERN.matcher(toParse);

@@ -21,7 +21,8 @@ public class XBFAction implements ScriptAction
 {
 
     @Override
-    public void exec(String head, String desc, int line, BranchingStory story, BSTClient client) throws BSTException
+    public void exec(String head, String desc, int line, BranchingStory story, BSTClient client)
+            throws BSTException
     {
         XBFHandler xbf = client.getXBFHandler();
         if(xbf == null)
@@ -41,7 +42,8 @@ public class XBFAction implements ScriptAction
             StoryNode node = StoryUtils.parseNode(id, story2);
             if(!(node instanceof LogicalNode))
             {
-                throw new BSTException(line, "Node " + id + " from " + from + " is not a logical node and thus cannot be called", story);
+                throw new BSTException(line, "Node " + id + " from " + from
+                        + " is not a logical node and thus cannot be called", story);
             }
             LogicalNode lnode = (LogicalNode)node;
             lnode.solve(story);
@@ -56,13 +58,17 @@ public class XBFAction implements ScriptAction
             }
             if(!(node instanceof LogicalNode))
             {
-                throw new BSTException(line, "Node " + id + " from the main file is not a logical node and thus cannot be called", story);
+                throw new BSTException(line, "Node " + id
+                        + " from the main file is not a logical node and thus cannot be called",
+                        story);
             }
             ((LogicalNode)node).solve(story);
         }
         else
         {
-            throw new BSTException(-1, "Incorrect syntax : xbf_call:fromfile,node OR to call a node from the main BST file xbf_call:id", story);
+            throw new BSTException(-1,
+                    "Incorrect syntax : xbf_call:fromfile,node OR to call a node from the main BST file xbf_call:id",
+                    story);
         }
     }
 

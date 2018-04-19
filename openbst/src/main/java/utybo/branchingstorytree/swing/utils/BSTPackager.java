@@ -37,7 +37,7 @@ import com.google.gson.reflect.TypeToken;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.api.BranchingStoryTreeParser;
-import utybo.branchingstorytree.api.script.Dictionnary;
+import utybo.branchingstorytree.api.script.Dictionary;
 import utybo.branchingstorytree.api.story.BranchingStory;
 import utybo.branchingstorytree.swing.impl.TabClient;
 import utybo.branchingstorytree.swing.virtualfiles.BRMVirtualFileClient;
@@ -75,19 +75,22 @@ public class BSTPackager
                 throw new RuntimeException("Failed to create file");
             }
             System.out.println("Packaging...");
-            toPackage(f, new FileOutputStream(outFile), new HashMap<>(), s -> System.out.println(s));
+            toPackage(f, new FileOutputStream(outFile), new HashMap<>(),
+                    s -> System.out.println(s));
             System.out.println("Done");
             b = false;
         }
         sc.close();
     }
 
-    public static void toPackage(File bstFile, OutputStream out, HashMap<String, String> meta) throws IOException
+    public static void toPackage(File bstFile, OutputStream out, HashMap<String, String> meta)
+            throws IOException
     {
         toPackage(bstFile, out, meta, null);
     }
 
-    public static void toPackage(File bstFile, OutputStream out, HashMap<String, String> meta, Consumer<String> cs) throws IOException
+    public static void toPackage(File bstFile, OutputStream out, HashMap<String, String> meta,
+            Consumer<String> cs) throws IOException
     {
         TarArchiveOutputStream tar = new TarArchiveOutputStream(new GZIPOutputStream(out));
 
@@ -135,7 +138,8 @@ public class BSTPackager
         tarFile(file, file.getName(), tar, null);
     }
 
-    private static void tarFile(File file, String name, TarArchiveOutputStream tar, Consumer<String> cs) throws IOException
+    private static void tarFile(File file, String name, TarArchiveOutputStream tar,
+            Consumer<String> cs) throws IOException
     {
         if(cs != null)
         {
@@ -150,7 +154,8 @@ public class BSTPackager
         tar.closeArchiveEntry();
     }
 
-    private static void tarFolder(File folder, String base, TarArchiveOutputStream tar, Consumer<String> cs) throws IOException
+    private static void tarFolder(File folder, String base, TarArchiveOutputStream tar,
+            Consumer<String> cs) throws IOException
     {
         if(cs != null)
         {
@@ -176,7 +181,8 @@ public class BSTPackager
         }
     }
 
-    public static BranchingStory fromPackage(InputStream in, TabClient client) throws IOException, BSTException, InstantiationException, IllegalAccessException
+    public static BranchingStory fromPackage(InputStream in, TabClient client)
+            throws IOException, BSTException, InstantiationException, IllegalAccessException
     {
         TarArchiveInputStream tais = new TarArchiveInputStream(new GZIPInputStream(in));
         VirtualFileHolder vfh = new VirtualFileHolder();
@@ -188,11 +194,14 @@ public class BSTPackager
             vfh.add(new VirtualFile(baos.toByteArray(), tae.getName()));
         }
 
-        HashMap<String, String> meta = new Gson().fromJson(new InputStreamReader(new ByteArrayInputStream(vfh.getFile("bstmeta.json").getData()), StandardCharsets.UTF_8), new TypeToken<HashMap<String, String>>()
-        {}.getType());
-        System.out.println(meta.toString());
+        HashMap<String, String> meta = new Gson().fromJson(new InputStreamReader(
+                new ByteArrayInputStream(vfh.getFile("bstmeta.json").getData()),
+                StandardCharsets.UTF_8), new TypeToken<HashMap<String, String>>()
+                {}.getType());
         BranchingStoryTreeParser parser = new BranchingStoryTreeParser();
-        BranchingStory bs = parser.parse(new BufferedReader(new InputStreamReader(new ByteArrayInputStream(vfh.getFile(meta.get("mainFile")).getData()), StandardCharsets.UTF_8)), new Dictionnary(), client, "<main>");
+        BranchingStory bs = parser.parse(new BufferedReader(new InputStreamReader(
+                new ByteArrayInputStream(vfh.getFile(meta.get("mainFile")).getData()),
+                StandardCharsets.UTF_8)), new Dictionary(), client, "<main>");
         client.setBRMHandler(new BRMVirtualFileClient(vfh, client, bs));
         return bs;
     }

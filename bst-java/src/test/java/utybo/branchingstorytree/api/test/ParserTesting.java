@@ -19,7 +19,7 @@ import org.junit.Test;
 import utybo.branchingstorytree.api.BSTClient;
 import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.api.BranchingStoryTreeParser;
-import utybo.branchingstorytree.api.script.Dictionnary;
+import utybo.branchingstorytree.api.script.Dictionary;
 import utybo.branchingstorytree.api.story.BranchingStory;
 import utybo.branchingstorytree.api.story.LogicalNode;
 import utybo.branchingstorytree.api.story.TextNode;
@@ -28,7 +28,8 @@ import utybo.branchingstorytree.api.story.VirtualNode;
 public class ParserTesting
 {
     @Test
-    public void parserFullTest() throws InstantiationException, IllegalAccessException, IOException, BSTException
+    public void parserFullTest()
+            throws InstantiationException, IllegalAccessException, IOException, BSTException
     {
         final BranchingStory s = testFile("parser.bst", null);
         assertTrue(s.getInitialNode().getId() == 1);
@@ -41,9 +42,13 @@ public class ParserTesting
         assertTrue(node3.solve(s).getId() == 56);
     }
 
-    public static BranchingStory testFile(final String path, final BSTClient client) throws IOException, BSTException, InstantiationException, IllegalAccessException
+    public static BranchingStory testFile(final String path, final BSTClient client)
+            throws IOException, BSTException, InstantiationException, IllegalAccessException
     {
-        final Dictionnary d = new Dictionnary();
-        return new BranchingStoryTreeParser().parse(new BufferedReader(new InputStreamReader(ActionTesting.class.getResourceAsStream("/utybo/branchingstorytree/api/test/files/" + path))), d, client, path);
+        final Dictionary d = new Dictionary();
+        return new BranchingStoryTreeParser().parse(
+                new BufferedReader(new InputStreamReader(ActionTesting.class
+                        .getResourceAsStream("/utybo/branchingstorytree/api/test/files/" + path))),
+                d, client, path);
     }
 }

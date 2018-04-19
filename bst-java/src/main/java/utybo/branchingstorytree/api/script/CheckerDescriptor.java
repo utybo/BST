@@ -70,7 +70,9 @@ public class CheckerDescriptor
      * @throws BSTException
      *             If the action is null
      */
-    public CheckerDescriptor(final ScriptChecker checker, final String head, final String desc, final int debugLine, final BranchingStory story, final BSTClient client) throws BSTException
+    public CheckerDescriptor(final ScriptChecker checker, final String head, final String desc,
+            final int debugLine, final BranchingStory story, final BSTClient client)
+            throws BSTException
     {
         if(checker == null)
         {
@@ -94,6 +96,8 @@ public class CheckerDescriptor
      */
     public boolean check() throws BSTException
     {
+        if(checker.isExperimental())
+            client.warnExperimental(debugLine, story.getTag("__sourcename"), head);
         return checker.check(head, desc, debugLine, story, client);
     }
 

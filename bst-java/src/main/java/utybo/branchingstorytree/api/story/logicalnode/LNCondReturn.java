@@ -42,4 +42,9 @@ public class LNCondReturn extends LNInstruction
         StoryNode next = innd.getNextNode(story);
         return next;
     }
+    
+    public NextNodeDefiner getNND()
+    {
+        return innd;
+    }
 }

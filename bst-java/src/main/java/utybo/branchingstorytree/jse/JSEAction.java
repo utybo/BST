@@ -31,33 +31,20 @@ public class JSEAction implements ScriptAction
 {
 
     @Override
-    public void exec(final String head, final String desc, final int line, final BranchingStory story, final BSTClient client) throws BSTException
+    public void exec(final String head, final String desc, final int line,
+            final BranchingStory story, final BSTClient client) throws BSTException
     {
-        final JSEHandler handler = client.getJSEHandler();
-
-        if(head.equals("jse_reset"))
-        {
-            handler.setEngine(null);
-            return;
-        }
-
         final VariableRegistry registry = story.getRegistry();
 
-        if(handler.getEngine() == null)
-        {
-            handler.setEngine(new ScriptEngineManager().getEngineByName("JavaScript"));
-        }
+        if(!client.getHTBHandler().requestJSAccess())
+            throw new BSTException(line, "Javascript access denied", story);
 
-        final ScriptEngine engine = handler.getEngine();
-        if(engine == null)
-        {
-            throw new Error("Well this doesn't make any sense");
-        }
         switch(head)
         {
         case "jse_eval":
         {
-            checkReg(engine, registry, line, story);
+            ScriptEngine engine = new ScriptEngineManager().getEngineByName("JavaScript");
+            applyReg(engine, registry, line, story);
 
             // Parse
             final String varName = desc.split(",")[0];
@@ -81,13 +68,15 @@ public class JSEAction implements ScriptAction
                 }
                 else
                 {
-                    client.warn("[line " + line + "] Unknown return type : " + result.getClass().getName() + ". Using toString!");
+                    client.warn("[line " + line + "] Unknown return type : "
+                            + result.getClass().getName() + ". Using toString!");
                     registry.put(varName, result.toString());
                 }
             }
             catch(final ScriptException e1)
             {
-                throw new BSTException(line, "Error during script execution : " + e1.getMessage(), e1, story);
+                throw new BSTException(line, "Error during script execution : " + e1.getMessage(),
+                        e1, story);
             }
             break;
         }
@@ -104,7 +93,8 @@ public class JSEAction implements ScriptAction
         return new String[] {"jse_eval", "jse_reset", "jse_autoimport", "jse_import"};
     }
 
-    public static void checkReg(final ScriptEngine engine, final VariableRegistry registry, final int line, BranchingStory story) throws BSTException
+    protected static void applyReg(final ScriptEngine engine, final VariableRegistry registry,
+            final int line, BranchingStory story) throws BSTException
     {
         final HashMap<String, Integer> ints = registry.getAllInt();
         for(final Map.Entry<String, Integer> entry : ints.entrySet())
@@ -115,7 +105,9 @@ public class JSEAction implements ScriptAction
             }
             catch(final ScriptException e1)
             {
-                throw new BSTException(line, "Error during JSE initialization (step INT) : " + e1.getMessage(), e1, story);
+                throw new BSTException(line,
+                        "Error during JSE initialization (step INT) : " + e1.getMessage(), e1,
+                        story);
             }
         }
         final HashMap<String, String> strings = registry.getAllString();
@@ -127,7 +119,9 @@ public class JSEAction implements ScriptAction
             }
             catch(final ScriptException e1)
             {
-                throw new BSTException(line, "Error during JSE initialization (step STRING) : " + e1.getMessage(), e1, story);
+                throw new BSTException(line,
+                        "Error during JSE initialization (step STRING) : " + e1.getMessage(), e1,
+                        story);
             }
         }
     }

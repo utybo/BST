@@ -36,7 +36,9 @@ import javax.swing.border.LineBorder;
 import org.apache.commons.io.IOUtils;
 
 import net.miginfocom.swing.MigLayout;
+import utybo.branchingstorytree.swing.Icons;
 import utybo.branchingstorytree.swing.OpenBST;
+import utybo.branchingstorytree.swing.OpenBSTGUI;
 import utybo.branchingstorytree.swing.utils.Lang;
 
 public class AboutDialog extends JDialog
@@ -47,21 +49,21 @@ public class AboutDialog extends JDialog
     private static final long serialVersionUID = 1L;
 
     @SuppressWarnings("unchecked")
-    public AboutDialog(OpenBST parent)
+    public AboutDialog(OpenBSTGUI parent)
     {
         super(parent);
         setTitle(Lang.get("about.title"));
         setModalityType(ModalityType.APPLICATION_MODAL);
 
         JPanel banner = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        banner.setBackground(OpenBST.OPENBST_BLUE);
-        JLabel lblOpenbst = new JLabel(new ImageIcon(OpenBST.fullLogoWhite));
+        banner.setBackground(OpenBSTGUI.OPENBST_BLUE);
+        JLabel lblOpenbst = new JLabel(new ImageIcon(Icons.getImage("FullLogoWhite", 48)));
         lblOpenbst.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         banner.add(lblOpenbst, "flowx,cell 0 0,alignx center");
         getContentPane().add(banner, BorderLayout.NORTH);
 
         JPanel pan = new JPanel();
-        pan.setLayout(new MigLayout("", "[grow]", "[][][grow]"));
+        pan.setLayout(new MigLayout("insets 10, gap 10px", "[grow]", "[][][grow]"));
         getContentPane().add(pan, BorderLayout.CENTER);
 
         JLabel lblWebsite = new JLabel("https://utybo.github.io/BST/");
@@ -70,7 +72,7 @@ public class AboutDialog extends JDialog
         Map attrs = f.getAttributes();
         attrs.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
         lblWebsite.setFont(f.deriveFont(attrs));
-        lblWebsite.setForeground(OpenBST.OPENBST_BLUE);
+        lblWebsite.setForeground(OpenBSTGUI.OPENBST_BLUE);
         lblWebsite.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         lblWebsite.addMouseListener(new MouseAdapter()
         {
@@ -81,7 +83,8 @@ public class AboutDialog extends JDialog
                 {
                     try
                     {
-                        Desktop.getDesktop().browse(new URL("https://utybo.github.io/BST/").toURI());
+                        Desktop.getDesktop()
+                                .browse(new URL("https://utybo.github.io/BST/").toURI());
                     }
                     catch(IOException | URISyntaxException e1)
                     {
@@ -92,20 +95,22 @@ public class AboutDialog extends JDialog
         });
         pan.add(lblWebsite, "cell 0 0,alignx center");
 
-        JLabel lblVersion = new JLabel(Lang.get("about.version").replace("$v", OpenBST.version));
+        JLabel lblVersion = new JLabel(Lang.get("about.version").replace("$v", OpenBST.VERSION));
         pan.add(lblVersion, "flowy,cell 0 1");
 
         JScrollPane scrollPane = new JScrollPane();
-        scrollPane.setBorder(new LineBorder(pan.getBackground().darker(), 1, true));
+        scrollPane.setBorder(new LineBorder(pan.getBackground().darker(), 1, false));
         pan.add(scrollPane, "cell 0 2,grow");
 
         JTextArea textArea = new JTextArea();
         textArea.setMargin(new Insets(5, 5, 5, 5));
         textArea.setLineWrap(true);
         textArea.setWrapStyleWord(true);
-        textArea.setFont(new Font("Monospace", Font.PLAIN, 11));
+        textArea.setFont(new Font(textArea.getFont().getFontName(), Font.PLAIN,
+                (int)(Icons.getScale() * 11)));
 
-        try(InputStream in = getClass().getResourceAsStream("/utybo/branchingstorytree/swing/about.txt");)
+        try(InputStream in = getClass()
+                .getResourceAsStream("/utybo/branchingstorytree/swing/about.txt");)
         {
             textArea.setText(IOUtils.toString(in, StandardCharsets.UTF_8));
         }
@@ -120,7 +125,7 @@ public class AboutDialog extends JDialog
         JLabel lblTranslatedBy = new JLabel(Lang.get("author"));
         pan.add(lblTranslatedBy, "cell 0 1");
 
-        setSize(450, 300);
+        setSize((int)(Icons.getScale() * 450), (int)(Icons.getScale() * 400));
         setLocationRelativeTo(parent);
     }
 

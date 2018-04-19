@@ -27,7 +27,8 @@ public class RandomAction implements ScriptAction
     private static final Random RANDOM = new Random();
 
     @Override
-    public void exec(final String head, final String desc, final int line, final BranchingStory story, final BSTClient client) throws BSTException
+    public void exec(final String head, final String desc, final int line,
+            final BranchingStory story, final BSTClient client) throws BSTException
     {
         final VariableRegistry registry = story.getRegistry();
         final String[] bits = desc.split(",");
@@ -37,17 +38,22 @@ public class RandomAction implements ScriptAction
         if(bits.length == 2)
         {
             varToSet = bits[0];
-            max = registry.typeOf(bits[1]) == Integer.class ? (Integer)registry.get(bits[1], 0) : Integer.parseInt(bits[1]);
+            max = registry.typeOf(bits[1]) == Integer.class ? (Integer)registry.get(bits[1], 0)
+                    : Integer.parseInt(bits[1]);
         }
         else if(bits.length == 3)
         {
             varToSet = bits[0];
-            min = registry.typeOf(bits[1]) == Integer.class ? (Integer)registry.get(bits[1], 0) : Integer.parseInt(bits[1]);
-            max = registry.typeOf(bits[2]) == Integer.class ? (Integer)registry.get(bits[2], 0) : Integer.parseInt(bits[2]);
+            min = registry.typeOf(bits[1]) == Integer.class ? (Integer)registry.get(bits[1], 0)
+                    : Integer.parseInt(bits[1]);
+            max = registry.typeOf(bits[2]) == Integer.class ? (Integer)registry.get(bits[2], 0)
+                    : Integer.parseInt(bits[2]);
         }
         else
         {
-            throw new BSTException(line, "Incorrect syntax : rand:variabletoset,maximum OR rand:variabletoset,minimum,maximum", story);
+            throw new BSTException(line,
+                    "Incorrect syntax : rand:variabletoset,maximum OR rand:variabletoset,minimum,maximum",
+                    story);
         }
         final int range = max - min + 1; // +1 because nextInt is exclusive
         int value = RANDOM.nextInt(range);

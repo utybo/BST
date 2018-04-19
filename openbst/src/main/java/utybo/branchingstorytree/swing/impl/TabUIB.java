@@ -64,7 +64,8 @@ public class TabUIB implements UIBarHandler
         final boolean gridMode = tab.getStory().hasTag("uib_grid");
         final String columnDef = tab.getStory().getTag("uib_grid");
         final boolean advancedMode = Boolean.parseBoolean(tab.getStory().getTag("uib_advanced"));
-        tab.getUIBPanel().setLayout(new MigLayout((gridMode ? "" : "nogrid, ") + "fillx", columnDef));
+        tab.getUIBPanel()
+                .setLayout(new MigLayout((gridMode ? "" : "nogrid, ") + "fillx", columnDef));
         final String[] parts = layout.split(advancedMode ? ";" : "[,;]");
         boolean newLine = false;
         for(final String s : parts)
@@ -227,12 +228,15 @@ public class TabUIB implements UIBarHandler
     {
         if(c instanceof JLabel)
         {
-            final String s = "<html>" + MarkupUtils.translateMarkup(MarkupUtils.solveMarkup(tab.getStory(), null), computeText(tab.getStory().getRegistry().get("__uib__" + element + "_value", "").toString()));
+            final String s = "<html>" + MarkupUtils.translateMarkup(
+                    MarkupUtils.solveMarkup(tab.getStory(), null, null), computeText(tab.getStory()
+                            .getRegistry().get("__uib__" + element + "_value", "").toString()));
             ((JLabel)c).setText(s);
         }
         else if(c instanceof JProgressBar)
         {
-            ((JProgressBar)c).setValue(computeInt(tab.getStory().getRegistry().get("__uib__" + element + "_value", "0").toString()));
+            ((JProgressBar)c).setValue(computeInt(tab.getStory().getRegistry()
+                    .get("__uib__" + element + "_value", "0").toString()));
         }
 
     }
@@ -247,7 +251,8 @@ public class TabUIB implements UIBarHandler
         final VariableRegistry registry = tab.getStory().getRegistry();
         try
         {
-            return registry.typeOf(value) == Integer.class ? (Integer)registry.get(value, 0) : Integer.parseInt(value);
+            return registry.typeOf(value) == Integer.class ? (Integer)registry.get(value, 0)
+                    : Integer.parseInt(value);
         }
         catch(final NumberFormatException nfe2)
         {
@@ -304,7 +309,8 @@ public class TabUIB implements UIBarHandler
         // and make sure we build onto a clean UIB.
         resetUib();
 
-        if(Boolean.parseBoolean(tab.getStory().getRegistry().get("__uib__initialized", "false").toString()))
+        if(Boolean.parseBoolean(
+                tab.getStory().getRegistry().get("__uib__initialized", "false").toString()))
         {
             // Initialize
             initialize();
@@ -354,7 +360,8 @@ public class TabUIB implements UIBarHandler
         {
             if(varName.startsWith("__uib__" + element + "_"))
             {
-                map.put(varName.substring("__uib__".length() + element.length() + "_".length()), tab.getStory().getRegistry().getAllString().get(varName));
+                map.put(varName.substring("__uib__".length() + element.length() + "_".length()),
+                        tab.getStory().getRegistry().getAllString().get(varName));
             }
         }
         return map;

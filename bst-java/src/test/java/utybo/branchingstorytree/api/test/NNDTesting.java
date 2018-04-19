@@ -17,7 +17,8 @@ import utybo.branchingstorytree.api.BSTException;
 public class NNDTesting
 {
     @Test
-    public void testNND() throws InstantiationException, IllegalAccessException, IOException, BSTException
+    public void testNND()
+            throws InstantiationException, IllegalAccessException, IOException, BSTException
     {
         ActionTesting.testFile("nnd.bst", null);
     }

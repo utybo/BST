@@ -16,7 +16,8 @@ public class UIBComponentHolder
     private Object value;
     private boolean dynamic, textual;
 
-    public UIBComponentHolder(final JComponent component, final boolean dynamic, final boolean textual)
+    public UIBComponentHolder(final JComponent component, final boolean dynamic,
+            final boolean textual)
     {
         this.component = component;
         this.dynamic = dynamic;

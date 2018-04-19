@@ -19,7 +19,8 @@ import utybo.branchingstorytree.api.story.BranchingStory;
 public class AliasAndAutoIDTesting
 {
     @Test
-    public void aliasAndAutoIDTest() throws InstantiationException, IllegalAccessException, IOException, BSTException
+    public void aliasAndAutoIDTest()
+            throws InstantiationException, IllegalAccessException, IOException, BSTException
     {
         BranchingStory bs = ActionTesting.testFile("aliasautoid.bst", null);
         Assert.assertEquals(bs.getRegistry().get("a", -1), 3);

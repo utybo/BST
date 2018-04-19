@@ -24,7 +24,8 @@ public class CloneAction implements ScriptAction
 {
 
     @Override
-    public void exec(final String head, final String desc, final int line, final BranchingStory story, final BSTClient client) throws BSTException
+    public void exec(final String head, final String desc, final int line,
+            final BranchingStory story, final BSTClient client) throws BSTException
     {
         final String[] opt = desc.split(",");
         final VariableRegistry registry = story.getRegistry();

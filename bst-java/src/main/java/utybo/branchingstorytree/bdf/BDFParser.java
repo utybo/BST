@@ -26,7 +26,8 @@ public class BDFParser
     private static final Pattern startOfInt = Pattern.compile("^([\\w_]+)=(-?\\d+)");
     private static final Pattern startOfString = Pattern.compile("^([\\w_]+)=(.+)");
 
-    public static BDFFile parse(final BufferedReader br, final String fileName) throws IOException, BSTException
+    public static BDFFile parse(final BufferedReader br, final String fileName)
+            throws IOException, BSTException
     {
         final BDFFile file = new BDFFile();
 

@@ -12,21 +12,23 @@ import utybo.branchingstorytree.api.BSTClient;
 import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.api.BranchingStoryTreeParser;
 import utybo.branchingstorytree.api.NodeNotFoundException;
-import utybo.branchingstorytree.api.script.Dictionnary;
+import utybo.branchingstorytree.api.script.Dictionary;
 import utybo.branchingstorytree.api.script.NextNodeDefiner;
 import utybo.branchingstorytree.api.story.BranchingStory;
 import utybo.branchingstorytree.api.story.StoryNode;
 
 public class HTBNextNodeDefiner implements NextNodeDefiner
 {
-    private final String head, desc;
+    public final String head, desc;
+    private final int line;
     private final BSTClient client;
 
-    public HTBNextNodeDefiner(String head, String desc, BSTClient client)
+    public HTBNextNodeDefiner(String head, String desc, int line, BSTClient client)
     {
         this.head = head;
         this.desc = desc;
         this.client = client;
+        this.line = line;
     }
 
     @Override
@@ -34,7 +36,7 @@ public class HTBNextNodeDefiner implements NextNodeDefiner
     {
         if(client.getHTBHandler() == null)
         {
-            throw new BSTException(-1, "HTB is not supported", story);
+            throw new BSTException(line, "HTB is not supported", story);
         }
         switch(head)
         {
@@ -46,12 +48,15 @@ public class HTBNextNodeDefiner implements NextNodeDefiner
                 NextNodeDefiner nnd;
                 try
                 {
-                    nnd = new BranchingStoryTreeParser().parseNND(desc, new Dictionnary(), -1, story, client, story.getTag("__sourcename"));
+                    nnd = new BranchingStoryTreeParser().parseNND(desc, new Dictionary(), line,
+                            story, client, story.getTag("__sourcename"));
                     sn = nnd.getNextNode(story);
                 }
                 catch(InstantiationException | IllegalAccessException e)
                 {
-                    throw new BSTException(-1, "Unexpected exception : " + e.getClass().getSimpleName() + ", " + e.getMessage(), story.getTag("__sourcename"));
+                    throw new BSTException(line, "Unexpected exception : "
+                            + e.getClass().getSimpleName() + ", " + e.getMessage(),
+                            story.getTag("__sourcename"));
                 }
             }
             else
@@ -75,12 +80,15 @@ public class HTBNextNodeDefiner implements NextNodeDefiner
                 NextNodeDefiner nnd;
                 try
                 {
-                    nnd = new BranchingStoryTreeParser().parseNND(desc, new Dictionnary(), -1, story, client, story.getTag("__sourcename"));
+                    nnd = new BranchingStoryTreeParser().parseNND(desc, new Dictionary(), line,
+                            story, client, story.getTag("__sourcename"));
                     sn = nnd.getNextNode(story);
                 }
                 catch(InstantiationException | IllegalAccessException e)
                 {
-                    throw new BSTException(-1, "Unexpected exception : " + e.getClass().getSimpleName() + ", " + e.getMessage(), story.getTag("__sourcename"));
+                    throw new BSTException(line, "Unexpected exception : "
+                            + e.getClass().getSimpleName() + ", " + e.getMessage(),
+                            story.getTag("__sourcename"));
                 }
             }
             else

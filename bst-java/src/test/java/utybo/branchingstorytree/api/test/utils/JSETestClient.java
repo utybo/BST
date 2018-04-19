@@ -8,27 +8,14 @@
  */
 package utybo.branchingstorytree.api.test.utils;
 
-import javax.script.ScriptEngine;
+import java.io.InputStream;
 
 import utybo.branchingstorytree.api.BSTClient;
-import utybo.branchingstorytree.jse.JSEHandler;
+import utybo.branchingstorytree.api.BSTException;
+import utybo.branchingstorytree.htb.HTBHandler;
 
-public class JSETestClient implements BSTClient, JSEHandler
+public class JSETestClient implements BSTClient
 {
-    private ScriptEngine engine;
-
-    @Override
-    public ScriptEngine getEngine()
-    {
-        return engine;
-    }
-
-    @Override
-    public void setEngine(final ScriptEngine engine)
-    {
-        this.engine = engine;
-    }
-
     @Override
     public String askInput(final String message)
     {
@@ -40,8 +27,45 @@ public class JSETestClient implements BSTClient, JSEHandler
     {}
 
     @Override
-    public JSEHandler getJSEHandler()
+    public HTBHandler getHTBHandler()
     {
-        return this;
+        return new HTBHandler()
+        {
+
+            @Override
+            public void load(InputStream in, String name) throws BSTException
+            {}
+
+            @Override
+            public boolean requestJSAccess()
+            {
+                return true;
+            }
+
+            @Override
+            public boolean requestHrefAccess()
+            {
+                return true;
+            }
+
+            @Override
+            public boolean hasResource(String resource)
+            {
+                return false;
+            }
+
+            @Override
+            public String getAsString(String resource)
+            {
+                return null;
+            }
+
+            @Override
+            public String getAsBase64(String resource)
+            {
+                return null;
+            }
+        };
     }
+
 }

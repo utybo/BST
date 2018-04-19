@@ -19,12 +19,14 @@ import utybo.branchingstorytree.api.story.VirtualNode;
 
 public class XBFNextNodeDefiner implements NextNodeDefiner
 {
-    private final String desc;
+    public final String desc;
+    private final int line;
     private final BSTClient client;
 
-    public XBFNextNodeDefiner(String head, String desc, BSTClient client)
+    public XBFNextNodeDefiner(String head, String desc, int line, BSTClient client)
     {
         this.desc = desc;
+        this.line = line;
         this.client = client;
     }
 
@@ -34,7 +36,7 @@ public class XBFNextNodeDefiner implements NextNodeDefiner
         XBFHandler xbf = client.getXBFHandler();
         if(xbf == null)
         {
-            throw new BSTException(-1, "XBF not supported", bs);
+            throw new BSTException(line, "XBF not supported", bs);
         }
         String[] args = desc.split(",");
         if(args.length == 2)
@@ -47,7 +49,8 @@ public class XBFNextNodeDefiner implements NextNodeDefiner
             {
                 // Check if it's just a virtualnode and not a textnode
                 // This trick is required as TextNodes are a subset of VirtualNodes
-                throw new BSTException(-1, "Node " + id + " from " + from + " is a virtual node and thus cannot be the next node", bs);
+                throw new BSTException(line, "Node " + id + " from " + from
+                        + " is a virtual node and thus cannot be the next node", bs);
             }
             return node;
         }
@@ -58,13 +61,18 @@ public class XBFNextNodeDefiner implements NextNodeDefiner
             {
                 // Check if it's just a virtualnode and not a textnode
                 // This trick is required as TextNodes are a subset of VirtualNodes
-                throw new BSTException(-1, "Node " + args[0] + " from <main> is a virtual node and thus cannot be the next node", bs);
+                throw new BSTException(line,
+                        "Node " + args[0]
+                                + " from <main> is a virtual node and thus cannot be the next node",
+                        bs);
             }
             return node;
         }
         else
         {
-            throw new BSTException(-1, "Incorrect syntax : xbf_call:fromfile,node OR to call a node from the main BST file xbf_call:id", bs);
+            throw new BSTException(line,
+                    "Incorrect syntax : xbf_call:fromfile,node OR to call a node from the main BST file xbf_call:id",
+                    bs);
         }
     }
 

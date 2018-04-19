@@ -72,7 +72,9 @@ public class ActionDescriptor
      * @throws BSTException
      *             If the action is null
      */
-    public ActionDescriptor(final ScriptAction action, final String head, final String desc, final int debugLine, final BranchingStory story, final BSTClient client) throws BSTException
+    public ActionDescriptor(final ScriptAction action, final String head, final String desc,
+            final int debugLine, final BranchingStory story, final BSTClient client)
+            throws BSTException
     {
         if(action == null)
         {
@@ -95,6 +97,8 @@ public class ActionDescriptor
      */
     public void exec() throws BSTException
     {
+        if(action.isExperimental())
+            client.warnExperimental(debugLine, story.getTag("__sourcename"), head);
         action.exec(head, desc, debugLine, story, client);
     }
 

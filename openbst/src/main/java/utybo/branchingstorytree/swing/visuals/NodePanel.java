@@ -10,18 +10,18 @@ package utybo.branchingstorytree.swing.visuals;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Base64;
+import java.util.ArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.function.Consumer;
 
-import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
-import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
+import org.apache.commons.compress.compressors.xz.XZCompressorInputStream;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -33,34 +33,41 @@ import javafx.application.Platform;
 import javafx.concurrent.Worker.State;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Scene;
-import javafx.scene.text.FontSmoothingType;
 import javafx.scene.web.WebView;
 import utybo.branchingstorytree.api.BSTException;
+import utybo.branchingstorytree.api.Experimental;
 import utybo.branchingstorytree.api.StoryUtils;
 import utybo.branchingstorytree.api.story.BranchingStory;
 import utybo.branchingstorytree.api.story.TextNode;
+import utybo.branchingstorytree.swing.Icons;
+import utybo.branchingstorytree.swing.Messagers;
 import utybo.branchingstorytree.swing.OpenBST;
+import utybo.branchingstorytree.swing.OpenBSTGUI;
+import utybo.branchingstorytree.swing.VisualsUtils;
 import utybo.branchingstorytree.swing.impl.IMGClient;
 import utybo.branchingstorytree.swing.utils.Lang;
 import utybo.branchingstorytree.swing.utils.MarkupUtils;
 
 public class NodePanel extends JScrollablePanel
 {
-    private static final String STYLE;
+    private static final String FONT_UBUNTU, FONT_LIBRE_BASKERVILLE, STYLE;
 
     static
     {
-        String s;
+        FONT_UBUNTU = loadFont("ubuntu");
+        FONT_LIBRE_BASKERVILLE = loadFont("libre_baskerville");
+
+        String s = null;
         try
         {
-            s = IOUtils.toString(NodePanel.class.getResourceAsStream("/utybo/branchingstorytree/swing/font/fonts.css"), StandardCharsets.UTF_8);
+            s = IOUtils.toString(NodePanel.class.getResourceAsStream(
+                    "/utybo/branchingstorytree/swing/story.css"), StandardCharsets.UTF_8);
         }
         catch(IOException e)
         {
             OpenBST.LOG.warn("Failed to load fonts CSS file", e);
             s = "";
         }
-
         STYLE = s;
     }
 
@@ -68,15 +75,17 @@ public class NodePanel extends JScrollablePanel
      *
      */
     private static final long serialVersionUID = 1L;
+    private static final String defaultFont = "libre_baskerville";
     private final IMGClient imageClient;
     private String text;
     private Color textColor;
     private boolean backgroundVisible = true;
     private WebView view;
-    private String storyFont;
     private boolean hrefEnabled;
     private final StoryPanel parent;
     private boolean isDark, isAlreadyBuilt;
+    @Experimental
+    private ArrayList<String> additionalCSS = new ArrayList<>();
 
     private final Consumer<Boolean> callback = b ->
     {
@@ -84,21 +93,13 @@ public class NodePanel extends JScrollablePanel
         if(isAlreadyBuilt)
         {
             build();
-            Platform.runLater(() ->
-            {
-                if(!b)
-                    view.setFontSmoothingType(FontSmoothingType.LCD);
-                else
-                    view.setFontSmoothingType(FontSmoothingType.GRAY);
-            });
-
         }
     };
 
     public NodePanel(BranchingStory story, StoryPanel parent, final IMGClient imageClient)
     {
-        OpenBST.getInstance().addDarkModeCallback(callback);
-        callback.accept(OpenBST.getInstance().isDark());
+        OpenBSTGUI.getInstance().addDarkModeCallback(callback);
+        callback.accept(OpenBSTGUI.getInstance().isDark());
         this.parent = parent;
         this.imageClient = imageClient;
         setLayout(new BorderLayout());
@@ -106,54 +107,48 @@ public class NodePanel extends JScrollablePanel
         JFXPanel panel = new JFXPanel();
         add(panel, BorderLayout.CENTER);
 
-        if(story.hasTag("font"))
-        {
-            storyFont = story.getTag("font");
-        }
-        else
-        {
-            storyFont = "libre_baskerville";
-        }
-
         CountDownLatch cdl = new CountDownLatch(1);
         Platform.runLater(() ->
         {
             try
             {
                 view = new WebView();
-                view.getEngine().setOnAlert(e -> SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(OpenBST.getInstance(), e.getData())));
-                view.getEngine().getLoadWorker().stateProperty().addListener((obs, oldState, newState) ->
-                {
-                    if(newState == State.SUCCEEDED)
-                    {
-                        Document doc = view.getEngine().getDocument();
-                        NodeList nl = doc.getElementsByTagName("a");
-                        for(int i = 0; i < nl.getLength(); i++)
+                view.getEngine().setOnAlert(e -> SwingUtilities.invokeLater(
+                        () -> Messagers.showMessage(OpenBSTGUI.getInstance(), e.getData())));
+                view.getEngine().getLoadWorker().stateProperty()
+                        .addListener((obs, oldState, newState) ->
                         {
-                            Node n = nl.item(i);
-                            HTMLAnchorElement a = (HTMLAnchorElement)n;
-                            if(a.getHref() != null)
+                            if(newState == State.SUCCEEDED)
                             {
-                                ((EventTarget)a).addEventListener("click", ev ->
+                                Document doc = view.getEngine().getDocument();
+                                NodeList nl = doc.getElementsByTagName("a");
+                                for(int i = 0; i < nl.getLength(); i++)
                                 {
-                                    if(!hrefEnabled)
+                                    Node n = nl.item(i);
+                                    HTMLAnchorElement a = (HTMLAnchorElement)n;
+                                    if(a.getHref() != null)
                                     {
-                                        ev.preventDefault();
+                                        ((EventTarget)a).addEventListener("click", ev ->
+                                        {
+                                            if(!hrefEnabled)
+                                            {
+                                                ev.preventDefault();
+                                            }
+                                        }, false);
                                     }
-                                }, false);
+                                }
                             }
-                        }
-                    }
-                });
-
+                        });
                 Scene sc = new Scene(view);
-                if(!OpenBST.getInstance().isDark())
-                    view.setFontSmoothingType(FontSmoothingType.LCD);
-                else
-                    view.setFontSmoothingType(FontSmoothingType.GRAY);
                 try
                 {
-                    view.getEngine().loadContent(IOUtils.toString(NodePanel.class.getResourceAsStream("/utybo/branchingstorytree/swing/html/error.html"), StandardCharsets.UTF_8).replace("$MSG", Lang.get("story.problem")).replace("$STYLE", STYLE));
+                    view.getEngine().loadContent(IOUtils
+                            .toString(
+                                    NodePanel.class.getResourceAsStream(
+                                            "/utybo/branchingstorytree/swing/html/error.html"),
+                                    StandardCharsets.UTF_8)
+                            .replace("$MSG", Lang.get("story.problem"))
+                            .replace("$STYLE", FONT_UBUNTU));
                 }
                 catch(IOException e)
                 {
@@ -176,10 +171,28 @@ public class NodePanel extends JScrollablePanel
         }
     }
 
+    private static String loadFont(String name)
+    {
+        String s;
+        try
+        {
+            s = IOUtils.toString(
+                    new XZCompressorInputStream(NodePanel.class.getResourceAsStream(
+                            "/utybo/branchingstorytree/swing/font/" + name + ".css.xz")),
+                    StandardCharsets.UTF_8);
+        }
+        catch(IOException e)
+        {
+            OpenBST.LOG.warn("Failed to load fonts CSS file", e);
+            s = "";
+        }
+        return s;
+    }
+
     public void applyNode(final BranchingStory story, final TextNode textNode) throws BSTException
     {
         final String text = StoryUtils.solveVariables(textNode, story);
-        final int markupLanguage = MarkupUtils.solveMarkup(story, textNode);
+        final int markupLanguage = MarkupUtils.solveMarkup(parent.story, story, textNode);
         setText(MarkupUtils.translateMarkup(markupLanguage, text));
 
         if(textNode.hasTag("color"))
@@ -204,7 +217,8 @@ public class NodePanel extends JScrollablePanel
                 imageClient.setBackground(bg);
             }
         }
-        else if(textNode.hasTag("img_manual") && Boolean.parseBoolean(textNode.getTag("img_manual")))
+        else if(textNode.hasTag("img_manual")
+                && Boolean.parseBoolean(textNode.getTag("img_manual")))
         {
             imageClient.setBackground(null);
         }
@@ -214,81 +228,91 @@ public class NodePanel extends JScrollablePanel
 
     private void build()
     {
-        String base = "<head><meta charset=\"utf-8\"/><style type='text/css'>" + STYLE + " body {font-family: " + storyFont + ";}</style></head>" //
-                + "<body style=\"margin:10px;padding:0px;$BG\"><div style=\"margin:-10px;padding:10px;$ADDITIONAL;width: 100%; height:100%\">" //
-                + "<div style=\"$COLOR\">" + text + "</div></div></body>";
-        String bg, additional, c;
+        // Build the base, with fonts and style (injecting font info)
+        String base = "<head><meta charset=\"utf-8\"/>" //
+                + "<style type='text/css'>" + getCurrentFontCss() + "</style>" //
+                + "<style type='text/css'>" + STYLE.replace("$f", getCurrentFont()) + "</style>" //
+                + "$CUSTOMCSS" + "</head>" //
+                + "<body class='$bbg" + (isDark ? " dark" : "") + "'>" //
+                + "<div class='storydiv' style=\"$COLOR\">" + text + "</div></body>";
+        String additional, c;
 
         if(imageClient.getCurrentBackground() != null && backgroundVisible)
         {
-            bg = "background-image:url('data:image/png;base64," + b64bg() + "'); background-size:cover; background-position:center; background-attachment:fixed";
-            additional = isDark ? "background-color:rgba(0,0,0,0.66)" : "background-color:rgba(255,255,255,0.66)";
+            // Inject background (base64) and add the background class to the body
+            base = base.replace("$b64bg", imageClient.getBase64Background()).replace("$bbg", "bg");
+            additional = isDark ? "background-color:rgba(0,0,0,0.66)"
+                    : "background-color:rgba(255,255,255,0.66)";
         }
         else
         {
-            bg = isDark ? "background-color: #000000" : "";
+            base.replace("$bbg", "");
             additional = "";
         }
         if(textColor != null)
         {
-            c = "color: " + MarkupUtils.toHex(textColor.getRed(), textColor.getGreen(), textColor.getBlue());
+            c = "color: " + MarkupUtils.toHex(textColor.getRed(), textColor.getGreen(),
+                    textColor.getBlue());
         }
         else
         {
             c = isDark ? "color: #FFFFFF" : "";
         }
-        String s = base.replace("$BG", bg).replace("$ADDITIONAL", additional).replace("$COLOR", c);
-        try
+
+        // $EXPERIMENTAL
+        StringBuilder sb = new StringBuilder();
+        for(String string : additionalCSS)
         {
-            jfxRunAndWait(() ->
-            {
-                view.getEngine().loadContent(s);
-            });
+            sb.append("<style type='text/css'>" + string + "</style>");
         }
-        catch(InterruptedException e)
+
+        String s = base.replace("$ADDITIONAL", additional).replace("$COLOR", c)
+                // $EXPERIMENTAL
+                .replace("$CUSTOMCSS", sb.toString());
+
+        VisualsUtils.invokeJfxAndWait(() ->
         {
-            OpenBST.LOG.warn("Failed to synchronize", e);
-        }
+            view.getEngine().loadContent(s);
+        });
+
         isAlreadyBuilt = true;
     }
 
-    private String b64bg()
+    private String getCurrentFontCss()
     {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        try
-        {
-            ImageIO.write(imageClient.getCurrentBackground(), "PNG", baos);
-        }
-        catch(IOException e)
-        {
-            OpenBST.LOG.warn("Failed to create Base64 background", e);
-        }
-        return Base64.getMimeEncoder().encodeToString(baos.toByteArray()).replaceAll("[\n\r]", "");
+        String fontName = getCurrentFont().toLowerCase();
+        if(fontName.equals("ubuntu"))
+            return FONT_UBUNTU;
+        else if(fontName.contains("baskerville"))
+            return FONT_LIBRE_BASKERVILLE;
+        else
+            return "";
     }
 
-    private void jfxRunAndWait(Runnable runnable) throws InterruptedException
+    private String getCurrentFont()
     {
-        if(Platform.isFxApplicationThread())
+        if((int)parent.currentNode.getStory().getRegistry()
+                .get("__nonlatin_" + parent.currentNode.getStory().getTag("__sourcename"), 0) == 1)
         {
-            Platform.runLater(runnable);
+            return "sans-serif";
+        }
+        return parseFont(parent.currentNode.getStory());
+    }
+
+    private String parseFont(BranchingStory s)
+    {
+        if(s.hasTag("font"))
+        {
+            return s.getTag("font");
+        }
+        else if(parent.story.hasTag("font"))
+        {
+            return parent.story.getTag("font");
         }
         else
         {
-            CountDownLatch latch = new CountDownLatch(1);
-            Platform.runLater(() ->
-            {
-                try
-                {
-                    runnable.run();
-                }
-                finally
-                {
-                    latch.countDown();
-                }
-            });
-            latch.await();
+            return defaultFont;
         }
-
     }
 
     public void setText(final String text)
@@ -309,10 +333,12 @@ public class NodePanel extends JScrollablePanel
             {
                 c = (Color)Color.class.getField(color).get(null);
             }
-            catch(IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e)
+            catch(IllegalArgumentException | IllegalAccessException | NoSuchFieldException
+                    | SecurityException e)
             {
                 OpenBST.LOG.warn("Color does not exist : " + color, e);
-                SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(OpenBST.getInstance(), Lang.get("story.unknowncolor").replace("$c", color), Lang.get("error"), JOptionPane.ERROR_MESSAGE));
+                SwingUtilities.invokeLater(() -> Messagers.showMessage(OpenBSTGUI.getInstance(),
+                        Lang.get("story.unknowncolor").replace("$c", color), Messagers.TYPE_ERROR));
             }
         }
         if(c != null)
@@ -328,30 +354,72 @@ public class NodePanel extends JScrollablePanel
     public void setBackgroundVisible(final boolean selected)
     {
         backgroundVisible = selected;
-        repaint();
+        build();
     }
 
     public void setJSEnabled(boolean b)
     {
-        view.getEngine().setJavaScriptEnabled(b);
-        parent.getJSHint().setToolTipText(Lang.get("html.js" + (b ? "enabled" : "blocked")));
-        parent.getJSHint().setIcon(new ImageIcon(b ? OpenBST.jsEnabled : OpenBST.jsBlocked));
-        parent.getJSHint().setDisabledIcon(new ImageIcon(b ? OpenBST.jsEnabled : OpenBST.jsBlocked));
+        CountDownLatch cdl = new CountDownLatch(1);
+        Platform.runLater(() ->
+        {
+            try
+            {
+                view.getEngine().setJavaScriptEnabled(b);
+            }
+            finally
+            {
+                cdl.countDown();
+            }
+        });
+        try
+        {
+            cdl.await();
+        }
+        catch(InterruptedException e)
+        {
+            OpenBST.LOG.error(e);
+        }
+
+        parent.getJSHint().setToolTipText(Lang.get("html.js" + (b ? "enabled" : "block")));
+        parent.getJSHint()
+                .setIcon(new ImageIcon(b ? Icons.getImage("JSY", 16) : Icons.getImage("JSN", 16)));
+        parent.getJSHint().setDisabledIcon(
+                new ImageIcon(b ? Icons.getImage("JSY", 16) : Icons.getImage("JSN", 16)));
         parent.getJSHint().setVisible(true);
     }
 
     public void setHrefEnabled(boolean b)
     {
         hrefEnabled = b;
-        parent.getHrefHint().setToolTipText(Lang.get("html.href" + (b ? "enabled" : "blocked")));
-        parent.getHrefHint().setIcon(new ImageIcon(b ? OpenBST.hrefEnabled : OpenBST.hrefBlocked));
-        parent.getHrefHint().setDisabledIcon(new ImageIcon(b ? OpenBST.hrefEnabled : OpenBST.hrefBlocked));
+        parent.getHrefHint().setToolTipText(Lang.get("html.href" + (b ? "enabled" : "block")));
+        parent.getHrefHint().setIcon(
+                new ImageIcon(b ? Icons.getImage("LinkY", 16) : Icons.getImage("LinkN", 16)));
+        parent.getHrefHint().setDisabledIcon(
+                new ImageIcon(b ? Icons.getImage("LinkY", 16) : Icons.getImage("LinkN", 16)));
         parent.getHrefHint().setVisible(true);
     }
 
     public void dispose()
     {
-        OpenBST.getInstance().removeDarkModeCallbback(callback);
+        OpenBSTGUI.getInstance().removeDarkModeCallbback(callback);
+    }
+
+    @Experimental
+    public void addCSSSheet(String sheet)
+    {
+        additionalCSS.add(sheet);
+    }
+
+    @Experimental
+    public void removeCSSSheet(String sheet)
+    {
+        additionalCSS.remove(sheet);
+    }
+
+    @Experimental
+    public void removeAllCSSSheets()
+    {
+        additionalCSS.clear();
     }
 
 }

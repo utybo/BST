@@ -1,49 +1,94 @@
-About OpenBST
+##### About OpenBST #####
 
 OpenBST is a free and open-source program that allows you to easily run BST files. BST is, in a nutshell, a simple and powerful language that allows you to create branching stories and interactive, neat text-based games in a very simple way.
 
+OpenBST is licensed under the Mozilla Public License 2.0 (MPL 2.0), and is incompatible with Secondary Licenses as defined by the license.
+License details : see the LICENSES section.
+
+Source code : https://github.com/utybo/BST/
+Website : https://utybo.github.io/BST/
+
+
+
+##### LIBRARIES #####
+
 As with almost all programs, OpenBST is powered by awesome third-party libraries distributed with this program. Here is a complete list. You can have a look at their website to find license information and more :
 
-- Log4j2 API and Core
+- Log4j2 API and Core (Apache License 2.0)
   https://logging.apache.org/log4j/2.x/
   A logging library
 
-- MigLayout Swing and Core
+- MigLayout Swing and Core (BSD 3-clause license)
   http://miglayout.com/
   Allows you to create good looking layouts in Java easily
 
-- Apache Commons Lang
+- Apache Commons Lang (Apache License 2.0)
   https://commons.apache.org/proper/commons-lang/
   Useful stuff for random things
 
-- Apache Commons IO
+- Apache Commons IO (Apache License 2.0)
   https://commons.apache.org/proper/commons-io/
   Useful stuff for I/O
 
-- Apache Commons Compress
+- Apache Commons Compress (Apache License 2.0)
   https://commons.apache.org/proper/commons-compress/
   Useful stuff for compressing
 
-- txtmark
+- txtmark (Apache License 2.0)
   https://github.com/rjeschke/txtmark/
   Fast Markdown ==> HTML processor
 
-- Gson
+- Gson (Apache License 2.0)
   https://github.com/google/gson/
   Fast Object <==> Json processor
 
-- ClassIndex
+- ClassIndex (Apache License 2.0)
   https://github.com/atteo/classindex
   Annotation handling library
 
-- Trident
+- Trident (BSD 3-clause license)
   https://github.com/kirill-grouchnikov/trident
   Universal (and awesome) animation library
 
-- Substance
+- Substance (BSD 3-clause license)
   https://github.com/kirill-grouchnikov/substance
   Awesome themes for Java Swing apps
+  
+- Substance SwingX (LGPL 2.1)
+  https://github.com/kirill-grouchnikov/substance-swingx
+  Compatibility plugin for SwingX and Substance
 
-OpenBST relies on bst-java, a library made to read and understand BST files. bst-java relies on ClassIndex.
+- SwingX (LGPL 2.1)
+  <no website since java.net closed down>
+  Additional Swing components
+
+
+OpenBST also contains portions of code from the following libraries :
+
+- Maven Artifact (originally Apache License 2.0, re-licensed to MPL as part of this project)
+  https://maven.apache.org/ref/3.5.3/maven-artifact/
+  Extremely useful library for processing versions of software (ComparableVersion class)
+
+
+OpenBST also contains code adapted from other projects :
+
+- bezier-easing (originally MIT License, re-licensed to MPL 2.0 as part of this project)
+  https://github.com/gre/bezier-easing
+  A Javascript library which we translated to Java to have nice and smooth transitions in Trident (BezierEase class)
+
+
+OpenBST relies on bst-java, a library made to read and understand BST files. bst-java itself relies on ClassIndex.
+
+
+
+##### LICENSES #####
+
+Links to the licenses mentioned in this text :
+- Apache License 2.0 : https://opensource.org/licenses/Apache-2.0
+- BST 3-clause license : https://opensource.org/licenses/BSD-3-Clause
+- LGPL 2.1 : https://opensource.org/licenses/LGPL-2.1
+- MIT License : https://opensource.org/licenses/MIT
+- MPL 2.0 : https://opensource.org/licenses/MPL-2.0
+
 
 This application contains icons created by Icons8 and distributed under the CC-BY-ND license. Website : icons8.com

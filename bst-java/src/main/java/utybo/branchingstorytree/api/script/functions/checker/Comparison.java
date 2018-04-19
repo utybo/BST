@@ -25,13 +25,16 @@ public class Comparison implements ScriptChecker
 {
 
     @Override
-    public boolean check(final String head, final String desc, final int line, final BranchingStory story, final BSTClient client) throws BSTException
+    public boolean check(final String head, final String desc, final int line,
+            final BranchingStory story, final BSTClient client) throws BSTException
     {
         final VariableRegistry registry = story.getRegistry();
         final String varName = desc.split(",")[0];
         final Integer var = (Integer)registry.get(varName, 0);
         final String compareTo = desc.split(",")[1];
-        final Integer var2 = registry.typeOf(compareTo) == Integer.class ? (Integer)registry.get(compareTo, 0) : Integer.parseInt(compareTo);
+        final Integer var2 = registry.typeOf(compareTo) == Integer.class
+                ? (Integer)registry.get(compareTo, 0)
+                : Integer.parseInt(compareTo);
 
         switch(head)
         {

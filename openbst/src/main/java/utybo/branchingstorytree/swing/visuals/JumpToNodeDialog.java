@@ -32,7 +32,8 @@ import javax.swing.event.DocumentListener;
 import net.miginfocom.swing.MigLayout;
 import utybo.branchingstorytree.api.story.BranchingStory;
 import utybo.branchingstorytree.api.story.StoryNode;
-import utybo.branchingstorytree.swing.OpenBST;
+import utybo.branchingstorytree.swing.Icons;
+import utybo.branchingstorytree.swing.OpenBSTGUI;
 import utybo.branchingstorytree.swing.impl.TabClient;
 import utybo.branchingstorytree.swing.utils.Lang;
 
@@ -52,9 +53,10 @@ public class JumpToNodeDialog extends JDialog
     private int mode;
     private JButton btnOk;
 
-    public JumpToNodeDialog(TabClient client, BranchingStory mainStory, Consumer<StoryNode> callback)
+    public JumpToNodeDialog(TabClient client, BranchingStory mainStory,
+            Consumer<StoryNode> callback)
     {
-        super(OpenBST.getInstance());
+        super(OpenBSTGUI.getInstance());
         this.client = client;
         this.mainStory = mainStory;
         setModalityType(ModalityType.DOCUMENT_MODAL);
@@ -77,12 +79,13 @@ public class JumpToNodeDialog extends JDialog
         buttonGroup.add(rdbtnWithId);
         getContentPane().add(rdbtnWithId, "cell 2 0");
 
-        JLabel label = new JLabel(new ImageIcon(OpenBST.jumpBigImage));
+        JLabel label = new JLabel(new ImageIcon(Icons.getImage("Easy to Find", 40)));
         getContentPane().add(label, "cell 0 0 1 5,aligny top");
 
         spinner = new JSpinner();
         spinner.addChangeListener(e -> updateExistanceInfo());
-        spinner.setModel(new SpinnerNumberModel(Integer.valueOf(1), Integer.valueOf(1), null, Integer.valueOf(1)));
+        spinner.setModel(new SpinnerNumberModel(Integer.valueOf(1), Integer.valueOf(1), null,
+                Integer.valueOf(1)));
         getContentPane().add(spinner, "cell 3 0,growx");
 
         JRadioButton rdbtnWithAlias = new JRadioButton(Lang.get("nodejump.withalias"));
@@ -129,7 +132,8 @@ public class JumpToNodeDialog extends JDialog
         comboBox.addItemListener(e -> updateExistanceInfo());
         Vector<String> values = new Vector<>();
         values.add("<main>");
-        ArrayList<String> additional = new ArrayList<String>(client.getXBFHandler().getAdditionalStoryNames());
+        ArrayList<String> additional = new ArrayList<String>(
+                client.getXBFHandler().getAdditionalStoryNames());
         Collections.sort(additional);
         values.addAll(additional);
         comboBox.setSelectedItem("<main>");
@@ -154,7 +158,7 @@ public class JumpToNodeDialog extends JDialog
         updateExistanceInfo();
 
         pack();
-        setLocationRelativeTo(OpenBST.getInstance());
+        setLocationRelativeTo(OpenBSTGUI.getInstance());
     }
 
     private StoryNode updateExistanceInfo()
@@ -188,7 +192,9 @@ public class JumpToNodeDialog extends JDialog
 
         btnOk.setEnabled(exists);
         lblNodeExistanceInfo.setText(Lang.get(exists ? "nodejump.exists" : "nodejump.notexists"));
-        lblNodeExistanceInfo.setForeground(exists ? (OpenBST.getInstance().isDark() ? Color.GREEN : Color.GREEN.darker()) : Color.RED);
+        lblNodeExistanceInfo.setForeground(
+                exists ? (OpenBSTGUI.getInstance().isDark() ? Color.GREEN : Color.GREEN.darker())
+                        : Color.RED);
 
         return sn;
     }

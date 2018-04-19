@@ -23,6 +23,7 @@ import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.api.story.BranchingStory;
 import utybo.branchingstorytree.brm.BRMResourceConsumer;
 import utybo.branchingstorytree.swing.OpenBST;
+import utybo.branchingstorytree.swing.OpenBSTGUI;
 import utybo.branchingstorytree.swing.utils.Pair;
 import utybo.branchingstorytree.swing.visuals.AccumulativeRunnable;
 
@@ -55,7 +56,8 @@ public class BRMFileClient implements BRMAdvancedHandler
             int current = 0;
             invokeAndWait(() ->
             {
-                pm = new ProgressMonitor(OpenBST.getInstance(), "Loading resources...", "Initializing...", 0, total);
+                pm = new ProgressMonitor(OpenBSTGUI.getInstance(), "Loading resources...",
+                        "Initializing...", 0, total);
                 pm.setMillisToDecideToPopup(1);
                 pm.setMillisToPopup(1);
             });
@@ -88,12 +90,14 @@ public class BRMFileClient implements BRMAdvancedHandler
                     {
                         try
                         {
+                            r.add(new Pair<>(current++,
+                                    "Loading " + file.getName() + " for module " + module));
                             handler.load(file, FilenameUtils.getBaseName(file.getName()));
-                            r.add(new Pair<>(current++, "Loading " + file.getName() + " for module " + module));
                         }
                         catch(IOException e)
                         {
-                            throw new BSTException(-1, "Failed to load " + file.getName(), e, "<none>");
+                            throw new BSTException(-1, "Failed to load " + file.getName(), e,
+                                    "<none>");
                         }
                     }
                 }

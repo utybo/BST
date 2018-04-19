@@ -78,4 +78,9 @@ public class LogicalNode extends StoryNode
         }
         return node;
     }
+    
+    public ArrayList<LNInstruction> getInstructions()
+    {
+        return new ArrayList<>(instructionStack);
+    }
 }

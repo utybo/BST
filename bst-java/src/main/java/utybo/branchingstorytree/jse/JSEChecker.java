@@ -8,8 +8,6 @@
  */
 package utybo.branchingstorytree.jse;
 
-import static utybo.branchingstorytree.jse.JSEAction.checkReg;
-
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
@@ -24,16 +22,14 @@ public class JSEChecker implements ScriptChecker
 {
 
     @Override
-    public boolean check(final String head, final String desc, final int line, final BranchingStory story, final BSTClient client) throws BSTException
+    public boolean check(final String head, final String desc, final int line,
+            final BranchingStory story, final BSTClient client) throws BSTException
     {
-        final JSEHandler handler = client.getJSEHandler();
         final VariableRegistry registry = story.getRegistry();
-        if(handler.getEngine() == null || !registry.get("__jse__auto", "true").toString().equalsIgnoreCase("false"))
-        {
-            handler.setEngine(new ScriptEngineManager().getEngineByName("JavaScript"));
-        }
-        final ScriptEngine engine = handler.getEngine();
-        checkReg(engine, registry, line, story);
+        if(!client.getHTBHandler().requestJSAccess())
+            throw new BSTException(line, "Javascript access denied", story);
+        ScriptEngine engine = new ScriptEngineManager().getEngineByName("JavaScript");
+        JSEAction.applyReg(engine, registry, line, story);
         try
         {
             final Object result = engine.eval(desc);
@@ -59,12 +55,14 @@ public class JSEChecker implements ScriptChecker
             }
             else
             {
-                throw new BSTException(line, "Unknown value type : " + result.getClass().getName(), story);
+                throw new BSTException(line, "Unknown value type : " + result.getClass().getName(),
+                        story);
             }
         }
         catch(final ScriptException e)
         {
-            throw new BSTException(line, "Error during script execution : " + e.getMessage(), e, story);
+            throw new BSTException(line, "Error during script execution : " + e.getMessage(), e,
+                    story);
         }
     }
 

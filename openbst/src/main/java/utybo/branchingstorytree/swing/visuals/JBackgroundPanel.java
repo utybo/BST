@@ -43,7 +43,8 @@ public class JBackgroundPanel extends JPanel
         Image image;
         final int width = getWidth() - 1;
         final int height = getHeight() - 1;
-        if(previousBounds != null && previousScaledImage != null && getParent().getSize().equals(previousBounds) && previousImage == this.image)
+        if(previousBounds != null && previousScaledImage != null
+                && getParent().getSize().equals(previousBounds) && previousImage == this.image)
         {
             image = previousScaledImage;
         }
@@ -53,11 +54,13 @@ public class JBackgroundPanel extends JPanel
             double scaleFactor = 1d;
             if(bi.getWidth() > bi.getHeight())
             {
-                scaleFactor = getScaleFactorToFill(new Dimension(bi.getWidth(), bi.getHeight()), getParent().getSize());
+                scaleFactor = getScaleFactorToFill(new Dimension(bi.getWidth(), bi.getHeight()),
+                        getParent().getSize());
             }
             else if(bi.getHeight() > bi.getWidth())
             {
-                scaleFactor = getScaleFactorToFill(new Dimension(bi.getWidth(), bi.getHeight()), getParent().getSize());
+                scaleFactor = getScaleFactorToFill(new Dimension(bi.getWidth(), bi.getHeight()),
+                        getParent().getSize());
             }
             final int scaleWidth = (int)Math.round(bi.getWidth() * scaleFactor);
             final int scaleHeight = (int)Math.round(bi.getHeight() * scaleFactor);

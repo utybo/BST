@@ -15,7 +15,7 @@ import utybo.branchingstorytree.api.BSTClient;
 @IndexSubclasses
 public interface ExtNNDFactory
 {
-    public NextNodeDefiner createNND(String head, String desc, BSTClient client);
+    public NextNodeDefiner createNND(String head, String desc, int line, BSTClient client);
 
     public String[] getNames();
 }

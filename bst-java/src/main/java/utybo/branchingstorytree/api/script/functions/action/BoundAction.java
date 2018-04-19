@@ -24,7 +24,8 @@ public class BoundAction implements ScriptAction
 {
 
     @Override
-    public void exec(final String head, final String desc, final int line, final BranchingStory story, final BSTClient client) throws BSTException
+    public void exec(final String head, final String desc, final int line,
+            final BranchingStory story, final BSTClient client) throws BSTException
     {
         final VariableRegistry registry = story.getRegistry();
         final String[] bits = desc.split(",");
@@ -37,8 +38,12 @@ public class BoundAction implements ScriptAction
             throw new BSTException(line, "Unknown variable : " + bits[0], story);
         }
         int toCheck = (Integer)registry.get(bits[0], 0);
-        final int min = registry.typeOf(bits[1]) == Integer.class ? (Integer)registry.get(bits[1], 0) : Integer.parseInt(bits[1]);
-        final int max = registry.typeOf(bits[2]) == Integer.class ? (Integer)registry.get(bits[2], 0) : Integer.parseInt(bits[2]);
+        final int min = registry.typeOf(bits[1]) == Integer.class
+                ? (Integer)registry.get(bits[1], 0)
+                : Integer.parseInt(bits[1]);
+        final int max = registry.typeOf(bits[2]) == Integer.class
+                ? (Integer)registry.get(bits[2], 0)
+                : Integer.parseInt(bits[2]);
         if(max < min)
         {
             throw new BSTException(line, "min < max", story);

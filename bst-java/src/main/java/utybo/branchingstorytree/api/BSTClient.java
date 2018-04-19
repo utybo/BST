@@ -13,10 +13,10 @@ import utybo.branchingstorytree.brm.BRMHandler;
 import utybo.branchingstorytree.brm.BRMResourceConsumer;
 import utybo.branchingstorytree.htb.HTBHandler;
 import utybo.branchingstorytree.img.IMGHandler;
-import utybo.branchingstorytree.jse.JSEHandler;
 import utybo.branchingstorytree.ssb.SSBHandler;
 import utybo.branchingstorytree.uib.UIBarHandler;
 import utybo.branchingstorytree.xbf.XBFHandler;
+import utybo.branchingstorytree.xsf.XSFHandler;
 
 /**
  * A BSTClient is the core class to be used for interaction between the engine
@@ -44,6 +44,13 @@ public interface BSTClient
      * Close the current story
      */
     public void exit();
+
+    /**
+     * This is called whenever bst-java detects usage of an experimental method.
+     * You should only warn the user once.
+     */
+    public default void warnExperimental(int line, String from, String what)
+    {};
 
     /**
      * @return The UIB module handler, or null is not supported
@@ -85,17 +92,17 @@ public interface BSTClient
         return null;
     }
 
-    public default JSEHandler getJSEHandler()
-    {
-        return null;
-    }
-
     public default XBFHandler getXBFHandler()
     {
         return null;
     }
 
     public default HTBHandler getHTBHandler()
+    {
+        return null;
+    }
+    
+    public default XSFHandler getXSFHandler()
     {
         return null;
     }
@@ -114,6 +121,8 @@ public interface BSTClient
             return getXBFHandler();
         case "htb":
             return getHTBHandler();
+        case "xsf":
+            return getXSFHandler();
         default:
             return null;
         }
@@ -123,4 +132,5 @@ public interface BSTClient
     {
         System.err.println(string);
     }
+
 }

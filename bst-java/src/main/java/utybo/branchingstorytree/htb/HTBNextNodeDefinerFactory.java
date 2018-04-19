@@ -16,9 +16,9 @@ public class HTBNextNodeDefinerFactory implements ExtNNDFactory
 {
 
     @Override
-    public NextNodeDefiner createNND(String head, String desc, BSTClient client)
+    public NextNodeDefiner createNND(String head, String desc, int line, BSTClient client)
     {
-        return new HTBNextNodeDefiner(head, desc, client);
+        return new HTBNextNodeDefiner(head, desc, line, client);
     }
 
     @Override

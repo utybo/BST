@@ -24,7 +24,8 @@ public class EqualityInequality implements ScriptChecker
 {
 
     @Override
-    public boolean check(final String head, final String desc, final int line, final BranchingStory story, final BSTClient client) throws BSTException
+    public boolean check(final String head, final String desc, final int line,
+            final BranchingStory story, final BSTClient client) throws BSTException
     {
         final VariableRegistry registry = story.getRegistry();
         boolean equ;

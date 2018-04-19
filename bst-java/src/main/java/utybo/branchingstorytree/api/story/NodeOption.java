@@ -93,12 +93,19 @@ public class NodeOption extends TagHolder
     {
         try
         {
-            return checker == null ? new CheckerDescriptor(new AlwaysTrueChecker(), null, null, -1, null, null) : checker;
+            return checker == null
+                    ? new CheckerDescriptor(new AlwaysTrueChecker(), null, null, -1, null, null)
+                    : checker;
         }
         catch(final BSTException e)
         {
             throw new Error("Impossible state", e);
         }
+    }
+    
+    public boolean hasChecker()
+    {
+        return checker != null;
     }
 
     /**
@@ -134,4 +141,8 @@ public class NodeOption extends TagHolder
         this.doOnClick.add(doOnClick);
     }
 
+    public NextNodeDefiner getNND()
+    {
+        return nextNode;
+    }
 }

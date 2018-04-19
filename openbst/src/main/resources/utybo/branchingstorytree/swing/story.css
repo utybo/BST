@@ -1,0 +1,28 @@
+body {
+  margin: 10px;
+  padding: 0px;
+  font-family: $f;
+  font-size: 1.25em; 
+}
+
+.storydiv {
+  margin:-10px;
+  padding:10px;
+  $ADDITIONAL;
+  width: 100%; 
+  height:100%;
+  text-rendering: optimizeLegibility;
+  font-smoothing: antialiased;
+  -webkit-font-smoothing: antialiased;
+}
+
+.bg {
+  background-image:url('data:image;base64,$b64bg');
+  background-size:cover;
+  background-position:center;
+  background-attachment:fixed;
+}
+
+.dark {
+  background-color: #000000
+}

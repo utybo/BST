@@ -29,7 +29,8 @@ public class BDFClient implements BDFHandler
     {
         try
         {
-            map.put(name, BDFParser.parse(new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8)), name));
+            map.put(name, BDFParser.parse(
+                    new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8)), name));
         }
         catch(final IOException e)
         {

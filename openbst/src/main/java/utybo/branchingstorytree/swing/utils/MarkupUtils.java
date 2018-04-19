@@ -17,9 +17,11 @@ import utybo.branchingstorytree.api.story.TextNode;
 
 public class MarkupUtils
 {
-    public static int solveMarkup(final BranchingStory story, final TextNode textNode)
+    public static int solveMarkup(final BranchingStory mainStory, final BranchingStory story,
+            final TextNode textNode)
     {
-        if(story.hasTag("markup") || textNode != null && textNode.hasTag("markup"))
+        if(mainStory.hasTag("markup") || (story != null && story.hasTag("markup"))
+                || (textNode != null && textNode.hasTag("markup")))
         {
             if(textNode != null && textNode.hasTag("markup"))
             {
@@ -33,9 +35,21 @@ public class MarkupUtils
                     return 2;
                 }
             }
-            else if(story.hasTag("markup"))
+            else if(story != null && story.hasTag("markup"))
             {
                 final String s = story.getTag("markup");
+                if(s.equalsIgnoreCase("md") || s.equalsIgnoreCase("markdown"))
+                {
+                    return 1;
+                }
+                else if(s.equalsIgnoreCase("html"))
+                {
+                    return 2;
+                }
+            }
+            else if(mainStory.hasTag("markup"))
+            {
+                final String s = mainStory.getTag("markup");
                 if(s.equalsIgnoreCase("md") || s.equalsIgnoreCase("markdown"))
                 {
                     return 1;

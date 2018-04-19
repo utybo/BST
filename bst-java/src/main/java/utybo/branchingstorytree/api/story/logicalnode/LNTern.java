@@ -39,7 +39,9 @@ public class LNTern extends LNInstruction
      *            The actions to execute if (one of) the checker(s) returns
      *            false
      */
-    public LNTern(final ArrayList<CheckerDescriptor> checker, final ArrayList<ActionDescriptor> trueActions, final ArrayList<ActionDescriptor> falseActions)
+    public LNTern(final ArrayList<CheckerDescriptor> checker,
+            final ArrayList<ActionDescriptor> trueActions,
+            final ArrayList<ActionDescriptor> falseActions)
     {
         checkers = checker;
         this.trueActions = trueActions;
@@ -79,5 +81,20 @@ public class LNTern extends LNInstruction
         {
             action.exec();
         }
+    }
+    
+    public ArrayList<ActionDescriptor> getTrueActions()
+    {
+        return new ArrayList<>(trueActions);
+    }
+    
+    public ArrayList<ActionDescriptor> getFalseActions()
+    {
+        return new ArrayList<>(falseActions);
+    }
+    
+    public ArrayList<CheckerDescriptor> getCheckers()
+    {
+        return new ArrayList<>(checkers);
     }
 }

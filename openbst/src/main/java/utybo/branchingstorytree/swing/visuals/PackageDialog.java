@@ -21,14 +21,15 @@ import java.util.concurrent.ExecutionException;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JTextField;
 import javax.swing.SwingWorker;
 
 import net.miginfocom.swing.MigLayout;
-import utybo.branchingstorytree.swing.OpenBST;
+import utybo.branchingstorytree.swing.Icons;
+import utybo.branchingstorytree.swing.Messagers;
+import utybo.branchingstorytree.swing.OpenBSTGUI;
 import utybo.branchingstorytree.swing.utils.BSTPackager;
 import utybo.branchingstorytree.swing.utils.Lang;
 
@@ -45,7 +46,7 @@ public class PackageDialog extends JDialog
     /**
      * Create the dialog.
      */
-    public PackageDialog(OpenBST parent)
+    public PackageDialog(OpenBSTGUI parent)
     {
         super(parent);
         setModalityType(ModalityType.APPLICATION_MODAL);
@@ -92,7 +93,8 @@ public class PackageDialog extends JDialog
             fd.setVisible(true);
             if(fd.getFile() != null)
             {
-                textField_1.setText(fd.getDirectory() + fd.getFile() + (fd.getFile().endsWith(".bsp") ? "" : ".bsp"));
+                textField_1.setText(fd.getDirectory() + fd.getFile()
+                        + (fd.getFile().endsWith(".bsp") ? "" : ".bsp"));
             }
         });
         panel.add(button_1, "cell 1 1");
@@ -117,7 +119,8 @@ public class PackageDialog extends JDialog
                 @Override
                 protected Object doInBackground() throws Exception
                 {
-                    BSTPackager.toPackage(in, new FileOutputStream(out), new HashMap<>(), s -> publish(s));
+                    BSTPackager.toPackage(in, new FileOutputStream(out), new HashMap<>(),
+                            s -> publish(s));
                     return null;
                 }
 
@@ -136,14 +139,14 @@ public class PackageDialog extends JDialog
                     }
                     catch(ExecutionException | InterruptedException e)
                     {
-                        Throwable t = e.getCause();
-                        JOptionPane.showMessageDialog(PackageDialog.this, "<html>Something bad happened and the packaging process failed :(<p>" + (t != null ? t.getClass() + " : " + t.getMessage() : ""), "Packaging error", JOptionPane.ERROR_MESSAGE);
+                        Messagers.showException(PackageDialog.this,
+                                "<html>Something bad happened and the packaging process failed", e);
                         cl.show(wrapperPanel, "settings");
                     }
                     progressBar.setIndeterminate(false);
                     progressBar.setMaximum(1);
                     progressBar.setValue(1);
-                    JOptionPane.showMessageDialog(parent, "Packaged succesfully!");
+                    Messagers.showMessage(parent, "Packaged succesfully!");
                     dispose();
                 }
             };
@@ -169,7 +172,7 @@ public class PackageDialog extends JDialog
         progressBar.setIndeterminate(true);
         panelWorking.add(progressBar, "cell 0 2,growx");
 
-        setSize(450, 300);
+        setSize((int)(Icons.getScale() * 450), (int)(Icons.getScale() * 300));
         setLocationRelativeTo(parent);
     }
 

@@ -9,16 +9,18 @@
 package utybo.branchingstorytree.xbf;
 
 import utybo.branchingstorytree.api.BSTClient;
+import utybo.branchingstorytree.api.Experimental;
 import utybo.branchingstorytree.api.script.ExtNNDFactory;
 import utybo.branchingstorytree.api.script.NextNodeDefiner;
 
+@Experimental
 public class XBFNextNodeDefinerFactory implements ExtNNDFactory
 {
 
     @Override
-    public NextNodeDefiner createNND(String head, String desc, BSTClient client)
+    public NextNodeDefiner createNND(String head, String desc, int line, BSTClient client)
     {
-        return new XBFNextNodeDefiner(head, desc, client);
+        return new XBFNextNodeDefiner(head, desc, line, client);
     }
 
     @Override

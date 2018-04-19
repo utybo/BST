@@ -14,22 +14,23 @@ import java.util.regex.Pattern;
 import utybo.branchingstorytree.api.BSTClient;
 import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.api.script.CheckerDescriptor;
-import utybo.branchingstorytree.api.script.Dictionnary;
+import utybo.branchingstorytree.api.script.Dictionary;
 import utybo.branchingstorytree.api.script.ScriptAction;
 import utybo.branchingstorytree.api.story.BranchingStory;
 
 public class AssertAction implements ScriptAction
 {
-    private static Dictionnary dict;
+    private static Dictionary dict;
 
     @Override
-    public void exec(final String head, final String desc, final int line, final BranchingStory story, final BSTClient client) throws BSTException
+    public void exec(final String head, final String desc, final int line,
+            final BranchingStory story, final BSTClient client) throws BSTException
     {
         try
         {
             if(dict == null)
             {
-                dict = new Dictionnary();
+                dict = new Dictionary();
             }
         }
         catch(InstantiationException | IllegalAccessException e)
@@ -47,12 +48,15 @@ public class AssertAction implements ScriptAction
         final String d = m.group(2);
         try
         {
-            final CheckerDescriptor cd = new CheckerDescriptor(dict.getChecker(h), h, d, line, story, client);
+            final CheckerDescriptor cd = new CheckerDescriptor(dict.getChecker(h), h, d, line,
+                    story, client);
             assert cd.check() == true;
         }
         catch(final AssertionError error)
         {
-            throw new AssertionError("Assertion " + desc + " failed. (Registry dumb : " + story.getRegistry().dump(), error);
+            throw new AssertionError(
+                    "Assertion " + desc + " failed. (Registry dumb : " + story.getRegistry().dump(),
+                    error);
         }
 
     }

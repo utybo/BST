@@ -23,7 +23,8 @@ public class BDFAction implements ScriptAction
 {
 
     @Override
-    public void exec(final String head, final String desc, final int line, final BranchingStory story, final BSTClient client) throws BSTException
+    public void exec(final String head, final String desc, final int line,
+            final BranchingStory story, final BSTClient client) throws BSTException
     {
         final BDFHandler bdf = client.getBDFHandler();
         if(bdf == null)
@@ -33,7 +34,8 @@ public class BDFAction implements ScriptAction
         final String[] bits = desc.split(",");
         if(bits.length > 2)
         {
-            throw new BSTException(line, "Invalid syntax : bdf_apply:name OR bdf_apply:name,prefix", story);
+            throw new BSTException(line, "Invalid syntax : bdf_apply:name OR bdf_apply:name,prefix",
+                    story);
         }
         String name = bits[0];
         if(name.startsWith("!"))

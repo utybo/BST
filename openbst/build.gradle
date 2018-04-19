@@ -46,6 +46,8 @@ dependencies {
     compile 'com.google.code.gson:gson:2.8.0'
     compile 'commons-io:commons-io:2.5'
     compile 'org.apache.commons:commons-compress:1.13'
+	compile 'org.tukaani:xz:1.6'
+	compile 'org.swinglabs.swingx:swingx-all:1.6.5-1'
     compile fileTree(dir: 'libs', include: ['*.jar'])
 }
 

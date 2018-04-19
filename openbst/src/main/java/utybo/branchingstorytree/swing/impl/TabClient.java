@@ -9,34 +9,37 @@
 package utybo.branchingstorytree.swing.impl;
 
 import javax.swing.ImageIcon;
-import javax.swing.JOptionPane;
 
 import utybo.branchingstorytree.api.BSTClient;
 import utybo.branchingstorytree.htb.HTBHandler;
-import utybo.branchingstorytree.jse.JSEHandler;
+import utybo.branchingstorytree.swing.Icons;
+import utybo.branchingstorytree.swing.Messagers;
 import utybo.branchingstorytree.swing.OpenBST;
+import utybo.branchingstorytree.swing.OpenBSTGUI;
+import utybo.branchingstorytree.swing.utils.Lang;
 import utybo.branchingstorytree.swing.visuals.NodePanel;
 import utybo.branchingstorytree.swing.visuals.StoryPanel;
 import utybo.branchingstorytree.xbf.XBFHandler;
+import utybo.branchingstorytree.xsf.XSFHandler;
 
 public class TabClient implements BSTClient
 {
-    private final OpenBST instance;
+    private final OpenBSTGUI instance;
     private StoryPanel tab;
     private TabUIB uibHandler;
     private BRMAdvancedHandler brmClient;
     private SSBClient ssbClient;
     private IMGClient imgClient;
     private final BDFClient bdfClient;
-    private final JSEClient jseClient;
     private XBFClient xbfClient;
     private HTBClient htbClient;
+    private XSFClient xsfClient = new XSFClient();
+    private boolean isExperimental;
 
-    public TabClient(final OpenBST instance)
+    public TabClient(final OpenBSTGUI instance)
     {
         this.instance = instance;
         bdfClient = new BDFClient();
-        jseClient = new JSEClient();
     }
 
     @Override
@@ -45,7 +48,7 @@ public class TabClient implements BSTClient
         Object input = null;
         while(input == null || input.toString().isEmpty())
         {
-            input = JOptionPane.showInputDialog(instance, message, "Input asked", JOptionPane.QUESTION_MESSAGE, new ImageIcon(OpenBST.renameImage), null, null);
+            input = Messagers.showInput(instance, message);
         }
         return input.toString();
     }
@@ -53,7 +56,7 @@ public class TabClient implements BSTClient
     @Override
     public void exit()
     {
-        instance.removeStory(tab);
+        instance.removeTab(tab);
     }
 
     public void setStoryPanel(final StoryPanel sp)
@@ -101,12 +104,6 @@ public class TabClient implements BSTClient
     }
 
     @Override
-    public JSEHandler getJSEHandler()
-    {
-        return jseClient;
-    }
-
-    @Override
     public XBFHandler getXBFHandler()
     {
         return xbfClient;
@@ -118,6 +115,12 @@ public class TabClient implements BSTClient
         return htbClient;
     }
 
+    @Override
+    public XSFHandler getXSFHandler()
+    {
+        return xsfClient;
+    }
+
     public void setBRMHandler(BRMAdvancedHandler handler)
     {
         brmClient = handler;
@@ -127,5 +130,26 @@ public class TabClient implements BSTClient
     public void warn(String string)
     {
         OpenBST.LOG.warn(string);
+    }
+    
+    public void error(String string)
+    {
+        OpenBST.LOG.error(string);
+        Messagers.showMessage(OpenBSTGUI.getInstance(), string, Messagers.TYPE_ERROR);
+    }
+
+    @Override
+    public void warnExperimental(int line, String from, String what)
+    {
+        if(!isExperimental)
+        {
+            isExperimental = true;
+            Messagers.showMessage(OpenBSTGUI.getInstance(),
+                    "<html><body style='width:" + (int)(Icons.getScale() * 300) + "px'>"
+                            + Lang.get("story.experimental").replace("$l", "" + line).replace("$f",
+                                    from).replace("$w", what),
+                    Messagers.TYPE_WARNING, Lang.get("story.experimental.title"),
+                    new ImageIcon(Icons.getImage("Experiment", 48)));
+        }
     }
 }

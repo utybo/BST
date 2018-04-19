@@ -16,13 +16,15 @@ import java.util.Base64;
 import java.util.HashMap;
 
 import javax.swing.ImageIcon;
-import javax.swing.JOptionPane;
 
 import org.apache.commons.io.IOUtils;
 
 import utybo.branchingstorytree.api.BSTException;
+import utybo.branchingstorytree.api.Experimental;
 import utybo.branchingstorytree.htb.HTBHandler;
-import utybo.branchingstorytree.swing.OpenBST;
+import utybo.branchingstorytree.swing.Icons;
+import utybo.branchingstorytree.swing.Messagers;
+import utybo.branchingstorytree.swing.OpenBSTGUI;
 import utybo.branchingstorytree.swing.utils.Lang;
 import utybo.branchingstorytree.swing.visuals.NodePanel;
 
@@ -30,6 +32,7 @@ public class HTBClient implements HTBHandler
 {
     private final HashMap<String, byte[]> map = new HashMap<>();
     private final NodePanel nodePanel;
+    private Boolean js = null, anchors = null;
 
     public HTBClient(NodePanel panel)
     {
@@ -66,37 +69,80 @@ public class HTBClient implements HTBHandler
     @Override
     public boolean requestJSAccess()
     {
-        int result = JOptionPane.showConfirmDialog(OpenBST.getInstance(), "<html><body style='width:300px'>" + Lang.get("html.jsrequest"), Lang.get("html.securityalert"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, new ImageIcon(OpenBST.jsAlert));
-        if(result == JOptionPane.YES_OPTION)
+        if(js == null)
         {
-            nodePanel.setJSEnabled(true);
-            return true;
+            int result = Messagers.showConfirm(OpenBSTGUI.getInstance(),
+                    "<html><body style='width:" + (int)(Icons.getScale() * 300) + "px'>"
+                            + Lang.get("html.jsrequest"),
+                    Messagers.OPTIONS_YES_NO, Messagers.TYPE_QUESTION,
+                    Lang.get("html.securityalert"), new ImageIcon(Icons.getImage("JSAlert", 48)));
+            if(result == Messagers.OPTION_YES)
+            {
+                js = true;
+                nodePanel.setJSEnabled(true);
+                return true;
+            }
+            else
+            {
+                js = false;
+                nodePanel.setJSEnabled(false);
+                return false;
+            }
         }
         else
-        {
-            return false;
-        }
+            return js;
     }
 
     @Override
     public boolean requestHrefAccess()
     {
-        int result = JOptionPane.showConfirmDialog(OpenBST.getInstance(), "<html><body style='width:300px'>" + Lang.get("html.hrefrequest"), Lang.get("html.securityalert"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, new ImageIcon(OpenBST.hrefAlert));
-        if(result == JOptionPane.YES_OPTION)
+        if(anchors == null)
         {
-            nodePanel.setHrefEnabled(true);
-            return true;
+            int result = Messagers.showConfirm(OpenBSTGUI.getInstance(),
+                    "<html><body style='width:" + (int)(Icons.getScale() * 300) + "px'>"
+                            + Lang.get("html.htmlrequest"),
+                    Messagers.OPTIONS_YES_NO, Messagers.TYPE_QUESTION,
+                    Lang.get("html.securityalert"), new ImageIcon(Icons.getImage("JSAlert", 48)));
+            if(result == Messagers.OPTION_YES)
+            {
+                nodePanel.setHrefEnabled(true);
+                return true;
+            }
+            else
+            {
+                nodePanel.setHrefEnabled(false);
+                return false;
+            }
         }
         else
-        {
-            return false;
-        }
+            return anchors;
     }
 
     @Override
     public boolean hasResource(String resource)
     {
         return map.containsKey(resource);
+    }
+
+    @Override
+    @Experimental
+    public void applyCSS(String resource)
+    {
+        nodePanel.addCSSSheet(getAsString(resource));
+    }
+
+    @Override
+    @Experimental
+    public void removeCSS(String resource)
+    {
+        nodePanel.removeCSSSheet(getAsString(resource));
+    }
+
+    @Override
+    @Experimental
+    public void clearCSS()
+    {
+        nodePanel.removeAllCSSSheets();
     }
 
 }
