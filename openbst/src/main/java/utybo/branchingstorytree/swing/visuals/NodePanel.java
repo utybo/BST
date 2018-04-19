@@ -10,6 +10,7 @@ package utybo.branchingstorytree.swing.visuals;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
 
 import org.apache.commons.compress.compressors.xz.XZCompressorInputStream;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -31,7 +33,6 @@ import javafx.application.Platform;
 import javafx.concurrent.Worker.State;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Scene;
-import javafx.scene.text.FontSmoothingType;
 import javafx.scene.web.WebView;
 import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.api.Experimental;
@@ -92,14 +93,6 @@ public class NodePanel extends JScrollablePanel
         if(isAlreadyBuilt)
         {
             build();
-            Platform.runLater(() ->
-            {
-                if(!b)
-                    view.setFontSmoothingType(FontSmoothingType.LCD);
-                else
-                    view.setFontSmoothingType(FontSmoothingType.GRAY);
-            });
-
         }
     };
 
@@ -146,12 +139,7 @@ public class NodePanel extends JScrollablePanel
                                 }
                             }
                         });
-                view.setZoom((double)Icons.getScale());
                 Scene sc = new Scene(view);
-                if(!OpenBSTGUI.getInstance().isDark())
-                    view.setFontSmoothingType(FontSmoothingType.LCD);
-                else
-                    view.setFontSmoothingType(FontSmoothingType.GRAY);
                 try
                 {
                     view.getEngine().loadContent(IOUtils
@@ -245,8 +233,8 @@ public class NodePanel extends JScrollablePanel
                 + "<style type='text/css'>" + getCurrentFontCss() + "</style>" //
                 + "<style type='text/css'>" + STYLE.replace("$f", getCurrentFont()) + "</style>" //
                 + "$CUSTOMCSS" + "</head>" //
-                + "<body class='$bbg" + (isDark ? " dark" : "") + "'>" + "<div class='storydiv'>" //
-                + "<div style=\"$COLOR\">" + text + "</div></div></body>";
+                + "<body class='$bbg" + (isDark ? " dark" : "") + "'>" //
+                + "<div class='storydiv' style=\"$COLOR\">" + text + "</div></body>";
         String additional, c;
 
         if(imageClient.getCurrentBackground() != null && backgroundVisible)
@@ -281,6 +269,7 @@ public class NodePanel extends JScrollablePanel
         String s = base.replace("$ADDITIONAL", additional).replace("$COLOR", c)
                 // $EXPERIMENTAL
                 .replace("$CUSTOMCSS", sb.toString());
+
         VisualsUtils.invokeJfxAndWait(() ->
         {
             view.getEngine().loadContent(s);

@@ -43,15 +43,15 @@ public class StoryNodeIdComponent extends JPanel
     {
         nodes = sne;
 
-        setLayout(new MigLayout("", "[][50px][][][grow]", "[][]"));
+        setLayout(new MigLayout("", "[][][][][grow]", "[][]"));
 
-        rdbtnUseIntegerId = new JRadioButton(Lang.get(Lang.get("editor.node.useintid")));
+        rdbtnUseIntegerId = new JRadioButton(Lang.get("editor.node.useintid"));
 
         rdbtnUseIntegerId.setSelected(true);
         buttonGroup.add(rdbtnUseIntegerId);
         add(rdbtnUseIntegerId, "cell 0 0");
 
-        spinner = new JSpinner(new SpinnerNumberModel(1, 1, Integer.MAX_VALUE, 1));
+        spinner = new JSpinner(new SpinnerNumberModel(1, 1, 10000, 1));
         spinner.addChangeListener(e -> updateIdAvailability());
         rdbtnUseIntegerId.addItemListener(new ItemListener()
         {
@@ -61,7 +61,7 @@ public class StoryNodeIdComponent extends JPanel
                 updateIdAvailability();
             }
         });
-        add(spinner, "cell 1 0,growx");
+        add(spinner, "cell 1 0");
 
         Component horizontalStrut = Box.createHorizontalStrut(20);
         add(horizontalStrut, "cell 2 0");

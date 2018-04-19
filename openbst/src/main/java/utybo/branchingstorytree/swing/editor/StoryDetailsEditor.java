@@ -35,7 +35,7 @@ public class StoryDetailsEditor extends JPanel implements EditorControl<Map<Stri
 
     public StoryDetailsEditor(StoryEditor editor)
     {
-        setLayout(new MigLayout("", "[][grow]", "[][][][][][][]"));
+        setLayout(new MigLayout("", "[][grow]", "[][][][][][]"));
 
         JLabel lblStoryName = new JLabel(Lang.get("editor.details.name"));
         add(lblStoryName, "cell 0 0,alignx trailing");
@@ -101,28 +101,26 @@ public class StoryDetailsEditor extends JPanel implements EditorControl<Map<Stri
 
         markup = new JComboBox<String>();
         markup.setModel(new DefaultComboBoxModel<>(new String[] {"none", "markdown", "html"}));
-        markup.setEditable(true);
         add(markup, "cell 1 3,growx");
 
         JLabel lblFont = new JLabel(Lang.get("editor.details.font"));
         add(lblFont, "cell 0 4,alignx trailing");
 
         font = new JComboBox<String>();
-        font.setEditable(true);
         font.setModel(new DefaultComboBoxModel<>(
                 new String[] {"[default]", "libre_baskerville", "ubuntu"}));
-        add(font, "cell 1 4,growx");
+        add(font, "flowx,cell 1 4,growx");
+
+        nsfw = new JCheckBox(Lang.get("editor.details.nsfw"));
+        add(nsfw, "cell 0 5 2 1");
 
         JLabel lblSupertools = new JLabel(Lang.get("editor.details.supertools"));
-        add(lblSupertools, "flowy,cell 0 5,alignx trailing");
+        add(lblSupertools, "gap 10px, cell 1 4,alignx trailing");
 
         supertools = new JComboBox<String>();
         supertools.setModel(new DefaultComboBoxModel<>(
                 new String[] {"all", "hidecheat", "savestate", "savestatenoio", "none"}));
-        add(supertools, "cell 1 5,growx");
-
-        nsfw = new JCheckBox(Lang.get("editor.details.nsfw"));
-        add(nsfw, "cell 0 6 2 1");
+        add(supertools, "cell 1 4,growx");
 
     }
 
@@ -168,7 +166,7 @@ public class StoryDetailsEditor extends JPanel implements EditorControl<Map<Stri
         if(!supertools.getSelectedItem().toString().isEmpty())
             sb.append("supertools=" + supertools.getSelectedItem().toString() + "\n");
 
-        if(!nsfw.isEnabled())
+        if(nsfw.isSelected())
             sb.append("nsfw=true");
 
         return sb.toString();

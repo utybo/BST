@@ -12,6 +12,8 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -57,7 +59,7 @@ public class StoryNodesEditor extends JPanel implements EditorControl<Collection
 
     public StoryNodesEditor()
     {
-        setLayout(new MigLayout("", "[:33%:300px][grow]", "[grow][]"));
+        setLayout(new MigLayout("", "[:33%:300px][grow 150]", "[grow][]"));
 
         JScrollPane scrollPane = new JScrollPane();
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
@@ -102,7 +104,23 @@ public class StoryNodesEditor extends JPanel implements EditorControl<Collection
                 container.repaint();
             }
         });
+
         JScrollablePanel pan = new JScrollablePanel(new BorderLayout(0, 0));
+        jlist.addComponentListener(new ComponentAdapter()
+        {
+
+            @Override
+            public void componentResized(ComponentEvent e)
+            {
+                scrollPane.revalidate();
+                pan.revalidate();
+                jlist.revalidate();
+
+                revalidate();
+                repaint();
+            }
+            
+        });
         pan.setScrollableWidth(ScrollableSizeHint.FIT);
         pan.setScrollableHeight(ScrollableSizeHint.STRETCH);
         pan.add(jlist, BorderLayout.CENTER);
@@ -117,6 +135,27 @@ public class StoryNodesEditor extends JPanel implements EditorControl<Collection
         JPanel panel = new JPanel();
         add(panel, "cell 0 1 2 1,alignx leading,growy");
 
+        
+
+        JButton btnAddNode = new JButton(Lang.get("editor.panel.add"), new ImageIcon(Icons.getImage("Add Subnode", 16)));
+        btnAddNode.addMouseListener(new MouseAdapter()
+        {
+            @Override
+            public void mouseClicked(MouseEvent e)
+            {
+                createMenu().show(btnAddNode, e.getX(), e.getY());
+            }
+        });
+        panel.add(btnAddNode);
+
+        JButton btnRemoveNode = new JButton(Lang.get("editor.panel.remove"), new ImageIcon(Icons.getImage("Delete Subnode", 16)));
+        btnRemoveNode.addActionListener(e -> removeNode());
+        panel.add(btnRemoveNode);
+
+    }
+    
+    private JPopupMenu createMenu()
+    {
         JPopupMenu createMenu = new JPopupMenu();
         createMenu.add(new AbstractAction(Lang.get("editor.panel.text"), //
                 new ImageIcon(Icons.getImage("TextNode", 16)))
@@ -137,7 +176,7 @@ public class StoryNodesEditor extends JPanel implements EditorControl<Collection
                 addNode(new StoryVirtualNodeEditor(StoryNodesEditor.this));
             }
         });
-        createMenu.add(new AbstractAction("Add a Logical Node",
+        createMenu.add(new AbstractAction(Lang.get("editor.panel.logical"),
                 new ImageIcon(Icons.getImage("LogicalNode", 16)))
         {
 
@@ -147,22 +186,7 @@ public class StoryNodesEditor extends JPanel implements EditorControl<Collection
                 addNode(new StoryLogicalNodeEditor(StoryNodesEditor.this));
             }
         });
-
-        JButton btnAddNode = new JButton(Lang.get("editor.panel.add"));
-        btnAddNode.addMouseListener(new MouseAdapter()
-        {
-            @Override
-            public void mouseClicked(MouseEvent e)
-            {
-                createMenu.show(btnAddNode, e.getX(), e.getY());
-            }
-        });
-        panel.add(btnAddNode);
-
-        JButton btnRemoveNode = new JButton(Lang.get("editor.panel.remove"));
-        btnRemoveNode.addActionListener(e -> removeNode());
-        panel.add(btnRemoveNode);
-
+        return createMenu;
     }
 
     private void removeNode()

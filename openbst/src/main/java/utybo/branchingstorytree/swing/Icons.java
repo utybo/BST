@@ -46,10 +46,11 @@ public class Icons
     {
 
         // 16px icons names
-        String[] arr = new String[] {"About", "Audio", "Camera Addon Identification", "Cancel",
-                "Change Theme", "Circled Play", "Color Wheel", "Copy To Clipboard", "Easy to Find",
-                "Export", "External Link", "Eye", "Gears", "Import", "Invisible", "Mute",
-                "Open Archive", "Open", "Picture", "Refresh", "Return", "Save", "Save As",
+        String[] arr = new String[] {"About", "Add Property", "Add Subnode", "Audio",
+                "Camera Addon Identification", "Cancel", "Change Theme", "Circled Play", "Code",
+                "Color Wheel", "Copy To Clipboard", "Easy to Find", "Edit Property", "Export",
+                "External Link", "Eye", "Gears", "Import", "Invisible", "Mute", "Open Archive",
+                "Open", "Picture", "Refresh", "Delete Subnode", "Return", "Save", "Save As",
                 "Synchronize", "Undo"};
         for(String s : arr)
         {
@@ -69,6 +70,7 @@ public class Icons
         images.put("TextNode16", loadImage("16c", "TextNode" + applyScaleValue(sizes)));
 
         images.put("PreviewText16", loadImage("16c", "PreviewText" + applyScaleValue(sizes)));
+        images.put("LangCheck16", loadImage("16c", "LangCheck" + applyScaleValue(sizes)));
 
         // 16px logos
         images.put("Logo16", loadImage("logos/Logo" + applyScaleValue(sizes)));
@@ -89,8 +91,8 @@ public class Icons
         images.put("warn32", loadImage("msgr", "warn" + applyScaleValue(sizes)));
 
         // 40px icons
-        arr = new String[] {"Camera Addon Identification", "Cancel", "Code", "Easy to Find", "Open",
-                "Refresh", "Return", "Synchronize", "Undo"};
+        arr = new String[] {"Camera Addon Identification", "Cancel", "Code", "Easy to Find",
+                "Edit Property", "Open", "Refresh", "Return", "Synchronize", "Undo"};
         for(String s : arr)
         {
             images.put(s + 40, loadImage(s, 40));

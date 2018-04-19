@@ -175,7 +175,7 @@ public class StoryEditor extends JPanel implements EditorControl<BranchingStory>
     public boolean askClose()
     {
         int i = Messagers.showConfirm(OpenBSTGUI.getInstance(), Lang.get("editor.asksave"),
-                Messagers.OPTIONS_YES_NO_CANCEL);
+                Messagers.OPTIONS_YES_NO_CANCEL, Messagers.TYPE_WARNING, Lang.get("editor.asksave.title"));
         if(i == Messagers.OPTION_YES)
         {
             if(save())

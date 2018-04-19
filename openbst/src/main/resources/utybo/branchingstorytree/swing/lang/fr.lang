@@ -185,15 +185,16 @@ langcheck.choose=Comparer l'anglais (en) à
 langcheck.result=<html>Voici les traductions présentes en anglais mais absentes dans le fichier choisi.
 
 # Editor, general
-editor.title=Editing $t by $a 
-editor.exportfail=Failed to export the file
-editor.exportpreview=Export Preview
-editor.previewerror=Unexpected exception during preview creation
-editor.asksave=You are about to close this editor view. Do you wish to save your work before quitting?
-editor.details=Details
+editor.title=Edition de $t par $a 
+editor.exportfail=Echec de l'export du fichier
+editor.exportpreview=Prévisualisation de l'export
+editor.previewerror=Erreur inattendue lors de la création de la prévisualisation
+editor.asksave.title=Fermeture de l'éditeur
+editor.asksave=Vous allez fermer cet éditeur. Souhaitez vous sauvegarder votre travail?
+editor.details=Détails
 editor.nodes=Nodes
-editor.savefail=Failed to save the file
-editor.saveloc=Save location...
+editor.savefail=Echec de la sauvegarde du fichier
+editor.saveloc=Emplacement de sauvegarde...
 
 # Editor details
 # The following strings have a space at the end of the string " : "

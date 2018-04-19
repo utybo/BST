@@ -51,7 +51,7 @@ public class DebugInfo extends JDialog
         JLabel lblInfo = new JLabel("<html>" + Lang.get("debug.help"));
         contentPanel.add(lblInfo, "cell 1 0");
 
-        JButton btnCopy = new JButton(Lang.get("copytoclipboard"),
+        JButton btnCopy = new JButton(Lang.get("copy"),
                 new ImageIcon(Icons.getImage("Copy To Clipboard", 16)));
         btnCopy.addActionListener(e ->
         {

@@ -198,6 +198,7 @@ editor.title=Editing $t by $a
 editor.exportfail=Failed to export the file
 editor.exportpreview=Export Preview
 editor.previewerror=Unexpected exception during preview creation
+editor.asksave.title=Closing editor
 editor.asksave=You are about to close this editor view. Do you wish to save your work before quitting?
 editor.details=Details
 editor.nodes=Nodes

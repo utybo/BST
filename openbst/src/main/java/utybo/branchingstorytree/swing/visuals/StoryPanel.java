@@ -230,7 +230,7 @@ public class StoryPanel extends JPanel
         if(story.hasTag("nsfw"))
         {
             if(Messagers.showConfirm(parentWindow, Lang.get("story.nsfw"), Messagers.OPTIONS_YES_NO,
-                    Messagers.TYPE_WARNING, Lang.get("story.nsfw.title")) != Messagers.OPTION_OK)
+                    Messagers.TYPE_WARNING, Lang.get("story.nsfw.title")) != Messagers.OPTION_YES)
             {
                 LOG.trace("=> Close");
                 return false;
@@ -1086,7 +1086,7 @@ public class StoryPanel extends JPanel
         variableWatcher.deathNotified();
         variableWatcher.dispose();
     }
-    
+
     public boolean askClose()
     {
         if(Messagers.showConfirm(parentWindow, "<html>" + Lang.get("story.close.confirm"),
@@ -1099,6 +1099,6 @@ public class StoryPanel extends JPanel
             return true;
         }
         return false;
-        
+
     }
 }

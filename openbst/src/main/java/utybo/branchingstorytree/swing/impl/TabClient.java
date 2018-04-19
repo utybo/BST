@@ -48,7 +48,7 @@ public class TabClient implements BSTClient
         Object input = null;
         while(input == null || input.toString().isEmpty())
         {
-            input = Messagers.showConfirm(instance, message);
+            input = Messagers.showInput(instance, message);
         }
         return input.toString();
     }

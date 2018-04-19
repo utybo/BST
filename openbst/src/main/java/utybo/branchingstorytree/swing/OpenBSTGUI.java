@@ -285,20 +285,12 @@ public class OpenBSTGUI extends JFrame
             public void windowClosing(WindowEvent e)
             {
                 boolean cancelled = false;
+                int i = 0;
                 for(Component c : container.getComponents())
                 {
                     if(c instanceof StoryPanel)
                     {
-                        container.setSelectedComponent(c);
-                        if(((StoryPanel)c).askClose())
-                        {
-                            continue;
-                        }
-                        else
-                        {
-                            cancelled = true;
-                            break;
-                        }
+                        i++;
                     }
                     else if(c instanceof StoryEditor)
                     {
@@ -315,7 +307,20 @@ public class OpenBSTGUI extends JFrame
                     }
                 }
                 if(!cancelled)
-                    System.exit(0);
+                {
+                    if(i > 0)
+                    {
+                        int j = Messagers.showConfirm(OpenBSTGUI.this,
+                                "You are about to close " + i
+                                        + " file(s). Are you sure you wish to exit OpenBST?",
+                                Messagers.OPTIONS_YES_NO, Messagers.TYPE_WARNING,
+                                "Closing OpenBST");
+                        if(j != Messagers.OPTION_YES)
+                            cancelled = true;
+                    }
+                    if(!cancelled)
+                        System.exit(0);
+                }
             }
 
         });
@@ -447,7 +452,7 @@ public class OpenBSTGUI extends JFrame
 
         final JButton btnOpenEditor = new JButton(Lang.get("welcome.openeditor"));
         panel.add(btnOpenEditor, "cell 4 1");
-        btnOpenEditor.setIcon(new ImageIcon(Icons.getImage("Open", 40)));
+        btnOpenEditor.setIcon(new ImageIcon(Icons.getImage("Edit Property", 40)));
         btnOpenEditor.addActionListener(e ->
         {
             openEditor(VisualsUtils.askForFile(this, Lang.get("file.title")));
@@ -515,7 +520,8 @@ public class OpenBSTGUI extends JFrame
 
         shortMenu.addSeparator();
 
-        shortMenu.add(new JMenuItem(new AbstractAction(Lang.get("menu.create"))
+        shortMenu.add(new JMenuItem(new AbstractAction(Lang.get("menu.create"),
+                new ImageIcon(Icons.getImage("Add Property", 16)))
         {
             private static final long serialVersionUID = 1L;
 
@@ -540,7 +546,8 @@ public class OpenBSTGUI extends JFrame
                 new PackageDialog(instance).setVisible(true);
             }
         }));
-        additionalMenu.add(new JMenuItem(new AbstractAction(Lang.get("langcheck"))
+        additionalMenu.add(new JMenuItem(new AbstractAction(Lang.get("langcheck"),
+                new ImageIcon(Icons.getImage("LangCheck", 16)))
         {
             private static final long serialVersionUID = 1L;
 
@@ -612,7 +619,8 @@ public class OpenBSTGUI extends JFrame
             }
         }));
 
-        additionalMenu.add(new JMenuItem(new AbstractAction(Lang.get("menu.debug"))
+        additionalMenu.add(new JMenuItem(new AbstractAction(Lang.get("menu.debug"),
+                new ImageIcon(Icons.getImage("Code", 16)))
         {
             private static final long serialVersionUID = 1L;
 
