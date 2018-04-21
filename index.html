@@ -69,11 +69,15 @@ layout: default
 hashUpdate = function(){
   if(window.location.hash.indexOf("#" != -1)) {
     toClick = $('a[id="tab' + window.location.hash + '"]');
-    if(toClick && toClick.children()[0])
-      toClick[0].click();
-  }};
-  
-$(document).ready(hashUpdate);
+    setTimeout(function() {
+      if(toClick && toClick.children()[0]) {
+        toClick[0].click();
+      }
+    },50); // THe most stupid hack
+  }
+};
+
+window.addEventListener("load", hashUpdate);
 window.onhashchange = hashUpdate;
 //}});
 </script>

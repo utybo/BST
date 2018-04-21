@@ -1,3 +1,10 @@
+- name: 2.0 Beta 2
+  devtag: v2.0-beta2
+  stable: false
+  blogpost: /main/2018/04/21/openbst-2-beta-2.html
+  jar: https://github.com/utybo/BST/releases/download/v2.0-beta2/openbst-2.0-beta2-full.jar
+  tutorial: https://github.com/utybo/BST/releases/download/v2.0-beta2/The.BST.Tutorial.pdf
+  reference: https://github.com/utybo/BST/releases/download/v2.0-beta2/BST.Reference.pdf
 - name: 2.0 Beta 1
   devtag: v2.0-beta1
   blogpost: /main/2017/07/31/openbst-2-beta.html
