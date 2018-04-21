@@ -1,11 +1,11 @@
 # Site settings
-title: The BST & OpenBST Projects
+title: "OpenBST : Interactive Fiction Tool"
 email: utybodev@gmail.com
 description: > # this means to ignore newlines until "baseurl:"
-  Create branching stories and small text-based games easily.
-  Free and Open Source!
+  Create interactive fiction, branching stories and small text-based games
+  easily. Free and Open Source!
 baseurl: "/BST" # the subpath of your site, e.g. /blog/
-url: "http://utybo.github.io" # the base hostname & protocol for your site
+url: "https://utybo.github.io" # the base hostname & protocol for your site
 # twitter_username:
 github_username:  utybo
 timezone: "Europe/Paris"
