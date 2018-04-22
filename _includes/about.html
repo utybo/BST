@@ -1,30 +1,85 @@
+<h3 id="openbst">OpenBST</h3>
+
+<p>OpenBST is a program that allows you to run and, to a certain level, create interactive fiction and stories. It is built using the <a href="https://en.wikipedia.org/wiki/Java_(programming_language)">Java programming language</a>.</p>
+
+<p>You can download it right now in the <a href="{{ site.baseurl }}/#downloads">Downloads</a> tab! OpenBST is compatible with Windows, Mac OS X, Linux and everywhere else where Java, Swing and JavaFX are supported.</p>
+
+<img src="{{ site.baseurl }}/img/about/screenshot2.png" alt="Welcome screen"/>
+
+<img src="{{ site.baseurl }}/img/about/screenshot1.png" alt="Playing screen"/>
 
 <h3 id="bst">BST</h3>
-<p>BST is a language that allows you to create branching stories and small text-based games. It is made to be as simple and straightforward as possible, but still be powerful. Creating BST files only requires a simple text file editor : Windows’ Notepad.exe, Notepad++, gedit, Mousepad, Pluma, Atom.io, Sublime Text, any can do!</p>
 
-<pre><code>1:This small text box is all you need to know to get started
-:Cool!|2
-:Not cool!|3
+<p>BST is a language used to create stories from simple text files. While you can use the editor built into OpenBST, using the raw BST syntax gives you much more flexibility and unlocks the full potential of OpenBST, with scripting, backgrounds, sounds and much more!</p>
 
-2:I know right? :)
+<pre><code>1:This is a node. Its ID is 1
 
-3:Well that's rude
+It contains text that will be shown on the screen.
+
+:This is an option, that leads to the next node with the ID 2|2
+:Another option that leads to the third node|3
+
+2:Hello there!
+
+3:See? It's not that hard!
 </code></pre>
 
-<p>But BST isn't only just this : it has a scripting mechnism, sounds, interface customization, and more!</p>
+<p>Want to start creating stuff using the BST Language? Download the tutorial right now!</p>
 
-<p>The BST format is open, and documentation is available from the Download section of the website. However, by itself, your text file won't do anything. Much like an image file, you'll need some program to open it; and this is exactly what OpenBST does!</p>
+<h3 id="highlighter">Syntax highlighter for Atom</h3>
 
-<h3 id="openbst">OpenBST</h3>
-<p>OpenBST is a simple and cross-platform program made to read and interact with any BST formatted file. It aims to be up to date with the latest new fancy features.</p>
+<p>An official Syntax highlighter is available for <a href="https://atom.io">the Atom text editor</a>. Simply follow the instructions inside the tutorial to install it.</p>
 
-<p>Its interface is simple enough for newcomers while containing everything needed for power users and story creators.</p>
+<h3 id="faq">FAQ</h3>
 
-<p>Start creating your own stories today : it's 100% free! :)
+<blockquote>
+  <p>Is OpenBST free?</p>
+</blockquote>
 
-<p><button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" onclick="location.href='https://github.com/utybo/BST/issues'">
-Report a bug
-</button></p>
+<p>Yes! OpenBST is entirely free. It is also open source, and released under the Mozilla Public License 2.0</p>
+
+<blockquote>
+  <p>I found a bug! How do I report it?</p>
+</blockquote>
+
+<p>Simply <a href="https://github.com/utybo/BST/issues/new">file an issue on GitHub</a> giving as much information as you can. Please include debug information, which you can get by going to <code>OpenBST &gt; Advanced tools &gt; Show debug information</code>.</p>
+
+<blockquote>
+  <p>How can I mark my story as NSFW?</p>
+</blockquote>
+
+<p>Add the following line at the beginning of the file :</p>
+
+<pre><code>nsfw=true
+</code></pre>
+
+<p>A warning will appear every time your story is opened.</p>
+
+<blockquote>
+  <p>My save state doesn't work!</p>
+</blockquote>
+
+<p>Save states are quite buggy at the moment. Please <a href="https://github.com/utybo/BST/issues/new">report it as an issue on GitHub</a>.</p>
+
+<blockquote>
+  <p>Can I format my story in Markdown or HTML?</p>
+</blockquote>
+
+<p>Yes, just add one of the following at the beginning of the file :</p>
+
+<pre><code>markup=markdown
+-- OR --
+markup=html
+</code></pre>
+
+<blockquote>
+  <p>I have another question!</p>
+</blockquote>
+
+<p>Please either <a href="https://github.com/utybo/BST/issues/new">file an issue on GitHub</a> or <a href="https://discord.gg/yY9h6Ur">tell us about it on Discord</a>.</p>
+
+
+<!-- End of Markdown export -->
 
 <h3 id="licenses">Licenses</h3>
 <p>OpenBST is licensed under the MPL-v2 License. The BST tutorial and all its examples (including but not limited to the files contained in the examples.zip file) are licensed under the CC-BY-NC-SA v4 International license.</p>
