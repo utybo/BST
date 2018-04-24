@@ -11,7 +11,9 @@ package utybo.branchingstorytree.swing.visuals;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Image;
 import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,6 +23,7 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -31,6 +34,9 @@ import org.pushingpixels.substance.api.SubstanceCortex;
 import org.pushingpixels.substance.api.skin.SubstanceBusinessBlackSteelLookAndFeel;
 import org.pushingpixels.trident.Timeline;
 import org.pushingpixels.trident.Timeline.RepeatBehavior;
+import org.pushingpixels.trident.Timeline.TimelineState;
+import org.pushingpixels.trident.TimelineScenario;
+import org.pushingpixels.trident.callback.TimelineCallback;
 
 import utybo.branchingstorytree.swing.Icons;
 import utybo.branchingstorytree.swing.OpenBST;
@@ -44,6 +50,8 @@ public class Splashscreen extends JFrame
 {
     public static void main(String[] args)
     {
+
+        System.setProperty("sun.java2d.opengl", "true");
         SwingUtilities.invokeLater(() ->
         {
             try
@@ -57,21 +65,24 @@ public class Splashscreen extends JFrame
                 e.printStackTrace();
             }
 
-            Splashscreen s = new Splashscreen();
+            Splashscreen s = new Splashscreen(null);
             s.setVisible(true);
             s.play();
         });
     }
 
     private Timeline timeline;
+    private TimelineScenario scenario;
     private Timeline tl2;
     private JLabel lblLogo;
     private JLabel lblText;
     private final JLabel lblZrrk;
-    private JXPanel panLogo, panZrrk;
+    private JXPanel panLogo, panZrrk, panBlue;
+    private JBackgroundPanel panBackground;
     private boolean locked = false;
+    private BufferedImage background = null;
 
-    public Splashscreen()
+    public Splashscreen(BufferedImage splashImg)
     {
         setUndecorated(true);
         try
@@ -89,10 +100,31 @@ public class Splashscreen extends JFrame
 
         getContentPane().setBackground(OpenBSTGUI.OPENBST_BLUE);
 
+        JLayeredPane layers = new JLayeredPane();
+        layers.setBackground(new Color(0, 0, 0, 0));
+        layers.setBounds($(0, 0, 400, 120));
+        getContentPane().add(layers);
+
+        if(splashImg != null)
+        {
+            background = splashImg;
+            panBackground = new JBackgroundPanel(background, Image.SCALE_SMOOTH);
+            panBackground.setApplyColor(false);
+            panBackground.setBounds($(0, 0, 400, 120));
+            layers.add(panBackground, new Integer(0));
+        }
+
+        panBlue = new JXPanel();
+        panBlue.setBackground(OpenBSTGUI.OPENBST_BLUE);
+        panBlue.setBounds($(0, 0, 400, 120));
+        layers.add(panBlue, new Integer(1));
+
         panLogo = new JXPanel();
-        panLogo.setBackground(new Color(0, 0, 0, 0));
+        panLogo.setLayout(null);
+        panLogo.setBackground(OpenBSTGUI.OPENBST_BLUE);
         lblLogo = new JLabel();
         lblLogo.setHorizontalAlignment(SwingConstants.CENTER);
+        lblLogo.setVerticalAlignment(SwingConstants.CENTER);
         // We cannot use Icons.getImage because it is not loaded at this point.
         try
         {
@@ -104,16 +136,16 @@ public class Splashscreen extends JFrame
         {
             OpenBST.LOG.error(e);
         }
-        panLogo.setLayout(new BorderLayout());
+        lblLogo.setBounds($(0, 0, 400, 100));
         panLogo.add(lblLogo);
-        panLogo.setBounds($(0, 0, 400, 100));
-        getContentPane().add(panLogo);
+        panLogo.setBounds($(0, 0, 400, 120));
+        layers.add(panLogo, new Integer(2));
 
         lblText = new JLabel(Lang.get("splash.loading"));
         lblText.setForeground(Color.WHITE);
         lblText.setVerticalAlignment(SwingConstants.BOTTOM);
         lblText.setBounds($(10, 90, 322, 20));
-        getContentPane().add(lblText);
+        layers.add(lblText, new Integer(10));
 
         panZrrk = new JXPanel();
         panZrrk.setBackground(new Color(0, 0, 0, 0));
@@ -131,7 +163,7 @@ public class Splashscreen extends JFrame
         panZrrk.setLayout(new BorderLayout());
         panZrrk.add(lblZrrk);
         panZrrk.setBounds($(342, 94, 48, 16));
-        getContentPane().add(panZrrk);
+        layers.add(panZrrk, new Integer(11));
 
         setupAnim();
     }
@@ -179,20 +211,53 @@ public class Splashscreen extends JFrame
         tl2.setDuration(300L);
         tl2.setEase(new BezierEase(.25F, .1F, .25F, 1F));
         tl2.addPropertyToInterpolate("alpha", 0.2F, .99F);
+
+        if(background != null)
+        {
+            Timeline revealTl = new Timeline(panLogo);
+            revealTl.setDuration(400L);
+            revealTl.setEase(new BezierEase(0.4F, 0F, 1F, 1F));
+            revealTl.addPropertyToInterpolate("bounds", finalLogoBounds,
+                    new Rectangle(0, $(-120), finalLogoBounds.width, finalLogoBounds.height));
+            scenario = new TimelineScenario.Sequence();
+            timeline.addCallback(new TimelineCallback()
+            {
+
+                @Override
+                public void onTimelinePulse(float arg0, float arg1)
+                {}
+
+                @Override
+                public void onTimelineStateChanged(TimelineState arg0, TimelineState arg1,
+                        float arg2, float arg3)
+                {
+                    if(arg1 == TimelineState.DONE)
+                        VisualsUtils.invokeSwingAndWait(() -> panBlue.setVisible(false));
+                }
+            });
+            scenario.addScenarioActor(timeline);
+            Timeline wait = new Timeline(new Object());
+            wait.setDuration(750L);
+            scenario.addScenarioActor(wait);
+            scenario.addScenarioActor(revealTl);
+        }
     }
 
     public void play()
     {
-        timeline.play();
+        if(scenario != null)
+            scenario.play();
+        else
+            timeline.play();
         tl2.playLoop(RepeatBehavior.REVERSE);
     }
 
-    public static Splashscreen start()
+    public static Splashscreen start(BufferedImage splashImg)
     {
         List<Splashscreen> sc = Collections.synchronizedList(new ArrayList<>());
         VisualsUtils.invokeSwingAndWait(() ->
         {
-            Splashscreen s = new Splashscreen();
+            Splashscreen s = new Splashscreen(splashImg);
             s.setVisible(true);
             s.play();
             s.requestFocus();
@@ -204,7 +269,10 @@ public class Splashscreen extends JFrame
     public void stop()
     {
         // Used to let the render of the app breathe
-        timeline.end();
+        if(scenario != null)
+            scenario.suspend();
+        else
+            timeline.end();
         tl2.end();
     }
 

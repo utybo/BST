@@ -29,6 +29,7 @@ import javax.swing.table.DefaultTableModel;
 import net.miginfocom.swing.MigLayout;
 import utybo.branchingstorytree.api.script.VariableRegistry;
 import utybo.branchingstorytree.swing.Icons;
+import utybo.branchingstorytree.swing.OpenBST;
 import utybo.branchingstorytree.swing.utils.Lang;
 
 public class VariableWatchDialog extends JDialog
@@ -47,7 +48,7 @@ public class VariableWatchDialog extends JDialog
      */
     public VariableWatchDialog(final StoryPanel parent)
     {
-        super(parent.parentWindow);
+        super(OpenBST.getGUIInstance());
         setTitle(Lang.get("vwatch.title").replace("$s", parent.getTitle()));
         setModalityType(ModalityType.MODELESS);
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -108,7 +109,7 @@ public class VariableWatchDialog extends JDialog
         refresh();
 
         setSize((int)(450 * Icons.getScale()), (int)(300 * Icons.getScale()));
-        setLocationRelativeTo(parent.parentWindow);
+        setLocationRelativeTo(OpenBST.getGUIInstance());
     }
 
     private void refresh()

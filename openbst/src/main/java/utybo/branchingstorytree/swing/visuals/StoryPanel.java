@@ -59,7 +59,6 @@ import utybo.branchingstorytree.api.story.TextNode;
 import utybo.branchingstorytree.swing.Icons;
 import utybo.branchingstorytree.swing.Messagers;
 import utybo.branchingstorytree.swing.OpenBST;
-import utybo.branchingstorytree.swing.OpenBSTGUI;
 import utybo.branchingstorytree.swing.impl.IMGClient;
 import utybo.branchingstorytree.swing.impl.SSBClient;
 import utybo.branchingstorytree.swing.impl.TabClient;
@@ -106,11 +105,6 @@ public class StoryPanel extends JPanel
     private final File bstFile;
 
     /**
-     * The OpenBST window
-     */
-    protected OpenBSTGUI parentWindow;
-
-    /**
      * The node panel the text is displayed in
      */
     private final NodePanel nodePanel;
@@ -137,21 +131,18 @@ public class StoryPanel extends JPanel
      *
      * @param story
      *            the story to create
-     * @param parentWindow
-     *            the OpenBST instance we are creating this story from
      * @param f
      *            the file the story is from
      * @param client
      *            the client that will be linked to this story
      */
-    public StoryPanel(final BranchingStory story, final OpenBSTGUI parentWindow, final File f,
+    public StoryPanel(final BranchingStory story, final File f,
             final TabClient client)
     {
         LOG.trace("=> Initial setup");
         bstFile = f;
         client.setStoryPanel(this);
         this.story = story;
-        this.parentWindow = parentWindow;
         this.client = client;
 
         LOG.trace("=> Creating visual elements");
@@ -229,7 +220,7 @@ public class StoryPanel extends JPanel
         LOG.trace("NSFW warning check");
         if(story.hasTag("nsfw"))
         {
-            if(Messagers.showConfirm(parentWindow, Lang.get("story.nsfw"), Messagers.OPTIONS_YES_NO,
+            if(Messagers.showConfirm(OpenBST.getGUIInstance(), Lang.get("story.nsfw"), Messagers.OPTIONS_YES_NO,
                     Messagers.TYPE_WARNING, Lang.get("story.nsfw.title")) != Messagers.OPTION_YES)
             {
                 LOG.trace("=> Close");
@@ -246,7 +237,7 @@ public class StoryPanel extends JPanel
         {
             if(LanguageUtils.checkNonLatin(story))
             {
-                Messagers.showMessage(OpenBSTGUI.getInstance(), Lang.get("story.unicodecompat"),
+                Messagers.showMessage(OpenBST.getGUIInstance(), Lang.get("story.unicodecompat"),
                         Messagers.TYPE_INFO, Lang.get("story.unicodecompat.title"),
                         new ImageIcon(Icons.getImage("LanguageError", 48)));
                 story.getRegistry().put("__nonlatin_" + story.getTag("__sourcename"), 1);
@@ -302,7 +293,7 @@ public class StoryPanel extends JPanel
                 @Override
                 public void actionPerformed(final ActionEvent e)
                 {
-                    if(Messagers.showConfirm(parentWindow,
+                    if(Messagers.showConfirm(OpenBST.getGUIInstance(),
                             "<html><body style='width: " + (int)(Icons.getScale() * 300) + "'>"
                                     + Lang.get("story.restoress.confirm"),
                             Messagers.OPTIONS_YES_NO, Messagers.TYPE_WARNING,
@@ -324,9 +315,9 @@ public class StoryPanel extends JPanel
                     @Override
                     public void actionPerformed(final ActionEvent e)
                     {
-                        final FileDialog jfc = new FileDialog(parentWindow,
+                        final FileDialog jfc = new FileDialog(OpenBST.getGUIInstance(),
                                 Lang.get("story.sslocation"), FileDialog.SAVE);
-                        jfc.setLocationRelativeTo(parentWindow);
+                        jfc.setLocationRelativeTo(OpenBST.getGUIInstance());
                         jfc.setIconImage(Icons.getImage("Export", 16));
                         jfc.setVisible(true);
                         if(jfc.getFile() != null)
@@ -361,7 +352,7 @@ public class StoryPanel extends JPanel
                             catch(final IOException e1)
                             {
                                 LOG.error("Had an IOException while exporting Save State", e1);
-                                Messagers.showException(parentWindow,
+                                Messagers.showException(OpenBST.getGUIInstance(),
                                         Lang.get("story.exportss.error")
                                                 .replace("$m", e1.getMessage())
                                                 .replace("$e", e1.getClass().getSimpleName()),
@@ -379,9 +370,9 @@ public class StoryPanel extends JPanel
                     @Override
                     public void actionPerformed(final ActionEvent e)
                     {
-                        final FileDialog jfc = new FileDialog(parentWindow,
+                        final FileDialog jfc = new FileDialog(OpenBST.getGUIInstance(),
                                 Lang.get("story.sslocation"), FileDialog.LOAD);
-                        jfc.setLocationRelativeTo(parentWindow);
+                        jfc.setLocationRelativeTo(OpenBST.getGUIInstance());
                         jfc.setIconImage(Icons.getImage("Import", 16));
                         jfc.setVisible(true);
                         if(jfc.getFile() != null)
@@ -399,7 +390,7 @@ public class StoryPanel extends JPanel
                             catch(final IOException e1)
                             {
                                 LOG.error("Had an IOException while importing Save State", e1);
-                                Messagers.showException(parentWindow,
+                                Messagers.showException(OpenBST.getGUIInstance(),
                                         Lang.get("story.importss.error")
                                                 .replace("$m", e1.getMessage())
                                                 .replace("$e", e1.getClass().getSimpleName()),
@@ -419,7 +410,7 @@ public class StoryPanel extends JPanel
                         @Override
                         public void actionPerformed(final ActionEvent e)
                         {
-                            if(Messagers.showConfirm(parentWindow,
+                            if(Messagers.showConfirm(OpenBST.getGUIInstance(),
                                     "<html>" + Lang.get("story.reset.confirm"),
                                     Messagers.OPTIONS_YES_NO, Messagers.TYPE_WARNING,
                                     Lang.get("story.reset"), new ImageIcon(
@@ -437,7 +428,7 @@ public class StoryPanel extends JPanel
                         @Override
                         public void actionPerformed(final ActionEvent e)
                         {
-                            if(Messagers.showConfirm(parentWindow,
+                            if(Messagers.showConfirm(OpenBST.getGUIInstance(),
                                     "<html><body style='width: " + (int)(Icons.getScale() * 300)
                                             + "'>" + Lang.get("story.sreload.confirm"),
                                     Messagers.OPTIONS_YES_NO, Messagers.TYPE_WARNING,
@@ -463,7 +454,7 @@ public class StoryPanel extends JPanel
                         @Override
                         public void actionPerformed(final ActionEvent e)
                         {
-                            if(Messagers.showConfirm(parentWindow,
+                            if(Messagers.showConfirm(OpenBST.getGUIInstance(),
                                     "<html>" + Lang.get("story.hreload.confirm"),
                                     Messagers.OPTIONS_YES_NO, Messagers.TYPE_WARNING,
                                     Lang.get("story.hreload.confirm.title"), new ImageIcon(Icons
@@ -553,7 +544,7 @@ public class StoryPanel extends JPanel
             @Override
             public void actionPerformed(final ActionEvent e)
             {
-                final JDialog dialog = new JDialog(parentWindow);
+                final JDialog dialog = new JDialog(OpenBST.getGUIInstance());
                 dialog.getContentPane().add(new JPanel()
                 {
                     private Dimension previousBounds;
@@ -620,7 +611,7 @@ public class StoryPanel extends JPanel
                 dialog.setModalityType(ModalityType.APPLICATION_MODAL);
                 dialog.setIconImage(Icons.getImage("Picture", 16));
                 dialog.setSize((int)(Icons.getScale() * 1280), (int)(Icons.getScale() * 720));
-                dialog.setLocationRelativeTo(parentWindow);
+                dialog.setLocationRelativeTo(OpenBST.getGUIInstance());
                 dialog.setVisible(true);
             }
         });
@@ -752,7 +743,7 @@ public class StoryPanel extends JPanel
             // This should never happen
 
             LOG.error("Tried to show a null node!");
-            Messagers.showMessage(OpenBSTGUI.getInstance(), Lang.get("story.nullnode"),
+            Messagers.showMessage(OpenBST.getGUIInstance(), Lang.get("story.nullnode"),
                     Messagers.TYPE_ERROR);
             return;
         }
@@ -779,7 +770,7 @@ public class StoryPanel extends JPanel
                 LOG.trace("=> Logical node result : " + (node == null ? "null" : node.getId()));
                 if(node == null)
                 {
-                    Messagers.showMessage(OpenBSTGUI.getInstance(),
+                    Messagers.showMessage(OpenBST.getGUIInstance(),
                             Lang.get("story.logicalnodedeadend")
                                     .replace("$n", "" + storyNode.getId())
                                     .replace("$f", storyNode.getStory().getTag("__sourcename"))
@@ -819,12 +810,12 @@ public class StoryPanel extends JPanel
             final String s = Lang.get("story.error2").replace("$n", "" + currentNode.getId())
                     .replace("$a", currentNode.getTagOrDefault("alias", "<none>"))
                     .replace("$m", e.getMessage()).replace("$l", e.getWhere() + "");
-            Messagers.showException(OpenBSTGUI.getInstance(), s, e);
+            Messagers.showException(OpenBST.getGUIInstance(), s, e);
         }
         catch(final Exception e)
         {
             LOG.error("Encountered a generic exception while trying to show a node", e);
-            Messagers.showException(OpenBSTGUI.getInstance(),
+            Messagers.showException(OpenBST.getGUIInstance(),
                     Lang.get("story.error").replace("$n", "" + currentNode.getId())
                             .replace("$a", currentNode.getTagOrDefault("alias", "<none>"))
                             .replace("$f", storyNode.getStory().getTag("__sourcename"))
@@ -874,13 +865,13 @@ public class StoryPanel extends JPanel
                         if(currentNode == null)
                         {
                             LOG.debug("=> It was the initial node");
-                            Messagers.showMessage(OpenBSTGUI.getInstance(),
+                            Messagers.showMessage(OpenBST.getGUIInstance(),
                                     Lang.get("story.missinginitial"), Messagers.TYPE_ERROR);
                             return;
                         }
                         else
                         {
-                            Messagers.showMessage(OpenBSTGUI.getInstance(),
+                            Messagers.showMessage(OpenBST.getGUIInstance(),
                                     Lang.get("story.missingnode").replace("$n", "" + e.getId())
                                             .replace("$f", "" + e.getSourceFile())
                                             .replace("$a", "<none>"),
@@ -891,7 +882,7 @@ public class StoryPanel extends JPanel
                     catch(final BSTException e)
                     {
                         LOG.error("Encountered an error while triggering option", e);
-                        Messagers.showMessage(OpenBSTGUI.getInstance(), Lang.get("story.error")
+                        Messagers.showMessage(OpenBST.getGUIInstance(), Lang.get("story.error")
                                 .replace("$n", "" + currentNode.getId())
                                 .replace("$a", currentNode.getTagOrDefault("alias", "<none>"))
                                 .replace("$f", e.getSourceFile()).replace("$m", e.getMessage()),
@@ -952,7 +943,7 @@ public class StoryPanel extends JPanel
             optionPanel.add(button, "grow");
 
             button = new JButton(Lang.get("story.final.close"));
-            button.addActionListener(e -> parentWindow.removeTab(this));
+            button.addActionListener(e -> OpenBST.getGUIInstance().removeTab(this));
             optionPanel.add(button, "grow");
         }
 
@@ -967,7 +958,7 @@ public class StoryPanel extends JPanel
      */
     protected void reload(Consumer<BranchingStory> callback)
     {
-        parentWindow.loadFile(bstFile, client, bs ->
+        OpenBST.loadFile(bstFile, client, bs ->
         {
             story = bs;
             try
@@ -1022,7 +1013,7 @@ public class StoryPanel extends JPanel
             catch(final BSTException e)
             {
                 LOG.error("Error on BRM restore attempt", e);
-                SwingUtilities.invokeLater(() -> Messagers.showException(OpenBSTGUI.getInstance(),
+                SwingUtilities.invokeLater(() -> Messagers.showException(OpenBST.getGUIInstance(),
                         Lang.get("story.modulerestorefail").replace("$m", "BRM"), e));
             }
         }).start();;
@@ -1034,7 +1025,7 @@ public class StoryPanel extends JPanel
         catch(final BSTException e)
         {
             LOG.error("Error on UIB restore attempt", e);
-            SwingUtilities.invokeLater(() -> Messagers.showException(OpenBSTGUI.getInstance(),
+            SwingUtilities.invokeLater(() -> Messagers.showException(OpenBST.getGUIInstance(),
                     Lang.get("story.modulerestorefail").replace("$m", "UIB"), e));
         }
         String from = ss.getFrom();
@@ -1048,7 +1039,7 @@ public class StoryPanel extends JPanel
             if(bs == null)
             {
                 LOG.error("Unknown story : " + from);
-                Messagers.showMessage(OpenBSTGUI.getInstance(),
+                Messagers.showMessage(OpenBST.getGUIInstance(),
                         Lang.get("story.unknownstory").replace("$s", from), Messagers.TYPE_ERROR);
             }
             else
@@ -1058,7 +1049,7 @@ public class StoryPanel extends JPanel
                 {
                     LOG.error("Unknown node (id " + ss.getNodeId() + " from " + from + ")");
                     Messagers
-                            .showMessage(OpenBSTGUI.getInstance(),
+                            .showMessage(OpenBST.getGUIInstance(),
                                     Lang.get("story.missingnode").replace("$n", "" + ss.getNodeId())
                                             .replace("$a", "?").replace("$f", from),
                                     Messagers.TYPE_ERROR);
@@ -1089,13 +1080,13 @@ public class StoryPanel extends JPanel
 
     public boolean askClose()
     {
-        if(Messagers.showConfirm(parentWindow, "<html>" + Lang.get("story.close.confirm"),
+        if(Messagers.showConfirm(OpenBST.getGUIInstance(), "<html>" + Lang.get("story.close.confirm"),
                 Messagers.OPTIONS_YES_NO, Messagers.TYPE_WARNING, Lang.get("story.close"),
                 new ImageIcon(Icons.getImage("Cancel", 40))) == Messagers.OPTION_YES)
         {
             client.getSSBHandler().shutdown();
             nodePanel.dispose();
-            parentWindow.removeTab(this);
+            OpenBST.getGUIInstance().removeTab(this);
             return true;
         }
         return false;

@@ -18,7 +18,7 @@ subprojects {
     //apply plugin: "com.github.spotbugs"
     apply plugin: "findbugs"
 
-    version = "2.0-beta2-u"
+    version = "2.0-SNAPSHOT"
     license { 
         header = rootProject.file('HEADER') 
         // Only test on Java files

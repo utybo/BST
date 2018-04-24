@@ -14,6 +14,12 @@ Less technical explanations for each update available on the [OpenBST website](h
 
 ## [2.0-beta3] (Unreleased)
 ### Added
+- **Embedded stories were added.** It is a single-tab mode that allows you to distribute your story as runnable JAR.
+- Added a tool to create runnable stories. Advanced tools > Create a runnable JAR.
+- New top level tag : `fontsize`, which allows you to specify a custom font size. Default is now `fontsize=14px`
+
+### Fixed
+- Fixed incoherent font sizes inside OpenBST
 
 ## [2.0-beta2] (Unreleased) - Now with HiDPI Glory, and an editor
 ### Added

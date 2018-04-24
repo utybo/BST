@@ -24,7 +24,7 @@ import utybo.branchingstorytree.api.Experimental;
 import utybo.branchingstorytree.htb.HTBHandler;
 import utybo.branchingstorytree.swing.Icons;
 import utybo.branchingstorytree.swing.Messagers;
-import utybo.branchingstorytree.swing.OpenBSTGUI;
+import utybo.branchingstorytree.swing.OpenBST;
 import utybo.branchingstorytree.swing.utils.Lang;
 import utybo.branchingstorytree.swing.visuals.NodePanel;
 
@@ -71,7 +71,7 @@ public class HTBClient implements HTBHandler
     {
         if(js == null)
         {
-            int result = Messagers.showConfirm(OpenBSTGUI.getInstance(),
+            int result = Messagers.showConfirm(OpenBST.getGUIInstance(),
                     "<html><body style='width:" + (int)(Icons.getScale() * 300) + "px'>"
                             + Lang.get("html.jsrequest"),
                     Messagers.OPTIONS_YES_NO, Messagers.TYPE_QUESTION,
@@ -98,7 +98,7 @@ public class HTBClient implements HTBHandler
     {
         if(anchors == null)
         {
-            int result = Messagers.showConfirm(OpenBSTGUI.getInstance(),
+            int result = Messagers.showConfirm(OpenBST.getGUIInstance(),
                     "<html><body style='width:" + (int)(Icons.getScale() * 300) + "px'>"
                             + Lang.get("html.htmlrequest"),
                     Messagers.OPTIONS_YES_NO, Messagers.TYPE_QUESTION,

@@ -43,7 +43,7 @@ import utybo.branchingstorytree.api.story.TextNode;
 import utybo.branchingstorytree.api.story.VirtualNode;
 import utybo.branchingstorytree.swing.Icons;
 import utybo.branchingstorytree.swing.Messagers;
-import utybo.branchingstorytree.swing.OpenBSTGUI;
+import utybo.branchingstorytree.swing.OpenBST;
 import utybo.branchingstorytree.swing.editor.StorySingleNodeEditor.Status;
 import utybo.branchingstorytree.swing.utils.AlphanumComparator;
 import utybo.branchingstorytree.swing.utils.Lang;
@@ -194,13 +194,13 @@ public class StoryNodesEditor extends JPanel implements EditorControl<Collection
         StorySingleNodeEditor ssne = jlist.getSelectedValue();
         if(ssne == null)
         {
-            Messagers.showMessage(OpenBSTGUI.getInstance(), Lang.get("editor.panel.noselected"),
+            Messagers.showMessage(OpenBST.getGUIInstance(), Lang.get("editor.panel.noselected"),
                     Messagers.TYPE_ERROR);
             return;
         }
         else
         {
-            int i = Messagers.showConfirm(OpenBSTGUI.getInstance(),
+            int i = Messagers.showConfirm(OpenBST.getGUIInstance(),
                     "<html>" + Lang.get("editor.panel.removeconfirm")
                             .replace("$i", ssne.getIdentifier())
                             .replace("$s", StringEscapeUtils.escapeHtml(ssne.getSummary())),

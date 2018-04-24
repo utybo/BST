@@ -19,7 +19,12 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Scanner;
 import java.util.function.Consumer;
 import java.util.zip.GZIPInputStream;
@@ -28,6 +33,7 @@ import java.util.zip.GZIPOutputStream;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 
@@ -43,6 +49,7 @@ import utybo.branchingstorytree.swing.impl.TabClient;
 import utybo.branchingstorytree.swing.virtualfiles.BRMVirtualFileClient;
 import utybo.branchingstorytree.swing.virtualfiles.VirtualFile;
 import utybo.branchingstorytree.swing.virtualfiles.VirtualFileHolder;
+import utybo.branchingstorytree.swing.visuals.AccumulativeRunnable;
 
 public class BSTPackager
 {
@@ -133,6 +140,50 @@ public class BSTPackager
         }
     }
 
+    public static void embed(File toEmbed, File openbstJar, File splashscreen, File output,
+            Consumer<String> callback) throws IOException
+    {
+
+        callback.accept("Checking");
+        if(!openbstJar.getAbsolutePath().endsWith(".jar"))
+            throw new IOException("Not a valid OpenBST jar file");
+
+        callback.accept("Processing BST/BSP file...");
+        File sourceFile;
+        if(toEmbed.getAbsolutePath().endsWith(".bsp"))
+        {
+            sourceFile = toEmbed;
+        }
+        else
+        {
+            if(toEmbed.getAbsolutePath().endsWith(".bst"))
+            {
+                callback.accept("Converting from BST to BSP");
+                sourceFile = File.createTempFile("openbst", ".bsp");
+                FileOutputStream fos = new FileOutputStream(sourceFile);
+                toPackage(toEmbed, fos, new HashMap<>(), callback);
+                fos.close();
+            }
+            else
+                throw new IOException("toEmbed file is not a BSP or BST file.");
+        }
+
+        callback.accept("Copying original OpenBST JAR");
+        if(output.exists())
+            output.delete();
+        FileUtils.copyFile(openbstJar, output);
+
+        callback.accept("Embedding");
+        FileSystem zipfs = FileSystems.newFileSystem(output.toPath(), null);
+        Files.copy(sourceFile.toPath(), zipfs.getPath("/embed.bsp"),
+                StandardCopyOption.REPLACE_EXISTING);
+        if(splashscreen != null)
+            Files.copy(splashscreen.toPath(), zipfs.getPath("/splashscreen.png"),
+                    StandardCopyOption.REPLACE_EXISTING);
+        zipfs.close();
+        callback.accept("Done");
+    }
+
     private static void tarFile(File file, TarArchiveOutputStream tar) throws IOException
     {
         tarFile(file, file.getName(), tar, null);
@@ -184,25 +235,50 @@ public class BSTPackager
     public static BranchingStory fromPackage(InputStream in, TabClient client)
             throws IOException, BSTException, InstantiationException, IllegalAccessException
     {
+        return fromPackage(in, client, null);
+    }
+
+    public static BranchingStory fromPackage(InputStream in, TabClient client,
+            Consumer<String> consumer)
+            throws IOException, BSTException, InstantiationException, IllegalAccessException
+    {
+        if(consumer == null)
+            consumer = s ->
+            {};
+        Consumer<String> c = consumer;
+        AccumulativeRunnable<String> run = new AccumulativeRunnable<String>()
+        {
+
+            @Override
+            public void run(List<String> retrieveObjects)
+            {
+                c.accept(retrieveObjects.get(retrieveObjects.size() - 1));
+            }
+        };
+        run.add("Loading BSP file");
         TarArchiveInputStream tais = new TarArchiveInputStream(new GZIPInputStream(in));
         VirtualFileHolder vfh = new VirtualFileHolder();
         TarArchiveEntry tae;
         while((tae = tais.getNextTarEntry()) != null)
         {
+            run.add("Loading " + tae.getName());
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             IOUtils.copyLarge(tais, baos, 0, tae.getSize());
             vfh.add(new VirtualFile(baos.toByteArray(), tae.getName()));
         }
 
+        run.add("Reading metadata");
         HashMap<String, String> meta = new Gson().fromJson(new InputStreamReader(
                 new ByteArrayInputStream(vfh.getFile("bstmeta.json").getData()),
                 StandardCharsets.UTF_8), new TypeToken<HashMap<String, String>>()
                 {}.getType());
+        run.add("Parsing story");
         BranchingStoryTreeParser parser = new BranchingStoryTreeParser();
         BranchingStory bs = parser.parse(new BufferedReader(new InputStreamReader(
                 new ByteArrayInputStream(vfh.getFile(meta.get("mainFile")).getData()),
                 StandardCharsets.UTF_8)), new Dictionary(), client, "<main>");
         client.setBRMHandler(new BRMVirtualFileClient(vfh, client, bs));
+
         return bs;
     }
 }

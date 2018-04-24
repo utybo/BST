@@ -19,6 +19,7 @@ import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.api.story.BranchingStory;
 import utybo.branchingstorytree.brm.BRMResourceConsumer;
 import utybo.branchingstorytree.swing.impl.BRMAdvancedHandler;
+import utybo.branchingstorytree.swing.impl.LoadStatusCallback;
 
 public class BRMVirtualFileClient implements BRMAdvancedHandler
 {
@@ -26,6 +27,7 @@ public class BRMVirtualFileClient implements BRMAdvancedHandler
     private final BSTClient client;
     private final BranchingStory origin;
     private boolean initialized;
+    private LoadStatusCallback callback;
 
     public BRMVirtualFileClient(final VirtualFileHolder vfHolder, final BSTClient client,
             final BranchingStory story)
@@ -41,8 +43,17 @@ public class BRMVirtualFileClient implements BRMAdvancedHandler
         initialized = true;
         origin.getRegistry().put("__brm_initialized", 1);
         Pattern filePattern = Pattern.compile("resources\\/(.+?)\\/(.+)");
+
+        if(callback != null)
+        {
+            callback.setTotal(vfHolder.size());
+        }
+
+        int i = 0;
         for(VirtualFile vf : vfHolder)
         {
+            if(callback != null)
+                callback.updateStatus(i++, "Processing " + vf.getName());
             Matcher m = filePattern.matcher(vf.getName());
             if(m.matches())
             {
@@ -66,5 +77,11 @@ public class BRMVirtualFileClient implements BRMAdvancedHandler
         {
             load();
         }
+    }
+
+    @Override
+    public void setLoadCallback(LoadStatusCallback callback)
+    {
+        this.callback = callback;
     }
 }

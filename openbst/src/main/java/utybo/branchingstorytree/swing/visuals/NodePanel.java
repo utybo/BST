@@ -10,7 +10,6 @@ package utybo.branchingstorytree.swing.visuals;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -21,7 +20,6 @@ import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
 
 import org.apache.commons.compress.compressors.xz.XZCompressorInputStream;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -84,6 +82,7 @@ public class NodePanel extends JScrollablePanel
     private boolean hrefEnabled;
     private final StoryPanel parent;
     private boolean isDark, isAlreadyBuilt;
+    private String fontSize;
     @Experimental
     private ArrayList<String> additionalCSS = new ArrayList<>();
 
@@ -98,8 +97,8 @@ public class NodePanel extends JScrollablePanel
 
     public NodePanel(BranchingStory story, StoryPanel parent, final IMGClient imageClient)
     {
-        OpenBSTGUI.getInstance().addDarkModeCallback(callback);
-        callback.accept(OpenBSTGUI.getInstance().isDark());
+        OpenBSTGUI.addDarkModeCallback(callback);
+        callback.accept(OpenBSTGUI.isDark());
         this.parent = parent;
         this.imageClient = imageClient;
         setLayout(new BorderLayout());
@@ -114,7 +113,7 @@ public class NodePanel extends JScrollablePanel
             {
                 view = new WebView();
                 view.getEngine().setOnAlert(e -> SwingUtilities.invokeLater(
-                        () -> Messagers.showMessage(OpenBSTGUI.getInstance(), e.getData())));
+                        () -> Messagers.showMessage(OpenBST.getGUIInstance(), e.getData())));
                 view.getEngine().getLoadWorker().stateProperty()
                         .addListener((obs, oldState, newState) ->
                         {
@@ -139,6 +138,9 @@ public class NodePanel extends JScrollablePanel
                                 }
                             }
                         });
+
+                view.setZoom(Icons.getScale());
+
                 Scene sc = new Scene(view);
                 try
                 {
@@ -223,6 +225,8 @@ public class NodePanel extends JScrollablePanel
             imageClient.setBackground(null);
         }
 
+        fontSize = textNode.getStory().getTagOrDefault("fontsize", "16px");
+
         build();
     }
 
@@ -231,11 +235,13 @@ public class NodePanel extends JScrollablePanel
         // Build the base, with fonts and style (injecting font info)
         String base = "<head><meta charset=\"utf-8\"/>" //
                 + "<style type='text/css'>" + getCurrentFontCss() + "</style>" //
-                + "<style type='text/css'>" + STYLE.replace("$f", getCurrentFont()) + "</style>" //
+                + "<style type='text/css'>" + STYLE.replace("$font", getCurrentFont()) + "</style>" //
                 + "$CUSTOMCSS" + "</head>" //
                 + "<body class='$bbg" + (isDark ? " dark" : "") + "'>" //
                 + "<div class='storydiv' style=\"$COLOR\">" + text + "</div></body>";
         String additional, c;
+
+        base = base.replace("$fsize", fontSize);
 
         if(imageClient.getCurrentBackground() != null && backgroundVisible)
         {
@@ -337,7 +343,7 @@ public class NodePanel extends JScrollablePanel
                     | SecurityException e)
             {
                 OpenBST.LOG.warn("Color does not exist : " + color, e);
-                SwingUtilities.invokeLater(() -> Messagers.showMessage(OpenBSTGUI.getInstance(),
+                SwingUtilities.invokeLater(() -> Messagers.showMessage(OpenBST.getGUIInstance(),
                         Lang.get("story.unknowncolor").replace("$c", color), Messagers.TYPE_ERROR));
             }
         }
@@ -354,7 +360,6 @@ public class NodePanel extends JScrollablePanel
     public void setBackgroundVisible(final boolean selected)
     {
         backgroundVisible = selected;
-        build();
     }
 
     public void setJSEnabled(boolean b)
@@ -401,7 +406,7 @@ public class NodePanel extends JScrollablePanel
 
     public void dispose()
     {
-        OpenBSTGUI.getInstance().removeDarkModeCallbback(callback);
+        OpenBSTGUI.removeDarkModeCallbback(callback);
     }
 
     @Experimental

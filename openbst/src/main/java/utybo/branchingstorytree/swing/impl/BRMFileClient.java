@@ -23,12 +23,13 @@ import utybo.branchingstorytree.api.BSTException;
 import utybo.branchingstorytree.api.story.BranchingStory;
 import utybo.branchingstorytree.brm.BRMResourceConsumer;
 import utybo.branchingstorytree.swing.OpenBST;
-import utybo.branchingstorytree.swing.OpenBSTGUI;
 import utybo.branchingstorytree.swing.utils.Pair;
 import utybo.branchingstorytree.swing.visuals.AccumulativeRunnable;
 
 public class BRMFileClient implements BRMAdvancedHandler
 {
+    protected volatile LoadStatusCallback loadCallback = null;
+
     private final File bstFileLocation;
     private final BSTClient client;
     private final BranchingStory origin;
@@ -40,8 +41,6 @@ public class BRMFileClient implements BRMAdvancedHandler
         this.client = client;
         this.origin = origin;
     }
-
-    private ProgressMonitor pm;
 
     @Override
     public void load() throws BSTException
@@ -56,20 +55,47 @@ public class BRMFileClient implements BRMAdvancedHandler
             int current = 0;
             invokeAndWait(() ->
             {
-                pm = new ProgressMonitor(OpenBSTGUI.getInstance(), "Loading resources...",
-                        "Initializing...", 0, total);
-                pm.setMillisToDecideToPopup(1);
-                pm.setMillisToPopup(1);
+                if(loadCallback == null) // Install our own reporters
+                {
+                    ProgressMonitor pm = new ProgressMonitor(OpenBST.getGUIInstance(),
+                            "Loading resources...", "Initializing...", 0, total);
+                    pm.setMillisToDecideToPopup(1);
+                    pm.setMillisToPopup(1);
+                    loadCallback = new LoadStatusCallback()
+                    {
+                        @Override
+                        public void updateStatus(int i, String message)
+                        {
+                            pm.setProgress(i);
+                            pm.setNote(message);
+                        }
+
+                        @Override
+                        public void setTotal(int i)
+                        {} // Cannot happen at this point
+
+                        @Override
+                        public void close()
+                        {
+                            pm.close();
+                        }
+                    };
+                }
+                else
+                {
+                    loadCallback.setTotal(total);
+                }
             });
             AccumulativeRunnable<Pair<Integer, String>> r = new AccumulativeRunnable<Pair<Integer, String>>()
             {
                 @Override
                 public void run(List<Pair<Integer, String>> pairs)
                 {
-                    pm.setProgress(pairs.get(pairs.size() - 1).a);
-                    pm.setNote(pairs.get(pairs.size() - 1).b);
+                    Pair<Integer, String> pair = pairs.get(pairs.size() - 1);
+                    loadCallback.updateStatus(pair.a, pair.b);
                 }
             };
+
             // Analysis of module directories list
             File[] fl = resources.listFiles();
             assert fl != null;
@@ -102,8 +128,14 @@ public class BRMFileClient implements BRMAdvancedHandler
                     }
                 }
             }
-            invokeAndWait(() -> pm.close());
+
+            invokeAndWait(() -> loadCallback.close());
         }
+    }
+
+    public void setLoadCallback(LoadStatusCallback callback)
+    {
+        this.loadCallback = callback;
     }
 
     private void invokeAndWait(Runnable r)

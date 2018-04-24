@@ -29,6 +29,7 @@ public class JBackgroundPanel extends JPanel
     private BufferedImage image;
     private final int scaling;
     private boolean dark;
+    private boolean applyColor = true;
 
     public JBackgroundPanel(BufferedImage image, int scaling)
     {
@@ -75,15 +76,18 @@ public class JBackgroundPanel extends JPanel
         }
 
         g.drawImage(image, imageX, imageY, this);
-        if(dark)
+        if(applyColor)
         {
-            g.setColor(new Color(0, 0, 0, 125));
+            if(dark)
+            {
+                g.setColor(new Color(0, 0, 0, 125));
+            }
+            else
+            {
+                g.setColor(new Color(255, 255, 255, 175));
+            }
+            g.fillRect(0, 0, width + 1, height + 1);
         }
-        else
-        {
-            g.setColor(new Color(255, 255, 255, 175));
-        }
-        g.fillRect(0, 0, width + 1, height + 1);
     }
 
     private double getScaleFactorToFill(final Dimension masterSize, final Dimension targetSize)
@@ -115,5 +119,10 @@ public class JBackgroundPanel extends JPanel
     public BufferedImage getImage()
     {
         return image;
+    }
+
+    public void setApplyColor(boolean b)
+    {
+        applyColor = b;
     }
 }

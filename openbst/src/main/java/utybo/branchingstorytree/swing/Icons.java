@@ -48,10 +48,10 @@ public class Icons
         // 16px icons names
         String[] arr = new String[] {"About", "Add Property", "Add Subnode", "Audio",
                 "Camera Addon Identification", "Cancel", "Change Theme", "Circled Play", "Code",
-                "Color Wheel", "Copy To Clipboard", "Easy to Find", "Edit Property", "Export",
-                "External Link", "Eye", "Gears", "Import", "Invisible", "Mute", "Open Archive",
-                "Open", "Picture", "Refresh", "Delete Subnode", "Return", "Save", "Save As",
-                "Synchronize", "Undo"};
+                "Color Wheel", "Copy To Clipboard", "Delete Subnode", "Easy to Find",
+                "Edit Property", "Export", "External Link", "Eye", "Gears", "Import", "Invisible",
+                "Mute", "Open Archive", "Open", "Picture", "Refresh", "Return", "Save", "Save As",
+                "Software Installer", "Synchronize", "Undo"};
         for(String s : arr)
         {
             images.put(s + 16, loadImage(s, 16));

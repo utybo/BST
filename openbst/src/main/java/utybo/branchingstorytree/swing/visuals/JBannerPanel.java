@@ -39,7 +39,7 @@ public class JBannerPanel extends JPanel
         c = new Color(c.getRed(), c.getGreen(), c.getBlue(), 150);
         this.c = c;
         setBackground(c.brighter());
-        OpenBSTGUI.getInstance().addDarkModeCallback(callback);
+        OpenBSTGUI.addDarkModeCallback(callback);
         setLayout(new MigLayout("gap 10px", "[][grow][]", "[]"));
 
         JLabel label = new JLabel(icon);
@@ -52,7 +52,7 @@ public class JBannerPanel extends JPanel
         btnHide.addActionListener(e ->
         {
             setVisible(false);
-            OpenBSTGUI.getInstance().removeDarkModeCallbback(callback);
+            OpenBSTGUI.removeDarkModeCallbback(callback);
         });
 
         if(btn != null)

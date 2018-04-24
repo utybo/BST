@@ -8,24 +8,41 @@
  */
 package utybo.branchingstorytree.swing;
 
+import static utybo.branchingstorytree.swing.VisualsUtils.invokeSwingAndWait;
+
 import java.awt.Color;
+import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.lang.reflect.Type;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.ExecutionException;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.ProgressMonitorInputStream;
+import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 
+import org.apache.commons.compress.utils.IOUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -37,12 +54,21 @@ import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
+import utybo.branchingstorytree.api.BSTException;
+import utybo.branchingstorytree.api.BranchingStoryTreeParser;
 import utybo.branchingstorytree.api.Experimental;
+import utybo.branchingstorytree.api.script.Dictionary;
+import utybo.branchingstorytree.api.story.BranchingStory;
 import utybo.branchingstorytree.swing.ext.ComparableVersion;
+import utybo.branchingstorytree.swing.impl.BRMFileClient;
 import utybo.branchingstorytree.swing.impl.IMGClient;
+import utybo.branchingstorytree.swing.impl.LoadStatusCallback;
+import utybo.branchingstorytree.swing.impl.TabClient;
 import utybo.branchingstorytree.swing.utils.AlphanumComparator;
+import utybo.branchingstorytree.swing.utils.BSTPackager;
 import utybo.branchingstorytree.swing.utils.Lang;
 import utybo.branchingstorytree.swing.utils.OutputStreamToOutputAndPrint;
+import utybo.branchingstorytree.swing.visuals.AccumulativeRunnable;
 import utybo.branchingstorytree.swing.visuals.JBannerPanel;
 import utybo.branchingstorytree.swing.visuals.Splashscreen;
 
@@ -95,6 +121,9 @@ public class OpenBST
         LOG = LogManager.getLogger("OpenBST");
     }
 
+    private static AbstractBSTGUI gui;
+    private static final BranchingStoryTreeParser parser = new BranchingStoryTreeParser();
+
     // --- IMAGES ---
 
     /**
@@ -123,7 +152,19 @@ public class OpenBST
         LOG.trace("Loading scaling factor");
         Icons.loadScalingFactor();
 
-        Splashscreen sc = Splashscreen.start();
+        InputStream inSplashImg = OpenBST.class.getResourceAsStream("/splashscreen.png");
+        BufferedImage splashImg = null;
+        if(inSplashImg != null)
+            try
+            {
+                splashImg = ImageIO.read(inSplashImg);
+            }
+            catch(IOException e2)
+            {
+                LOG.error("Error on loading splashscreen.png", e2);
+            }
+
+        Splashscreen sc = Splashscreen.start(splashImg);
         SwingWorker<Void, String> sw = new SwingWorker<Void, String>()
         {
 
@@ -189,6 +230,97 @@ public class OpenBST
             OpenBST.LOG.error(e1);
         }
 
+        // First init pass succesful.
+
+        // Now, either second init pass if we're in embedded mode, or regular launch otherwise
+
+        InputStream is = OpenBST.class.getResourceAsStream("/embed.bsp");
+        if(is != null)
+        {
+            // Load the embedded story
+            try
+            {
+                AccumulativeRunnable<String> acrun = new AccumulativeRunnable<String>()
+                {
+                    @Override
+                    public void run(List<String> retrieveObjects)
+                    {
+                        sc.setText(retrieveObjects.get(retrieveObjects.size() - 1));
+                    }
+                };
+                File tmpFile = File.createTempFile("openbstembed", ".bsp");
+                FileOutputStream fos = new FileOutputStream(tmpFile);
+
+                acrun.add("Extracting embedded story...");
+                IOUtils.copy(is, fos);
+
+                acrun.add("Loading embedded story...");
+                SinglePanelGUI[] spg = new SinglePanelGUI[1];
+                VisualsUtils.invokeSwingAndWait(() ->
+                {
+                    spg[0] = new SinglePanelGUI();
+                });
+                gui = spg[0];
+                TabClient tc = new TabClient(spg[0]);
+
+                FileInputStream fis = new FileInputStream(tmpFile);
+                BranchingStory bs = BSTPackager.fromPackage(fis, tc, sc::setText);
+
+                acrun.add("Initializing elements...");
+                VisualsUtils.invokeSwingAndWait(() -> spg[0].setStory(bs, tmpFile, tc));
+
+                acrun.add("Loading resources...");
+                tc.getBRMHandler().setLoadCallback(new LoadStatusCallback()
+                {
+                    int total;
+
+                    @Override
+                    public void updateStatus(int i, String message)
+                    {
+                        acrun.add(message + " (" + i + "/" + total + ")");
+                    }
+
+                    @Override
+                    public void setTotal(int i)
+                    {
+                        total = i;
+                    }
+
+                    @Override
+                    public void close()
+                    {}
+                });
+                tc.getBRMHandler().load();
+                SwingUtilities.invokeAndWait(() ->
+                {
+                    sc.setText(Lang.get("splash.launch"));
+                    sc.lock();
+                    sc.stop();
+                    spg[0].setVisible(true);
+                    spg[0].begin();
+                    sc.dispose();
+                });
+
+            }
+            catch(IOException ioe)
+            {
+                LOG.error("Failed to load embedded story", ioe);
+                Messagers.showException(sc, "Failed to load embedded file", ioe);
+            }
+            catch(BSTException e)
+            {
+                LOG.error("Failed to load BST file", e);
+                Messagers.showException(sc, "Failed to parse embedded file", e);
+            }
+            catch(Exception e)
+            {
+                LOG.error("Unexpected exception", e);
+                Messagers.showException(sc, "Unexpected exception while loading the file", e);
+            }
+
+            return; // Do not continue
+        }
+
         VisualsUtils.invokeSwingAndWait(() ->
         {
             sc.setText(Lang.get("splash.launch"));
@@ -196,7 +328,8 @@ public class OpenBST
             sc.stop();
         });
         LOG.trace("Launching app...");
-        OpenBSTGUI.launch();
+        OpenBSTGUI frame = OpenBSTGUI.launch();
+        gui = frame;
 
         VisualsUtils.invokeSwingAndWait(() -> sc.dispose());
 
@@ -246,12 +379,10 @@ public class OpenBST
                                 {
                                     VisualsUtils.browse(remoteVersion.unstableurl);
                                 });
-                                OpenBSTGUI.getInstance()
-                                        .addBanner(new JBannerPanel(
-                                                new ImageIcon(
-                                                        Icons.getImage("Installing Updates", 48)),
-                                                new Color(142, 255, 159), Lang.get("up.message1"),
-                                                stablebtn, false, unstablebtn));
+                                frame.addBanner(new JBannerPanel(
+                                        new ImageIcon(Icons.getImage("Installing Updates", 48)),
+                                        new Color(142, 255, 159), Lang.get("up.message1"),
+                                        stablebtn, false, unstablebtn));
                             }
                             else if(remoteStable.compareTo(local) < 0
                                     && local.compareTo(remoteUnstable) < 0)
@@ -262,12 +393,10 @@ public class OpenBST
                                 {
                                     VisualsUtils.browse(remoteVersion.unstableurl);
                                 });
-                                OpenBSTGUI.getInstance()
-                                        .addBanner(new JBannerPanel(
-                                                new ImageIcon(
-                                                        Icons.getImage("Installing Updates", 48)),
-                                                new Color(142, 255, 159), Lang.get("up.message2"),
-                                                unstablebtn, false));
+                                frame.addBanner(new JBannerPanel(
+                                        new ImageIcon(Icons.getImage("Installing Updates", 48)),
+                                        new Color(142, 255, 159), Lang.get("up.message2"),
+                                        unstablebtn, false));
                             }
                             else if(remoteUnstable.compareTo(remoteStable) < 0
                                     && local.compareTo(remoteStable) < 0)
@@ -279,12 +408,10 @@ public class OpenBST
                                 {
                                     VisualsUtils.browse(remoteVersion.stableurl);
                                 });
-                                OpenBSTGUI.getInstance()
-                                        .addBanner(new JBannerPanel(
-                                                new ImageIcon(
-                                                        Icons.getImage("Installing Updates", 48)),
-                                                new Color(142, 255, 159), Lang.get("up.message3"),
-                                                stablebtn, false));
+                                frame.addBanner(new JBannerPanel(
+                                        new ImageIcon(Icons.getImage("Installing Updates", 48)),
+                                        new Color(142, 255, 159), Lang.get("up.message3"),
+                                        stablebtn, false));
                             }
                         }
                         else
@@ -298,12 +425,10 @@ public class OpenBST
                                 {
                                     VisualsUtils.browse(remoteVersion.stableurl);
                                 });
-                                OpenBSTGUI.getInstance()
-                                        .addBanner(new JBannerPanel(
-                                                new ImageIcon(
-                                                        Icons.getImage("Installing Updates", 48)),
-                                                new Color(142, 255, 159), Lang.get("up.message4"),
-                                                stablebtn, false));
+                                frame.addBanner(new JBannerPanel(
+                                        new ImageIcon(Icons.getImage("Installing Updates", 48)),
+                                        new Color(142, 255, 159), Lang.get("up.message4"),
+                                        stablebtn, false));
                             }
                         }
                     }
@@ -312,11 +437,10 @@ public class OpenBST
                     {
                         LOG.warn("Failed to read update information", e);
                         JButton showDetails = new JButton(Lang.get("up.showdetails"));
-                        showDetails.addActionListener(ev -> Messagers.showException(
-                                OpenBSTGUI.getInstance(), Lang.get("up.failedmessage"), e));
-                        OpenBSTGUI.getInstance()
-                                .addBanner(new JBannerPanel(
-                                        new ImageIcon(Icons.getImage("Cancel", 16)),
+                        showDetails.addActionListener(ev -> Messagers.showException(frame,
+                                Lang.get("up.failedmessage"), e));
+                        frame.addBanner(
+                                new JBannerPanel(new ImageIcon(Icons.getImage("Cancel", 16)),
                                         new Color(255, 144, 144), Lang.get("up.failedbanner"),
                                         showDetails, false));
                     }
@@ -324,6 +448,7 @@ public class OpenBST
             };
             worker.execute();
         }
+
     }
 
     public static class UpdateInfo
@@ -380,6 +505,11 @@ public class OpenBST
         });
     }
 
+    public static AbstractBSTGUI getGUIInstance()
+    {
+        return gui;
+    }
+
     public static String getAllLogs()
     {
         return logOutput.toString(Charset.defaultCharset());
@@ -401,6 +531,125 @@ public class OpenBST
     public static Map<String, String> getInternalFiles()
     {
         return Collections.unmodifiableMap(internalFiles);
+    }
+
+    /**
+     * Load and parse a file, using appropriate dialogs if an error occurs to
+     * inform the user and even give him the option to reload the file
+     *
+     * @param file
+     *            The file to load
+     * @param client
+     *            The BST Client. This is required for parsing the file
+     * @return
+     */
+    public static void loadFile(final File file, final TabClient client,
+            Consumer<BranchingStory> callback)
+    {
+        SwingWorker<BranchingStory, Object> worker = new SwingWorker<BranchingStory, Object>()
+        {
+            @Override
+            protected BranchingStory doInBackground() throws Exception
+            {
+                try
+                {
+                    LOG.trace("Parsing story");
+                    String ext = FilenameUtils.getExtension(file.getName());
+                    BranchingStory bs = null;
+                    if(ext.equals("bsp"))
+                    {
+                        ProgressMonitorInputStream pmis = new ProgressMonitorInputStream(
+                                getGUIInstance(), "Opening " + file.getName() + "...",
+                                new FileInputStream(file));
+                        bs = BSTPackager.fromPackage(pmis, client,
+                                pmis.getProgressMonitor()::setNote);
+                    }
+                    else
+                    {
+                        bs = parser.parse(
+                                new BufferedReader(new InputStreamReader(
+                                        new ProgressMonitorInputStream(getGUIInstance(),
+                                                "Opening " + file.getName() + "...",
+                                                new FileInputStream(file)),
+                                        StandardCharsets.UTF_8)),
+                                new Dictionary(), client, "<main>");
+                        client.setBRMHandler(new BRMFileClient(file, client, bs));
+                    }
+                    callback.accept(bs);
+                    return bs;
+                }
+                catch(final IOException e)
+                {
+                    LOG.error("IOException caught", e);
+                    Messagers.showException(getGUIInstance(),
+                            Lang.get("file.error").replace("$e", e.getClass().getSimpleName())
+                                    .replace("$m", e.getMessage()),
+                            e);
+                    return null;
+                }
+                catch(final BSTException e)
+                {
+                    LOG.error("BSTException caught", e);
+                    String s = "<html>" + Lang.get("file.bsterror.1");
+                    s += Lang.get("file.bsterror.2");
+                    s += Lang.get("file.bsterror.3").replace("$l", "" + e.getWhere()).replace("$f",
+                            "[main]");
+                    if(e.getCause() != null)
+                    {
+                        s += Lang.get("file.bsterror.4")
+                                .replace("$e", e.getCause().getClass().getSimpleName())
+                                .replace("$m", e.getCause().getMessage());
+                    }
+                    s += Lang.get("file.bsterror.5").replace("$m", "" + e.getMessage());
+                    s += Lang.get("file.bsterror.6");
+                    String s2 = s;
+                    if(doAndReturn(() -> Messagers.showConfirm(getGUIInstance(), s2,
+                            Messagers.OPTIONS_YES_NO, Messagers.TYPE_ERROR,
+                            Lang.get("bsterror"))) == Messagers.OPTION_YES)
+                    {
+                        LOG.debug("Reloading");
+                        return doInBackground();
+                    }
+                    return null;
+                }
+                catch(final Exception e)
+                {
+                    LOG.error("Random exception caught", e);
+                    Messagers.showException(getGUIInstance(), Lang.get("file.crash"), e);
+                    return null;
+                }
+
+            }
+
+            private <T> T doAndReturn(Supplier<T> supplier)
+            {
+                ArrayList<T> l = new ArrayList<>();
+                invokeSwingAndWait(() ->
+                {
+                    l.add(supplier.get());
+                });
+                return l.size() == 0 ? null : l.get(0);
+            }
+
+            @Override
+            protected void done()
+            {
+                try
+                {
+                    get();
+                }
+                catch(InterruptedException e)
+                {
+                    // Shouldn't happen
+                }
+                catch(ExecutionException e)
+                {
+                    LOG.error("Random exception caught", e);
+                    Messagers.showException(getGUIInstance(), Lang.get("file.crash"), e);
+                }
+            }
+        };
+        worker.execute();
     }
 
     private OpenBST()

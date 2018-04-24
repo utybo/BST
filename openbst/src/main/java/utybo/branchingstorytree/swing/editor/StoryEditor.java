@@ -39,7 +39,6 @@ import utybo.branchingstorytree.api.story.BranchingStory;
 import utybo.branchingstorytree.swing.Icons;
 import utybo.branchingstorytree.swing.Messagers;
 import utybo.branchingstorytree.swing.OpenBST;
-import utybo.branchingstorytree.swing.OpenBSTGUI;
 import utybo.branchingstorytree.swing.utils.Lang;
 
 @SuppressWarnings("serial")
@@ -86,12 +85,13 @@ public class StoryEditor extends JPanel implements EditorControl<BranchingStory>
                 {
                     IOUtils.write(s, fos, StandardCharsets.UTF_8);
                 }
-                OpenBSTGUI.getInstance().openStory(bstFile);
+                OpenBST.getGUIInstance().openStory(bstFile);
+
             }
             catch(Exception e)
             {
                 OpenBST.LOG.error("Export failed", e);
-                Messagers.showException(OpenBSTGUI.getInstance(), Lang.get("editor.exportfail"), e);
+                Messagers.showException(OpenBST.getGUIInstance(), Lang.get("editor.exportfail"), e);
             }
         });
         toolBar.add(btnPlay);
@@ -103,7 +103,7 @@ public class StoryEditor extends JPanel implements EditorControl<BranchingStory>
             try
             {
                 String s = exportToString();
-                JDialog dialog = new JDialog(OpenBSTGUI.getInstance(),
+                JDialog dialog = new JDialog(OpenBST.getGUIInstance(),
                         Lang.get("editor.exportpreview"));
                 JTextArea jta = new JTextArea(s);
                 jta.setLineWrap(true);
@@ -112,13 +112,13 @@ public class StoryEditor extends JPanel implements EditorControl<BranchingStory>
 
                 dialog.setModalityType(ModalityType.APPLICATION_MODAL);
                 dialog.setSize((int)(Icons.getScale() * 350), (int)(Icons.getScale() * 300));
-                dialog.setLocationRelativeTo(OpenBSTGUI.getInstance());
+                dialog.setLocationRelativeTo(OpenBST.getGUIInstance());
                 dialog.setVisible(true);
             }
             catch(Exception x)
             {
                 OpenBST.LOG.error("Failed to preview", x);
-                Messagers.showException(OpenBSTGUI.getInstance(), Lang.get("editor.previewerror"),
+                Messagers.showException(OpenBST.getGUIInstance(), Lang.get("editor.previewerror"),
                         x);
             }
         });
@@ -174,19 +174,20 @@ public class StoryEditor extends JPanel implements EditorControl<BranchingStory>
 
     public boolean askClose()
     {
-        int i = Messagers.showConfirm(OpenBSTGUI.getInstance(), Lang.get("editor.asksave"),
-                Messagers.OPTIONS_YES_NO_CANCEL, Messagers.TYPE_WARNING, Lang.get("editor.asksave.title"));
+        int i = Messagers.showConfirm(OpenBST.getGUIInstance(), Lang.get("editor.asksave"),
+                Messagers.OPTIONS_YES_NO_CANCEL, Messagers.TYPE_WARNING,
+                Lang.get("editor.asksave.title"));
         if(i == Messagers.OPTION_YES)
         {
             if(save())
             {
-                OpenBSTGUI.getInstance().removeTab(this);
+                OpenBST.getGUIInstance().removeTab(this);
                 return true;
             }
         }
         else if(i == Messagers.OPTION_NO)
         {
-            OpenBSTGUI.getInstance().removeTab(this);
+            OpenBST.getGUIInstance().removeTab(this);
             return true;
         }
         else
@@ -234,7 +235,7 @@ public class StoryEditor extends JPanel implements EditorControl<BranchingStory>
             catch(IOException | BSTException e1)
             {
                 OpenBST.LOG.error("Failed saving a file", e1);
-                Messagers.showException(OpenBSTGUI.getInstance(), Lang.get("editor.savefail"), e1);
+                Messagers.showException(OpenBST.getGUIInstance(), Lang.get("editor.savefail"), e1);
             }
         }
         return false;
@@ -251,9 +252,9 @@ public class StoryEditor extends JPanel implements EditorControl<BranchingStory>
 
     public boolean saveAs()
     {
-        FileDialog fd = new FileDialog(OpenBSTGUI.getInstance(), Lang.get("editor.saveloc"),
+        FileDialog fd = new FileDialog(OpenBST.getGUIInstance(), Lang.get("editor.saveloc"),
                 FileDialog.SAVE);
-        fd.setLocationRelativeTo(OpenBSTGUI.getInstance());
+        fd.setLocationRelativeTo(OpenBST.getGUIInstance());
         fd.setVisible(true);
         if(fd.getFile() != null)
         {
@@ -269,7 +270,7 @@ public class StoryEditor extends JPanel implements EditorControl<BranchingStory>
             catch(IOException | BSTException e1)
             {
                 OpenBST.LOG.error("Failed saving a file", e1);
-                Messagers.showException(OpenBSTGUI.getInstance(), Lang.get("editor.savefail"), e1);
+                Messagers.showException(OpenBST.getGUIInstance(), Lang.get("editor.savefail"), e1);
             }
         }
         return false;
@@ -277,7 +278,7 @@ public class StoryEditor extends JPanel implements EditorControl<BranchingStory>
 
     public void updateTabTitle()
     {
-        OpenBSTGUI.getInstance().setTabName(this, getTitle());
+        OpenBST.getGUIInstance().updateName(this, getTitle());
     }
 
     public String getTitle()

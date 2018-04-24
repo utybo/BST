@@ -59,13 +59,13 @@ public class DebugInfo extends JDialog
             {
                 StringSelection ss = new StringSelection(text);
                 Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ss, ss);
-                Messagers.showMessage(OpenBSTGUI.getInstance(), Lang.get("debug.logscopied"),
+                Messagers.showMessage(OpenBST.getGUIInstance(), Lang.get("debug.logscopied"),
                         Messagers.TYPE_OK);
             }
             catch(Exception ex)
             {
                 OpenBST.LOG.error("Failed to copy logs to clipboard", ex);
-                Messagers.showMessage(OpenBSTGUI.getInstance(),
+                Messagers.showMessage(OpenBST.getGUIInstance(),
                         Lang.get("debug.copyfailed"),
                         Messagers.TYPE_ERROR);
             }

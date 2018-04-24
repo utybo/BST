@@ -12,10 +12,10 @@ import javax.swing.ImageIcon;
 
 import utybo.branchingstorytree.api.BSTClient;
 import utybo.branchingstorytree.htb.HTBHandler;
+import utybo.branchingstorytree.swing.AbstractBSTGUI;
 import utybo.branchingstorytree.swing.Icons;
 import utybo.branchingstorytree.swing.Messagers;
 import utybo.branchingstorytree.swing.OpenBST;
-import utybo.branchingstorytree.swing.OpenBSTGUI;
 import utybo.branchingstorytree.swing.utils.Lang;
 import utybo.branchingstorytree.swing.visuals.NodePanel;
 import utybo.branchingstorytree.swing.visuals.StoryPanel;
@@ -24,7 +24,7 @@ import utybo.branchingstorytree.xsf.XSFHandler;
 
 public class TabClient implements BSTClient
 {
-    private final OpenBSTGUI instance;
+    private final AbstractBSTGUI instance;
     private StoryPanel tab;
     private TabUIB uibHandler;
     private BRMAdvancedHandler brmClient;
@@ -36,7 +36,7 @@ public class TabClient implements BSTClient
     private XSFClient xsfClient = new XSFClient();
     private boolean isExperimental;
 
-    public TabClient(final OpenBSTGUI instance)
+    public TabClient(final AbstractBSTGUI instance)
     {
         this.instance = instance;
         bdfClient = new BDFClient();
@@ -135,7 +135,7 @@ public class TabClient implements BSTClient
     public void error(String string)
     {
         OpenBST.LOG.error(string);
-        Messagers.showMessage(OpenBSTGUI.getInstance(), string, Messagers.TYPE_ERROR);
+        Messagers.showMessage(OpenBST.getGUIInstance(), string, Messagers.TYPE_ERROR);
     }
 
     @Override
@@ -144,7 +144,7 @@ public class TabClient implements BSTClient
         if(!isExperimental)
         {
             isExperimental = true;
-            Messagers.showMessage(OpenBSTGUI.getInstance(),
+            Messagers.showMessage(OpenBST.getGUIInstance(),
                     "<html><body style='width:" + (int)(Icons.getScale() * 300) + "px'>"
                             + Lang.get("story.experimental").replace("$l", "" + line).replace("$f",
                                     from).replace("$w", what),

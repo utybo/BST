@@ -27,4 +27,6 @@ public interface BRMAdvancedHandler extends BRMHandler
      * @throws BSTException
      */
     public void load() throws BSTException;
+    
+    public void setLoadCallback(LoadStatusCallback callback);
 }
