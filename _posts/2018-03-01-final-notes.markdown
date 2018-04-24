@@ -5,6 +5,7 @@ date:   2018-03-01
 categories: main
 author: utybo
 ccolor: "#333333"
+hide: "true"
 ---
 
 UPDATE : My personal life has gotten a lot better since when I made this message. I am currently developping some more features and I'll try to release an update asap. Main lesson taken from this : don't ever try to package something for Linux.
