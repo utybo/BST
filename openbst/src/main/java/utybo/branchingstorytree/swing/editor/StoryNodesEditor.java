@@ -56,6 +56,7 @@ public class StoryNodesEditor extends JPanel implements EditorControl<Collection
     private ListListModel<StorySingleNodeEditor> list;
     private JList<StorySingleNodeEditor> jlist;
     private JPanel container;
+    private JButton btnAddNode;
 
     public StoryNodesEditor()
     {
@@ -119,7 +120,7 @@ public class StoryNodesEditor extends JPanel implements EditorControl<Collection
                 revalidate();
                 repaint();
             }
-            
+
         });
         pan.setScrollableWidth(ScrollableSizeHint.FIT);
         pan.setScrollableHeight(ScrollableSizeHint.STRETCH);
@@ -135,9 +136,8 @@ public class StoryNodesEditor extends JPanel implements EditorControl<Collection
         JPanel panel = new JPanel();
         add(panel, "cell 0 1 2 1,alignx leading,growy");
 
-        
-
-        JButton btnAddNode = new JButton(Lang.get("editor.panel.add"), new ImageIcon(Icons.getImage("Add Subnode", 16)));
+        btnAddNode = new JButton(Lang.get("editor.panel.add"),
+                new ImageIcon(Icons.getImage("Add Subnode", 16)));
         btnAddNode.addMouseListener(new MouseAdapter()
         {
             @Override
@@ -148,12 +148,12 @@ public class StoryNodesEditor extends JPanel implements EditorControl<Collection
         });
         panel.add(btnAddNode);
 
-        JButton btnRemoveNode = new JButton(Lang.get("editor.panel.remove"), new ImageIcon(Icons.getImage("Delete Subnode", 16)));
+        JButton btnRemoveNode = new JButton(Lang.get("editor.panel.remove"),
+                new ImageIcon(Icons.getImage("Delete Subnode", 16)));
         btnRemoveNode.addActionListener(e -> removeNode());
         panel.add(btnRemoveNode);
-
     }
-    
+
     private JPopupMenu createMenu()
     {
         JPopupMenu createMenu = new JPopupMenu();

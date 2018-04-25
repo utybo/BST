@@ -8,6 +8,7 @@
  */
 package utybo.branchingstorytree.swing.visuals;
 
+import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.FileDialog;
 import java.awt.event.ActionEvent;
@@ -45,11 +46,13 @@ public class EmbedDialog extends JDialog
         super(OpenBST.getGUIInstance());
         setTitle("Embedded file creator");
         setModalityType(ModalityType.APPLICATION_MODAL);
+
         CardLayout cl = new CardLayout(0, 0);
-        getContentPane().setLayout(cl);
+        JPanel wrapper = new JPanel(cl);
+        getContentPane().add(wrapper, BorderLayout.CENTER);
 
         JPanel propertiesPanel = new JPanel();
-        getContentPane().add(propertiesPanel, "prop");
+        wrapper.add(propertiesPanel, "prop");
         propertiesPanel.setLayout(new MigLayout("", "[][grow]", "[][][][][][][][grow][]"));
 
         JLabel lblFileToPackage = new JLabel("File to package :");
@@ -166,7 +169,7 @@ public class EmbedDialog extends JDialog
                     return;
                 }
 
-                cl.show(getContentPane(), "work");
+                cl.show(wrapper, "work");
 
                 SwingWorker<Void, String> sw = new SwingWorker<Void, String>()
                 {
@@ -200,7 +203,7 @@ public class EmbedDialog extends JDialog
                             OpenBST.LOG.error(e);
                             Messagers.showException(EmbedDialog.this,
                                     "Unexpected exception : " + e.getMessage(), e);
-                            cl.show(getContentPane(), "prop");
+                            cl.show(wrapper, "prop");
                             return;
                         }
                         Messagers.showMessage(EmbedDialog.this, "Runnable JAR created succesfully!",
@@ -219,7 +222,7 @@ public class EmbedDialog extends JDialog
         propertiesPanel.add(btnOk, "cell 1 8,alignx trailing");
 
         JPanel workingPanel = new JPanel();
-        getContentPane().add(workingPanel, "work");
+        wrapper.add(workingPanel, "work");
         workingPanel.setLayout(new MigLayout("", "[grow]", "[][grow]"));
 
         JLabel lblpleaseWaitOpenbst = new JLabel(

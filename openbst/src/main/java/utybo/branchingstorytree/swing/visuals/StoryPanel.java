@@ -32,14 +32,19 @@ import java.util.HashMap;
 import java.util.function.Consumer;
 
 import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.ActionMap;
 import javax.swing.Box;
 import javax.swing.ImageIcon;
+import javax.swing.InputMap;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
+import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
@@ -125,6 +130,7 @@ public class StoryPanel extends JPanel
     protected VariableWatchDialog variableWatcher;
     private JButton backgroundButton;
     private JButton jsHint, hrefHint;
+    private JToggleButton muteButton, seeBackgroundButton;
 
     /**
      * Initialize the story panel
@@ -136,8 +142,7 @@ public class StoryPanel extends JPanel
      * @param client
      *            the client that will be linked to this story
      */
-    public StoryPanel(final BranchingStory story, final File f,
-            final TabClient client)
+    public StoryPanel(final BranchingStory story, final File f, final TabClient client)
     {
         LOG.trace("=> Initial setup");
         bstFile = f;
@@ -164,6 +169,106 @@ public class StoryPanel extends JPanel
         add(nodePanel, "grow, pushy, wrap");
 
         add(optionPanel, "growx");
+
+        installKeyboardShortcuts();
+    }
+
+    private void installKeyboardShortcuts()
+    {
+        InputMap inputmap = getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+        ActionMap actionmap = getActionMap();
+
+        // savestatenoio
+        inputmap.put(KeyStroke.getKeyStroke("control S"), "saveState");
+        inputmap.put(KeyStroke.getKeyStroke("control D"), "returnState");
+        // savestate
+        inputmap.put(KeyStroke.getKeyStroke("control E"), "exportState");
+        inputmap.put(KeyStroke.getKeyStroke("control I"), "importState");
+        // hidecheat
+        inputmap.put(KeyStroke.getKeyStroke("control R"), "reset");
+        inputmap.put(KeyStroke.getKeyStroke("control shift R"), "hardReload");
+        inputmap.put(KeyStroke.getKeyStroke("control alt R"), "softReload");
+        // all
+        inputmap.put(KeyStroke.getKeyStroke("control J"), "jumpToNode");
+        inputmap.put(KeyStroke.getKeyStroke("control G"), "variableWatcher");
+
+        // persistant
+        inputmap.put(KeyStroke.getKeyStroke("control B"), "visibleBackground");
+        inputmap.put(KeyStroke
+                .getKeyStroke("control shift B"), "seeBackground");
+        inputmap.put(KeyStroke.getKeyStroke("control M"), "mute");
+
+        actionmap.put("saveState", toActionIfLevel(1, () -> doSaveState()));
+        actionmap.put("returnState", toActionIfLevel(1, () -> doRestoreState()));
+        actionmap.put("exportState", toActionIfLevel(2, () -> doExportState()));
+        actionmap.put("importState", toActionIfLevel(2, () -> doImportState()));
+        actionmap.put("reset", toActionIfLevel(3, () -> doReset()));
+        actionmap.put("hardReload", toActionIfLevel(3, () -> doHardReload()));
+        actionmap.put("softReload", toActionIfLevel(3, () -> doSoftReload()));
+        actionmap.put("jumpToNode", toActionIfLevel(4, () -> doJumpToNode()));
+        actionmap.put("variableWatcher", toActionIfLevel(4, () -> variableWatcherButton.doClick()));
+        actionmap.put("visibleBackground", toAction(() -> seeBackgroundButton.doClick()));
+        actionmap.put("seeBackground", toAction(() -> backgroundButton.doClick()));
+        actionmap.put("mute", toAction(() -> muteButton.doClick()));
+
+        // Select option with numbers
+        for(int i = 1; i <= 9; i++) 
+        {
+            inputmap.put(KeyStroke.getKeyStroke("control " + i), "option" + i);
+            inputmap.put(KeyStroke.getKeyStroke("control NUMPAD" + i), "option" + i);
+            int j = i;
+            actionmap.put("option" + i, toAction(() ->
+            {
+                if(j <= optionPanel.getComponentCount())
+                {
+                    Component c = optionPanel.getComponent(j - 1);
+                    if(c instanceof JButton)
+                        ((JButton)c).doClick();
+                }
+            }));
+        }
+        
+        // Have VK_0 act as 10
+        inputmap.put(KeyStroke.getKeyStroke("control 0"), "option10");
+        inputmap.put(KeyStroke.getKeyStroke("control NUMPAD0"), "option10");
+        actionmap.put("option10", toAction(() ->
+        {
+            if(10 <= optionPanel.getComponentCount())
+            {
+                Component c = optionPanel.getComponent(9);
+                if(c instanceof JButton)
+                    ((JButton)c).doClick();
+            }
+        }));
+    }
+
+    private Action toAction(Runnable run)
+    {
+        return new AbstractAction()
+        {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                run.run();
+            }
+        };
+    }
+
+    private Action toActionIfLevel(int i, Runnable run)
+    {
+        return new AbstractAction()
+        {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                if(readToolbarLevel() >= i)
+                    run.run();
+            }
+        };
     }
 
     /**
@@ -220,8 +325,9 @@ public class StoryPanel extends JPanel
         LOG.trace("NSFW warning check");
         if(story.hasTag("nsfw"))
         {
-            if(Messagers.showConfirm(OpenBST.getGUIInstance(), Lang.get("story.nsfw"), Messagers.OPTIONS_YES_NO,
-                    Messagers.TYPE_WARNING, Lang.get("story.nsfw.title")) != Messagers.OPTION_YES)
+            if(Messagers.showConfirm(OpenBST.getGUIInstance(), Lang.get("story.nsfw"),
+                    Messagers.OPTIONS_YES_NO, Messagers.TYPE_WARNING,
+                    Lang.get("story.nsfw.title")) != Messagers.OPTION_YES)
             {
                 LOG.trace("=> Close");
                 return false;
@@ -276,13 +382,7 @@ public class StoryPanel extends JPanel
                 @Override
                 public void actionPerformed(final ActionEvent e)
                 {
-                    latestSaveState = new SaveState(currentNode.getId(), story.getRegistry(),
-                            currentNode.getStory().getTag("__sourcename"));
-                    restoreSaveStateButton.setEnabled(true);
-                    if(exportSaveStateButton != null)
-                    {
-                        exportSaveStateButton.setEnabled(true);
-                    }
+                    doSaveState();
                 }
             });
             restoreSaveStateButton = toolBar.add(new AbstractAction(Lang.get("story.restoress"),
@@ -293,15 +393,7 @@ public class StoryPanel extends JPanel
                 @Override
                 public void actionPerformed(final ActionEvent e)
                 {
-                    if(Messagers.showConfirm(OpenBST.getGUIInstance(),
-                            "<html><body style='width: " + (int)(Icons.getScale() * 300) + "'>"
-                                    + Lang.get("story.restoress.confirm"),
-                            Messagers.OPTIONS_YES_NO, Messagers.TYPE_WARNING,
-                            Lang.get("story.restoress"),
-                            new ImageIcon(Icons.getImage("Undo", 40))) == Messagers.OPTION_YES)
-                    {
-                        restoreSaveState(latestSaveState);
-                    }
+                    doRestoreState();
                 }
             });
             restoreSaveStateButton.setEnabled(false);
@@ -315,50 +407,7 @@ public class StoryPanel extends JPanel
                     @Override
                     public void actionPerformed(final ActionEvent e)
                     {
-                        final FileDialog jfc = new FileDialog(OpenBST.getGUIInstance(),
-                                Lang.get("story.sslocation"), FileDialog.SAVE);
-                        jfc.setLocationRelativeTo(OpenBST.getGUIInstance());
-                        jfc.setIconImage(Icons.getImage("Export", 16));
-                        jfc.setVisible(true);
-                        if(jfc.getFile() != null)
-                        {
-                            final File file = new File(jfc.getFile().endsWith(".bss")
-                                    ? jfc.getDirectory() + jfc.getFile()
-                                    : jfc.getDirectory() + jfc.getFile() + ".bss");
-                            final Gson gson = new Gson();
-                            if(file.exists())
-                            {
-                                if(!file.delete())
-                                {
-                                    LOG.warn("Failed to delete file");
-                                }
-                            }
-                            try
-                            {
-                                if(!file.createNewFile())
-                                {
-                                    LOG.warn("Failed to create file");
-                                }
-                                try(OutputStreamWriter writer = new OutputStreamWriter(
-                                        new FileOutputStream(file), StandardCharsets.UTF_8);)
-                                {
-                                    gson.toJson(
-                                            new SaveState(currentNode.getId(), story.getRegistry(),
-                                                    currentNode.getStory().getTag("__sourcename")),
-                                            writer);
-                                    writer.flush();
-                                }
-                            }
-                            catch(final IOException e1)
-                            {
-                                LOG.error("Had an IOException while exporting Save State", e1);
-                                Messagers.showException(OpenBST.getGUIInstance(),
-                                        Lang.get("story.exportss.error")
-                                                .replace("$m", e1.getMessage())
-                                                .replace("$e", e1.getClass().getSimpleName()),
-                                        e1);
-                            }
-                        }
+                        doExportState();
                     }
                 });
                 exportSaveStateButton.setEnabled(false);
@@ -370,33 +419,7 @@ public class StoryPanel extends JPanel
                     @Override
                     public void actionPerformed(final ActionEvent e)
                     {
-                        final FileDialog jfc = new FileDialog(OpenBST.getGUIInstance(),
-                                Lang.get("story.sslocation"), FileDialog.LOAD);
-                        jfc.setLocationRelativeTo(OpenBST.getGUIInstance());
-                        jfc.setIconImage(Icons.getImage("Import", 16));
-                        jfc.setVisible(true);
-                        if(jfc.getFile() != null)
-                        {
-                            final File file = new File(jfc.getDirectory() + jfc.getFile());
-                            final Gson gson = new Gson();
-                            try
-                            {
-                                final InputStreamReader reader = new InputStreamReader(
-                                        new FileInputStream(file), StandardCharsets.UTF_8);
-                                latestSaveState = gson.fromJson(reader, SaveState.class);
-                                reader.close();
-                                restoreSaveState(latestSaveState);
-                            }
-                            catch(final IOException e1)
-                            {
-                                LOG.error("Had an IOException while importing Save State", e1);
-                                Messagers.showException(OpenBST.getGUIInstance(),
-                                        Lang.get("story.importss.error")
-                                                .replace("$m", e1.getMessage())
-                                                .replace("$e", e1.getClass().getSimpleName()),
-                                        e1);
-                            }
-                        }
+                        doImportState();
                     }
                 });
                 if(toolbarLevel > 2)
@@ -410,14 +433,7 @@ public class StoryPanel extends JPanel
                         @Override
                         public void actionPerformed(final ActionEvent e)
                         {
-                            if(Messagers.showConfirm(OpenBST.getGUIInstance(),
-                                    "<html>" + Lang.get("story.reset.confirm"),
-                                    Messagers.OPTIONS_YES_NO, Messagers.TYPE_WARNING,
-                                    Lang.get("story.reset"), new ImageIcon(
-                                            Icons.getImage("Return", 40))) == Messagers.OPTION_YES)
-                            {
-                                reset();
-                            }
+                            doReset();
                         }
                     });
                     toolBar.add(new AbstractAction(Lang.get("story.sreload"),
@@ -428,22 +444,7 @@ public class StoryPanel extends JPanel
                         @Override
                         public void actionPerformed(final ActionEvent e)
                         {
-                            if(Messagers.showConfirm(OpenBST.getGUIInstance(),
-                                    "<html><body style='width: " + (int)(Icons.getScale() * 300)
-                                            + "'>" + Lang.get("story.sreload.confirm"),
-                                    Messagers.OPTIONS_YES_NO, Messagers.TYPE_WARNING,
-                                    Lang.get("story.sreload.confirm.title"), new ImageIcon(
-                                            Icons.getImage("Refresh", 40))) == Messagers.OPTION_YES)
-                            {
-
-                                final SaveState ss = new SaveState(currentNode.getId(),
-                                        story.getRegistry(),
-                                        currentNode.getStory().getTag("__sourcename"));
-                                reload(o ->
-                                {
-                                    restoreSaveState(ss);
-                                });
-                            }
+                            doSoftReload();
                         }
                     });
                     toolBar.add(new AbstractAction(Lang.get("story.hreload"),
@@ -454,16 +455,7 @@ public class StoryPanel extends JPanel
                         @Override
                         public void actionPerformed(final ActionEvent e)
                         {
-                            if(Messagers.showConfirm(OpenBST.getGUIInstance(),
-                                    "<html>" + Lang.get("story.hreload.confirm"),
-                                    Messagers.OPTIONS_YES_NO, Messagers.TYPE_WARNING,
-                                    Lang.get("story.hreload.confirm.title"), new ImageIcon(Icons
-                                            .getImage("Synchronize", 40))) == Messagers.OPTION_YES)
-                            {
-                                reset();
-                                reload(o ->
-                                {});
-                            }
+                            doHardReload();
                         }
                     });
                     if(toolbarLevel > 3)
@@ -477,8 +469,7 @@ public class StoryPanel extends JPanel
                             @Override
                             public void actionPerformed(final ActionEvent e)
                             {
-                                new JumpToNodeDialog(client, story, n -> showNode(n))
-                                        .setVisible(true);;
+                                doJumpToNode();
                             }
                         });
                         variableWatcherButton = new JToggleButton("",
@@ -523,8 +514,7 @@ public class StoryPanel extends JPanel
         jsHint.setVisible(false);
         toolBar.add(jsHint);
 
-        final JToggleButton seeBackgroundButton = new JToggleButton("",
-                new ImageIcon(Icons.getImage("Eye", 16)));
+        seeBackgroundButton = new JToggleButton("", new ImageIcon(Icons.getImage("Eye", 16)));
         seeBackgroundButton.addActionListener(e ->
         {
             nodePanel.setBackgroundVisible(!seeBackgroundButton.isSelected());
@@ -544,6 +534,9 @@ public class StoryPanel extends JPanel
             @Override
             public void actionPerformed(final ActionEvent e)
             {
+                if(client.getIMGHandler().getCurrentBackground() == null)
+                    return; // Can happen with shortcuts
+
                 final JDialog dialog = new JDialog(OpenBST.getGUIInstance());
                 dialog.getContentPane().add(new JPanel()
                 {
@@ -616,8 +609,7 @@ public class StoryPanel extends JPanel
             }
         });
 
-        final JToggleButton muteButton = new JToggleButton("",
-                new ImageIcon(Icons.getImage("Audio", 16)));
+        muteButton = new JToggleButton("", new ImageIcon(Icons.getImage("Audio", 16)));
         muteButton.addActionListener(e ->
         {
             final SSBClient ssb = client.getSSBHandler();
@@ -655,6 +647,151 @@ public class StoryPanel extends JPanel
         }
 
         add(toolBar, "growx, wrap");
+    }
+
+    private void doJumpToNode()
+    {
+        new JumpToNodeDialog(client, story, n -> showNode(n)).setVisible(true);;
+    }
+
+    private void doHardReload()
+    {
+        if(Messagers.showConfirm(OpenBST.getGUIInstance(), Lang.get("story.hreload.confirm"),
+                Messagers.OPTIONS_YES_NO, Messagers.TYPE_WARNING,
+                Lang.get("story.hreload.confirm.title"),
+                new ImageIcon(Icons.getImage("Synchronize", 40))) == Messagers.OPTION_YES)
+        {
+            reset();
+            reload(o ->
+            {});
+        }
+    }
+
+    private void doSoftReload()
+    {
+        if(Messagers.showConfirm(OpenBST.getGUIInstance(), Lang.get("story.sreload.confirm"),
+                Messagers.OPTIONS_YES_NO, Messagers.TYPE_WARNING,
+                Lang.get("story.sreload.confirm.title"),
+                new ImageIcon(Icons.getImage("Refresh", 40))) == Messagers.OPTION_YES)
+        {
+
+            final SaveState ss = new SaveState(currentNode.getId(), story.getRegistry(),
+                    currentNode.getStory().getTag("__sourcename"));
+            reload(o ->
+            {
+                restoreSaveState(ss);
+            });
+        }
+
+    }
+
+    private void doReset()
+    {
+        if(Messagers.showConfirm(OpenBST.getGUIInstance(),
+                "<html>" + Lang.get("story.reset.confirm"), Messagers.OPTIONS_YES_NO,
+                Messagers.TYPE_WARNING, Lang.get("story.reset"),
+                new ImageIcon(Icons.getImage("Return", 40))) == Messagers.OPTION_YES)
+        {
+            reset();
+        }
+    }
+
+    private void doImportState()
+    {
+        final FileDialog jfc = new FileDialog(OpenBST.getGUIInstance(),
+                Lang.get("story.sslocation"), FileDialog.LOAD);
+        jfc.setLocationRelativeTo(OpenBST.getGUIInstance());
+        jfc.setIconImage(Icons.getImage("Import", 16));
+        jfc.setVisible(true);
+        if(jfc.getFile() != null)
+        {
+            final File file = new File(jfc.getDirectory() + jfc.getFile());
+            final Gson gson = new Gson();
+            try
+            {
+                final InputStreamReader reader = new InputStreamReader(new FileInputStream(file),
+                        StandardCharsets.UTF_8);
+                latestSaveState = gson.fromJson(reader, SaveState.class);
+                reader.close();
+                restoreSaveState(latestSaveState);
+            }
+            catch(final IOException e1)
+            {
+                LOG.error("Had an IOException while importing Save State", e1);
+                Messagers.showException(OpenBST.getGUIInstance(),
+                        Lang.get("story.importss.error").replace("$m", e1.getMessage())
+                                .replace("$e", e1.getClass().getSimpleName()),
+                        e1);
+            }
+        }
+
+    }
+
+    private void doExportState()
+    {
+        final FileDialog jfc = new FileDialog(OpenBST.getGUIInstance(),
+                Lang.get("story.sslocation"), FileDialog.SAVE);
+        jfc.setLocationRelativeTo(OpenBST.getGUIInstance());
+        jfc.setIconImage(Icons.getImage("Export", 16));
+        jfc.setVisible(true);
+        if(jfc.getFile() != null)
+        {
+            final File file = new File(
+                    jfc.getFile().endsWith(".bss") ? jfc.getDirectory() + jfc.getFile()
+                            : jfc.getDirectory() + jfc.getFile() + ".bss");
+            final Gson gson = new Gson();
+            if(file.exists())
+            {
+                if(!file.delete())
+                {
+                    LOG.warn("Failed to delete file");
+                }
+            }
+            try
+            {
+                if(!file.createNewFile())
+                {
+                    LOG.warn("Failed to create file");
+                }
+                try(OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(file),
+                        StandardCharsets.UTF_8);)
+                {
+                    gson.toJson(new SaveState(currentNode.getId(), story.getRegistry(),
+                            currentNode.getStory().getTag("__sourcename")), writer);
+                    writer.flush();
+                }
+            }
+            catch(final IOException e1)
+            {
+                LOG.error("Had an IOException while exporting Save State", e1);
+                Messagers.showException(OpenBST.getGUIInstance(),
+                        Lang.get("story.exportss.error").replace("$m", e1.getMessage())
+                                .replace("$e", e1.getClass().getSimpleName()),
+                        e1);
+            }
+        }
+
+    }
+
+    private void doRestoreState()
+    {
+        if(Messagers.showConfirm(OpenBST.getGUIInstance(), Lang.get("story.restoress.confirm"),
+                Messagers.OPTIONS_YES_NO, Messagers.TYPE_WARNING, Lang.get("story.restoress"),
+                new ImageIcon(Icons.getImage("Undo", 40))) == Messagers.OPTION_YES)
+        {
+            restoreSaveState(latestSaveState);
+        }
+    }
+
+    private void doSaveState()
+    {
+        latestSaveState = new SaveState(currentNode.getId(), story.getRegistry(),
+                currentNode.getStory().getTag("__sourcename"));
+        restoreSaveStateButton.setEnabled(true);
+        if(exportSaveStateButton != null)
+        {
+            exportSaveStateButton.setEnabled(true);
+        }
     }
 
     /**
@@ -1080,8 +1217,9 @@ public class StoryPanel extends JPanel
 
     public boolean askClose()
     {
-        if(Messagers.showConfirm(OpenBST.getGUIInstance(), "<html>" + Lang.get("story.close.confirm"),
-                Messagers.OPTIONS_YES_NO, Messagers.TYPE_WARNING, Lang.get("story.close"),
+        if(Messagers.showConfirm(OpenBST.getGUIInstance(),
+                "<html>" + Lang.get("story.close.confirm"), Messagers.OPTIONS_YES_NO,
+                Messagers.TYPE_WARNING, Lang.get("story.close"),
                 new ImageIcon(Icons.getImage("Cancel", 40))) == Messagers.OPTION_YES)
         {
             client.getSSBHandler().shutdown();

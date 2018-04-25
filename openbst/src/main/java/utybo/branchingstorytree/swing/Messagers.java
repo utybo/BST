@@ -17,6 +17,8 @@ import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Toolkit;
 import java.awt.Window;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -24,15 +26,18 @@ import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
+import javax.swing.AbstractAction;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -169,6 +174,19 @@ public class Messagers
                     + "px'>" + lblSwagSwag.getText());
             dialog.pack();
         }
+
+        dialog.getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+                .put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "close");
+        dialog.getRootPane().getActionMap().put("close", new AbstractAction()
+        {
+
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                dialog.dispose();
+            }
+        });
+
         dialog.setLocationRelativeTo(parent);
         dialog.setResizable(false);
         Toolkit.getDefaultToolkit().beep();

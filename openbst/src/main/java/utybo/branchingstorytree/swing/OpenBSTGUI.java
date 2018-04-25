@@ -19,6 +19,7 @@ import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
@@ -43,12 +44,15 @@ import java.util.Vector;
 import java.util.function.Consumer;
 
 import javax.swing.AbstractAction;
+import javax.swing.ActionMap;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
+import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -61,6 +65,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
+import javax.swing.KeyStroke;
 import javax.swing.LookAndFeel;
 import javax.swing.ProgressMonitorInputStream;
 import javax.swing.ScrollPaneConstants;
@@ -185,6 +190,8 @@ public class OpenBSTGUI extends AbstractBSTGUI
     private final JBackgroundPanel background;
 
     private final JPanel bannersPanel;
+
+    private JMenu shortMenu;
 
     private static int selectedTheme = 1;
     private static boolean dark = false;
@@ -331,20 +338,9 @@ public class OpenBSTGUI extends AbstractBSTGUI
                 if(SwingUtilities.isMiddleMouseButton(e))
                 {
                     final int i = container.indexAtLocation(e.getX(), e.getY());
-                    System.out.println(i);
                     if(i > -1)
                     {
-                        Component c = container.getComponentAt(i);
-                        if(c instanceof StoryPanel)
-                        {
-                            container.setSelectedComponent(c);
-                            ((StoryPanel)c).askClose();
-                        }
-                        else if(c instanceof StoryEditor)
-                        {
-                            container.setSelectedComponent(c);
-                            ((StoryEditor)c).askClose();
-                        }
+                        askCloseTab(i);
                     }
                 }
             }
@@ -470,13 +466,115 @@ public class OpenBSTGUI extends AbstractBSTGUI
         creds.setEnabled(false);
         welcomeContentPanel.add(creds, "cell 0 2, gapbefore 10px");
 
+        installKeyboardShortcuts();
+
         setSize((int)(830 * Icons.getScale()), (int)(480 * Icons.getScale()));
         setLocationRelativeTo(null);
     }
 
+    private void askCloseTab(int i)
+    {
+        Component c = container.getComponentAt(i);
+        if(c instanceof StoryPanel)
+        {
+            container.setSelectedComponent(c);
+            ((StoryPanel)c).askClose();
+        }
+        else if(c instanceof StoryEditor)
+        {
+            container.setSelectedComponent(c);
+            ((StoryEditor)c).askClose();
+        }
+    }
+
+    private void installKeyboardShortcuts()
+    {
+        InputMap inputmap = getRootPane()
+                .getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+        ActionMap actionmap = getRootPane().getActionMap();
+
+        // Commented out are the keystrokes that use the accelerator 
+        // mechanism instead
+        // inputmap.put(KeyStroke.getKeyStroke("control O"), "open");
+        inputmap.put(KeyStroke.getKeyStroke("control shift O"), "openEditor");
+        // inputmap.put(KeyStroke.getKeyStroke("control N"), "newEditor");
+        inputmap.put(KeyStroke.getKeyStroke("control RIGHT"), "nextTab");
+        inputmap.put(KeyStroke.getKeyStroke("control LEFT"), "previousTab");
+        inputmap.put(KeyStroke.getKeyStroke("control W"), "closeTab");
+        inputmap.put(KeyStroke.getKeyStroke(KeyEvent.VK_F2, 0), "openMenu");
+
+        actionmap.put("openMenu", new AbstractAction()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                shortMenu.doClick();
+            }
+        });
+
+        actionmap.put("open", new AbstractAction()
+        {
+
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                openStory(VisualsUtils.askForFile(OpenBSTGUI.this, Lang.get("file.title")));
+            }
+        });
+
+        actionmap.put("openEditor", new AbstractAction()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                openEditor(VisualsUtils.askForFile(OpenBSTGUI.this, Lang.get("file.title")));
+            }
+        });
+
+        actionmap.put("newEditor", new AbstractAction()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                doNewEditor();
+            }
+        });
+
+        actionmap.put("nextTab", new AbstractAction()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                container.setSelectedIndex(
+                        (container.getSelectedIndex() + 1) % container.getTabCount());
+            }
+        });
+
+        actionmap.put("previousTab", new AbstractAction()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                int toSelect = container.getSelectedIndex() - 1;
+                if(toSelect < 0)
+                    toSelect = container.getTabCount() - 1;
+                container.setSelectedIndex(toSelect);
+            }
+        });
+
+        actionmap.put("closeTab", new AbstractAction()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                askCloseTab(container.getSelectedIndex());
+            }
+        });
+    }
+
     private JMenu createShortMenu()
     {
-        JMenu shortMenu = new JMenu();
+        shortMenu = new JMenu();
         addDarkModeCallback(b ->
         {
             shortMenu.setBackground(b ? OPENBST_BLUE.darker().darker() : OPENBST_BLUE.brighter());
@@ -490,7 +588,7 @@ public class OpenBSTGUI extends AbstractBSTGUI
         label.setEnabled(false);
         shortMenu.add(label);
         shortMenu.addSeparator();
-        shortMenu.add(new JMenuItem(
+        JMenuItem jmi = new JMenuItem(
                 new AbstractAction(Lang.get("menu.open"), new ImageIcon(Icons.getImage("Open", 16)))
                 {
                     private static final long serialVersionUID = 1L;
@@ -500,11 +598,12 @@ public class OpenBSTGUI extends AbstractBSTGUI
                     {
                         openStory(VisualsUtils.askForFile(OpenBSTGUI.this, Lang.get("file.title")));
                     }
-                }));
-
+                });
+        jmi.setAccelerator(KeyStroke.getKeyStroke("control O"));
+        shortMenu.add(jmi);
         shortMenu.addSeparator();
 
-        shortMenu.add(new JMenuItem(new AbstractAction(Lang.get("menu.create"),
+        jmi = new JMenuItem(new AbstractAction(Lang.get("menu.create"),
                 new ImageIcon(Icons.getImage("Add Property", 16)))
         {
             private static final long serialVersionUID = 1L;
@@ -514,7 +613,9 @@ public class OpenBSTGUI extends AbstractBSTGUI
             {
                 doNewEditor();
             }
-        }));
+        });
+        jmi.setAccelerator(KeyStroke.getKeyStroke("control N"));
+        shortMenu.add(jmi);
 
         JMenu additionalMenu = new JMenu(Lang.get("menu.advanced"));
         shortMenu.add(additionalMenu);
@@ -530,8 +631,9 @@ public class OpenBSTGUI extends AbstractBSTGUI
                 new PackageDialog(instance).setVisible(true);
             }
         }));
-        
-        additionalMenu.add(new JMenuItem(new AbstractAction("Create a runnable JAR file", new ImageIcon(Icons.getImage("Software Installer", 16)))
+
+        additionalMenu.add(new JMenuItem(new AbstractAction("Create a runnable JAR file",
+                new ImageIcon(Icons.getImage("Software Installer", 16)))
         {
             private static final long serialVersionUID = 1L;
 
@@ -630,7 +732,7 @@ public class OpenBSTGUI extends AbstractBSTGUI
 
         for(Entry<String, String> entry : OpenBST.getInternalFiles().entrySet())
         {
-            JMenuItem jmi = new JMenuItem(entry.getKey());
+            jmi = new JMenuItem(entry.getKey());
             jmi.addActionListener(ev ->
             {
                 String path = "/bst/" + entry.getValue();

@@ -19,8 +19,11 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 
 import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.ActionMap;
 import javax.swing.Box;
 import javax.swing.ImageIcon;
+import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -47,6 +50,7 @@ public class StoryEditor extends JPanel implements EditorControl<BranchingStory>
     private StoryDetailsEditor details;
     private StoryNodesEditor nodesEditor;
     private File lastFileLocation;
+    private JTabbedPane tabbedPane;
 
     public StoryEditor(BranchingStory baseStory) throws BSTException
     {
@@ -76,23 +80,7 @@ public class StoryEditor extends JPanel implements EditorControl<BranchingStory>
                 new ImageIcon(Icons.getImage("Circled Play", 16)));
         btnPlay.addActionListener(ev ->
         {
-            try
-            {
-                String s = exportToString();
-                File f = Files.createTempDirectory("openbst").toFile();
-                File bstFile = new File(f, "expoted.bst");
-                try(FileOutputStream fos = new FileOutputStream(bstFile);)
-                {
-                    IOUtils.write(s, fos, StandardCharsets.UTF_8);
-                }
-                OpenBST.getGUIInstance().openStory(bstFile);
-
-            }
-            catch(Exception e)
-            {
-                OpenBST.LOG.error("Export failed", e);
-                Messagers.showException(OpenBST.getGUIInstance(), Lang.get("editor.exportfail"), e);
-            }
+            play();
         });
         toolBar.add(btnPlay);
 
@@ -145,7 +133,7 @@ public class StoryEditor extends JPanel implements EditorControl<BranchingStory>
             }
         }
 
-        JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+        tabbedPane = new JTabbedPane(JTabbedPane.TOP);
         tabbedPane.setTabPlacement(JTabbedPane.LEFT);
         add(tabbedPane, "cell 0 1,grow");
 
@@ -170,6 +158,40 @@ public class StoryEditor extends JPanel implements EditorControl<BranchingStory>
         });
 
         importFrom(baseStory);
+
+        installKeyoardShortcuts();
+    }
+
+    private void installKeyoardShortcuts()
+    {
+        InputMap inputMap = getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+        ActionMap actionMap = getActionMap();
+
+        inputMap.put(KeyStroke.getKeyStroke("control s"), "save");
+        inputMap.put(KeyStroke.getKeyStroke("control shift s"), "saveAs");
+        inputMap.put(KeyStroke.getKeyStroke("control p"), "play");
+        inputMap.put(KeyStroke.getKeyStroke("control 1"), "showDetails");
+        inputMap.put(KeyStroke.getKeyStroke("control 2"), "showNodes");
+
+        actionMap.put("save", toAction(() -> save()));
+        actionMap.put("saveAs", toAction(() -> saveAs()));
+        actionMap.put("play", toAction(() -> play()));
+        actionMap.put("showDetails", toAction(() -> tabbedPane.setSelectedIndex(1)));
+        actionMap.put("showNodes", toAction(() -> tabbedPane.setSelectedIndex(2)));
+    }
+
+    private Action toAction(Runnable run)
+    {
+        return new AbstractAction()
+        {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                run.run();
+            }
+        };
     }
 
     public boolean askClose()
@@ -274,6 +296,28 @@ public class StoryEditor extends JPanel implements EditorControl<BranchingStory>
             }
         }
         return false;
+    }
+
+    public void play()
+    {
+        try
+        {
+            String s = exportToString();
+            File f = Files.createTempDirectory("openbst").toFile();
+            File bstFile = new File(f, "exported.bst");
+            try(FileOutputStream fos = new FileOutputStream(bstFile);)
+            {
+                IOUtils.write(s, fos, StandardCharsets.UTF_8);
+            }
+            OpenBST.getGUIInstance().openStory(bstFile);
+
+        }
+        catch(Exception e)
+        {
+            OpenBST.LOG.error("Export failed", e);
+            Messagers.showException(OpenBST.getGUIInstance(), Lang.get("editor.exportfail"), e);
+        }
+
     }
 
     public void updateTabTitle()
