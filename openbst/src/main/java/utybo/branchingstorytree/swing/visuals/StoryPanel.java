@@ -194,8 +194,7 @@ public class StoryPanel extends JPanel
 
         // persistant
         inputmap.put(KeyStroke.getKeyStroke("control B"), "visibleBackground");
-        inputmap.put(KeyStroke
-                .getKeyStroke("control shift B"), "seeBackground");
+        inputmap.put(KeyStroke.getKeyStroke("control shift B"), "seeBackground");
         inputmap.put(KeyStroke.getKeyStroke("control M"), "mute");
 
         actionmap.put("saveState", toActionIfLevel(1, () -> doSaveState()));
@@ -212,7 +211,7 @@ public class StoryPanel extends JPanel
         actionmap.put("mute", toAction(() -> muteButton.doClick()));
 
         // Select option with numbers
-        for(int i = 1; i <= 9; i++) 
+        for(int i = 1; i <= 9; i++)
         {
             inputmap.put(KeyStroke.getKeyStroke("control " + i), "option" + i);
             inputmap.put(KeyStroke.getKeyStroke("control NUMPAD" + i), "option" + i);
@@ -227,7 +226,7 @@ public class StoryPanel extends JPanel
                 }
             }));
         }
-        
+
         // Have VK_0 act as 10
         inputmap.put(KeyStroke.getKeyStroke("control 0"), "option10");
         inputmap.put(KeyStroke.getKeyStroke("control NUMPAD0"), "option10");
@@ -785,6 +784,13 @@ public class StoryPanel extends JPanel
 
     private void doSaveState()
     {
+        if(((int)currentNode.getStory().getRegistry().get("__savestate_warning", 0)) == 1
+                && ((int)currentNode.getStory().getRegistry().get("__savestate_warned", 0)) == 0)
+        {
+            currentNode.getStory().getRegistry().put("__savestate_warned", 1);
+            Messagers.showMessage(OpenBST.getGUIInstance(), "This story uses features that are not comaptible"
+                    + " with Save States. Proceed with care.", Messagers.TYPE_WARNING);
+        }
         latestSaveState = new SaveState(currentNode.getId(), story.getRegistry(),
                 currentNode.getStory().getTag("__sourcename"));
         restoreSaveStateButton.setEnabled(true);

@@ -41,6 +41,7 @@ public class JSEAction implements ScriptAction
 
         switch(head)
         {
+        case "js":
         case "jse_eval":
         {
             ScriptEngine engine = new ScriptEngineManager().getEngineByName("JavaScript");
@@ -90,7 +91,7 @@ public class JSEAction implements ScriptAction
     @Override
     public String[] getName()
     {
-        return new String[] {"jse_eval", "jse_reset", "jse_autoimport", "jse_import"};
+        return new String[] {"jse_eval", "jse_reset", "jse_autoimport", "jse_import", "js"};
     }
 
     protected static void applyReg(final ScriptEngine engine, final VariableRegistry registry,

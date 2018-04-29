@@ -16,4 +16,11 @@ public interface XSFHandler extends BRMResourceConsumer
 {
     public Object invokeScript(String resourceName, String function, XSFBridge bst,
             BranchingStory story, int line) throws BSTException;
+
+    public void createEngine(BranchingStory story, int line, int engine, String... toLoad) throws BSTException;
+
+    public Object invokeScriptInEngine(int engine, String toEval, XSFBridge xsfBridge,
+            BranchingStory story, int line) throws BSTException;
+
+    public void importAllVariables(int i, BranchingStory story, int line) throws BSTException;
 }

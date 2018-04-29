@@ -69,7 +69,7 @@ public class JSEChecker implements ScriptChecker
     @Override
     public String[] getName()
     {
-        return new String[] {"jse_eval"};
+        return new String[] {"jse_eval", "js"};
     }
 
 }

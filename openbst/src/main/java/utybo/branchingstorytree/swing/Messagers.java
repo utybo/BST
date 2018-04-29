@@ -312,13 +312,14 @@ public class Messagers
         String stack = w.toString();
 
         JTextArea jta = new JTextArea(stack);
-        jta.setLineWrap(true);
-        jta.setWrapStyleWord(true);
         jta.setEditable(false);
         JPanel pan = new JPanel(new MigLayout("", "[grow]", "[]"));
         JScrollPane scrollPane = new JScrollPane(jta);
         scrollPane.setMinimumSize(
                 new Dimension((int)(Icons.getScale() * 500), (int)(Icons.getScale() * 100)));
+
+        scrollPane.setMaximumSize(
+                new Dimension((int)(Icons.getScale() * 500), (int)(Icons.getScale() * 400)));
 
         scrollPane.setBorder(new LineBorder(pan.getBackground().darker(), 1, true));
         pan.add(scrollPane, "ax center, w 75%");
