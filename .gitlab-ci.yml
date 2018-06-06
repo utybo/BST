@@ -21,7 +21,8 @@ stages:
   - deploy
 
 build-dev:
-  only: dev
+  only: 
+    - dev
   stage: build
   script: gradle --build-cache shadowJar
   cache:
@@ -33,7 +34,8 @@ build-dev:
       - .gradle
 
 deploy-dev:
-  only: dev
+  only:
+    - dev
   stage: deploy
   artifacts:
     paths:
@@ -49,7 +51,8 @@ deploy-dev:
   
 
 test-dev:
-  only: dev
+  only:
+    - dev
   stage: test
   script: gradle check
   cache:
