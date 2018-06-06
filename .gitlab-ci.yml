@@ -24,7 +24,7 @@ build-dev:
   only: 
     - dev
   stage: build
-  script: gradle --build-cache shadowJar
+  script: gradle --build-cache assemble
   cache:
     key: "$CI_COMMIT_REF_NAME"
     policy: push
@@ -37,6 +37,7 @@ deploy-dev:
   only:
     - dev
   stage: deploy
+  script: gradle shadowJar
   artifacts:
     paths:
     - openbst/build/libs/*-full.jar
