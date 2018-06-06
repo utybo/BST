@@ -2,7 +2,7 @@
 # This is the Gradle build system for JVM applications
 # https://gradle.org/
 # https://github.com/gradle/gradle
-image: frekele/java:jdk8
+image: anapsix/alpine-java:8_jdk
 
 # Disable the Gradle daemon for Continuous Integration servers as correctness
 # is usually a priority over speed in CI environments. Using a fresh
@@ -11,8 +11,8 @@ image: frekele/java:jdk8
 variables:
   GRADLE_OPTS: "-Dorg.gradle.daemon=false"
 
-before_script:
-  - export GRADLE_USER_HOME=`pwd`/.gradle
+#before_script:
+#  - export GRADLE_USER_HOME=`pwd`/.gradle
 
 stages:
   - build
@@ -24,7 +24,7 @@ build-dev:
   only: 
     - dev
   stage: build
-  script: gradle --build-cache assemble
+  script: ./gradlew --build-cache assemble
   cache:
     key: "$CI_COMMIT_REF_NAME"
     policy: push
@@ -37,7 +37,7 @@ deploy-dev:
   only:
     - dev
   stage: deploy
-  script: gradle shadowJar
+  script: ./gradlew shadowJar
   artifacts:
     paths:
     - openbst/build/libs/*-full.jar
@@ -55,7 +55,7 @@ test-dev:
   only:
     - dev
   stage: test
-  script: gradle check
+  script: ./gradlew check
   cache:
     key: "$CI_COMMIT_REF_NAME"
     policy: pull
