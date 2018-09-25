@@ -18,6 +18,8 @@ Less technical explanations for each update available on the [OpenBST website](h
 - **Keyboard shortcuts were added.** Pretty self explanatory.
 - Added a tool to create runnable stories. Advanced tools > Create a runnable JAR.
 - New top level tag : `fontsize`, which allows you to specify a custom font size. Default is now `fontsize=14px`
+- Shortcuts were added for `jse_eval` (`js`) and `xsf_exec` (`jsf`)
+
 
 ### Fixed
 - Fixed incoherent font sizes inside OpenBST

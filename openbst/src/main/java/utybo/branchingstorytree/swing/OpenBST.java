@@ -68,6 +68,8 @@ import utybo.branchingstorytree.swing.utils.AlphanumComparator;
 import utybo.branchingstorytree.swing.utils.BSTPackager;
 import utybo.branchingstorytree.swing.utils.Lang;
 import utybo.branchingstorytree.swing.utils.OutputStreamToOutputAndPrint;
+import utybo.branchingstorytree.swing.utils.StartupTimer;
+import utybo.branchingstorytree.swing.utils.StartupTimer.StartupTimerState;
 import utybo.branchingstorytree.swing.visuals.AccumulativeRunnable;
 import utybo.branchingstorytree.swing.visuals.JBannerPanel;
 import utybo.branchingstorytree.swing.visuals.Splashscreen;
@@ -75,8 +77,6 @@ import utybo.branchingstorytree.swing.visuals.Splashscreen;
 /**
  * OpenBST is an open source implementation of the BST language that aims to be
  * fully compatible with every single feature of BST.
- * <p>
- * This class is both the main class and the main JFrame.
  *
  * @author utybo
  *
@@ -122,6 +122,7 @@ public class OpenBST
     }
 
     private static AbstractBSTGUI gui;
+    private static StartupTimer startupInfo = new StartupTimer();
     private static final BranchingStoryTreeParser parser = new BranchingStoryTreeParser();
 
     // --- IMAGES ---
@@ -143,15 +144,20 @@ public class OpenBST
         LOG.info("OpenBST version " + VERSION + ", part of the BST project");
         LOG.trace("[ INIT ]");
         LOG.trace("Loading language files");
+        startupInfo.step("Language files");
         loadLang(args.length > 0 ? args[0] : null);
+        startupInfo.endStep();
 
         LOG.trace("Applying Look and Feel");
+        startupInfo.step("Applying theme");
         OpenBSTGUI.initializeLaF();
         VisualsUtils.fixTextFontScaling();
 
         LOG.trace("Loading scaling factor");
         Icons.loadScalingFactor();
+        startupInfo.endStep();
 
+        startupInfo.step("Splashscreen init");
         InputStream inSplashImg = OpenBST.class.getResourceAsStream("/splashscreen.png");
         BufferedImage splashImg = null;
         if(inSplashImg != null)
@@ -165,6 +171,7 @@ public class OpenBST
             }
 
         Splashscreen sc = Splashscreen.start(splashImg);
+        startupInfo.endStep();
         SwingWorker<Void, String> sw = new SwingWorker<Void, String>()
         {
 
@@ -173,12 +180,14 @@ public class OpenBST
             {
                 LOG.trace("Initializing JavaFX");
                 publish(Lang.get("splash.init"));
+                startupInfo.step("JavaFX init");
                 // Necessary - because we are killing Scenes all the time with WebViews in NodePanels,
                 // JFX may think we just ended our application.
                 // OpenBST exits with a dirty System.exit() anyway.
                 Platform.setImplicitExit(false);
                 // Initialize JavaFX
                 new JFXPanel();
+                startupInfo.step("WebEngine init");
                 VisualsUtils.invokeJfxAndWait(() ->
                 {
                     // Initialize the web engine
@@ -186,27 +195,33 @@ public class OpenBST
                     // Initialize a view
                     new WebView();
                 });
+                startupInfo.endStep();
 
                 LOG.info("Loading icons...");
                 publish(Lang.get("splash.icons"));
-                long timeAtIconStart = System.currentTimeMillis();
+                startupInfo.step("Icons loading");
                 Icons.load();
-                LOG.info("Time taken to load icons : "
-                        + (System.currentTimeMillis() - timeAtIconStart) + " ms");
+                startupInfo.endStep();
 
                 LOG.info("Loading backgrounds...");
                 publish(Lang.get("splash.loadbg"));
+                startupInfo.step("Backgrounds loading");
                 Icons.loadBackgrounds();
+                startupInfo.endStep();
 
                 // $EXPERIMENTAL
                 LOG.info("Caching backgrounds...");
                 publish(Lang.get("splash.processbg"));
+                startupInfo.step("Backgrounds processing");
                 IMGClient.initInternal();
+                startupInfo.endStep();
 
                 // $EXPERIMENTAL
                 LOG.info("Loading internal BTS files...");
                 publish(Lang.get("splash.loadinternalbst"));
+                startupInfo.step("Internal BST files listing");
                 loadInternalBSTFiles();
+                startupInfo.endStep();
 
                 return null;
             }
@@ -228,6 +243,7 @@ public class OpenBST
         catch(InterruptedException | ExecutionException e1)
         {
             OpenBST.LOG.error(e1);
+            startupInfo.endStep(StartupTimerState.ERROR);
         }
 
         // First init pass succesful.
@@ -240,6 +256,7 @@ public class OpenBST
             // Load the embedded story
             try
             {
+                startupInfo.step("Embed init");
                 AccumulativeRunnable<String> acrun = new AccumulativeRunnable<String>()
                 {
                     @Override
@@ -252,9 +269,11 @@ public class OpenBST
                 FileOutputStream fos = new FileOutputStream(tmpFile);
 
                 acrun.add("Extracting embedded story...");
+                startupInfo.step("Embed extracting");
                 IOUtils.copy(is, fos);
 
                 acrun.add("Loading embedded story...");
+                startupInfo.step("Embed opening");
                 SinglePanelGUI[] spg = new SinglePanelGUI[1];
                 VisualsUtils.invokeSwingAndWait(() ->
                 {
@@ -270,6 +289,7 @@ public class OpenBST
                 VisualsUtils.invokeSwingAndWait(() -> spg[0].setStory(bs, tmpFile, tc));
 
                 acrun.add("Loading resources...");
+                startupInfo.step("Embed resources loading");
                 tc.getBRMHandler().setLoadCallback(new LoadStatusCallback()
                 {
                     int total;
@@ -291,14 +311,17 @@ public class OpenBST
                     {}
                 });
                 tc.getBRMHandler().load();
+                startupInfo.endStep();
                 SwingUtilities.invokeAndWait(() ->
                 {
                     sc.setText(Lang.get("splash.launch"));
+                    startupInfo.step("Launching GUI");
                     sc.lock();
                     sc.stop();
                     spg[0].setVisible(true);
                     spg[0].begin();
                     sc.dispose();
+                    startupInfo.endStep();
                 });
 
             }
@@ -306,21 +329,25 @@ public class OpenBST
             {
                 LOG.error("Failed to load embedded story", ioe);
                 Messagers.showException(sc, "Failed to load embedded file", ioe);
+                startupInfo.endStep(StartupTimerState.ERROR);
             }
             catch(BSTException e)
             {
                 LOG.error("Failed to load BST file", e);
                 Messagers.showException(sc, "Failed to parse embedded file", e);
+                startupInfo.endStep(StartupTimerState.ERROR);
             }
             catch(Exception e)
             {
                 LOG.error("Unexpected exception", e);
                 Messagers.showException(sc, "Unexpected exception while loading the file", e);
+                startupInfo.endStep(StartupTimerState.ERROR);
             }
 
             return; // Do not continue
         }
 
+        startupInfo.step("Launching GUI");
         VisualsUtils.invokeSwingAndWait(() ->
         {
             sc.setText(Lang.get("splash.launch"));
@@ -332,6 +359,7 @@ public class OpenBST
         gui = frame;
 
         VisualsUtils.invokeSwingAndWait(() -> sc.dispose());
+        startupInfo.endStep();
 
         LOG.trace("Checking versions...");
         if(!"<unknown version>".equals(VERSION))
@@ -358,7 +386,8 @@ public class OpenBST
                                 remoteVersion.unstable),
                                 remoteStable = new ComparableVersion(remoteVersion.stable);
                         ComparableVersion local = new ComparableVersion(
-                                VERSION.substring(0, VERSION.length() - 1));
+                                VERSION.endsWith("u") ? VERSION.substring(0, VERSION.length() - 1)
+                                        : VERSION);
 
                         if(VERSION.endsWith("u"))
                         {
@@ -654,4 +683,9 @@ public class OpenBST
 
     private OpenBST()
     {}
+
+    public static String getStartupInfo()
+    {
+        return startupInfo.getReport();
+    }
 }

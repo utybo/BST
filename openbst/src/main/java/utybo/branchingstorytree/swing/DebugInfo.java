@@ -10,6 +10,7 @@ package utybo.branchingstorytree.swing;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
+import java.awt.Font;
 import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
@@ -98,6 +99,7 @@ public class DebugInfo extends JDialog
         panel.add(scrollPane);
 
         JTextArea textArea = new JTextArea();
+        textArea.setFont(Font.decode(Font.MONOSPACED).deriveFont((float) textArea.getFont().getSize()));
         textArea.setEditable(false);
         textArea.setWrapStyleWord(true);
         textArea.setLineWrap(true);
@@ -120,6 +122,9 @@ public class DebugInfo extends JDialog
                     sb.append(s + " : " + System.getProperty(s) + "\n");
 
                 sb.append("\n");
+                publish(Lang.get("debug.startupstats"));
+                sb.append("--- STARTUP INFO ---\n");
+                sb.append(OpenBST.getStartupInfo());
                 publish(Lang.get("debug.getlogs"));
                 sb.append("--- LOGS ---\n");
                 sb.append(OpenBST.getAllLogs());

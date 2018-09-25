@@ -157,8 +157,8 @@ public class StoryDetailsEditor extends JPanel implements EditorControl<Map<Stri
 
         // While it does not hurt to write the default to other files, this one
         // is actually quite important.
-        // Using a font like this bypasses the non-latin character checker which
-        // switches to a compatible font.
+        // Using a font like this bypasses the non-latin characters checker which
+        // switches to a compatible font if such characters are present.
         if(!font.getSelectedItem().toString().isEmpty()
                 && !("[default]".equals(font.getSelectedItem().toString())))
             sb.append("font=" + font.getSelectedItem().toString() + "\n");
