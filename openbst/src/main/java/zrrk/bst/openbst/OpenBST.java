@@ -51,6 +51,7 @@ import com.google.gson.reflect.TypeToken;
 
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
+import javafx.scene.text.Font;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import zrrk.bst.bstjava.api.BSTException;
@@ -192,8 +193,32 @@ public class OpenBST
                     new WebEngine();
                     // Initialize a view
                     new WebView();
+
+                    startupInfo.endStep();
+
+                    startupInfo.step("JavaFX font loading");
+                    String[] fontsToLoad = new String[] {"LibreBaskerville-Bold.ttf",
+                            "LibreBaskerville-Italic.ttf", "LibreBaskerville-Regular.ttf",
+                            "Ubuntu-Regular.ttf", "Ubuntu-Italic.ttf", "Ubuntu-Bold.ttf",
+                            "Ubuntu-BoldItalic.ttf"};
+
+                    boolean stepSuccess = true;
+                    for(String s : fontsToLoad)
+                    {
+                        Font f = Font.loadFont(
+                                OpenBST.class.getResourceAsStream("/zrrk/bst/openbst/font/" + s),
+                                12);
+                        if(f == null)
+                        {
+                            LOG.error("Failed to load font " + s);
+                            stepSuccess = false;
+                        }
+                        else
+                            System.out.println(f.getFamily());
+                    }
+                    startupInfo.endStep(
+                            stepSuccess ? StartupTimerState.OK : StartupTimerState.OK_WARNING);
                 });
-                startupInfo.endStep();
 
                 LOG.info("Loading icons...");
                 publish(Lang.get("splash.icons"));
@@ -494,17 +519,14 @@ public class OpenBST
      */
     private static void loadLang(final String userCustomLanguage)
     {
-        final Map<String, String> languages = new Gson()
-                .fromJson(new InputStreamReader(
-                        OpenBST.class.getResourceAsStream(
-                                "/zrrk/bst/openbst/lang/langs.json"),
-                        StandardCharsets.UTF_8), new TypeToken<Map<String, String>>()
-                        {}.getType());
+        final Map<String, String> languages = new Gson().fromJson(new InputStreamReader(
+                OpenBST.class.getResourceAsStream("/zrrk/bst/openbst/lang/langs.json"),
+                StandardCharsets.UTF_8), new TypeToken<Map<String, String>>()
+                {}.getType());
         try
         {
-            Lang.loadTranslationsFromFile(Lang.getDefaultLanguage(),
-                    OpenBST.class.getResourceAsStream(
-                            "/zrrk/bst/openbst/lang/" + languages.get("default")));
+            Lang.loadTranslationsFromFile(Lang.getDefaultLanguage(), OpenBST.class
+                    .getResourceAsStream("/zrrk/bst/openbst/lang/" + languages.get("default")));
         }
         catch(final Exception e)
         {
@@ -521,8 +543,8 @@ public class OpenBST
             {
                 try
                 {
-                    Lang.loadTranslationsFromFile(userLanguage, OpenBST.class
-                            .getResourceAsStream("/zrrk/bst/openbst/lang/" + v));
+                    Lang.loadTranslationsFromFile(userLanguage,
+                            OpenBST.class.getResourceAsStream("/zrrk/bst/openbst/lang/" + v));
                 }
                 catch(final Exception e)
                 {

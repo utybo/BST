@@ -10,7 +10,6 @@ package zrrk.bst.openbst.visuals;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -23,7 +22,6 @@ import java.util.function.Consumer;
 import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
 
-import org.apache.commons.compress.compressors.xz.XZCompressorInputStream;
 import org.apache.commons.io.IOUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -52,12 +50,9 @@ import zrrk.bst.openbst.utils.MarkupUtils;
 
 public class NodePanel extends JScrollablePanel
 {
-    private static final String FONT_UBUNTU, FONT_LIBRE_BASKERVILLE, STYLE;
-
+    private static final String STYLE;
     static
     {
-        FONT_UBUNTU = loadFont("ubuntu");
-        FONT_LIBRE_BASKERVILLE = loadFont("libre_baskerville");
 
         String s = null;
         try
@@ -154,8 +149,7 @@ public class NodePanel extends JScrollablePanel
                                             NodePanel.class.getResourceAsStream(
                                                     "/zrrk/bst/openbst/html/error.html"),
                                             StandardCharsets.UTF_8)
-                                    .replace("$MSG", Lang.get("story.problem"))
-                                    .replace("$STYLE", FONT_UBUNTU));
+                                    .replace("$MSG", Lang.get("story.problem")));
                 }
                 catch(IOException e)
                 {
@@ -176,24 +170,6 @@ public class NodePanel extends JScrollablePanel
         {
             OpenBST.LOG.warn("Synchronization failed", e);
         }
-    }
-
-    private static String loadFont(String name)
-    {
-        String s;
-        try
-        {
-            s = IOUtils.toString(
-                    new XZCompressorInputStream(NodePanel.class
-                            .getResourceAsStream("/zrrk/bst/openbst/font/" + name + ".css.xz")),
-                    StandardCharsets.UTF_8);
-        }
-        catch(IOException e)
-        {
-            OpenBST.LOG.warn("Failed to load fonts CSS file", e);
-            s = "";
-        }
-        return s;
     }
 
     public void applyNode(final BranchingStory story, final TextNode textNode) throws BSTException
@@ -239,7 +215,6 @@ public class NodePanel extends JScrollablePanel
     {
         // Build the base, with fonts and style (injecting font info)
         String base = "<head><meta charset=\"utf-8\"/>" //
-                + "<style type='text/css'>" + getCurrentFontCss() + "</style>" //
                 + "<style type='text/css'>" + STYLE.replace("$font", getCurrentFont()) + "</style>" //
                 + "$CUSTOMCSS" + "</head>" //
                 + "<body class='$bbg" + (isDark ? " dark" : "") + "'>" //
@@ -247,17 +222,18 @@ public class NodePanel extends JScrollablePanel
         String additional, c;
 
         base = base.replace("$fsize", fontSize);
-
         if(imageClient.getCurrentBackground() != null && backgroundVisible)
         {
             // Inject background (base64) and add the background class to the body
             base = base.replace("$b64bg", imageClient.getBase64Background()).replace("$bbg", "bg");
             additional = isDark ? "background-color:rgba(0,0,0,0.66)"
                     : "background-color:rgba(255,255,255,0.66)";
+            System.out.println("11");
         }
         else
         {
-            base.replace("$bbg", "");
+            System.out.println("22");
+            base = base.replace("$bbg", "");
             additional = "";
         }
         if(textColor != null)
@@ -299,17 +275,6 @@ public class NodePanel extends JScrollablePanel
         isAlreadyBuilt = true;
     }
 
-    private String getCurrentFontCss()
-    {
-        String fontName = getCurrentFont().toLowerCase();
-        if(fontName.equals("ubuntu"))
-            return FONT_UBUNTU;
-        else if(fontName.contains("baskerville"))
-            return FONT_LIBRE_BASKERVILLE;
-        else
-            return "";
-    }
-
     private String getCurrentFont()
     {
         if((int)parent.currentNode.getStory().getRegistry()
@@ -317,7 +282,8 @@ public class NodePanel extends JScrollablePanel
         {
             return "sans-serif";
         }
-        return parseFont(parent.currentNode.getStory());
+        return parseFont(parent.currentNode.getStory()).replace("ubuntu", "Ubuntu")
+                .replace("librebaskerville", "LibreBaskerville");
     }
 
     private String parseFont(BranchingStory s)
