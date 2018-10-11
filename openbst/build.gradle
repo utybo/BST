@@ -1,16 +1,9 @@
-buildscript {
-  repositories {
-    jcenter() 
-  }
-
-  dependencies {
-    classpath "com.github.jengelman.gradle.plugins:shadow:1.2.3"
-  }
+plugins {
+    id 'application'
+    id 'eclipse'
+    id "com.github.johnrengelman.shadow" version "1.2.3"
+	id 'org.beryx.jlink' version '1.4.4'
 }
-
-apply plugin: 'application'
-apply plugin: 'eclipse'
-apply plugin: "com.github.johnrengelman.shadow"
 
 repositories {
     mavenCentral()
@@ -27,30 +20,42 @@ sourceSets {
     }
 }
 
-sourceCompatibility = 1.8
-mainClassName = "utybo.branchingstorytree.swing.OpenBST"
+mainClassName = "zrrk.bst.openbst.OpenBST"
 
 jar {
     manifest {
-        attributes 'Implementation-Title': "OpenBST", 'Implementation-Version': version
+        attributes 'Implementation-Title': "OpenBST", 'Implementation-Version': version,
+		'Main-Class': mainClassName, 'Automatic-Module-Name': "zrrk.bst.openbst"
     }
 }
 
 dependencies {
-    compile 'org.apache.logging.log4j:log4j-api:2.8.1'
-    compile 'org.apache.logging.log4j:log4j-core:2.8.1'
+    compile 'org.apache.logging.log4j:log4j-api:2.11.1'
+    compile 'org.apache.logging.log4j:log4j-core:2.11.1'
     compile 'com.miglayout:miglayout-swing:4.2'
     compile project(':bst-java')
-    compile 'commons-lang:commons-lang:2.6'
     compile 'com.github.rjeschke:txtmark:0.13'
-    compile 'com.google.code.gson:gson:2.8.0'
-    compile 'commons-io:commons-io:2.5'
-    compile 'org.apache.commons:commons-compress:1.13'
-	compile 'org.tukaani:xz:1.6'
-	compile 'org.swinglabs.swingx:swingx-all:1.6.5-1'
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.google.code.gson:gson:2.8.5'
+    compile 'commons-io:commons-io:2.6'
+    compile 'org.apache.commons:commons-compress:1.18'
+	  compile 'org.tukaani:xz:1.8'
+    compile 'org.pushing-pixels:radiance-substance:1.0.2'
 }
 
 shadowJar {
   classifier = "full"
+}
+
+jlink {
+    launcherName = 'openbst'
+    moduleName = 'zrrk.bst.openbst'
+    mergedModuleName = 'zrrk.bst.dependencies.module'
+    mergedModule {
+        requires 'java.desktop'
+        requires 'javafx.web'
+		    requires 'javafx.media'
+		    requires 'javafx.swing'
+    }
+    forceMerge 'log4j'
+    options = ['--strip-debug', '--compress', '2', '--no-header-files', '--no-man-pages']
 }
