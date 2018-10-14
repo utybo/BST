@@ -24,6 +24,11 @@ sourceSets {
     }
 }
 
+javaModule.hacks {
+    exports('zrrk.bst.bstjava', 'zrrk.bst.bstjava.test', 'junit')
+}
+
+
 jar {
     manifest {
         attributes 'Automatic-Module-Name': "zrrk.bst.bstjava"

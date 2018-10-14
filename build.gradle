@@ -9,15 +9,18 @@ buildscript {
     classpath "com.github.ben-manes:gradle-versions-plugin:0.20.0"
   }
 }
-
+plugins {
+    id "com.zyxist.chainsaw" version "0.3.1"
+}
 
 subprojects {
     apply plugin: "java"
     apply plugin: "eclipse"
     apply plugin: "com.github.hierynomus.license"
     apply plugin: "com.github.ben-manes.versions"
+    apply plugin: "com.zyxist.chainsaw"
 
-	sourceCompatibility = 1.10
+    sourceCompatibility = 1.10
     version = "2.0-SNAPSHOT"
     license {
         header = rootProject.file('HEADER')

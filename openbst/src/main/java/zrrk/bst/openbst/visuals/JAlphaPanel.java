@@ -1,3 +1,11 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ *
+ * This Source Code Form is "Incompatible With Secondary Licenses", as
+ * defined by the Mozilla Public License, v. 2.0.
+ */
 package zrrk.bst.openbst.visuals;
 
 import java.awt.AlphaComposite;
@@ -15,7 +23,7 @@ public class JAlphaPanel extends JPanel
     private float alpha = 1F;
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 1L;
 
@@ -74,7 +82,7 @@ public class JAlphaPanel extends JPanel
 
     /**
      * Overriden paint method to take into account the alpha setting
-     * 
+     *
      * @param g
      */
     @Override
